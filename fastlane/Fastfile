@@ -1,0 +1,65 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:android)
+
+platform :android do
+
+  desc "Clean build directory"
+  lane :clean do
+    gradle(task: "clean")
+  end
+
+  desc "Compile debug"
+  lane :compileDebug do
+    gradle(task: "compileDebugSources")
+    gradle(task: "compileDebugUnitTestSources")
+    gradle(task: "compileDebugAndroidTestSources")
+  end
+
+  desc "Lint debug"
+  lane :lintDebug do
+    gradle(
+      task: "lint",
+      build_type: "Debug"
+    )
+  end
+
+  desc "Test debug"
+  lane :testDebug do
+    gradle(
+      task: "test",
+      build_type: "Debug"
+    )
+  end
+
+  desc "Build debug"
+  lane :assembleDebug do
+    gradle(
+      task: "assemble",
+      build_type: "Debug"
+    )
+  end
+
+  desc "Run debug pipeline"
+  lane :debugPipeline do
+    clean
+    compileDebug
+    lintDebug
+    testDebug
+    assembleDebug
+  end
+
+end
