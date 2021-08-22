@@ -12,7 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import de.lukasneugebauer.nextcloudcookbook.api.NextcloudApi
 import de.lukasneugebauer.nextcloudcookbook.ui.theme.NextcloudCookbookTheme
-import de.lukasneugebauer.nextcloudcookbook.util.Logger
+import de.lukasneugebauer.nextcloudcookbook.utils.Logger
 import javax.inject.Inject
 
 private const val TAG: String = "MainActivity"

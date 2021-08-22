@@ -1,4 +1,4 @@
-package de.lukasneugebauer.nextcloudcookbook.util
+package de.lukasneugebauer.nextcloudcookbook.utils
 
 import android.util.Log
 import de.lukasneugebauer.nextcloudcookbook.BuildConfig
