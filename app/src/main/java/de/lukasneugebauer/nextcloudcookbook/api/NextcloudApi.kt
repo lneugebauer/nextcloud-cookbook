@@ -7,9 +7,9 @@ import retrofit2.http.Path
 
 interface NextcloudApi {
 
-    @GET("apps/cookbook/api/recipes")
+    @GET("/apps/cookbook/api/recipes")
     suspend fun getRecipes(): List<RecipePreviewNw>
 
-    @GET("apps/cookbook/api/recipes/{id}")
+    @GET("/apps/cookbook/api/recipes/{id}")
     suspend fun getRecipe(@Path("id") id: Int): RecipeNw
 }
