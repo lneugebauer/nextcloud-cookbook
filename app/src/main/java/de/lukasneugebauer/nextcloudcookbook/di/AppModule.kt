@@ -1,5 +1,6 @@
 package de.lukasneugebauer.nextcloudcookbook.di
 
+import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -7,6 +8,8 @@ import dagger.hilt.components.SingletonComponent
 import de.lukasneugebauer.nextcloudcookbook.BuildConfig
 import de.lukasneugebauer.nextcloudcookbook.api.BasicAuthInterceptor
 import de.lukasneugebauer.nextcloudcookbook.api.NextcloudApi
+import de.lukasneugebauer.nextcloudcookbook.data.NutritionDeserializer
+import de.lukasneugebauer.nextcloudcookbook.data.NutritionNw
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -28,17 +31,22 @@ object AppModule {
             }
         }
 
-        val authInterceptor = BasicAuthInterceptor(BuildConfig.NC_USERNAME, BuildConfig.NC_APP_PASSWORD)
+        val authInterceptor =
+            BasicAuthInterceptor(BuildConfig.NC_USERNAME, BuildConfig.NC_APP_PASSWORD)
 
         val client = OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
             .addInterceptor(authInterceptor)
             .build()
 
+        val gson = GsonBuilder()
+            .registerTypeAdapter(NutritionNw::class.java, NutritionDeserializer())
+            .create()
+
         return Retrofit.Builder()
             .baseUrl(BuildConfig.NC_BASE_URL)
             .client(client)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
     }
 
