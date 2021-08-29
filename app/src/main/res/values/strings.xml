@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Cookbook</string>
+    <string name="common_categories">Categories</string>
+    <string name="common_more">More</string>
+    <string name="common_settings">Settings</string>
+    <string name="home_category">Category: %1s</string>
+    <string name="home_recommendation">Recommendation</string>
 </resources>
