@@ -6,4 +6,7 @@
     <string name="common_settings">Einstellungen</string>
     <string name="home_category">Kategorie: %1s</string>
     <string name="home_recommendation">Vorschlag</string>
+    <string name="recipe_ingredients">Zutaten</string>
+    <string name="recipe_instructions">Zubereitung</string>
+    <string name="recipe_tools">Utensilien</string>
 </resources>

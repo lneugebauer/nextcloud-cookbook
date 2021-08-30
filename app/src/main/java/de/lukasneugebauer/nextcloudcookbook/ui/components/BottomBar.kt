@@ -16,18 +16,20 @@ fun BottomBar(
     currentScreen: NextcloudCookbookScreen
 ) {
     BottomNavigation(elevation = 4.dp) {
-        allScreens.map {
-            BottomNavigationItem(
-                icon = {
-                    Icon(
-                        imageVector = it.icon,
-                        contentDescription = it.name
-                    )
-                },
-                label = { Text(text = it.name) },
-                selected = currentScreen == it,
-                onClick = { navController.navigate(it.name) }
-            )
-        }
+        allScreens
+            .filter { it.bottomBar }
+            .map {
+                BottomNavigationItem(
+                    icon = {
+                        Icon(
+                            imageVector = it.icon,
+                            contentDescription = it.name
+                        )
+                    },
+                    label = { Text(text = it.name) },
+                    selected = currentScreen == it,
+                    onClick = { navController.navigate(it.name) }
+                )
+            }
     }
 }

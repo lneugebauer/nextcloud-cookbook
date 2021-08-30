@@ -17,9 +17,11 @@ import de.lukasneugebauer.nextcloudcookbook.utils.Logger
 
 private const val TAG = "Common"
 
+@ExperimentalMaterialApi
 @Composable
-fun CommonItem(name: String, imageUrl: Uri, width: Dp) {
+fun CommonItem(name: String, imageUrl: Uri, width: Dp, onClick: () -> Unit) {
     Card(
+        onClick = onClick,
         modifier = Modifier.width(width)
     ) {
         Column {

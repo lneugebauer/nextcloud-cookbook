@@ -8,19 +8,27 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.ui.graphics.vector.ImageVector
 
 enum class NextcloudCookbookScreen(
-    val icon: ImageVector
+    val icon: ImageVector,
+    val bottomBar: Boolean = false
 ) {
     Home(
-        icon = Icons.Filled.Home
+        icon = Icons.Filled.Home,
+        bottomBar = true
     ),
     Categories(
-        icon = Icons.Filled.Category
+        icon = Icons.Filled.Category,
+        bottomBar = true
     ),
     Recipes(
+        icon = Icons.Filled.Fastfood,
+        bottomBar = true
+    ),
+    Recipe(
         icon = Icons.Filled.Fastfood
     ),
     Search(
-        icon = Icons.Filled.Search
+        icon = Icons.Filled.Search,
+        bottomBar = true
     );
 
     companion object {
@@ -29,6 +37,7 @@ enum class NextcloudCookbookScreen(
                 Home.name -> Home
                 Categories.name -> Categories
                 Recipes.name -> Recipes
+                Recipe.name -> Recipe
                 Search.name -> Search
                 null -> Home
                 else -> throw IllegalArgumentException("Route $route is not recognized.")

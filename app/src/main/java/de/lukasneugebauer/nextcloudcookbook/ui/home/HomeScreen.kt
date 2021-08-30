@@ -11,8 +11,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 import de.lukasneugebauer.nextcloudcookbook.BuildConfig
+import de.lukasneugebauer.nextcloudcookbook.NextcloudCookbookScreen.Recipe
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.data.HomeScreenData
 import de.lukasneugebauer.nextcloudcookbook.ui.components.*
@@ -23,7 +25,7 @@ private const val TAG = "HomeScreen"
 
 @ExperimentalMaterialApi
 @Composable
-fun HomeScreen(viewModel: HomeViewModel) {
+fun HomeScreen(navController: NavHostController, viewModel: HomeViewModel) {
     val state = viewModel.state.value
     if (state.data.isEmpty()) {
         Loader()
@@ -46,7 +48,11 @@ fun HomeScreen(viewModel: HomeViewModel) {
                     }
                     is HomeScreenData.Row -> {
                         Headline(text = stringResource(id = data.headline, "CATEGORY"))
-                        RowContainer(data = data.recipes.map { RowContent(it.name, it.imageUrl) })
+                        RowContainer(data = data.recipes.map {
+                            RowContent(it.name, it.imageUrl) {
+                                navController.navigate("${Recipe.name}/${it.id}")
+                            }
+                        })
                     }
                     is HomeScreenData.Single -> {
                         Headline(text = stringResource(id = data.headline))

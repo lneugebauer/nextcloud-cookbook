@@ -3,7 +3,6 @@ package de.lukasneugebauer.nextcloudcookbook.ui
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
@@ -11,10 +10,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation.NavType
+import androidx.navigation.compose.*
 import dagger.hilt.android.AndroidEntryPoint
 import de.lukasneugebauer.nextcloudcookbook.NextcloudCookbookScreen
 import de.lukasneugebauer.nextcloudcookbook.NextcloudCookbookScreen.*
@@ -25,8 +22,10 @@ import de.lukasneugebauer.nextcloudcookbook.ui.components.BottomBar
 import de.lukasneugebauer.nextcloudcookbook.ui.components.TopBar
 import de.lukasneugebauer.nextcloudcookbook.ui.home.HomeScreen
 import de.lukasneugebauer.nextcloudcookbook.ui.home.HomeViewModel
-import de.lukasneugebauer.nextcloudcookbook.ui.recipies.RecipesScreen
-import de.lukasneugebauer.nextcloudcookbook.ui.recipies.RecipesViewModel
+import de.lukasneugebauer.nextcloudcookbook.ui.recipe.RecipeDetailViewModel
+import de.lukasneugebauer.nextcloudcookbook.ui.recipe.RecipeScreen
+import de.lukasneugebauer.nextcloudcookbook.ui.recipes.RecipesScreen
+import de.lukasneugebauer.nextcloudcookbook.ui.recipes.RecipesViewModel
 import de.lukasneugebauer.nextcloudcookbook.ui.search.SearchScreen
 import de.lukasneugebauer.nextcloudcookbook.ui.theme.NextcloudCookbookTheme
 import javax.inject.Inject
@@ -80,7 +79,7 @@ fun NextcloudCookbookNavHost(navController: NavHostController, modifier: Modifie
     NavHost(navController = navController, startDestination = Home.name, modifier = modifier) {
         composable(Home.name) {
             val homeViewModel = hiltViewModel<HomeViewModel>()
-            HomeScreen(homeViewModel)
+            HomeScreen(navController, homeViewModel)
         }
         composable(Categories.name) {
             val categoriesViewModel = hiltViewModel<CategoriesViewModel>()
@@ -88,7 +87,14 @@ fun NextcloudCookbookNavHost(navController: NavHostController, modifier: Modifie
         }
         composable(Recipes.name) {
             val recipesViewModel = hiltViewModel<RecipesViewModel>()
-            RecipesScreen(recipesViewModel)
+            RecipesScreen(navController, recipesViewModel)
+        }
+        composable(
+            route = "${Recipe.name}/{recipeId}",
+            arguments = listOf(navArgument("recipeId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val recipeDetailViewModel = hiltViewModel<RecipeDetailViewModel>()
+            RecipeScreen(recipeDetailViewModel, backStackEntry.arguments?.getInt("recipeId"))
         }
         composable(Search.name) {
             SearchScreen()

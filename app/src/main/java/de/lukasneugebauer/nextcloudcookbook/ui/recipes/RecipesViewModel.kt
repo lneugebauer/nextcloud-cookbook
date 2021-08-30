@@ -1,4 +1,4 @@
-package de.lukasneugebauer.nextcloudcookbook.ui.recipies
+package de.lukasneugebauer.nextcloudcookbook.ui.recipes
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State

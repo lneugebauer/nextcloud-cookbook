@@ -1,4 +1,4 @@
-package de.lukasneugebauer.nextcloudcookbook.ui.recipies
+package de.lukasneugebauer.nextcloudcookbook.ui.recipes
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -7,14 +7,17 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.dimensionResource
+import androidx.navigation.NavHostController
+import de.lukasneugebauer.nextcloudcookbook.NextcloudCookbookScreen
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.ui.components.CommonListItem
 import de.lukasneugebauer.nextcloudcookbook.ui.components.Loader
 
 @ExperimentalMaterialApi
 @Composable
-fun RecipesScreen(viewModel: RecipesViewModel) {
+fun RecipesScreen(navController: NavHostController, viewModel: RecipesViewModel) {
     val state = viewModel.state.value
+
     if (state.data.isEmpty()) {
         Loader()
     } else {
@@ -26,7 +29,9 @@ fun RecipesScreen(viewModel: RecipesViewModel) {
             verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_s))
         ) {
             items(state.data) {
-                CommonListItem(name = it.name, imageUrl = it.imageUrl) { /* On click */ }
+                CommonListItem(name = it.name, imageUrl = it.imageUrl) {
+                    navController.navigate("${NextcloudCookbookScreen.Recipe.name}/${it.id}")
+                }
             }
         }
     }

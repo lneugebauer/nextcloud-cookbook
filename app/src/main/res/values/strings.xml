@@ -5,4 +5,7 @@
     <string name="common_settings">Settings</string>
     <string name="home_category">Category: %1s</string>
     <string name="home_recommendation">Recommendation</string>
+    <string name="recipe_ingredients">Ingredients</string>
+    <string name="recipe_instructions">Instructions</string>
+    <string name="recipe_tools">Tools</string>
 </resources>
