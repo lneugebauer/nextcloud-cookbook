@@ -16,7 +16,7 @@ import coil.compose.rememberImagePainter
 import de.lukasneugebauer.nextcloudcookbook.BuildConfig
 import de.lukasneugebauer.nextcloudcookbook.NextcloudCookbookScreen.Recipe
 import de.lukasneugebauer.nextcloudcookbook.R
-import de.lukasneugebauer.nextcloudcookbook.data.HomeScreenData
+import de.lukasneugebauer.nextcloudcookbook.data.repositories.HomeScreenData
 import de.lukasneugebauer.nextcloudcookbook.ui.components.*
 import de.lukasneugebauer.nextcloudcookbook.utils.Logger
 import okhttp3.Credentials

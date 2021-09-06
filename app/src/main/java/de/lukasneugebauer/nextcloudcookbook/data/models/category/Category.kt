@@ -1,4 +1,4 @@
-package de.lukasneugebauer.nextcloudcookbook.data
+package de.lukasneugebauer.nextcloudcookbook.data.models.category
 
 data class CategoryNw(
     val name: String,

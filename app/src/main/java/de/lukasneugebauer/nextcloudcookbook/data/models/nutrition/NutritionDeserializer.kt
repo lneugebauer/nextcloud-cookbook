@@ -1,4 +1,4 @@
-package de.lukasneugebauer.nextcloudcookbook.data
+package de.lukasneugebauer.nextcloudcookbook.data.models.nutrition
 
 import com.google.gson.Gson
 import com.google.gson.JsonDeserializationContext

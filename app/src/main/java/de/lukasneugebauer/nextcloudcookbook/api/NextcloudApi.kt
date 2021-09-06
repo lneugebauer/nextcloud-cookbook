@@ -1,8 +1,8 @@
 package de.lukasneugebauer.nextcloudcookbook.api
 
-import de.lukasneugebauer.nextcloudcookbook.data.CategoryNw
-import de.lukasneugebauer.nextcloudcookbook.data.RecipeNw
-import de.lukasneugebauer.nextcloudcookbook.data.RecipePreviewNw
+import de.lukasneugebauer.nextcloudcookbook.data.models.category.CategoryNw
+import de.lukasneugebauer.nextcloudcookbook.data.models.recipe.RecipeNw
+import de.lukasneugebauer.nextcloudcookbook.data.models.recipe.RecipePreviewNw
 import retrofit2.http.GET
 import retrofit2.http.Path
 

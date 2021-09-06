@@ -1,8 +1,11 @@
-package de.lukasneugebauer.nextcloudcookbook.data
+package de.lukasneugebauer.nextcloudcookbook.data.repositories
 
 import androidx.annotation.StringRes
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.api.NextcloudApi
+import de.lukasneugebauer.nextcloudcookbook.data.models.category.Category
+import de.lukasneugebauer.nextcloudcookbook.data.models.recipe.Recipe
+import de.lukasneugebauer.nextcloudcookbook.data.models.recipe.RecipePreview
 import javax.inject.Inject
 
 class RecipeRepository @Inject constructor(

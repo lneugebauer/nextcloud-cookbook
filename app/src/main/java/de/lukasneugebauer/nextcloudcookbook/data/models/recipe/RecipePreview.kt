@@ -1,4 +1,4 @@
-package de.lukasneugebauer.nextcloudcookbook.data
+package de.lukasneugebauer.nextcloudcookbook.data.models.recipe
 
 import android.net.Uri
 import androidx.core.net.toUri
