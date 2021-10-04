@@ -1,4 +1,6 @@
-package de.lukasneugebauer.nextcloudcookbook.data.models.nutrition
+package de.lukasneugebauer.nextcloudcookbook.data.model
+
+import de.lukasneugebauer.nextcloudcookbook.domain.model.Nutrition
 
 data class NutritionNw(
     val calories: String?,
@@ -29,18 +31,3 @@ data class NutritionNw(
         unsaturatedFatContent = unsaturatedFatContent,
     )
 }
-
-data class Nutrition(
-    val calories: String?,
-    val carbohydrateContent: String?,
-    val cholesterolContent: String?,
-    val fatContent: String?,
-    val fiberContent: String?,
-    val proteinContent: String?,
-    val saturatedFatContent: String?,
-    val servingSize: String?,
-    val sodiumContent: String?,
-    val sugarContent: String?,
-    val transFatContent: String?,
-    val unsaturatedFatContent: String?,
-)

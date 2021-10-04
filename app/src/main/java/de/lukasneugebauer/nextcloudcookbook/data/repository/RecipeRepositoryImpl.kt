@@ -1,29 +1,30 @@
-package de.lukasneugebauer.nextcloudcookbook.data.repositories
+package de.lukasneugebauer.nextcloudcookbook.data.repository
 
 import androidx.annotation.StringRes
 import de.lukasneugebauer.nextcloudcookbook.R
-import de.lukasneugebauer.nextcloudcookbook.api.NextcloudApi
-import de.lukasneugebauer.nextcloudcookbook.data.models.category.Category
-import de.lukasneugebauer.nextcloudcookbook.data.models.recipe.Recipe
-import de.lukasneugebauer.nextcloudcookbook.data.models.recipe.RecipePreview
+import de.lukasneugebauer.nextcloudcookbook.api.NcCookbookApi
+import de.lukasneugebauer.nextcloudcookbook.domain.model.Category
+import de.lukasneugebauer.nextcloudcookbook.domain.model.Recipe
+import de.lukasneugebauer.nextcloudcookbook.domain.model.RecipePreview
+import de.lukasneugebauer.nextcloudcookbook.domain.repository.RecipeRepository
 import javax.inject.Inject
 
-class RecipeRepository @Inject constructor(
-    private val nextcloudApi: NextcloudApi
-) {
+class RecipeRepositoryImpl @Inject constructor(
+    private val ncCookbookApi: NcCookbookApi
+) : RecipeRepository {
 
-    suspend fun getCategories(): List<Category> =
-        nextcloudApi.getCategories().map { it.toCategory() }
+    override suspend fun getCategories(): List<Category> =
+        ncCookbookApi.getCategories().map { it.toCategory() }
 
-    suspend fun getRecipes(): List<RecipePreview> =
-        nextcloudApi.getRecipes().map { it.toRecipePreview() }
+    override suspend fun getRecipes(): List<RecipePreview> =
+        ncCookbookApi.getRecipes().map { it.toRecipePreview() }
 
-    suspend fun getRecipesByCategory(category: String): List<RecipePreview> =
-        nextcloudApi.getRecipesByCategory(category).map { it.toRecipePreview() }
+    override suspend fun getRecipesByCategory(category: String): List<RecipePreview> =
+        ncCookbookApi.getRecipesByCategory(category).map { it.toRecipePreview() }
 
-    suspend fun getRecipe(id: Int): Recipe = nextcloudApi.getRecipe(id).toRecipe()
+    override suspend fun getRecipe(id: Int): Recipe = ncCookbookApi.getRecipe(id).toRecipe()
 
-    suspend fun getHomeScreenData(): List<HomeScreenData> {
+    override suspend fun getHomeScreenData(): List<HomeScreenData> {
         val data = mutableListOf<HomeScreenData>()
 
         val recipes = getRecipes()

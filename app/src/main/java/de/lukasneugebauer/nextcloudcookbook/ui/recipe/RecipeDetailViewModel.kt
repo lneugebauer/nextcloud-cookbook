@@ -6,8 +6,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import de.lukasneugebauer.nextcloudcookbook.data.models.recipe.Recipe
-import de.lukasneugebauer.nextcloudcookbook.data.repositories.RecipeRepository
+import de.lukasneugebauer.nextcloudcookbook.domain.model.Recipe
+import de.lukasneugebauer.nextcloudcookbook.domain.repository.RecipeRepository
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

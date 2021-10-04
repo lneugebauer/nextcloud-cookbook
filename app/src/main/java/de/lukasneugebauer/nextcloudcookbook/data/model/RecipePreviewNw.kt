@@ -1,8 +1,8 @@
-package de.lukasneugebauer.nextcloudcookbook.data.models.recipe
+package de.lukasneugebauer.nextcloudcookbook.data.model
 
-import android.net.Uri
 import androidx.core.net.toUri
 import de.lukasneugebauer.nextcloudcookbook.BuildConfig
+import de.lukasneugebauer.nextcloudcookbook.domain.model.RecipePreview
 
 data class RecipePreviewNw(
     val recipe_id: String,
@@ -22,13 +22,3 @@ data class RecipePreviewNw(
         modifiedAt = dateModified,
     )
 }
-
-data class RecipePreview(
-    val id: Int,
-    val name: String,
-    val keywords: List<String>,
-    val imageUrl: Uri,
-    // TODO: 19.08.21 Change createdAt and modifiedAt to date fields.
-    val createdAt: String,
-    val modifiedAt: String,
-)

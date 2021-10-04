@@ -9,10 +9,12 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import de.lukasneugebauer.nextcloudcookbook.BuildConfig
 import de.lukasneugebauer.nextcloudcookbook.api.BasicAuthInterceptor
-import de.lukasneugebauer.nextcloudcookbook.api.NextcloudApi
-import de.lukasneugebauer.nextcloudcookbook.data.models.nutrition.NutritionDeserializer
-import de.lukasneugebauer.nextcloudcookbook.data.models.nutrition.NutritionNw
+import de.lukasneugebauer.nextcloudcookbook.api.NcCookbookApi
 import de.lukasneugebauer.nextcloudcookbook.data.PreferencesManager
+import de.lukasneugebauer.nextcloudcookbook.data.deserializer.NutritionDeserializer
+import de.lukasneugebauer.nextcloudcookbook.data.model.NutritionNw
+import de.lukasneugebauer.nextcloudcookbook.data.repository.RecipeRepositoryImpl
+import de.lukasneugebauer.nextcloudcookbook.domain.repository.RecipeRepository
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -55,8 +57,13 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideRestaurantApi(retrofit: Retrofit): NextcloudApi =
-        retrofit.create(NextcloudApi::class.java)
+    fun provideNcCookbookApi(retrofit: Retrofit): NcCookbookApi =
+        retrofit.create(NcCookbookApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideRecipeRepository(ncCookbookApi: NcCookbookApi): RecipeRepository =
+        RecipeRepositoryImpl(ncCookbookApi)
 
     @Provides
     @Singleton
