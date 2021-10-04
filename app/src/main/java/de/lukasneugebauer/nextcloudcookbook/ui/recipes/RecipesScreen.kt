@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.dimensionResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import de.lukasneugebauer.nextcloudcookbook.NextcloudCookbookScreen
 import de.lukasneugebauer.nextcloudcookbook.R
@@ -15,7 +16,10 @@ import de.lukasneugebauer.nextcloudcookbook.ui.components.Loader
 
 @ExperimentalMaterialApi
 @Composable
-fun RecipesScreen(navController: NavHostController, viewModel: RecipesViewModel) {
+fun RecipesScreen(
+    navController: NavHostController,
+    viewModel: RecipesViewModel = hiltViewModel()
+) {
     val state = viewModel.state.value
 
     if (state.data.isEmpty()) {

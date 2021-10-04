@@ -15,12 +15,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.ui.components.AuthorizedImage
 import de.lukasneugebauer.nextcloudcookbook.ui.components.Loader
 
 @Composable
-fun RecipeScreen(viewModel: RecipeDetailViewModel, recipeId: Int?) {
+fun RecipeScreen(
+    recipeId: Int?,
+    viewModel: RecipeDetailViewModel = hiltViewModel()
+) {
     when (val state = viewModel.state.value) {
         is RecipeDetailScreenState.Initial -> {
             if (recipeId == null) {

@@ -7,13 +7,16 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.dimensionResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.ui.components.CommonListItem
 import de.lukasneugebauer.nextcloudcookbook.ui.components.Loader
 
 @ExperimentalMaterialApi
 @Composable
-fun CategoriesScreen(viewModel: CategoriesViewModel) {
+fun CategoriesScreen(
+    viewModel: CategoriesViewModel = hiltViewModel()
+) {
     val state = viewModel.state.value
     if (state.data.isEmpty()) {
         Loader()

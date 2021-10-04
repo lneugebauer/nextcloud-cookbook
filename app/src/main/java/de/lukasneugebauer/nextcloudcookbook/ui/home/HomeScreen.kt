@@ -1,7 +1,6 @@
 package de.lukasneugebauer.nextcloudcookbook.ui.home
 
 import android.net.Uri
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -11,21 +10,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import coil.compose.rememberImagePainter
-import de.lukasneugebauer.nextcloudcookbook.BuildConfig
 import de.lukasneugebauer.nextcloudcookbook.NextcloudCookbookScreen.Recipe
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.data.repository.HomeScreenData
 import de.lukasneugebauer.nextcloudcookbook.ui.components.*
 import de.lukasneugebauer.nextcloudcookbook.utils.Logger
-import okhttp3.Credentials
 
 private const val TAG = "HomeScreen"
 
 @ExperimentalMaterialApi
 @Composable
-fun HomeScreen(navController: NavHostController, viewModel: HomeViewModel) {
+fun HomeScreen(
+    navController: NavHostController,
+    viewModel: HomeViewModel = hiltViewModel()
+) {
     val state = viewModel.state.value
     if (state.data.isEmpty()) {
         Loader()
