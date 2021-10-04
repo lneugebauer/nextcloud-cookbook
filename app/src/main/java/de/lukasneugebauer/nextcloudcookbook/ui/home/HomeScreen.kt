@@ -72,17 +72,8 @@ fun SingleItem(name: String, imageUrl: Uri) {
             .padding(bottom = dimensionResource(id = R.dimen.padding_l))
     ) {
         Column {
-            Image(
-                painter = rememberImagePainter(
-                    data = imageUrl,
-                    builder = {
-                        val credentials = Credentials.basic(
-                            BuildConfig.NC_USERNAME,
-                            BuildConfig.NC_APP_PASSWORD
-                        )
-                        addHeader("Authorization", credentials)
-                        crossfade(750)
-                    }),
+            AuthorizedImage(
+                imageUrl = imageUrl,
                 contentDescription = name,
                 modifier = Modifier
                     .aspectRatio(16f / 9f)
