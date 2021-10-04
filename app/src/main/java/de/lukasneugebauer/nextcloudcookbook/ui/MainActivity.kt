@@ -11,8 +11,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
-import androidx.navigation.compose.*
-import com.google.gson.GsonBuilder
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.nextcloud.android.sso.AccountImporter
 import com.nextcloud.android.sso.AccountImporter.IAccountAccessGranted
 import com.nextcloud.android.sso.api.NextcloudAPI
@@ -32,8 +35,8 @@ import de.lukasneugebauer.nextcloudcookbook.ui.categories.CategoriesScreen
 import de.lukasneugebauer.nextcloudcookbook.ui.components.BottomBar
 import de.lukasneugebauer.nextcloudcookbook.ui.components.TopBar
 import de.lukasneugebauer.nextcloudcookbook.ui.home.HomeScreen
-import de.lukasneugebauer.nextcloudcookbook.ui.home.HomeViewModel
-import de.lukasneugebauer.nextcloudcookbook.ui.recipe.RecipeDetailViewModel
+import de.lukasneugebauer.nextcloudcookbook.ui.launch.LaunchScreen
+import de.lukasneugebauer.nextcloudcookbook.ui.login.LoginScreen
 import de.lukasneugebauer.nextcloudcookbook.ui.recipe.RecipeScreen
 import de.lukasneugebauer.nextcloudcookbook.ui.recipes.RecipesScreen
 import de.lukasneugebauer.nextcloudcookbook.ui.search.SearchScreen
@@ -178,7 +181,13 @@ fun NextcloudCookbookApp() {
 @ExperimentalMaterialApi
 @Composable
 fun NextcloudCookbookNavHost(navController: NavHostController, modifier: Modifier) {
-    NavHost(navController = navController, startDestination = Home.name, modifier = modifier) {
+    NavHost(navController = navController, startDestination = Launch.name, modifier = modifier) {
+        composable(Launch.name) {
+            LaunchScreen(navController)
+        }
+        composable(Login.name) {
+            LoginScreen()
+        }
         composable(Home.name) {
             HomeScreen(navController)
         }

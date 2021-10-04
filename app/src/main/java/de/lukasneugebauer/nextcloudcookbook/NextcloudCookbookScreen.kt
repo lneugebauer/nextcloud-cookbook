@@ -11,6 +11,12 @@ enum class NextcloudCookbookScreen(
     val icon: ImageVector,
     val bottomBar: Boolean = false
 ) {
+    Launch(
+        icon = Icons.Filled.Home,
+    ),
+    Login(
+        icon = Icons.Filled.Home,
+    ),
     Home(
         icon = Icons.Filled.Home,
         bottomBar = true
@@ -34,6 +40,8 @@ enum class NextcloudCookbookScreen(
     companion object {
         fun fromRoute(route: String?): NextcloudCookbookScreen =
             when (route?.substringBefore("/")) {
+                Launch.name -> Launch
+                Login.name -> Login
                 Home.name -> Home
                 Categories.name -> Categories
                 Recipes.name -> Recipes
