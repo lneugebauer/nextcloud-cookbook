@@ -1,25 +1,25 @@
 package de.lukasneugebauer.nextcloudcookbook.api
 
-import de.lukasneugebauer.nextcloudcookbook.data.CategoryNw
-import de.lukasneugebauer.nextcloudcookbook.data.RecipeNw
-import de.lukasneugebauer.nextcloudcookbook.data.RecipePreviewNw
+import de.lukasneugebauer.nextcloudcookbook.data.model.CategoryNw
+import de.lukasneugebauer.nextcloudcookbook.data.model.RecipeNw
+import de.lukasneugebauer.nextcloudcookbook.data.model.RecipePreviewNw
 import retrofit2.http.GET
 import retrofit2.http.Path
 
-interface NextcloudApi {
+interface NcCookbookApi {
 
-    @GET("/apps/cookbook/categories")
+    @GET("categories")
     suspend fun getCategories(): List<CategoryNw>
 
-    @GET("/apps/cookbook/api/recipes")
+    @GET("api/recipes")
     suspend fun getRecipes(): List<RecipePreviewNw>
 
-    @GET("/apps/cookbook/api/category/{category}")
+    @GET("api/category/{category}")
     suspend fun getRecipesByCategory(@Path("category") category: String): List<RecipePreviewNw>
 
-    @GET("/apps/cookbook/api/recipes/{id}")
+    @GET("api/recipes/{id}")
     suspend fun getRecipe(@Path("id") id: Int): RecipeNw
 
-    @GET("/apps/cookbook/api/search/{query}")
+    @GET("api/search/{query}")
     suspend fun search(@Path("query") query: String): List<RecipePreviewNw>
 }

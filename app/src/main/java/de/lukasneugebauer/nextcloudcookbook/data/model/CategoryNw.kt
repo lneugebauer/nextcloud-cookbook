@@ -1,4 +1,6 @@
-package de.lukasneugebauer.nextcloudcookbook.data
+package de.lukasneugebauer.nextcloudcookbook.data.model
+
+import de.lukasneugebauer.nextcloudcookbook.domain.model.Category
 
 data class CategoryNw(
     val name: String,
@@ -9,8 +11,3 @@ data class CategoryNw(
         recipeCount = recipe_count,
     )
 }
-
-data class Category(
-    val name: String,
-    val recipeCount: Int,
-)

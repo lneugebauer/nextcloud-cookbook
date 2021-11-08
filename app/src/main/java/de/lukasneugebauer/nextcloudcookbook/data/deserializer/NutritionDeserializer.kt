@@ -1,10 +1,11 @@
-package de.lukasneugebauer.nextcloudcookbook.data
+package de.lukasneugebauer.nextcloudcookbook.data.deserializer
 
 import com.google.gson.Gson
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
 import com.google.gson.stream.JsonToken
+import de.lukasneugebauer.nextcloudcookbook.data.model.NutritionNw
 import java.io.StringReader
 import java.lang.reflect.Type
 
