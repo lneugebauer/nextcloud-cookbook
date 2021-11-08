@@ -1,13 +1,11 @@
 package de.lukasneugebauer.nextcloudcookbook.domain.model
 
-import android.net.Uri
-
 data class Recipe(
     val id: Int,
     val name: String,
     val description: String,
     val url: String,
-    val imageUrl: Uri,
+    val imageUrl: String,
     val category: String,
     val keywords: List<String>,
     val yield: Int,

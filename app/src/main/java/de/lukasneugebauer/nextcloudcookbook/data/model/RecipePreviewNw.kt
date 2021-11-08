@@ -1,7 +1,5 @@
 package de.lukasneugebauer.nextcloudcookbook.data.model
 
-import androidx.core.net.toUri
-import de.lukasneugebauer.nextcloudcookbook.BuildConfig
 import de.lukasneugebauer.nextcloudcookbook.domain.model.RecipePreview
 
 data class RecipePreviewNw(
@@ -17,7 +15,7 @@ data class RecipePreviewNw(
         id = recipe_id.toInt(),
         name = name,
         keywords = keywords?.split(",") ?: emptyList(),
-        imageUrl = (BuildConfig.NC_BASE_URL + imageUrl).toUri(),
+        imageUrl = imageUrl,
         createdAt = dateCreated,
         modifiedAt = dateModified,
     )

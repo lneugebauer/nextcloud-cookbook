@@ -6,31 +6,31 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import de.lukasneugebauer.nextcloudcookbook.data.PreferencesManager
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
+import de.lukasneugebauer.nextcloudcookbook.domain.repository.AccountRepository
+import de.lukasneugebauer.nextcloudcookbook.utils.Resource
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class LaunchViewModel @Inject constructor(
-    preferencesManager: PreferencesManager
+    accountRepository: AccountRepository
 ) : ViewModel() {
 
     private val _state: MutableState<LaunchScreenState> = mutableStateOf(LaunchScreenState.Initial)
     val state: State<LaunchScreenState> = _state
 
     init {
-        preferencesManager.preferencesFlow.map { it.nextcloudAccount }.onEach { ncAccount ->
-            if (ncAccount.username.isNotEmpty() &&
-                ncAccount.token.isNotEmpty() &&
-                ncAccount.url.isNotEmpty()
-            ) {
-                _state.value = LaunchScreenState.Loaded(true)
-            } else {
-                _state.value = LaunchScreenState.Loaded(false)
+        viewModelScope.launch {
+            accountRepository.getAccount().collect {
+                when (it) {
+                    is Resource.Success -> _state.value =
+                        LaunchScreenState.Loaded(authenticated = true)
+                    is Resource.Error -> _state.value =
+                        LaunchScreenState.Loaded(authenticated = false)
+                }
             }
-        }.launchIn(viewModelScope)
+        }
     }
 }
 

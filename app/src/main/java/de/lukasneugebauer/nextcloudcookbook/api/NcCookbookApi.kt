@@ -8,18 +8,18 @@ import retrofit2.http.Path
 
 interface NcCookbookApi {
 
-    @GET("/apps/cookbook/categories")
+    @GET("categories")
     suspend fun getCategories(): List<CategoryNw>
 
-    @GET("/apps/cookbook/api/recipes")
+    @GET("api/recipes")
     suspend fun getRecipes(): List<RecipePreviewNw>
 
-    @GET("/apps/cookbook/api/category/{category}")
+    @GET("api/category/{category}")
     suspend fun getRecipesByCategory(@Path("category") category: String): List<RecipePreviewNw>
 
-    @GET("/apps/cookbook/api/recipes/{id}")
+    @GET("api/recipes/{id}")
     suspend fun getRecipe(@Path("id") id: Int): RecipeNw
 
-    @GET("/apps/cookbook/api/search/{query}")
+    @GET("api/search/{query}")
     suspend fun search(@Path("query") query: String): List<RecipePreviewNw>
 }

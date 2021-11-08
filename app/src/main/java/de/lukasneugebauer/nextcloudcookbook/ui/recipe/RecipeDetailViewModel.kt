@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.lukasneugebauer.nextcloudcookbook.domain.model.Recipe
 import de.lukasneugebauer.nextcloudcookbook.domain.repository.RecipeRepository
+import de.lukasneugebauer.nextcloudcookbook.utils.Resource
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,7 +23,14 @@ class RecipeDetailViewModel @Inject constructor(
 
     fun getRecipe(id: Int) {
         viewModelScope.launch {
-            _state.value = RecipeDetailScreenState.Loaded(data = recipeRepository.getRecipe(id))
+            when (val recipeResource = recipeRepository.getRecipe(id)) {
+                is Resource.Success -> {
+                    if (recipeResource.data != null) {
+                        _state.value = RecipeDetailScreenState.Loaded(data = recipeResource.data)
+                    }
+                }
+                is Resource.Error -> TODO("recipe resource error")
+            }
         }
     }
 }

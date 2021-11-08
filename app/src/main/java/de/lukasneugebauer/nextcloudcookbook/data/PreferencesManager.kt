@@ -2,17 +2,15 @@ package de.lukasneugebauer.nextcloudcookbook.data
 
 import android.content.Context
 import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.emptyPreferences
-import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import de.lukasneugebauer.nextcloudcookbook.utils.Logger
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import java.io.IOException
 
-data class NextcloudAccount(
+data class NcAccount(
     val name: String,
     val username: String,
     val token: String,
@@ -20,7 +18,8 @@ data class NextcloudAccount(
 )
 
 data class Preferences(
-    val nextcloudAccount: NextcloudAccount
+    val ncAccount: NcAccount,
+    val useSingleSignOn: Boolean
 )
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "app")
@@ -32,6 +31,7 @@ class PreferencesManager(private val context: Context) {
         val NC_USERNAME = stringPreferencesKey("nc_username")
         val NC_TOKEN = stringPreferencesKey("nc_token")
         val NC_URL = stringPreferencesKey("nc_url")
+        val USE_SINGLE_SIGN_ON = booleanPreferencesKey("use_single_sign_on")
     }
 
     val preferencesFlow = context.dataStore.data
@@ -47,23 +47,30 @@ class PreferencesManager(private val context: Context) {
             val ncName = preferences[PreferencesKeys.NC_NAME] ?: ""
             val ncUsername = preferences[PreferencesKeys.NC_USERNAME] ?: ""
             val ncToken = preferences[PreferencesKeys.NC_TOKEN] ?: ""
-            val ncUrl = preferences[PreferencesKeys.NC_TOKEN] ?: ""
+            val ncUrl = preferences[PreferencesKeys.NC_URL] ?: ""
+            val useSingleSignOn = preferences[PreferencesKeys.USE_SINGLE_SIGN_ON] ?: false
 
             Preferences(
-                nextcloudAccount = NextcloudAccount(
+                ncAccount = NcAccount(
                     name = ncName,
                     username = ncUsername,
                     token = ncToken,
                     url = ncUrl
-                )
+                ),
+                useSingleSignOn = useSingleSignOn
             )
         }
 
-    suspend fun updateNextcloudAccount(nextcloudAccount: NextcloudAccount) =
+    suspend fun updateNextcloudAccount(ncAccount: NcAccount) =
         context.dataStore.edit { preferences ->
-            preferences[PreferencesKeys.NC_NAME] = nextcloudAccount.name
-            preferences[PreferencesKeys.NC_USERNAME] = nextcloudAccount.username
-            preferences[PreferencesKeys.NC_TOKEN] = nextcloudAccount.token
-            preferences[PreferencesKeys.NC_URL] = nextcloudAccount.url
+            preferences[PreferencesKeys.NC_NAME] = ncAccount.name
+            preferences[PreferencesKeys.NC_USERNAME] = ncAccount.username
+            preferences[PreferencesKeys.NC_TOKEN] = ncAccount.token
+            preferences[PreferencesKeys.NC_URL] = ncAccount.url
+        }
+
+    suspend fun updateUseSingleSignOn(useSingleSignOn: Boolean) =
+        context.dataStore.edit { preferences ->
+            preferences[PreferencesKeys.USE_SINGLE_SIGN_ON] = useSingleSignOn
         }
 }

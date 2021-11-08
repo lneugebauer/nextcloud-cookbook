@@ -19,7 +19,12 @@ private const val TAG = "Common"
 
 @ExperimentalMaterialApi
 @Composable
-fun CommonItem(name: String, imageUrl: Uri, width: Dp, onClick: () -> Unit) {
+fun CommonItem(
+    name: String,
+    imageUrl: String,
+    width: Dp,
+    onClick: () -> Unit
+) {
     Card(
         onClick = onClick,
         modifier = Modifier.width(width)
@@ -71,7 +76,12 @@ fun CommonItemBody(name: String, modifier: Modifier, onClick: () -> Unit) {
 
 @ExperimentalMaterialApi
 @Composable
-fun CommonListItem(name: String, modifier: Modifier = Modifier, imageUrl: Uri? = null, onClick: () -> Unit) {
+fun CommonListItem(
+    name: String,
+    modifier: Modifier = Modifier,
+    imageUrl: String? = null,
+    onClick: () -> Unit
+) {
     Card(onClick = onClick, modifier = modifier) {
         Row(modifier = Modifier.fillMaxWidth()) {
             if (imageUrl != null) {

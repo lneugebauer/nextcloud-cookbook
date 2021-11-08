@@ -33,8 +33,7 @@ enum class NextcloudCookbookScreen(
         icon = Icons.Filled.Fastfood
     ),
     Search(
-        icon = Icons.Filled.Search,
-        bottomBar = true
+        icon = Icons.Filled.Search
     );
 
     companion object {

@@ -1,6 +1,5 @@
 package de.lukasneugebauer.nextcloudcookbook.ui.components
 
-import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -14,7 +13,7 @@ import de.lukasneugebauer.nextcloudcookbook.R
 
 data class RowContent(
     val name: String,
-    val imageUrl: Uri,
+    val imageUrl: String,
     val onClick: () -> Unit
 )
 
@@ -34,7 +33,7 @@ fun RowContainer(data: List<RowContent>) {
 
 @ExperimentalMaterialApi
 @Composable
-fun RowItem(name: String, imageUrl: Uri, onClick: () -> Unit) {
+fun RowItem(name: String, imageUrl: String, onClick: () -> Unit) {
     CommonItem(
         name = name,
         imageUrl = imageUrl,

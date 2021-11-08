@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
@@ -17,23 +18,18 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.nextcloud.android.sso.AccountImporter
-import com.nextcloud.android.sso.AccountImporter.IAccountAccessGranted
-import com.nextcloud.android.sso.api.NextcloudAPI
 import com.nextcloud.android.sso.api.NextcloudAPI.ApiConnectedListener
 import com.nextcloud.android.sso.exceptions.AndroidGetAccountsPermissionNotGranted
-import com.nextcloud.android.sso.exceptions.NextcloudFilesAppAccountNotFoundException
 import com.nextcloud.android.sso.exceptions.NextcloudFilesAppNotInstalledException
-import com.nextcloud.android.sso.exceptions.NoCurrentAccountSelectedException
 import com.nextcloud.android.sso.helper.SingleAccountHelper
-import com.nextcloud.android.sso.model.SingleSignOnAccount
 import com.nextcloud.android.sso.ui.UiExceptionManager
 import dagger.hilt.android.AndroidEntryPoint
 import de.lukasneugebauer.nextcloudcookbook.NextcloudCookbookScreen
 import de.lukasneugebauer.nextcloudcookbook.NextcloudCookbookScreen.*
 import de.lukasneugebauer.nextcloudcookbook.data.PreferencesManager
+import de.lukasneugebauer.nextcloudcookbook.di.ApiProvider
 import de.lukasneugebauer.nextcloudcookbook.ui.categories.CategoriesScreen
 import de.lukasneugebauer.nextcloudcookbook.ui.components.BottomBar
-import de.lukasneugebauer.nextcloudcookbook.ui.components.TopBar
 import de.lukasneugebauer.nextcloudcookbook.ui.home.HomeScreen
 import de.lukasneugebauer.nextcloudcookbook.ui.launch.LaunchScreen
 import de.lukasneugebauer.nextcloudcookbook.ui.login.LoginScreen
@@ -42,13 +38,7 @@ import de.lukasneugebauer.nextcloudcookbook.ui.recipes.RecipesScreen
 import de.lukasneugebauer.nextcloudcookbook.ui.search.SearchScreen
 import de.lukasneugebauer.nextcloudcookbook.ui.theme.NextcloudCookbookTheme
 import de.lukasneugebauer.nextcloudcookbook.utils.Logger
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
-
-private const val TAG = "MainActivity"
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -56,78 +46,42 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var preferencesManager: PreferencesManager
 
+    @Inject
+    lateinit var api: ApiProvider
+    private val viewModel: MainViewModel by viewModels()
+
     @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        lifecycleScope.launchWhenStarted {
-            preferencesManager.preferencesFlow.distinctUntilChanged().collect { preferences ->
-                Logger.d("preferences: $preferences", TAG)
-                val nextcloudAccount = preferences.nextcloudAccount
-                if (nextcloudAccount.name == "" || nextcloudAccount.username == "" || nextcloudAccount.token == "" || nextcloudAccount.url == "") {
-                    openAccountChooser()
-                }
-            }
-        }
-
         setContent {
-            NextcloudCookbookApp()
+            NextcloudCookbookApp(onSsoClick = {
+                openAccountChooser()
+            })
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        AccountImporter.onActivityResult(
-            requestCode,
-            resultCode,
-            data,
-            this,
-            object : IAccountAccessGranted {
-                var callback: ApiConnectedListener = object : ApiConnectedListener {
-                    override fun onConnected() {
-                        // ignore this one… see 5)
-                    }
+        try {
+            AccountImporter.onActivityResult(
+                requestCode,
+                resultCode,
+                data,
+                this
+            ) { ssoAccount ->
+                viewModel.storeNcSingleSignOnAccount(ssoAccount)
 
-                    override fun onError(ex: Exception) {
-                        // TODO handle errors
-                    }
-                }
+                SingleAccountHelper.setCurrentAccount(applicationContext, ssoAccount.name)
 
-                override fun accountAccessGranted(account: SingleSignOnAccount) {
-                    // As this library supports multiple accounts we created some helper methods if you only want to use one.
-                    // The following line stores the selected account as the "default" account which can be queried by using
-                    // the SingleAccountHelper.getCurrentSingleSignOnAccount(context) method
-                    SingleAccountHelper.setCurrentAccount(applicationContext, account.name)
-
-                    // Get the "default" account
-                    var ssoAccount: SingleSignOnAccount? = null
-                    try {
-                        ssoAccount =
-                            SingleAccountHelper.getCurrentSingleSignOnAccount(applicationContext)
-                    } catch (e: NextcloudFilesAppAccountNotFoundException) {
-                        UiExceptionManager.showDialogForException(applicationContext, e)
-                    } catch (e: NoCurrentAccountSelectedException) {
-                        UiExceptionManager.showDialogForException(applicationContext, e)
-                    }
-                    val nextcloudAPI = NextcloudAPI(
-                        applicationContext,
-                        ssoAccount!!, GsonBuilder().create(), callback
-                    )
-
-                    // TODO … (see code in section 4 and below)
-                    Logger.d("name: ${ssoAccount.name}, username: ${ssoAccount.userId}, token: ${ssoAccount.token}, url: ${ssoAccount.url}", TAG)
-
-                    lifecycleScope.launchWhenStarted {
-                        val nextcloudAccount = NextcloudAccount(
-                            name = ssoAccount.name,
-                            username = ssoAccount.userId,
-                            token = ssoAccount.token,
-                            url = ssoAccount.url
-                        )
-                        preferencesManager.updateNextcloudAccount(nextcloudAccount)
-                    }
-                }
-            })
+                api.initApi(object : ApiConnectedListener {
+                    override fun onConnected() {}
+                    override fun onError(ex: java.lang.Exception) {}
+                })
+            }
+        } catch (e: Exception) {
+            Logger.e("${e.message}")
+        }
     }
 
     override fun onRequestPermissionsResult(
@@ -152,7 +106,7 @@ class MainActivity : ComponentActivity() {
 
 @ExperimentalMaterialApi
 @Composable
-fun NextcloudCookbookApp() {
+fun NextcloudCookbookApp(onSsoClick: () -> Unit) {
     NextcloudCookbookTheme {
         val allScreens = values().toList()
         val navController = rememberNavController()
@@ -161,18 +115,20 @@ fun NextcloudCookbookApp() {
             NextcloudCookbookScreen.fromRoute(backstackEntry.value?.destination?.route)
 
         Scaffold(
-            topBar = { TopBar(currentScreen = currentScreen) },
             bottomBar = {
-                BottomBar(
-                    allScreens = allScreens,
-                    navController = navController,
-                    currentScreen = currentScreen
-                )
+                if (currentScreen != Launch && currentScreen != Login) {
+                    BottomBar(
+                        allScreens = allScreens,
+                        navController = navController,
+                        currentScreen = currentScreen
+                    )
+                }
             }
         ) { innerPadding ->
             NextcloudCookbookNavHost(
                 navController = navController,
-                modifier = Modifier.padding(innerPadding)
+                modifier = Modifier.padding(paddingValues = innerPadding),
+                onSsoClick = onSsoClick
             )
         }
     }
@@ -180,13 +136,17 @@ fun NextcloudCookbookApp() {
 
 @ExperimentalMaterialApi
 @Composable
-fun NextcloudCookbookNavHost(navController: NavHostController, modifier: Modifier) {
+fun NextcloudCookbookNavHost(
+    navController: NavHostController,
+    modifier: Modifier,
+    onSsoClick: () -> Unit
+) {
     NavHost(navController = navController, startDestination = Launch.name, modifier = modifier) {
         composable(Launch.name) {
             LaunchScreen(navController)
         }
         composable(Login.name) {
-            LoginScreen()
+            LoginScreen(navController, onSsoClick)
         }
         composable(Home.name) {
             HomeScreen(navController)
@@ -201,7 +161,10 @@ fun NextcloudCookbookNavHost(navController: NavHostController, modifier: Modifie
             route = "${Recipe.name}/{recipeId}",
             arguments = listOf(navArgument("recipeId") { type = NavType.IntType })
         ) { backStackEntry ->
-            RecipeScreen(backStackEntry.arguments?.getInt("recipeId"))
+            RecipeScreen(
+                navController = navController,
+                backStackEntry.arguments?.getInt("recipeId")
+            )
         }
         composable(Search.name) {
             SearchScreen()
