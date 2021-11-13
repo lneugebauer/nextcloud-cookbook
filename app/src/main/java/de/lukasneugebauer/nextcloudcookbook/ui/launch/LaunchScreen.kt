@@ -27,13 +27,12 @@ fun LaunchScreen(
     val state = viewModel.state.value
 
     LaunchedEffect(key1 = state) {
-        if (state is LaunchScreenState.Loaded) {
-            if (state.authenticated) {
-                // TODO: 04.10.21 Load (and cache) recipes initially
-                navController.navigate(NextcloudCookbookScreen.Home.name)
-            } else {
-                navController.navigate(NextcloudCookbookScreen.Login.name)
-            }
+        if (state.authorized == true) {
+            // TODO: 04.10.21 Load (and cache) recipes initially
+            navController.navigate(NextcloudCookbookScreen.Home.name)
+        }
+        if (state.authorized == false) {
+            navController.navigate(NextcloudCookbookScreen.Login.name)
         }
     }
 

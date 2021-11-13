@@ -39,11 +39,6 @@ fun LoginScreen(
 ) {
     var openSsoWarningDialog by rememberSaveable { mutableStateOf(false) }
     var manualLogin: Boolean by rememberSaveable { mutableStateOf(false) }
-    val focusManager = LocalFocusManager.current
-    var username: String by rememberSaveable { mutableStateOf("") }
-    var password: String by rememberSaveable { mutableStateOf("") }
-    var passwordVisibility by rememberSaveable { mutableStateOf(false) }
-    var url: String by rememberSaveable { mutableStateOf("") }
     val state = viewModel.state.value
 
     LaunchedEffect(key1 = state) {
@@ -87,94 +82,7 @@ fun LoginScreen(
             Text(text = "Manual login")
         }
         if (manualLogin) {
-            Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_s)))
-            DefaultOutlinedTextField(
-                value = username,
-                onValueChange = { username = it },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
-                label = {
-                    Text(
-                        text = "Username",
-                        color = Color.White
-                    )
-                },
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Next
-                ),
-                keyboardActions = KeyboardActions(
-                    onNext = {
-                        focusManager.moveFocus(FocusDirection.Down)
-                    }
-                )
-            )
-            Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_s)))
-            DefaultOutlinedTextField(
-                value = password,
-                onValueChange = { password = it },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
-                label = {
-                    Text(
-                        text = "Password",
-                        color = Color.White
-                    )
-                },
-                visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
-                trailingIcon = {
-                    val image = if (passwordVisibility) {
-                        Icons.Filled.Visibility
-                    } else {
-                        Icons.Filled.VisibilityOff
-                    }
-
-                    IconButton(onClick = { passwordVisibility = !passwordVisibility }) {
-                        Icon(imageVector = image, "Show/hide password", tint = Color.White)
-                    }
-                },
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    keyboardType = KeyboardType.Password,
-                    imeAction = ImeAction.Next
-                ),
-                keyboardActions = KeyboardActions(
-                    onNext = {
-                        focusManager.moveFocus(FocusDirection.Down)
-                    }
-                )
-            )
-            Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_s)))
-            DefaultOutlinedTextField(
-                value = url,
-                onValueChange = { url = it },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
-                label = {
-                    Text(
-                        text = "Nextcloud root address",
-                        color = Color.White
-                    )
-                },
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Done
-                ),
-                keyboardActions = KeyboardActions(
-                    onDone = {
-                        viewModel.manualLogin(username, password, url)
-                    }
-                )
-            )
-            Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_m)))
-            DefaultButton(
-                onClick = { viewModel.manualLogin(username, password, url) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
-            ) {
-                Text(text = "Sign in")
-            }
+            ManualLogin(viewModel)
         }
         if (openSsoWarningDialog) {
             AlertDialog(
@@ -199,6 +107,103 @@ fun LoginScreen(
                 }
             )
         }
+    }
+}
+
+@Composable
+fun ManualLogin(viewModel: LoginViewModel) {
+    val focusManager = LocalFocusManager.current
+    var username: String by rememberSaveable { mutableStateOf("") }
+    var password: String by rememberSaveable { mutableStateOf("") }
+    var passwordVisibility by rememberSaveable { mutableStateOf(false) }
+    var url: String by rememberSaveable { mutableStateOf("") }
+    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_s)))
+    DefaultOutlinedTextField(
+        value = username,
+        onValueChange = { username = it },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
+        label = {
+            Text(
+                text = "Username",
+                color = Color.White
+            )
+        },
+        keyboardOptions = KeyboardOptions.Default.copy(
+            imeAction = ImeAction.Next
+        ),
+        keyboardActions = KeyboardActions(
+            onNext = {
+                focusManager.moveFocus(FocusDirection.Down)
+            }
+        )
+    )
+    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_s)))
+    DefaultOutlinedTextField(
+        value = password,
+        onValueChange = { password = it },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
+        label = {
+            Text(
+                text = "Password",
+                color = Color.White
+            )
+        },
+        visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
+        trailingIcon = {
+            val image = if (passwordVisibility) {
+                Icons.Filled.Visibility
+            } else {
+                Icons.Filled.VisibilityOff
+            }
+
+            IconButton(onClick = { passwordVisibility = !passwordVisibility }) {
+                Icon(imageVector = image, "Show/hide password", tint = Color.White)
+            }
+        },
+        keyboardOptions = KeyboardOptions.Default.copy(
+            keyboardType = KeyboardType.Password,
+            imeAction = ImeAction.Next
+        ),
+        keyboardActions = KeyboardActions(
+            onNext = {
+                focusManager.moveFocus(FocusDirection.Down)
+            }
+        )
+    )
+    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_s)))
+    DefaultOutlinedTextField(
+        value = url,
+        onValueChange = { url = it },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
+        label = {
+            Text(
+                text = "Nextcloud root address",
+                color = Color.White
+            )
+        },
+        keyboardOptions = KeyboardOptions.Default.copy(
+            imeAction = ImeAction.Done
+        ),
+        keyboardActions = KeyboardActions(
+            onDone = {
+                viewModel.manualLogin(username, password, url)
+            }
+        )
+    )
+    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_m)))
+    DefaultButton(
+        onClick = { viewModel.manualLogin(username, password, url) },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
+    ) {
+        Text(text = "Sign in")
     }
 }
 
