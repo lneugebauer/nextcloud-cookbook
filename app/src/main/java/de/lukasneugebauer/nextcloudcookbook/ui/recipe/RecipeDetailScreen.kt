@@ -58,7 +58,7 @@ fun RecipeScreen(
                 contentColor = Color.White
             )
         }
-    ) {
+    ) { innerPadding ->
         when (state) {
             is RecipeDetailScreenState.Initial -> {
                 if (recipeId == null) {
@@ -72,11 +72,8 @@ fun RecipeScreen(
                 val recipe = state.data
                 Column(
                     modifier = Modifier
-                        .padding(bottom = dimensionResource(id = R.dimen.padding_l))
-                        .verticalScroll(
-                            rememberScrollState(),
-                            flingBehavior = ScrollableDefaults.flingBehavior()
-                        )
+                        .padding(paddingValues = innerPadding)
+                        .verticalScroll(rememberScrollState())
                 ) {
                     AuthorizedImage(
                         imageUrl = recipe.imageUrl,
