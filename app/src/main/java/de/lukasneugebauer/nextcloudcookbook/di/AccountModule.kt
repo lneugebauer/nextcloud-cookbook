@@ -4,9 +4,9 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import de.lukasneugebauer.nextcloudcookbook.data.PreferencesManager
-import de.lukasneugebauer.nextcloudcookbook.data.repository.AccountRepositoryImpl
-import de.lukasneugebauer.nextcloudcookbook.domain.repository.AccountRepository
+import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
+import de.lukasneugebauer.nextcloudcookbook.core.data.repository.AccountRepositoryImpl
+import de.lukasneugebauer.nextcloudcookbook.core.domain.repository.AccountRepository
 import javax.inject.Singleton
 
 @Module

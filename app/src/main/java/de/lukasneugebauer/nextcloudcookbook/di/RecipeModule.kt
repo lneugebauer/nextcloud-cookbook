@@ -7,35 +7,21 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import de.lukasneugebauer.nextcloudcookbook.data.model.CategoryNw
-import de.lukasneugebauer.nextcloudcookbook.data.model.RecipeNw
-import de.lukasneugebauer.nextcloudcookbook.data.model.RecipePreviewNw
-import de.lukasneugebauer.nextcloudcookbook.data.repository.RecipeRepositoryImpl
-import de.lukasneugebauer.nextcloudcookbook.domain.repository.RecipeRepository
+import de.lukasneugebauer.nextcloudcookbook.feature_recipe.data.remote.dto.RecipeDto
+import de.lukasneugebauer.nextcloudcookbook.feature_recipe.data.remote.dto.RecipePreviewDto
+import de.lukasneugebauer.nextcloudcookbook.feature_recipe.data.repository.RecipeRepositoryImpl
+import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.repository.RecipeRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import javax.inject.Singleton
 
-typealias CategoriesStore = Store<Any, List<CategoryNw>>
-typealias RecipePreviewsByCategoryStore = Store<String, List<RecipePreviewNw>>
-typealias RecipePreviewsStore = Store<Any, List<RecipePreviewNw>>
-typealias RecipeStore = Store<Int, RecipeNw>
+typealias RecipePreviewsByCategoryStore = Store<String, List<RecipePreviewDto>>
+typealias RecipePreviewsStore = Store<Any, List<RecipePreviewDto>>
+typealias RecipeStore = Store<Int, RecipeDto>
 
 @Module
 @InstallIn(SingletonComponent::class)
 object RecipeModule {
-
-    @ExperimentalCoroutinesApi
-    @FlowPreview
-    @Provides
-    @Singleton
-    fun provideCategories(apiProvider: ApiProvider): CategoriesStore {
-        val ncCookbookApi = apiProvider.getNcCookbookApi()
-            ?: throw NullPointerException("Nextcloud Cookbook API is null.")
-        return StoreBuilder
-            .from(Fetcher.of { ncCookbookApi.getCategories() })
-            .build()
-    }
 
     @ExperimentalCoroutinesApi
     @FlowPreview
@@ -80,13 +66,11 @@ object RecipeModule {
     @Provides
     @Singleton
     fun provideRecipeRepository(
-        categoriesStore: CategoriesStore,
         recipesByCategoryStore: RecipePreviewsByCategoryStore,
         recipePreviewsStore: RecipePreviewsStore,
         recipeStore: RecipeStore
     ): RecipeRepository =
         RecipeRepositoryImpl(
-            categoriesStore,
             recipesByCategoryStore,
             recipePreviewsStore,
             recipeStore

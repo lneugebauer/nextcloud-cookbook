@@ -6,11 +6,11 @@ import com.nextcloud.android.sso.api.NextcloudAPI
 import com.nextcloud.android.sso.exceptions.SSOException
 import com.nextcloud.android.sso.helper.SingleAccountHelper
 import de.lukasneugebauer.nextcloudcookbook.BuildConfig
-import de.lukasneugebauer.nextcloudcookbook.api.BasicAuthInterceptor
-import de.lukasneugebauer.nextcloudcookbook.api.NcCookbookApi
-import de.lukasneugebauer.nextcloudcookbook.data.NcAccount
-import de.lukasneugebauer.nextcloudcookbook.data.PreferencesManager
-import de.lukasneugebauer.nextcloudcookbook.utils.Constants
+import de.lukasneugebauer.nextcloudcookbook.core.data.api.BasicAuthInterceptor
+import de.lukasneugebauer.nextcloudcookbook.core.data.api.NcCookbookApi
+import de.lukasneugebauer.nextcloudcookbook.core.data.NcAccount
+import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
+import de.lukasneugebauer.nextcloudcookbook.core.util.Constants
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
