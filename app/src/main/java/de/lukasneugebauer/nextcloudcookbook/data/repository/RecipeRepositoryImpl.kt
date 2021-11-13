@@ -1,54 +1,53 @@
 package de.lukasneugebauer.nextcloudcookbook.data.repository
 
 import androidx.annotation.StringRes
+import com.dropbox.android.external.store4.get
 import de.lukasneugebauer.nextcloudcookbook.R
-import de.lukasneugebauer.nextcloudcookbook.di.ApiProvider
+import de.lukasneugebauer.nextcloudcookbook.di.CategoriesStore
+import de.lukasneugebauer.nextcloudcookbook.di.RecipePreviewsByCategoryStore
+import de.lukasneugebauer.nextcloudcookbook.di.RecipePreviewsStore
+import de.lukasneugebauer.nextcloudcookbook.di.RecipeStore
 import de.lukasneugebauer.nextcloudcookbook.domain.model.Category
 import de.lukasneugebauer.nextcloudcookbook.domain.model.Recipe
 import de.lukasneugebauer.nextcloudcookbook.domain.model.RecipePreview
 import de.lukasneugebauer.nextcloudcookbook.domain.repository.RecipeRepository
-import de.lukasneugebauer.nextcloudcookbook.utils.Logger
 import de.lukasneugebauer.nextcloudcookbook.utils.Resource
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class RecipeRepositoryImpl @Inject constructor(
-    private val apiProvider: ApiProvider
+    private val categoriesStore: CategoriesStore,
+    private val recipePreviewsByCategoryStore: RecipePreviewsByCategoryStore,
+    private val recipePreviewsStore: RecipePreviewsStore,
+    private val recipeStore: RecipeStore
 ) : RecipeRepository {
 
-    private val cookbookApi = apiProvider.getNcCookbookApi()
-
     override suspend fun getCategories(): Resource<List<Category>> {
-        if (cookbookApi == null) {
-            return Resource.Error(text = "API not initialized.")
-        }
-        val categories = cookbookApi.getCategories().map { it.toCategory() }
+        val categories = categoriesStore.get(Unit).map { it.toCategory() }
         return Resource.Success(data = categories)
     }
 
     override suspend fun getRecipes(): Resource<List<RecipePreview>> {
-        Logger.d("apiProvider.getCookbookApi(): ${apiProvider}")
-        if (cookbookApi == null) {
-            return Resource.Error(text = "API not initialized.")
+        return withContext(Dispatchers.IO) {
+            val recipePreviews = recipePreviewsStore.get(Unit).map { it.toRecipePreview() }
+            Resource.Success(data = recipePreviews)
         }
-        val recipes = cookbookApi.getRecipes()
-        Logger.d("recipes: $recipes")
-        return Resource.Success(data = recipes.map { it.toRecipePreview() })
     }
 
-    override suspend fun getRecipesByCategory(category: String): Resource<List<RecipePreview>> {
-        if (cookbookApi == null) {
-            return Resource.Error(text = "API not initialized.")
+    override suspend fun getRecipesByCategory(categoryName: String): Resource<List<RecipePreview>> {
+        return withContext(Dispatchers.IO) {
+            val recipePreviews = recipePreviewsByCategoryStore.get(categoryName)
+                .map { it.toRecipePreview() }
+            Resource.Success(data = recipePreviews)
         }
-        val recipes = cookbookApi.getRecipesByCategory(category).map { it.toRecipePreview() }
-        return Resource.Success(data = recipes)
     }
 
     override suspend fun getRecipe(id: Int): Resource<Recipe> {
-        if (cookbookApi == null) {
-            return Resource.Error(text = "API not initialized.")
+        return withContext(Dispatchers.IO) {
+            val recipe = recipeStore.get(key = id).toRecipe()
+            Resource.Success(data = recipe)
         }
-        val recipe = cookbookApi.getRecipe(id).toRecipe()
-        return Resource.Success(data = recipe)
     }
 
     override suspend fun getHomeScreenData(): Resource<List<HomeScreenData>> {

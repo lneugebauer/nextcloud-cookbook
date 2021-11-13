@@ -12,7 +12,7 @@ interface RecipeRepository {
 
     suspend fun getRecipes(): Resource<List<RecipePreview>>
 
-    suspend fun getRecipesByCategory(category: String): Resource<List<RecipePreview>>
+    suspend fun getRecipesByCategory(categoryName: String): Resource<List<RecipePreview>>
 
     suspend fun getRecipe(id: Int): Resource<Recipe>
 

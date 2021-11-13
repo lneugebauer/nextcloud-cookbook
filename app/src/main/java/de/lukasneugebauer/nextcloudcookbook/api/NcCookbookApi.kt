@@ -14,8 +14,8 @@ interface NcCookbookApi {
     @GET("api/recipes")
     suspend fun getRecipes(): List<RecipePreviewNw>
 
-    @GET("api/category/{category}")
-    suspend fun getRecipesByCategory(@Path("category") category: String): List<RecipePreviewNw>
+    @GET("api/category/{categoryName}")
+    suspend fun getRecipesByCategory(@Path("categoryName") categoryName: String): List<RecipePreviewNw>
 
     @GET("api/recipes/{id}")
     suspend fun getRecipe(@Path("id") id: Int): RecipeNw
