@@ -1,6 +1,5 @@
 package de.lukasneugebauer.nextcloudcookbook.ui.components
 
-import android.net.Uri
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -94,7 +93,11 @@ fun CommonListItem(
             Spacer(modifier = Modifier.size(size = dimensionResource(id = R.dimen.padding_s)))
             Text(
                 text = name,
-                modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.padding_s)),
+                modifier = Modifier
+                    .padding(vertical = dimensionResource(id = R.dimen.padding_s))
+                    .padding(end = dimensionResource(id = R.dimen.padding_s)),
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 3,
                 style = MaterialTheme.typography.h6
             )
         }
