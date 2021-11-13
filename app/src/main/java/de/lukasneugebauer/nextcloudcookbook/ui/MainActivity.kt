@@ -33,7 +33,7 @@ import de.lukasneugebauer.nextcloudcookbook.ui.components.BottomBar
 import de.lukasneugebauer.nextcloudcookbook.ui.home.HomeScreen
 import de.lukasneugebauer.nextcloudcookbook.ui.launch.LaunchScreen
 import de.lukasneugebauer.nextcloudcookbook.ui.login.LoginScreen
-import de.lukasneugebauer.nextcloudcookbook.ui.recipe.RecipeScreen
+import de.lukasneugebauer.nextcloudcookbook.ui.recipe.RecipeDetailScreen
 import de.lukasneugebauer.nextcloudcookbook.ui.recipes.RecipesScreen
 import de.lukasneugebauer.nextcloudcookbook.ui.search.SearchScreen
 import de.lukasneugebauer.nextcloudcookbook.ui.theme.NextcloudCookbookTheme
@@ -161,7 +161,7 @@ fun NextcloudCookbookNavHost(
             route = "${Recipe.name}/{recipeId}",
             arguments = listOf(navArgument("recipeId") { type = NavType.IntType })
         ) { backStackEntry ->
-            RecipeScreen(
+            RecipeDetailScreen(
                 navController = navController,
                 backStackEntry.arguments?.getInt("recipeId")
             )
