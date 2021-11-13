@@ -51,7 +51,7 @@ fun HomeScreen(
                             }
                         }
                         is HomeScreenData.Row -> {
-                            Headline(text = stringResource(id = data.headline, "CATEGORY"))
+                            Headline(text = stringResource(id = data.headline, data.categoryName))
                             RowContainer(data = data.recipes.map {
                                 RowContent(it.name, it.imageUrl) {
                                     navController.navigate("${Recipe.name}/${it.id}")

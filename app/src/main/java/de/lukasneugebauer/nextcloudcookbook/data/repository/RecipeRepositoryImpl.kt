@@ -82,6 +82,7 @@ class RecipeRepositoryImpl @Inject constructor(
                     data.add(
                         HomeScreenData.Row(
                             headline = R.string.home_category,
+                            categoryName = it.name,
                             recipes = recipesByCategory.data
                         )
                     )
@@ -118,6 +119,7 @@ sealed class HomeScreenData {
 
     data class Row(
         @StringRes override val headline: Int,
+        val categoryName: String,
         val recipes: List<RecipePreview>
     ) : HomeScreenData()
 
