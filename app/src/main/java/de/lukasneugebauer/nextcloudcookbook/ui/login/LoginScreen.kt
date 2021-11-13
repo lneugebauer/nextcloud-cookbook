@@ -3,6 +3,7 @@ package de.lukasneugebauer.nextcloudcookbook.ui.login
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -12,9 +13,12 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -22,7 +26,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import de.lukasneugebauer.nextcloudcookbook.NextcloudCookbookScreen
 import de.lukasneugebauer.nextcloudcookbook.R
-import de.lukasneugebauer.nextcloudcookbook.ui.theme.NcBlue
+import de.lukasneugebauer.nextcloudcookbook.ui.components.DefaultButton
+import de.lukasneugebauer.nextcloudcookbook.ui.components.DefaultOutlinedTextField
+import de.lukasneugebauer.nextcloudcookbook.ui.components.DefaultTextButton
 import de.lukasneugebauer.nextcloudcookbook.ui.theme.NcBlueGradient
 
 @Composable
@@ -33,6 +39,7 @@ fun LoginScreen(
 ) {
     var openSsoWarningDialog by rememberSaveable { mutableStateOf(false) }
     var manualLogin: Boolean by rememberSaveable { mutableStateOf(false) }
+    val focusManager = LocalFocusManager.current
     var username: String by rememberSaveable { mutableStateOf("") }
     var password: String by rememberSaveable { mutableStateOf("") }
     var passwordVisibility by rememberSaveable { mutableStateOf(false) }
@@ -64,39 +71,24 @@ fun LoginScreen(
             style = MaterialTheme.typography.h5
         )
         Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_l)))
-        // TODO: 05.10.21 Create composable for button
-        // TODO: 05.10.21 Finalize styling of button
-        Button(
+        DefaultButton(
             onClick = {
                 // onSSOClick()
                 openSsoWarningDialog = true
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
-            colors = ButtonDefaults.buttonColors(
-                backgroundColor = Color.White,
-                contentColor = NcBlue
-            )
+                .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
         ) {
             Text(text = "Login using Nextcloud Files App")
         }
         Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_s)))
-        // TODO: 05.10.21 Create composable for text button
-        // TODO: 05.10.21 Finalize styling of text button
-        TextButton(
-            onClick = { manualLogin = !manualLogin },
-            colors = ButtonDefaults.textButtonColors(
-                contentColor = Color.White
-            )
-        ) {
+        DefaultTextButton(onClick = { manualLogin = !manualLogin }) {
             Text(text = "Manual login")
         }
         if (manualLogin) {
             Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_s)))
-            // TODO: 05.10.21 Create composable for text field
-            // TODO: 05.10.21 Finalize styling of text field
-            OutlinedTextField(
+            DefaultOutlinedTextField(
                 value = username,
                 onValueChange = { username = it },
                 modifier = Modifier
@@ -108,17 +100,17 @@ fun LoginScreen(
                         color = Color.White
                     )
                 },
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    textColor = Color.White,
-                    cursorColor = Color.White,
-                    focusedBorderColor = Color.White,
-                    unfocusedBorderColor = Color.White
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    imeAction = ImeAction.Next
+                ),
+                keyboardActions = KeyboardActions(
+                    onNext = {
+                        focusManager.moveFocus(FocusDirection.Down)
+                    }
                 )
             )
             Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_s)))
-            // TODO: 05.10.21 Create composable for text field
-            // TODO: 05.10.21 Finalize styling of text field
-            OutlinedTextField(
+            DefaultOutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
                 modifier = Modifier
@@ -131,7 +123,6 @@ fun LoginScreen(
                     )
                 },
                 visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 trailingIcon = {
                     val image = if (passwordVisibility) {
                         Icons.Filled.Visibility
@@ -143,17 +134,18 @@ fun LoginScreen(
                         Icon(imageVector = image, "Show/hide password", tint = Color.White)
                     }
                 },
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    textColor = Color.White,
-                    cursorColor = Color.White,
-                    focusedBorderColor = Color.White,
-                    unfocusedBorderColor = Color.White
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    keyboardType = KeyboardType.Password,
+                    imeAction = ImeAction.Next
+                ),
+                keyboardActions = KeyboardActions(
+                    onNext = {
+                        focusManager.moveFocus(FocusDirection.Down)
+                    }
                 )
             )
             Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_s)))
-            // TODO: 05.10.21 Create composable for text field
-            // TODO: 05.10.21 Finalize styling of text field
-            OutlinedTextField(
+            DefaultOutlinedTextField(
                 value = url,
                 onValueChange = { url = it },
                 modifier = Modifier
@@ -165,27 +157,21 @@ fun LoginScreen(
                         color = Color.White
                     )
                 },
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    textColor = Color.White,
-                    cursorColor = Color.White,
-                    focusedBorderColor = Color.White,
-                    unfocusedBorderColor = Color.White
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    imeAction = ImeAction.Done
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        viewModel.manualLogin(username, password, url)
+                    }
                 )
             )
             Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_m)))
-            // TODO: 05.10.21 Create composable for button
-            // TODO: 05.10.21 Finalize styling of button
-            Button(
-                onClick = {
-                    viewModel.manualLogin(username, password, url)
-                },
+            DefaultButton(
+                onClick = { viewModel.manualLogin(username, password, url) },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color.White,
-                    contentColor = NcBlue
-                )
+                    .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
             ) {
                 Text(text = "Sign in")
             }
