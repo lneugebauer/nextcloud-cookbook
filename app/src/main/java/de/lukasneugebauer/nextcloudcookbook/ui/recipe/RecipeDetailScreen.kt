@@ -211,7 +211,11 @@ fun RecipeDetailScreen(
                                 modifier = Modifier
                                     .size(24.dp)
                                     .clip(CircleShape)
-                                    .border(2.dp, Color.Black, CircleShape),
+                                    .border(
+                                        2.dp,
+                                        MaterialTheme.colors.onBackground,
+                                        CircleShape
+                                    ),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(text = (index + 1).toString())
