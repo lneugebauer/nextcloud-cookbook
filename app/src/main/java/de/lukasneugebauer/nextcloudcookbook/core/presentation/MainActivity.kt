@@ -10,6 +10,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -152,17 +153,26 @@ fun NextcloudCookbookNavHost(
             HomeScreen(navController)
         }
         composable(Categories.name) {
-            CategoriesScreen()
-        }
-        composable(Recipes.name) {
-            RecipesScreen(navController)
+            CategoriesScreen(navController)
         }
         composable(
-            route = "${Recipe.name}/{recipeId}",
+            "${Recipes.name}?categoryName={categoryName}",
+            arguments = listOf(navArgument("categoryName") {
+                nullable = true
+                type = NavType.StringType
+            })
+        ) { backStackEntry ->
+            RecipesScreen(
+                navController,
+                backStackEntry.arguments?.getString("categoryName")
+            )
+        }
+        composable(
+            route = "${Recipe.name}?recipeId={recipeId}",
             arguments = listOf(navArgument("recipeId") { type = NavType.IntType })
         ) { backStackEntry ->
             RecipeDetailScreen(
-                navController = navController,
+                navController,
                 backStackEntry.arguments?.getInt("recipeId")
             )
         }

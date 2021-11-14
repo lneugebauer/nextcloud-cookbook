@@ -38,7 +38,7 @@ enum class NextcloudCookbookScreen(
 
     companion object {
         fun fromRoute(route: String?): NextcloudCookbookScreen =
-            when (route?.substringBefore("/")) {
+            when (route?.substringBefore("?")) {
                 Launch.name -> Launch
                 Login.name -> Login
                 Home.name -> Home

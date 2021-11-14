@@ -13,26 +13,33 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import de.lukasneugebauer.nextcloudcookbook.NextcloudCookbookScreen
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.CommonListItem
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue
 
+@Composable
+fun CategoriesTopBar() {
+    TopAppBar(
+        title = { Text(text = stringResource(R.string.common_categories)) },
+        backgroundColor = NcBlue,
+        contentColor = Color.White
+    )
+}
+
 @ExperimentalMaterialApi
 @Composable
 fun CategoriesScreen(
+    navController: NavHostController,
     viewModel: CategoriesViewModel = hiltViewModel()
 ) {
     val state = viewModel.state.value
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(text = stringResource(R.string.common_categories)) },
-                backgroundColor = NcBlue,
-                contentColor = Color.White
-            )
-        }
+        topBar = { CategoriesTopBar() }
     ) {
         if (state.data.isEmpty()) {
             Loader()
@@ -48,7 +55,9 @@ fun CategoriesScreen(
                     CommonListItem(
                         name = it.name,
                         imageUrl = null
-                    ) { /* On click */ }
+                    ) {
+                        navController.navigate("${NextcloudCookbookScreen.Recipes.name}?categoryName=${it.name}")
+                    }
                 }
             }
         }

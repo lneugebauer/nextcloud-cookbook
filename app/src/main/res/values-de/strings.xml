@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Kochbuch</string>
-    <string name="common_categories">Categories</string>
-    <string name="common_more">More</string>
+    <string name="common_categories">Kategorien</string>
+    <string name="common_more">Mehr</string>
+    <string name="common_recipes">Rezepte</string>
     <string name="common_settings">Einstellungen</string>
     <string name="home_category">Kategorie: %1s</string>
     <string name="home_recommendation">Vorschlag</string>

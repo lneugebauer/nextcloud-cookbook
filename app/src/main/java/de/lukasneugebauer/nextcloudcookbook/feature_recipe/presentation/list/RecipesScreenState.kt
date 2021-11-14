@@ -1,7 +1,7 @@
-package de.lukasneugebauer.nextcloudcookbook.ui.recipes
+package de.lukasneugebauer.nextcloudcookbook.feature_recipe.presentation.list
 
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.model.RecipePreview
 
 data class RecipesScreenState(
-    val data: List<RecipePreview>
+    val data: List<RecipePreview> = emptyList()
 )

@@ -12,6 +12,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import de.lukasneugebauer.nextcloudcookbook.NextcloudCookbookScreen
 import de.lukasneugebauer.nextcloudcookbook.NextcloudCookbookScreen.Recipe
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.*
@@ -44,20 +45,24 @@ fun HomeScreen(
                                     modifier = Modifier
                                         .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
                                         .padding(bottom = dimensionResource(id = R.dimen.padding_s))
-                                ) { /* On click */ }
+                                ) {
+                                    navController.navigate("${NextcloudCookbookScreen.Recipes.name}?categoryName=${category.name}")
+                                }
                             }
                         }
                         is HomeScreenData.Row -> {
                             Headline(text = stringResource(id = data.headline, data.categoryName))
                             RowContainer(data = data.recipes.map {
                                 RowContent(it.name, it.imageUrl) {
-                                    navController.navigate("${Recipe.name}/${it.id}")
+                                    navController.navigate("${Recipe.name}?recipeId=${it.id}")
                                 }
                             })
                         }
                         is HomeScreenData.Single -> {
                             Headline(text = stringResource(id = data.headline))
-                            SingleItem(name = data.recipe.name, imageUrl = data.recipe.imageUrl)
+                            SingleItem(name = data.recipe.name, imageUrl = data.recipe.imageUrl) {
+                                navController.navigate("${Recipe.name}?recipeId=${data.recipe.id}")
+                            }
                         }
                     }
                 }
@@ -66,12 +71,14 @@ fun HomeScreen(
     }
 }
 
+@ExperimentalMaterialApi
 @Composable
-fun SingleItem(name: String, imageUrl: String) {
+fun SingleItem(name: String, imageUrl: String, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
-            .padding(bottom = dimensionResource(id = R.dimen.padding_l))
+            .padding(bottom = dimensionResource(id = R.dimen.padding_l)),
+        onClick = onClick
     ) {
         Column {
             AuthorizedImage(
@@ -81,9 +88,7 @@ fun SingleItem(name: String, imageUrl: String) {
                     .aspectRatio(16f / 9f)
                     .fillMaxWidth()
             )
-            CommonItemBody(name = name, modifier = Modifier.fillMaxWidth()) {
-                Logger.d("More icon clicked", TAG)
-            }
+            CommonItemBody(name = name, modifier = Modifier.fillMaxWidth(), onClick = { })
         }
     }
 }
