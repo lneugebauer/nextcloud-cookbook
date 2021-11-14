@@ -16,7 +16,7 @@ import de.lukasneugebauer.nextcloudcookbook.NextcloudCookbookScreen
 import de.lukasneugebauer.nextcloudcookbook.NextcloudCookbookScreen.Recipe
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.*
-import de.lukasneugebauer.nextcloudcookbook.core.util.Logger
+import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.authorized_image.AuthorizedImage
 
 private const val TAG = "HomeScreen"
 

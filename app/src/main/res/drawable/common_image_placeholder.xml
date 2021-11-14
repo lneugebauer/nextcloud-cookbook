@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:angle="@integer/nc_blue_gradient_angle"
+                android:endColor="@color/nc_blue_gradient_end"
+                android:startColor="@color/nc_blue_gradient_start" />
+        </shape>
+    </item>
+    <item
+        android:width="@dimen/placeholder_image_width"
+        android:height="@dimen/placeholder_image_width"
+        android:drawable="@drawable/ic_image_not_found_24"
+        android:gravity="center" />
+</layer-list>

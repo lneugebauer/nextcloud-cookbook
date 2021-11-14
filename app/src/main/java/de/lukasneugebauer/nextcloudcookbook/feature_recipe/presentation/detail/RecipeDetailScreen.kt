@@ -22,11 +22,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import coil.annotation.ExperimentalCoilApi
 import de.lukasneugebauer.nextcloudcookbook.R
-import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.model.Recipe
-import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.AuthorizedImage
+import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.authorized_image.AuthorizedImage
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue
+import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.model.Recipe
 
 @Composable
 fun RecipeDetailTopBar(recipe: Recipe, onNavIconClick: () -> Unit, shareText: String) {
@@ -69,6 +70,7 @@ fun RecipeDetailTopBar(recipe: Recipe, onNavIconClick: () -> Unit, shareText: St
     )
 }
 
+@ExperimentalCoilApi
 @Composable
 fun RecipeDetailScreen(
     navController: NavHostController,

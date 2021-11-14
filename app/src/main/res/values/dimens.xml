@@ -7,4 +7,5 @@
     <dimen name="padding_s">8dp</dimen>
     <dimen name="padding_m">16dp</dimen>
     <dimen name="padding_l">32dp</dimen>
+    <dimen name="placeholder_image_width">64dp</dimen>
 </resources>
