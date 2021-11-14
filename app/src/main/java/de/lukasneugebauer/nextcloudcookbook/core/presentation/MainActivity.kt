@@ -18,6 +18,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import coil.annotation.ExperimentalCoilApi
 import com.nextcloud.android.sso.AccountImporter
 import com.nextcloud.android.sso.api.NextcloudAPI.ApiConnectedListener
 import com.nextcloud.android.sso.exceptions.AndroidGetAccountsPermissionNotGranted
@@ -51,6 +52,7 @@ class MainActivity : ComponentActivity() {
     lateinit var api: ApiProvider
     private val viewModel: MainViewModel by viewModels()
 
+    @ExperimentalCoilApi
     @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -105,6 +107,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@ExperimentalCoilApi
 @ExperimentalMaterialApi
 @Composable
 fun NextcloudCookbookApp(onSsoClick: () -> Unit) {
@@ -135,6 +138,7 @@ fun NextcloudCookbookApp(onSsoClick: () -> Unit) {
     }
 }
 
+@ExperimentalCoilApi
 @ExperimentalMaterialApi
 @Composable
 fun NextcloudCookbookNavHost(

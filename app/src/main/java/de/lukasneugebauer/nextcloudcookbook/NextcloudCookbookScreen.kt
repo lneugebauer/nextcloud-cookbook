@@ -1,5 +1,6 @@
 package de.lukasneugebauer.nextcloudcookbook
 
+import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.Fastfood
@@ -9,6 +10,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 
 enum class NextcloudCookbookScreen(
     val icon: ImageVector,
+    @StringRes val displayName: Int? = null,
     val bottomBar: Boolean = false
 ) {
     Launch(
@@ -23,10 +25,12 @@ enum class NextcloudCookbookScreen(
     ),
     Categories(
         icon = Icons.Filled.Category,
+        displayName = R.string.common_categories,
         bottomBar = true
     ),
     Recipes(
         icon = Icons.Filled.Fastfood,
+        displayName = R.string.common_recipes,
         bottomBar = true
     ),
     Recipe(

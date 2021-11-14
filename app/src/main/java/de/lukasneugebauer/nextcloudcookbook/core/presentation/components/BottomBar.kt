@@ -6,6 +6,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import de.lukasneugebauer.nextcloudcookbook.NextcloudCookbookScreen
@@ -33,7 +34,11 @@ fun BottomBar(
                             contentDescription = it.name
                         )
                     },
-                    label = { Text(text = it.name) },
+                    label = {
+                        Text(it.displayName?.let { stringRes ->
+                            stringResource(id = stringRes)
+                        } ?: it.name)
+                    },
                     selectedContentColor = Color.White
                 )
             }
