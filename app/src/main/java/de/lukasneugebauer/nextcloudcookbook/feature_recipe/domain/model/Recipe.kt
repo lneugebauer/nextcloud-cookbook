@@ -1,5 +1,7 @@
 package de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.model
 
+import java.time.Duration
+
 data class Recipe(
     val id: Int,
     val name: String,
@@ -10,9 +12,9 @@ data class Recipe(
     val keywords: List<String>,
     val yield: Int,
     // TODO: 19.08.21 Change prepTime, cookTime and totalTime to time fields.
-    val prepTime: String?,
-    val cookTime: String?,
-    val totalTime: String?,
+    val prepTime: Duration?,
+    val cookTime: Duration?,
+    val totalTime: Duration?,
     val nutrition: Nutrition?,
     val tools: List<String>,
     val ingredients: List<String>,

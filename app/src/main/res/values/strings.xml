@@ -1,12 +1,18 @@
 <resources>
     <string name="app_name">Cookbook</string>
+    <string name="common_back">Back</string>
     <string name="common_categories">Categories</string>
     <string name="common_more">More</string>
     <string name="common_recipes">Recipes</string>
     <string name="common_settings">Settings</string>
+    <string name="common_share">Share</string>
     <string name="home_category">Category: %1s</string>
     <string name="home_recommendation">Recommendation</string>
+    <string name="recipe_cook_time">Cooking</string>
+    <string name="recipe_duration">%1$d min</string>
     <string name="recipe_ingredients">Ingredients</string>
     <string name="recipe_instructions">Instructions</string>
+    <string name="recipe_prep_time">Preparation</string>
     <string name="recipe_tools">Tools</string>
+    <string name="recipe_total_time">Total</string>
 </resources>

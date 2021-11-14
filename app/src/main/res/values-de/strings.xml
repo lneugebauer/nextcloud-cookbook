@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Kochbuch</string>
+    <string name="common_back">Zurück</string>
     <string name="common_categories">Kategorien</string>
     <string name="common_more">Mehr</string>
     <string name="common_recipes">Rezepte</string>
     <string name="common_settings">Einstellungen</string>
+    <string name="common_share">Teilen</string>
     <string name="home_category">Kategorie: %1s</string>
     <string name="home_recommendation">Vorschlag</string>
+    <string name="recipe_cook_time">Kochen</string>
+    <string name="recipe_duration">%1$d Min.</string>
     <string name="recipe_ingredients">Zutaten</string>
     <string name="recipe_instructions">Zubereitung</string>
+    <string name="recipe_prep_time">Vorbereitung</string>
     <string name="recipe_tools">Utensilien</string>
+    <string name="recipe_total_time">Gesamt</string>
 </resources>

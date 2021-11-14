@@ -1,6 +1,8 @@
 package de.lukasneugebauer.nextcloudcookbook.feature_recipe.data.remote.dto
 
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.model.Recipe
+import java.time.Duration
+import java.util.Collections.emptyList
 
 data class RecipeDto(
     val id: Int,
@@ -32,9 +34,9 @@ data class RecipeDto(
         category = recipeCategory,
         keywords = keywords?.split(",") ?: emptyList(),
         yield = recipeYield,
-        prepTime = prepTime,
-        cookTime = cookTime,
-        totalTime = totalTime,
+        prepTime = if (prepTime == null || prepTime.isBlank()) null else Duration.parse(prepTime),
+        cookTime = if (cookTime == null || cookTime.isBlank()) null else Duration.parse(cookTime),
+        totalTime = if (totalTime == null || totalTime.isBlank()) null else Duration.parse(totalTime),
         nutrition = nutrition?.toNutrition(),
         tools = tool,
         ingredients = recipeIngredient,
