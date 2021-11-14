@@ -31,11 +31,11 @@ import coil.annotation.ExperimentalCoilApi
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.authorized_image.AuthorizedImage
+import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.pluralResource
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.model.Recipe
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.util.emptyRecipe
 import java.time.Duration
-import java.time.format.DateTimeFormatter
 
 @ExperimentalCoilApi
 @Composable
@@ -137,7 +137,7 @@ fun RecipeDetailContent(recipe: Recipe, modifier: Modifier = Modifier) {
         }
         RecipeDetailMeta(recipe.prepTime, recipe.cookTime, recipe.totalTime)
         if (recipe.ingredients.isNotEmpty()) {
-            RecipeDetailIngredients(recipe.ingredients)
+            RecipeDetailIngredients(recipe.ingredients, recipe.yield)
         }
         if (recipe.tools.isNotEmpty()) {
             RecipeDetailTools(recipe.tools)
@@ -186,7 +186,6 @@ fun RecipeDetailDescription(description: String) {
 
 @Composable
 fun RecipeDetailMeta(prepTime: Duration?, cookTime: Duration?, totalTime: Duration?) {
-    val formatter = DateTimeFormatter.ofPattern("HH:mm")
     Row(
         modifier = Modifier
             .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
@@ -222,9 +221,9 @@ fun RowScope.RecipeDetailMetaBox(duration: Long, @StringRes text: Int) {
 }
 
 @Composable
-fun RecipeDetailIngredients(ingredients: List<String>) {
+fun RecipeDetailIngredients(ingredients: List<String>, servings: Int) {
     Text(
-        text = stringResource(R.string.recipe_ingredients),
+        text = pluralResource(R.plurals.recipe_ingredients_servings, servings, servings),
         modifier = Modifier
             .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
             .padding(bottom = dimensionResource(id = R.dimen.padding_m)),

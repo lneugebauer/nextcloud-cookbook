@@ -10,7 +10,10 @@
     <string name="home_recommendation">Recommendation</string>
     <string name="recipe_cook_time">Cooking</string>
     <string name="recipe_duration">%1$d min</string>
-    <string name="recipe_ingredients">Ingredients</string>
+    <plurals name="recipe_ingredients_servings">
+        <item quantity="one">Ingredients for %1$d serving</item>
+        <item quantity="other">Ingredients for %1$d servings</item>
+    </plurals>
     <string name="recipe_instructions">Instructions</string>
     <string name="recipe_prep_time">Preparation</string>
     <string name="recipe_tools">Tools</string>
