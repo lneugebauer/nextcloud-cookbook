@@ -16,6 +16,9 @@
         <item quantity="other">Zutaten für %1$d Portionen</item>
     </plurals>
     <string name="recipe_instructions">Zubereitung</string>
+    <string name="recipe_more_menu_delete">Löschen</string>
+    <string name="recipe_more_menu_edit">Bearbeiten</string>
+    <string name="recipe_more_menu_share">Quelle öffnen</string>
     <string name="recipe_prep_time">Vorbereitung</string>
     <string name="recipe_tools">Utensilien</string>
     <string name="recipe_total_time">Gesamt</string>

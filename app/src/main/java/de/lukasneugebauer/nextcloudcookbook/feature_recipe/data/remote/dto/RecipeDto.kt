@@ -32,7 +32,7 @@ data class RecipeDto(
         url = url,
         imageUrl = imageUrl,
         category = recipeCategory,
-        keywords = keywords?.split(",") ?: emptyList(),
+        keywords = if (keywords == null || keywords.isEmpty()) emptyList() else keywords.split(","),
         yield = recipeYield,
         prepTime = if (prepTime == null || prepTime.isBlank()) null else Duration.parse(prepTime),
         cookTime = if (cookTime == null || cookTime.isBlank()) null else Duration.parse(cookTime),

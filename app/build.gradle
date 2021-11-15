@@ -79,6 +79,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.8'
 
     implementation "com.google.accompanist:accompanist-drawablepainter:$accompanist_version"
+    implementation "com.google.accompanist:accompanist-flowlayout:$accompanist_version"
 
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"

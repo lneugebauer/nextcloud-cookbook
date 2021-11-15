@@ -1,8 +1,10 @@
 package de.lukasneugebauer.nextcloudcookbook.feature_recipe.presentation.detail
 
 import android.content.Intent
+import android.net.Uri
+import android.widget.Toast
 import androidx.annotation.StringRes
-import androidx.compose.foundation.border
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -10,12 +12,12 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
@@ -25,9 +27,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.annotation.ExperimentalCoilApi
+import com.google.accompanist.flowlayout.FlowRow
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.authorized_image.AuthorizedImage
@@ -80,6 +84,7 @@ fun RecipeDetailScreen(
 @Composable
 fun RecipeDetailTopBar(recipe: Recipe, onNavIconClick: () -> Unit, shareText: String) {
     val context = LocalContext.current
+    var expanded by remember { mutableStateOf(false) }
 
     fun shareRecipe() {
         val sendIntent: Intent = Intent().apply {
@@ -118,6 +123,41 @@ fun RecipeDetailTopBar(recipe: Recipe, onNavIconClick: () -> Unit, shareText: St
                     contentDescription = stringResource(id = R.string.common_share)
                 )
             }
+            IconButton(onClick = { expanded = true }) {
+                Icon(
+                    Icons.Filled.MoreVert,
+                    contentDescription = stringResource(id = R.string.common_more)
+                )
+                DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                    if (recipe.url.isNotBlank()) {
+                        DropdownMenuItem(onClick = {
+                            val openURL = Intent(Intent.ACTION_VIEW)
+                            openURL.data = Uri.parse(recipe.url)
+                            startActivity(context, openURL, null)
+                        }) {
+                            Text(text = stringResource(id = R.string.recipe_more_menu_share))
+                        }
+                    }
+                    DropdownMenuItem(onClick = {
+                        Toast.makeText(
+                            context,
+                            "Function currently unavailable.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }) {
+                        Text(text = stringResource(id = R.string.recipe_more_menu_edit))
+                    }
+                    DropdownMenuItem(onClick = {
+                        Toast.makeText(
+                            context,
+                            "Function currently unavailable.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }) {
+                        Text(text = stringResource(id = R.string.recipe_more_menu_delete))
+                    }
+                }
+            }
         },
         backgroundColor = NcBlue,
         contentColor = Color.White
@@ -132,7 +172,10 @@ fun RecipeDetailContent(recipe: Recipe, modifier: Modifier = Modifier) {
     ) {
         RecipeDetailImage(recipe.imageUrl, recipe.name)
         RecipeDetailName(recipe.name)
-        if (recipe.description != "") {
+        if (recipe.keywords.isNotEmpty()) {
+            RecipeDetailKeywords(recipe.keywords)
+        }
+        if (recipe.description.isNotBlank()) {
             RecipeDetailDescription(recipe.description)
         }
         RecipeDetailMeta(recipe.prepTime, recipe.cookTime, recipe.totalTime)
@@ -145,6 +188,7 @@ fun RecipeDetailContent(recipe: Recipe, modifier: Modifier = Modifier) {
         if (recipe.instructions.isNotEmpty()) {
             RecipeDetailInstructions(recipe.instructions)
         }
+        Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_l)))
     }
 }
 
@@ -170,6 +214,35 @@ fun RecipeDetailName(name: String) {
             .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
         style = MaterialTheme.typography.h5
     )
+}
+
+@Composable
+fun RecipeDetailKeywords(keywords: List<String>) {
+    FlowRow(
+        modifier = Modifier
+            .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
+            .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
+        mainAxisSpacing = dimensionResource(id = R.dimen.padding_s),
+        crossAxisSpacing = dimensionResource(id = R.dimen.padding_s)
+    ) {
+        keywords.forEach {
+            Box(
+                modifier = Modifier
+                    .background(
+                        color = NcBlue,
+                        shape = CircleShape
+                    )
+                    .padding(
+                        horizontal = dimensionResource(id = R.dimen.padding_s),
+                        vertical = dimensionResource(id = R.dimen.padding_xs)
+                    )
+                    .height(dimensionResource(id = R.dimen.chip_height)),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(text = it)
+            }
+        }
+    }
 }
 
 @Composable
@@ -208,9 +281,12 @@ fun RecipeDetailMeta(prepTime: Duration?, cookTime: Duration?, totalTime: Durati
 @Composable
 fun RowScope.RecipeDetailMetaBox(duration: Long, @StringRes text: Int) {
     Box(modifier = Modifier.weight(1f)) {
-        Column (horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Icon(Icons.Filled.Timer, contentDescription = "")
-            Text(text = stringResource(id = R.string.recipe_duration, duration), fontWeight = FontWeight.Bold)
+            Text(
+                text = stringResource(id = R.string.recipe_duration, duration),
+                fontWeight = FontWeight.Bold
+            )
             Text(
                 text = stringResource(id = text),
                 modifier = Modifier.fillMaxWidth(),
@@ -286,13 +362,13 @@ fun RecipeDetailInstructions(instructions: List<String>) {
         ) {
             Box(
                 modifier = Modifier
-                    .size(24.dp)
-                    .clip(CircleShape)
-                    .border(
-                        2.dp,
-                        MaterialTheme.colors.onBackground,
-                        CircleShape
-                    ),
+                    .padding(top = dimensionResource(id = R.dimen.padding_xs))
+                    .background(color = NcBlue, shape = CircleShape)
+                    .padding(
+                        horizontal = dimensionResource(id = R.dimen.padding_xs),
+                        vertical = dimensionResource(id = R.dimen.padding_xs)
+                    )
+                    .size(size = dimensionResource(id = R.dimen.chip_height)),
                 contentAlignment = Alignment.Center
             ) {
                 Text(text = (index + 1).toString())
