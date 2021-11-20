@@ -30,7 +30,6 @@ import de.lukasneugebauer.nextcloudcookbook.NextcloudCookbookScreen.*
 import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.BottomBar
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
-import de.lukasneugebauer.nextcloudcookbook.core.util.Logger
 import de.lukasneugebauer.nextcloudcookbook.di.ApiProvider
 import de.lukasneugebauer.nextcloudcookbook.feature_auth.presentation.launch.LaunchScreen
 import de.lukasneugebauer.nextcloudcookbook.feature_auth.presentation.login.LoginScreen
@@ -39,6 +38,7 @@ import de.lukasneugebauer.nextcloudcookbook.feature_recipe.presentation.detail.R
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.presentation.home.HomeScreen
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.presentation.list.RecipeListScreen
 import de.lukasneugebauer.nextcloudcookbook.feature_search.presentation.search.SearchScreen
+import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -82,7 +82,7 @@ class MainActivity : ComponentActivity() {
                 })
             }
         } catch (e: Exception) {
-            Logger.e("${e.message}")
+            Timber.e(e.message)
         }
     }
 

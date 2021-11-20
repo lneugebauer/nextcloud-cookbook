@@ -13,9 +13,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.authorized_image.AuthorizedImage
-import de.lukasneugebauer.nextcloudcookbook.core.util.Logger
-
-private const val TAG = "Common"
+import timber.log.Timber
 
 @ExperimentalMaterialApi
 @Composable
@@ -39,7 +37,7 @@ fun CommonItem(
                 name = name,
                 modifier = Modifier.width(width)
             ) {
-                Logger.d("More icon clicked", TAG)
+                Timber.d("More icon clicked")
             }
         }
     }

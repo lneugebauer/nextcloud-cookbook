@@ -5,9 +5,9 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
-import de.lukasneugebauer.nextcloudcookbook.core.util.Logger
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
+import timber.log.Timber
 import java.io.IOException
 import java.time.Instant
 import java.time.LocalDateTime
@@ -48,7 +48,7 @@ class PreferencesManager(private val context: Context) {
     val preferencesFlow = context.dataStore.data
         .catch { exception ->
             if (exception is IOException) {
-                Logger.e("Error reading preferences", tr = exception)
+                Timber.e(exception)
                 emit(emptyPreferences())
             } else {
                 throw exception

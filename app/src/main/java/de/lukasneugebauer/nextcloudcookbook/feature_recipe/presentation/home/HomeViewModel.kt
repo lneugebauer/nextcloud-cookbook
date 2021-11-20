@@ -11,18 +11,20 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
 import de.lukasneugebauer.nextcloudcookbook.core.data.RecipeOfTheDay
-import de.lukasneugebauer.nextcloudcookbook.core.util.Logger
 import de.lukasneugebauer.nextcloudcookbook.feature_category.domain.model.Category
 import de.lukasneugebauer.nextcloudcookbook.feature_category.domain.repository.CategoryRepository
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.model.Recipe
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.model.RecipePreview
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.repository.RecipeRepository
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.util.RecipeConstants.HOME_SCREEN_CATEGORIES
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.time.LocalDateTime
 import javax.inject.Inject
 
+@FlowPreview
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val categoryRepository: CategoryRepository,
@@ -39,6 +41,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    @FlowPreview
     private suspend fun getHomeScreenData() {
         // TODO: 01.11.21 Move this into use case
         combine(
@@ -109,13 +112,13 @@ class HomeViewModel @Inject constructor(
             }
 
             recipePreviewsByCategoryResponses.forEachIndexed { index, recipePreviewsByCategoryResponse ->
-                Logger.d("index: $index")
+                Timber.d("index: $index")
                 when (recipePreviewsByCategoryResponse) {
                     is StoreResponse.Loading -> {
-                        Logger.d("loading")
+                        Timber.d("loading")
                     }
                     is StoreResponse.Data -> {
-                        Logger.d("data")
+                        Timber.d("data")
                         data.add(
                             HomeScreenData.Row(
                                 categories[index].name,
@@ -124,13 +127,13 @@ class HomeViewModel @Inject constructor(
                         )
                     }
                     is StoreResponse.NoNewData -> {
-                        Logger.d("no new data")
+                        Timber.d("no new data")
                     }
                     is StoreResponse.Error.Exception -> {
-                        Logger.d("error exception")
+                        Timber.d("error exception")
                     }
                     is StoreResponse.Error.Message -> {
-                        Logger.d("error message")
+                        Timber.d("error message")
                     }
                 }
             }
