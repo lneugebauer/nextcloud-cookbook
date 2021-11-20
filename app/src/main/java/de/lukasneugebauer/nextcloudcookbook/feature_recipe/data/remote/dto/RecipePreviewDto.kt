@@ -1,9 +1,10 @@
 package de.lukasneugebauer.nextcloudcookbook.feature_recipe.data.remote.dto
 
+import com.google.gson.annotations.SerializedName
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.model.RecipePreview
 
 data class RecipePreviewDto(
-    val recipe_id: String,
+    @SerializedName("recipe_id") val recipeId: String,
     val name: String,
     val keywords: String?,
     val dateCreated: String,
@@ -12,7 +13,7 @@ data class RecipePreviewDto(
     val imagePlaceholderUrl: String,
 ) {
     fun toRecipePreview() = RecipePreview(
-        id = recipe_id.toInt(),
+        id = recipeId.toInt(),
         name = name,
         keywords = keywords?.split(",") ?: emptyList(),
         imageUrl = imageUrl,

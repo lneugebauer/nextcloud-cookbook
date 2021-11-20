@@ -9,6 +9,9 @@ import de.lukasneugebauer.nextcloudcookbook.core.util.Logger
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import java.io.IOException
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 
 data class NcAccount(
     val name: String,
@@ -17,9 +20,15 @@ data class NcAccount(
     val url: String
 )
 
+data class RecipeOfTheDay(
+    val id: Int,
+    val updatedAt: LocalDateTime
+)
+
 data class Preferences(
     val ncAccount: NcAccount,
-    val useSingleSignOn: Boolean
+    val useSingleSignOn: Boolean,
+    val recipeOfTheDay: RecipeOfTheDay
 )
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "app")
@@ -32,6 +41,8 @@ class PreferencesManager(private val context: Context) {
         val NC_TOKEN = stringPreferencesKey("nc_token")
         val NC_URL = stringPreferencesKey("nc_url")
         val USE_SINGLE_SIGN_ON = booleanPreferencesKey("use_single_sign_on")
+        val RECIPE_OF_THE_DAY_ID = intPreferencesKey("recipe_of_the_day_id")
+        val RECIPE_OF_THE_DAY_UPDATED_AT = longPreferencesKey("recipe_of_the_day_updated_at")
     }
 
     val preferencesFlow = context.dataStore.data
@@ -49,6 +60,9 @@ class PreferencesManager(private val context: Context) {
             val ncToken = preferences[PreferencesKeys.NC_TOKEN] ?: ""
             val ncUrl = preferences[PreferencesKeys.NC_URL] ?: ""
             val useSingleSignOn = preferences[PreferencesKeys.USE_SINGLE_SIGN_ON] ?: false
+            val recipeOfTheDayId = preferences[PreferencesKeys.RECIPE_OF_THE_DAY_ID] ?: 0
+            val recipeOfTheDayUpdatedAt =
+                preferences[PreferencesKeys.RECIPE_OF_THE_DAY_UPDATED_AT] ?: 0
 
             Preferences(
                 ncAccount = NcAccount(
@@ -57,7 +71,15 @@ class PreferencesManager(private val context: Context) {
                     token = ncToken,
                     url = ncUrl
                 ),
-                useSingleSignOn = useSingleSignOn
+                useSingleSignOn = useSingleSignOn,
+                recipeOfTheDay = RecipeOfTheDay(
+                    id = recipeOfTheDayId,
+                    updatedAt = LocalDateTime.ofInstant(
+                        Instant.ofEpochSecond(
+                            recipeOfTheDayUpdatedAt
+                        ), ZoneOffset.UTC
+                    )
+                )
             )
         }
 
@@ -72,5 +94,12 @@ class PreferencesManager(private val context: Context) {
     suspend fun updateUseSingleSignOn(useSingleSignOn: Boolean) =
         context.dataStore.edit { preferences ->
             preferences[PreferencesKeys.USE_SINGLE_SIGN_ON] = useSingleSignOn
+        }
+
+    suspend fun updateRecipeOfTheDay(recipeOfTheDay: RecipeOfTheDay) =
+        context.dataStore.edit { preferences ->
+            preferences[PreferencesKeys.RECIPE_OF_THE_DAY_ID] = recipeOfTheDay.id
+            preferences[PreferencesKeys.RECIPE_OF_THE_DAY_UPDATED_AT] =
+                recipeOfTheDay.updatedAt.toEpochSecond(ZoneOffset.UTC)
         }
 }

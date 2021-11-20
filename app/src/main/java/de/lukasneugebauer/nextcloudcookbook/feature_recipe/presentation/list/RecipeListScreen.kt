@@ -2,8 +2,6 @@ package de.lukasneugebauer.nextcloudcookbook.feature_recipe.presentation.list
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
@@ -11,7 +9,6 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -23,33 +20,17 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.CommonL
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue
 
-@Composable
-fun RecipesTopBar(categoryName: String?) {
-    val title =
-        if (categoryName == null) {
-            stringResource(id = R.string.common_recipes)
-        } else {
-            "${stringResource(id = R.string.common_recipes)}: $categoryName"
-        }
-
-    TopAppBar(
-        title = { Text(text = title) },
-        backgroundColor = NcBlue,
-        contentColor = Color.White
-    )
-}
-
 @ExperimentalMaterialApi
 @Composable
-fun RecipesScreen(
+fun RecipeListScreen(
     navController: NavHostController,
     categoryName: String?,
-    viewModel: RecipesViewModel = hiltViewModel()
+    viewModel: RecipeListViewModel = hiltViewModel()
 ) {
     val state = viewModel.state.value
 
     Scaffold(
-        topBar = { RecipesTopBar(categoryName) }
+        topBar = { RecipeListTopBar(categoryName) }
     ) {
         if (state.data.isEmpty()) {
             Loader()
@@ -69,4 +50,20 @@ fun RecipesScreen(
             }
         }
     }
+}
+
+@Composable
+fun RecipeListTopBar(categoryName: String?) {
+    val title =
+        if (categoryName == null) {
+            stringResource(id = R.string.common_recipes)
+        } else {
+            "${stringResource(id = R.string.common_recipes)}: $categoryName"
+        }
+
+    TopAppBar(
+        title = { Text(text = title) },
+        backgroundColor = NcBlue,
+        contentColor = Color.White
+    )
 }

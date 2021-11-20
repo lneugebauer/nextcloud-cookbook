@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Kochbuch</string>
+    <string name="common_about">Über</string>
     <string name="common_back">Zurück</string>
     <string name="common_categories">Kategorien</string>
     <string name="common_more">Mehr</string>

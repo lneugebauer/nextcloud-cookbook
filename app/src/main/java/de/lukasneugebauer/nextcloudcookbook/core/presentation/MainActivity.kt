@@ -10,7 +10,6 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -29,17 +28,17 @@ import dagger.hilt.android.AndroidEntryPoint
 import de.lukasneugebauer.nextcloudcookbook.NextcloudCookbookScreen
 import de.lukasneugebauer.nextcloudcookbook.NextcloudCookbookScreen.*
 import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
-import de.lukasneugebauer.nextcloudcookbook.di.ApiProvider
-import de.lukasneugebauer.nextcloudcookbook.feature_category.presentation.list.CategoriesScreen
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.BottomBar
-import de.lukasneugebauer.nextcloudcookbook.feature_home.presentation.home.HomeScreen
-import de.lukasneugebauer.nextcloudcookbook.feature_auth.presentation.launch.LaunchScreen
-import de.lukasneugebauer.nextcloudcookbook.feature_auth.presentation.login.LoginScreen
-import de.lukasneugebauer.nextcloudcookbook.feature_recipe.presentation.detail.RecipeDetailScreen
-import de.lukasneugebauer.nextcloudcookbook.feature_recipe.presentation.list.RecipesScreen
-import de.lukasneugebauer.nextcloudcookbook.feature_search.presentation.search.SearchScreen
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
 import de.lukasneugebauer.nextcloudcookbook.core.util.Logger
+import de.lukasneugebauer.nextcloudcookbook.di.ApiProvider
+import de.lukasneugebauer.nextcloudcookbook.feature_auth.presentation.launch.LaunchScreen
+import de.lukasneugebauer.nextcloudcookbook.feature_auth.presentation.login.LoginScreen
+import de.lukasneugebauer.nextcloudcookbook.feature_category.presentation.list.CategoriesScreen
+import de.lukasneugebauer.nextcloudcookbook.feature_recipe.presentation.detail.RecipeDetailScreen
+import de.lukasneugebauer.nextcloudcookbook.feature_recipe.presentation.home.HomeScreen
+import de.lukasneugebauer.nextcloudcookbook.feature_recipe.presentation.list.RecipeListScreen
+import de.lukasneugebauer.nextcloudcookbook.feature_search.presentation.search.SearchScreen
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -166,7 +165,7 @@ fun NextcloudCookbookNavHost(
                 type = NavType.StringType
             })
         ) { backStackEntry ->
-            RecipesScreen(
+            RecipeListScreen(
                 navController,
                 backStackEntry.arguments?.getString("categoryName")
             )

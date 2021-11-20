@@ -4,9 +4,10 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dropbox.android.external.store4.StoreResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.lukasneugebauer.nextcloudcookbook.feature_category.domain.repository.CategoryRepository
-import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,11 +21,15 @@ class CategoriesViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            when (val categoriesResult = categoryRepository.getCategories()) {
-                is Resource.Success -> _state.value = _state.value.copy(
-                    data = categoriesResult.data ?: emptyList()
-                )
-                is Resource.Error -> _state.value = _state.value.copy(error = categoriesResult.text)
+            categoryRepository.getCategories().collect { categoriesResponse ->
+                when (categoriesResponse) {
+                    is StoreResponse.Loading -> {}
+                    is StoreResponse.Data -> _state.value =
+                        _state.value.copy(data = categoriesResponse.value.map { it.toCategory() })
+                    is StoreResponse.NoNewData -> {}
+                    is StoreResponse.Error.Exception -> {}
+                    is StoreResponse.Error.Message -> {}
+                }
             }
         }
     }

@@ -4,9 +4,10 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dropbox.android.external.store4.StoreResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.repository.RecipeRepository
-import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -15,15 +16,22 @@ class RecipeDetailViewModel @Inject constructor(
     private val recipeRepository: RecipeRepository
 ) : ViewModel() {
 
-    private val _state = mutableStateOf(RecipeDetailScreenState())
-    val state: State<RecipeDetailScreenState> = _state
+    private val _state = mutableStateOf(RecipeDetailState())
+    val state: State<RecipeDetailState> = _state
 
     fun getRecipe(id: Int) {
         _state.value = _state.value.copy(loading = true)
         viewModelScope.launch {
-            when (val recipeResult = recipeRepository.getRecipe(id)) {
-                is Resource.Success -> _state.value = _state.value.copy(data = recipeResult.data, loading = false)
-                is Resource.Error -> _state.value = _state.value.copy(error = recipeResult.text)
+            recipeRepository.getRecipe(id).collect { recipeResponse ->
+                when (recipeResponse) {
+                    is StoreResponse.Loading -> _state.value = _state.value.copy(loading = true)
+                    is StoreResponse.Data -> _state.value =
+                        _state.value.copy(data = recipeResponse.value.toRecipe(), loading = false)
+                    is StoreResponse.NoNewData -> {}
+                    is StoreResponse.Error.Exception -> {}
+                    is StoreResponse.Error.Message -> _state.value =
+                        _state.value.copy(error = recipeResponse.message, loading = false)
+                }
             }
         }
     }

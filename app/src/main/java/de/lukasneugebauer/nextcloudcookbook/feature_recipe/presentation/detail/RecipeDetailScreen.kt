@@ -19,6 +19,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -26,7 +27,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -267,22 +267,36 @@ fun RecipeDetailMeta(prepTime: Duration?, cookTime: Duration?, totalTime: Durati
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         if (prepTime != null) {
-            RecipeDetailMetaBox(duration = prepTime.toMinutes(), text = R.string.recipe_prep_time)
+            // TODO: 18.11.21 Use prep icon
+            RecipeDetailMetaBox(
+                icon = Icons.Filled.Timer,
+                duration = prepTime.toMinutes(),
+                text = R.string.recipe_prep_time
+            )
         }
         if (cookTime != null) {
-            RecipeDetailMetaBox(duration = cookTime.toMinutes(), text = R.string.recipe_cook_time)
+            // TODO: 18.11.21 Use cook icon
+            RecipeDetailMetaBox(
+                icon = Icons.Filled.Timer,
+                duration = cookTime.toMinutes(),
+                text = R.string.recipe_cook_time
+            )
         }
         if (totalTime != null) {
-            RecipeDetailMetaBox(duration = totalTime.toMinutes(), text = R.string.recipe_total_time)
+            RecipeDetailMetaBox(
+                icon = Icons.Filled.Timer,
+                duration = totalTime.toMinutes(),
+                text = R.string.recipe_total_time
+            )
         }
     }
 }
 
 @Composable
-fun RowScope.RecipeDetailMetaBox(duration: Long, @StringRes text: Int) {
+fun RowScope.RecipeDetailMetaBox(icon: ImageVector, duration: Long, @StringRes text: Int) {
     Box(modifier = Modifier.weight(1f)) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Icon(Icons.Filled.Timer, contentDescription = "")
+            Icon(icon, contentDescription = "")
             Text(
                 text = stringResource(id = R.string.recipe_duration, duration),
                 fontWeight = FontWeight.Bold

@@ -1,18 +1,22 @@
 package de.lukasneugebauer.nextcloudcookbook.feature_category.data.repository
 
-import com.dropbox.android.external.store4.get
+import com.dropbox.android.external.store4.StoreRequest
+import com.dropbox.android.external.store4.StoreResponse
 import de.lukasneugebauer.nextcloudcookbook.di.CategoriesStore
-import de.lukasneugebauer.nextcloudcookbook.feature_category.domain.model.Category
+import de.lukasneugebauer.nextcloudcookbook.feature_category.data.remote.dto.CategoryDto
 import de.lukasneugebauer.nextcloudcookbook.feature_category.domain.repository.CategoryRepository
-import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class CategoryRepositoryImpl @Inject constructor(
     private val categoriesStore: CategoriesStore
 ) : CategoryRepository {
 
-    override suspend fun getCategories(): Resource<List<Category>> {
-        val categories = categoriesStore.get(Unit).map { it.toCategory() }
-        return Resource.Success(data = categories)
+    override suspend fun getCategories(): Flow<StoreResponse<List<CategoryDto>>> {
+        return withContext(Dispatchers.IO) {
+            categoriesStore.stream(StoreRequest.cached(key = Unit, refresh = false))
+        }
     }
 }

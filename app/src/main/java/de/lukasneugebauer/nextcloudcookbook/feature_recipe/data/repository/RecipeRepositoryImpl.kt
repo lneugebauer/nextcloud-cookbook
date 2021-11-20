@@ -1,14 +1,15 @@
 package de.lukasneugebauer.nextcloudcookbook.feature_recipe.data.repository
 
-import com.dropbox.android.external.store4.get
+import com.dropbox.android.external.store4.StoreRequest
+import com.dropbox.android.external.store4.StoreResponse
 import de.lukasneugebauer.nextcloudcookbook.di.RecipePreviewsByCategoryStore
 import de.lukasneugebauer.nextcloudcookbook.di.RecipePreviewsStore
 import de.lukasneugebauer.nextcloudcookbook.di.RecipeStore
-import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.model.Recipe
-import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.model.RecipePreview
+import de.lukasneugebauer.nextcloudcookbook.feature_recipe.data.remote.dto.RecipeDto
+import de.lukasneugebauer.nextcloudcookbook.feature_recipe.data.remote.dto.RecipePreviewDto
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.repository.RecipeRepository
-import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -18,25 +19,26 @@ class RecipeRepositoryImpl @Inject constructor(
     private val recipeStore: RecipeStore
 ) : RecipeRepository {
 
-    override suspend fun getRecipes(): Resource<List<RecipePreview>> {
+    override suspend fun getRecipePreviews(): Flow<StoreResponse<List<RecipePreviewDto>>> {
         return withContext(Dispatchers.IO) {
-            val recipePreviews = recipePreviewsStore.get(Unit).map { it.toRecipePreview() }
-            Resource.Success(data = recipePreviews)
+            recipePreviewsStore.stream(StoreRequest.cached(key = Unit, refresh = false))
         }
     }
 
-    override suspend fun getRecipesByCategory(categoryName: String): Resource<List<RecipePreview>> {
+    override suspend fun getRecipePreviewsByCategory(categoryName: String): Flow<StoreResponse<List<RecipePreviewDto>>> {
         return withContext(Dispatchers.IO) {
-            val recipePreviews = recipePreviewsByCategoryStore.get(categoryName)
-                .map { it.toRecipePreview() }
-            Resource.Success(data = recipePreviews)
+            recipePreviewsByCategoryStore.stream(
+                StoreRequest.cached(
+                    key = categoryName,
+                    refresh = false
+                )
+            )
         }
     }
 
-    override suspend fun getRecipe(id: Int): Resource<Recipe> {
+    override suspend fun getRecipe(id: Int): Flow<StoreResponse<RecipeDto>> {
         return withContext(Dispatchers.IO) {
-            val recipe = recipeStore.get(key = id).toRecipe()
-            Resource.Success(data = recipe)
+            recipeStore.stream(StoreRequest.cached(key = id, refresh = false))
         }
     }
 }

@@ -1,9 +1,10 @@
 package de.lukasneugebauer.nextcloudcookbook.feature_category.domain.repository
 
-import de.lukasneugebauer.nextcloudcookbook.feature_category.domain.model.Category
-import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
+import com.dropbox.android.external.store4.StoreResponse
+import de.lukasneugebauer.nextcloudcookbook.feature_category.data.remote.dto.CategoryDto
+import kotlinx.coroutines.flow.Flow
 
 interface CategoryRepository {
 
-    suspend fun getCategories(): Resource<List<Category>>
+    suspend fun getCategories(): Flow<StoreResponse<List<CategoryDto>>>
 }
