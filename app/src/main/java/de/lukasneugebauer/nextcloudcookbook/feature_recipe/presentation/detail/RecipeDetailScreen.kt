@@ -6,6 +6,7 @@ import android.net.Uri
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -28,6 +29,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -245,10 +247,7 @@ fun RecipeDetailKeywords(keywords: List<String>) {
         keywords.forEach {
             Box(
                 modifier = Modifier
-                    .background(
-                        color = NcBlue,
-                        shape = CircleShape
-                    )
+                    .border(width = 2.dp, color = NcBlue, shape = CircleShape)
                     .padding(
                         horizontal = dimensionResource(id = R.dimen.padding_s),
                         vertical = dimensionResource(id = R.dimen.padding_xs)
@@ -256,7 +255,7 @@ fun RecipeDetailKeywords(keywords: List<String>) {
                     .height(dimensionResource(id = R.dimen.chip_height)),
                 contentAlignment = Alignment.Center
             ) {
-                Text(text = it)
+                Text(text = it, style = MaterialTheme.typography.body2)
             }
         }
     }
