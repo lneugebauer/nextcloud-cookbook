@@ -38,7 +38,7 @@ fun RecipeListScreen(
             LazyColumn(
                 contentPadding = PaddingValues(
                     horizontal = dimensionResource(id = R.dimen.padding_m),
-                    vertical = dimensionResource(id = R.dimen.padding_s)
+                    vertical = dimensionResource(id = R.dimen.padding_m)
                 ),
                 verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_s))
             ) {

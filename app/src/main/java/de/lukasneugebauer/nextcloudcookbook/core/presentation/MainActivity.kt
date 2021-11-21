@@ -33,11 +33,12 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.Nextcloud
 import de.lukasneugebauer.nextcloudcookbook.di.ApiProvider
 import de.lukasneugebauer.nextcloudcookbook.feature_auth.presentation.launch.LaunchScreen
 import de.lukasneugebauer.nextcloudcookbook.feature_auth.presentation.login.LoginScreen
-import de.lukasneugebauer.nextcloudcookbook.feature_category.presentation.list.CategoriesScreen
+import de.lukasneugebauer.nextcloudcookbook.feature_category.presentation.list.CategoryListScreen
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.presentation.detail.RecipeDetailScreen
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.presentation.home.HomeScreen
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.presentation.list.RecipeListScreen
 import de.lukasneugebauer.nextcloudcookbook.feature_search.presentation.search.SearchScreen
+import kotlinx.coroutines.FlowPreview
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -51,6 +52,7 @@ class MainActivity : ComponentActivity() {
     lateinit var api: ApiProvider
     private val viewModel: MainViewModel by viewModels()
 
+    @FlowPreview
     @ExperimentalCoilApi
     @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -106,6 +108,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@FlowPreview
 @ExperimentalCoilApi
 @ExperimentalMaterialApi
 @Composable
@@ -137,6 +140,7 @@ fun NextcloudCookbookApp(onSsoClick: () -> Unit) {
     }
 }
 
+@FlowPreview
 @ExperimentalCoilApi
 @ExperimentalMaterialApi
 @Composable
@@ -156,7 +160,7 @@ fun NextcloudCookbookNavHost(
             HomeScreen(navController)
         }
         composable(Categories.name) {
-            CategoriesScreen(navController)
+            CategoryListScreen(navController)
         }
         composable(
             "${Recipes.name}?categoryName={categoryName}",

@@ -1,5 +1,6 @@
 package de.lukasneugebauer.nextcloudcookbook.feature_recipe.presentation.detail
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
@@ -33,6 +34,7 @@ import androidx.navigation.NavHostController
 import coil.annotation.ExperimentalCoilApi
 import com.google.accompanist.flowlayout.FlowRow
 import de.lukasneugebauer.nextcloudcookbook.R
+import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Gap
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.authorized_image.AuthorizedImage
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.pluralResource
@@ -129,39 +131,54 @@ fun RecipeDetailTopBar(recipe: Recipe, onNavIconClick: () -> Unit, shareText: St
                     contentDescription = stringResource(id = R.string.common_more)
                 )
                 DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                    if (recipe.url.isNotBlank()) {
-                        DropdownMenuItem(onClick = {
-                            val openURL = Intent(Intent.ACTION_VIEW)
-                            openURL.data = Uri.parse(recipe.url)
-                            startActivity(context, openURL, null)
-                        }) {
-                            Text(text = stringResource(id = R.string.recipe_more_menu_share))
-                        }
-                    }
-                    DropdownMenuItem(onClick = {
-                        Toast.makeText(
-                            context,
-                            "Function currently unavailable.",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }) {
-                        Text(text = stringResource(id = R.string.recipe_more_menu_edit))
-                    }
-                    DropdownMenuItem(onClick = {
-                        Toast.makeText(
-                            context,
-                            "Function currently unavailable.",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }) {
-                        Text(text = stringResource(id = R.string.recipe_more_menu_delete))
-                    }
+                    RecipeDetailScreenDropDownMenuItemOpenSource(context, recipe.url)
+                    RecipeDetailScreenDropDownMenuItemEdit(context)
+                    RecipeDetailScreenDropDownMenuItemDelete(context)
                 }
             }
         },
         backgroundColor = NcBlue,
         contentColor = Color.White
     )
+}
+
+@Composable
+fun RecipeDetailScreenDropDownMenuItemOpenSource(context: Context, recipeUrl: String) {
+    if (recipeUrl.isNotBlank()) {
+        DropdownMenuItem(onClick = {
+            val openURL = Intent(Intent.ACTION_VIEW)
+            openURL.data = Uri.parse(recipeUrl)
+            startActivity(context, openURL, null)
+        }) {
+            Text(text = stringResource(id = R.string.recipe_more_menu_share))
+        }
+    }
+}
+
+@Composable
+fun RecipeDetailScreenDropDownMenuItemEdit(context: Context) {
+    DropdownMenuItem(onClick = {
+        Toast.makeText(
+            context,
+            "Function currently unavailable.",
+            Toast.LENGTH_SHORT
+        ).show()
+    }) {
+        Text(text = stringResource(id = R.string.recipe_more_menu_edit))
+    }
+}
+
+@Composable
+fun RecipeDetailScreenDropDownMenuItemDelete(context: Context) {
+    DropdownMenuItem(onClick = {
+        Toast.makeText(
+            context,
+            "Function currently unavailable.",
+            Toast.LENGTH_SHORT
+        ).show()
+    }) {
+        Text(text = stringResource(id = R.string.recipe_more_menu_delete))
+    }
 }
 
 @ExperimentalCoilApi
@@ -188,7 +205,7 @@ fun RecipeDetailContent(recipe: Recipe, modifier: Modifier = Modifier) {
         if (recipe.instructions.isNotEmpty()) {
             RecipeDetailInstructions(recipe.instructions)
         }
-        Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_l)))
+        Gap(size = dimensionResource(id = R.dimen.padding_m))
     }
 }
 
@@ -201,7 +218,7 @@ fun RecipeDetailImage(imageUrl: String, name: String) {
         modifier = Modifier
             .aspectRatio(4f / 3f)
             .fillMaxWidth()
-            .padding(bottom = dimensionResource(id = R.dimen.padding_l))
+            .padding(bottom = dimensionResource(id = R.dimen.padding_m))
     )
 }
 
@@ -252,7 +269,7 @@ fun RecipeDetailDescription(description: String) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
-            .padding(bottom = dimensionResource(id = R.dimen.padding_l)),
+            .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
         style = MaterialTheme.typography.body1
     )
 }
@@ -262,7 +279,10 @@ fun RecipeDetailMeta(prepTime: Duration?, cookTime: Duration?, totalTime: Durati
     Row(
         modifier = Modifier
             .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
-            .padding(bottom = dimensionResource(id = R.dimen.padding_l))
+            .padding(
+                top = dimensionResource(id = R.dimen.padding_m),
+                bottom = dimensionResource(id = R.dimen.padding_l)
+            )
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
@@ -316,7 +336,7 @@ fun RecipeDetailIngredients(ingredients: List<String>, servings: Int) {
         text = pluralResource(R.plurals.recipe_ingredients_servings, servings, servings),
         modifier = Modifier
             .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
-            .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
+            .padding(bottom = dimensionResource(id = R.dimen.padding_s)),
         style = MaterialTheme.typography.h6
     )
     ingredients.forEachIndexed { index, ingredient ->
@@ -364,7 +384,7 @@ fun RecipeDetailInstructions(instructions: List<String>) {
         text = stringResource(R.string.recipe_instructions),
         modifier = Modifier
             .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
-            .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
+            .padding(bottom = dimensionResource(id = R.dimen.padding_s)),
         style = MaterialTheme.typography.h6
     )
     instructions.forEachIndexed { index, instruction ->

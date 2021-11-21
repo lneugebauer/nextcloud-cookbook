@@ -13,7 +13,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import de.lukasneugebauer.nextcloudcookbook.NextcloudCookbookScreen
 import de.lukasneugebauer.nextcloudcookbook.R
@@ -21,25 +20,16 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.CommonL
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue
 
-@Composable
-fun CategoriesTopBar() {
-    TopAppBar(
-        title = { Text(text = stringResource(R.string.common_categories)) },
-        backgroundColor = NcBlue,
-        contentColor = Color.White
-    )
-}
-
 @ExperimentalMaterialApi
 @Composable
-fun CategoriesScreen(
+fun CategoryListScreen(
     navController: NavHostController,
-    viewModel: CategoriesViewModel = hiltViewModel()
+    viewModel: CategoryListViewModel = hiltViewModel()
 ) {
     val state = viewModel.state.value
 
     Scaffold(
-        topBar = { CategoriesTopBar() }
+        topBar = { CategoryListTopBar() }
     ) {
         if (state.data.isEmpty()) {
             Loader()
@@ -47,7 +37,7 @@ fun CategoriesScreen(
             LazyColumn(
                 contentPadding = PaddingValues(
                     horizontal = dimensionResource(id = R.dimen.padding_m),
-                    vertical = dimensionResource(id = R.dimen.padding_s)
+                    vertical = dimensionResource(id = R.dimen.padding_m)
                 ),
                 verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_s))
             ) {
@@ -62,4 +52,13 @@ fun CategoriesScreen(
             }
         }
     }
+}
+
+@Composable
+fun CategoryListTopBar() {
+    TopAppBar(
+        title = { Text(text = stringResource(R.string.common_categories)) },
+        backgroundColor = NcBlue,
+        contentColor = Color.White
+    )
 }

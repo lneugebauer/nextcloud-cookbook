@@ -2,13 +2,12 @@ package de.lukasneugebauer.nextcloudcookbook.core.presentation.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
+import coil.annotation.ExperimentalCoilApi
 import de.lukasneugebauer.nextcloudcookbook.R
 
 data class RowContent(
@@ -17,11 +16,11 @@ data class RowContent(
     val onClick: () -> Unit
 )
 
+@ExperimentalCoilApi
 @ExperimentalMaterialApi
 @Composable
 fun RowContainer(data: List<RowContent>) {
     LazyRow(
-        modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.padding_l)),
         contentPadding = PaddingValues(horizontal = dimensionResource(id = R.dimen.padding_m)),
         horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_s))
     ) {
@@ -31,6 +30,7 @@ fun RowContainer(data: List<RowContent>) {
     }
 }
 
+@ExperimentalCoilApi
 @ExperimentalMaterialApi
 @Composable
 fun RowItem(name: String, imageUrl: String, onClick: () -> Unit) {

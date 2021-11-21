@@ -12,12 +12,12 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CategoriesViewModel @Inject constructor(
+class CategoryListViewModel @Inject constructor(
     private val categoryRepository: CategoryRepository
 ) : ViewModel() {
 
-    private val _state = mutableStateOf(CategoriesScreenState())
-    val state: State<CategoriesScreenState> = _state
+    private val _state = mutableStateOf(CategoryListScreenState())
+    val state: State<CategoryListScreenState> = _state
 
     init {
         viewModelScope.launch {

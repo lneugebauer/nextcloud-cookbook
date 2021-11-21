@@ -1,11 +1,11 @@
 package de.lukasneugebauer.nextcloudcookbook.core.presentation.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -14,30 +14,35 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import de.lukasneugebauer.nextcloudcookbook.R
 
 @Composable
-fun Headline(text: String, moreButton: Boolean, onClick: () -> Unit) {
+fun Headline(text: String, clickable: Boolean, onClick: () -> Unit) {
     Row(
         modifier = Modifier
+            .clickable(enabled = clickable, onClick = onClick)
             .fillMaxWidth()
-            .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
-            .padding(bottom = dimensionResource(id = R.dimen.padding_s)),
+            .padding(
+                horizontal = dimensionResource(id = R.dimen.padding_m),
+                vertical = dimensionResource(id = R.dimen.padding_s)
+            ),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
+        // FIXME: 21.11.21 Long text will overflow more icon
         Text(
             text = text,
+            overflow = TextOverflow.Ellipsis,
+            maxLines = 1,
             style = MaterialTheme.typography.h5
         )
-        if (moreButton) {
-            IconButton(onClick = onClick) {
-                Icon(
-                    imageVector = Icons.Filled.ArrowForward,
-                    contentDescription = "More"
-                )
-            }
+        if (clickable) {
+            Icon(
+                imageVector = Icons.Filled.ArrowForward,
+                contentDescription = "More"
+            )
         }
     }
 }
@@ -45,5 +50,17 @@ fun Headline(text: String, moreButton: Boolean, onClick: () -> Unit) {
 @Preview
 @Composable
 fun HeadlinePreview() {
-    Headline(text = "Headline", moreButton = true, onClick = {})
+    Headline(text = "Headline", clickable = true, onClick = {})
+}
+
+@Preview
+@Composable
+fun HeadlinePreviewWithALotOfText() {
+    Headline(text = "Headline headline headline headline", clickable = true, onClick = {})
+}
+
+@Preview
+@Composable
+fun HeadlinePreviewWithoutMoreButton() {
+    Headline(text = "Headline", clickable = false, onClick = {})
 }

@@ -1,5 +1,6 @@
 package de.lukasneugebauer.nextcloudcookbook.feature_recipe.presentation.home
 
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -23,7 +24,9 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.*
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.authorized_image.AuthorizedImage
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.util.RecipeConstants.MORE_BUTTON_THRESHOLD
+import kotlinx.coroutines.FlowPreview
 
+@FlowPreview
 @ExperimentalCoilApi
 @ExperimentalMaterialApi
 @Composable
@@ -49,14 +52,18 @@ fun HomeScreen(
         if (!state.loading && state.data != null && state.data.isNotEmpty()) {
             LazyColumn(
                 modifier = Modifier.fillMaxWidth(),
-                contentPadding = PaddingValues(vertical = dimensionResource(id = R.dimen.padding_m))
+                contentPadding = PaddingValues(
+                    top = dimensionResource(id = R.dimen.padding_s),
+                    bottom = dimensionResource(id = R.dimen.padding_m)
+                ),
+                verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_s))
             ) {
                 items(state.data) { data ->
                     when (data) {
                         is HomeScreenData.Row -> {
                             Headline(
                                 text = data.headline,
-                                moreButton = data.recipes.size > MORE_BUTTON_THRESHOLD
+                                clickable = data.recipes.size > MORE_BUTTON_THRESHOLD
                             ) {
                                 navController.navigate("${NextcloudCookbookScreen.Recipes.name}?categoryName=${data.headline}")
                             }
@@ -69,7 +76,7 @@ fun HomeScreen(
                         is HomeScreenData.Single -> {
                             Headline(
                                 text = stringResource(id = data.headline),
-                                moreButton = false,
+                                clickable = false,
                                 onClick = {}
                             )
                             SingleItem(name = data.recipe.name, imageUrl = data.recipe.imageUrl) {
@@ -97,24 +104,8 @@ fun HomeTopBar() {
                     contentDescription = stringResource(id = R.string.common_more)
                 )
                 DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                    DropdownMenuItem(onClick = {
-                        Toast.makeText(
-                            context,
-                            "Function currently unavailable.",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }) {
-                        Text(text = stringResource(R.string.common_about))
-                    }
-                    DropdownMenuItem(onClick = {
-                        Toast.makeText(
-                            context,
-                            "Function currently unavailable.",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }) {
-                        Text(text = stringResource(R.string.common_settings))
-                    }
+                    HomeScreenDropDownMenuItemAbout(context)
+                    HomeScreenDropDownMenuItemSettings(context)
                 }
             }
         },
@@ -123,14 +114,38 @@ fun HomeTopBar() {
     )
 }
 
+@Composable
+fun HomeScreenDropDownMenuItemAbout(context: Context) {
+    DropdownMenuItem(onClick = {
+        Toast.makeText(
+            context,
+            "Function currently unavailable.",
+            Toast.LENGTH_SHORT
+        ).show()
+    }) {
+        Text(text = stringResource(R.string.common_about))
+    }
+}
+
+@Composable
+fun HomeScreenDropDownMenuItemSettings(context: Context) {
+    DropdownMenuItem(onClick = {
+        Toast.makeText(
+            context,
+            "Function currently unavailable.",
+            Toast.LENGTH_SHORT
+        ).show()
+    }) {
+        Text(text = stringResource(R.string.common_settings))
+    }
+}
+
 @ExperimentalCoilApi
 @ExperimentalMaterialApi
 @Composable
 fun SingleItem(name: String, imageUrl: String, onClick: () -> Unit) {
     Card(
-        modifier = Modifier
-            .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
-            .padding(bottom = dimensionResource(id = R.dimen.padding_l)),
+        modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
         onClick = onClick
     ) {
         Column {
@@ -141,7 +156,7 @@ fun SingleItem(name: String, imageUrl: String, onClick: () -> Unit) {
                     .aspectRatio(16f / 9f)
                     .fillMaxWidth()
             )
-            CommonItemBody(name = name, modifier = Modifier.fillMaxWidth(), onClick = { })
+            CommonItemBody(name = name, modifier = Modifier.fillMaxWidth(), onClick = {})
         }
     }
 }
