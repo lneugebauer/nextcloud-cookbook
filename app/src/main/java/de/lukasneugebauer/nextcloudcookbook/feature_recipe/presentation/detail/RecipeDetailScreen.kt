@@ -5,11 +5,8 @@ import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
 import androidx.annotation.StringRes
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -29,7 +26,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -42,6 +38,8 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.authori
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.pluralResource
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.model.Recipe
+import de.lukasneugebauer.nextcloudcookbook.feature_recipe.presentation.components.Chip
+import de.lukasneugebauer.nextcloudcookbook.feature_recipe.presentation.components.CircleChip
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.util.emptyRecipe
 import java.time.Duration
 
@@ -245,18 +243,7 @@ fun RecipeDetailKeywords(keywords: List<String>) {
         crossAxisSpacing = dimensionResource(id = R.dimen.padding_s)
     ) {
         keywords.forEach {
-            Box(
-                modifier = Modifier
-                    .border(width = 2.dp, color = NcBlue, shape = CircleShape)
-                    .padding(
-                        horizontal = dimensionResource(id = R.dimen.padding_s),
-                        vertical = dimensionResource(id = R.dimen.padding_xs)
-                    )
-                    .height(dimensionResource(id = R.dimen.chip_height)),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(text = it, style = MaterialTheme.typography.body2)
-            }
+            Chip(text = it)
         }
     }
 }
@@ -390,28 +377,17 @@ fun RecipeDetailInstructions(instructions: List<String>) {
         Row(
             modifier = Modifier.padding(
                 horizontal = dimensionResource(id = R.dimen.padding_m),
-                vertical = dimensionResource(id = R.dimen.padding_xs)
+                vertical = dimensionResource(id = R.dimen.padding_s)
             )
         ) {
-            Box(
-                modifier = Modifier
-                    .padding(top = dimensionResource(id = R.dimen.padding_xs))
-                    .background(color = NcBlue, shape = CircleShape)
-                    .padding(
-                        horizontal = dimensionResource(id = R.dimen.padding_xs),
-                        vertical = dimensionResource(id = R.dimen.padding_xs)
-                    )
-                    .size(size = dimensionResource(id = R.dimen.chip_height)),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(text = (index + 1).toString())
-            }
-            Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_s)))
+            CircleChip(text = "${index + 1}", modifier = Modifier.weight(1f))
+            Gap(size = dimensionResource(id = R.dimen.padding_s))
             Text(
                 text = instruction,
                 modifier = Modifier
                     .align(Alignment.Top)
-                    .fillMaxHeight(),
+                    .fillMaxHeight()
+                    .weight(11f),
                 style = MaterialTheme.typography.body1
             )
         }
