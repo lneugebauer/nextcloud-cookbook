@@ -22,4 +22,5 @@
     <string name="recipe_prep_time">Preparation</string>
     <string name="recipe_tools">Tools</string>
     <string name="recipe_total_time">Total</string>
+    <string name="settings_logout">Logout</string>
 </resources>

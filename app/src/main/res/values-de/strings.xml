@@ -23,4 +23,5 @@
     <string name="recipe_prep_time">Vorbereitung</string>
     <string name="recipe_tools">Utensilien</string>
     <string name="recipe_total_time">Gesamt</string>
+    <string name="settings_logout">Abmelden</string>
 </resources>

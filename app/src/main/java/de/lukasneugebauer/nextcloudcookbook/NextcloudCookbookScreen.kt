@@ -13,12 +13,8 @@ enum class NextcloudCookbookScreen(
     @StringRes val displayName: Int? = null,
     val bottomBar: Boolean = false
 ) {
-    Launch(
-        icon = Icons.Filled.Home,
-    ),
-    Login(
-        icon = Icons.Filled.Home,
-    ),
+    Launch(icon = Icons.Filled.Home),
+    Login(icon = Icons.Filled.Home),
     Home(
         icon = Icons.Filled.Home,
         bottomBar = true
@@ -33,12 +29,9 @@ enum class NextcloudCookbookScreen(
         displayName = R.string.common_recipes,
         bottomBar = true
     ),
-    Recipe(
-        icon = Icons.Filled.Fastfood
-    ),
-    Search(
-        icon = Icons.Filled.Search
-    );
+    Recipe(icon = Icons.Filled.Fastfood),
+    Search(icon = Icons.Filled.Search),
+    Settings(icon = Icons.Filled.Home);
 
     companion object {
         fun fromRoute(route: String?): NextcloudCookbookScreen =
@@ -50,6 +43,7 @@ enum class NextcloudCookbookScreen(
                 Recipes.name -> Recipes
                 Recipe.name -> Recipe
                 Search.name -> Search
+                Settings.name -> Settings
                 null -> Home
                 else -> throw IllegalArgumentException("Route $route is not recognized.")
             }

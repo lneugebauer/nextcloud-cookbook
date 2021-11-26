@@ -15,6 +15,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import coil.annotation.ExperimentalCoilApi
 import de.lukasneugebauer.nextcloudcookbook.NextcloudCookbookScreen
@@ -36,7 +37,7 @@ fun HomeScreen(
 ) {
     val state = viewModel.state.value
 
-    Scaffold(topBar = { HomeTopBar() }) {
+    Scaffold(topBar = { HomeTopBar(navController) }) {
         if (state.loading) {
             Loader()
         }
@@ -91,7 +92,7 @@ fun HomeScreen(
 }
 
 @Composable
-fun HomeTopBar() {
+fun HomeTopBar(navController: NavController) {
     val context = LocalContext.current
     var expanded by remember { mutableStateOf(false) }
 
@@ -105,7 +106,7 @@ fun HomeTopBar() {
                 )
                 DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
                     HomeScreenDropDownMenuItemAbout(context)
-                    HomeScreenDropDownMenuItemSettings(context)
+                    HomeScreenDropDownMenuItemSettings(context, navController)
                 }
             }
         },
@@ -128,13 +129,9 @@ fun HomeScreenDropDownMenuItemAbout(context: Context) {
 }
 
 @Composable
-fun HomeScreenDropDownMenuItemSettings(context: Context) {
+fun HomeScreenDropDownMenuItemSettings(context: Context, navController: NavController) {
     DropdownMenuItem(onClick = {
-        Toast.makeText(
-            context,
-            "Function currently unavailable.",
-            Toast.LENGTH_SHORT
-        ).show()
+        navController.navigate(NextcloudCookbookScreen.Settings.name)
     }) {
         Text(text = stringResource(R.string.common_settings))
     }
