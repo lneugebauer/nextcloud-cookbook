@@ -146,9 +146,10 @@ fun RecipeDetailTopBar(recipe: Recipe, onNavIconClick: () -> Unit, shareText: St
 fun RecipeDetailScreenDropDownMenuItemOpenSource(context: Context, recipeUrl: String) {
     if (recipeUrl.isNotBlank()) {
         DropdownMenuItem(onClick = {
-            val openURL = Intent(Intent.ACTION_VIEW)
-            openURL.data = Uri.parse(recipeUrl)
-            startActivity(context, openURL, null)
+            Intent(Intent.ACTION_VIEW).also { intent ->
+                intent.data = Uri.parse(recipeUrl)
+                startActivity(context, intent, null)
+            }
         }) {
             Text(text = stringResource(id = R.string.recipe_more_menu_share))
         }
