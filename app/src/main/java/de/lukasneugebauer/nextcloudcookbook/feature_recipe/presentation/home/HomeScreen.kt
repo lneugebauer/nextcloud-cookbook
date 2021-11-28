@@ -1,17 +1,14 @@
 package de.lukasneugebauer.nextcloudcookbook.feature_recipe.presentation.home
 
-import android.content.Context
-import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -93,48 +90,19 @@ fun HomeScreen(
 
 @Composable
 fun HomeTopBar(navController: NavController) {
-    val context = LocalContext.current
-    var expanded by remember { mutableStateOf(false) }
-
     TopAppBar(
         title = { Text(text = stringResource(id = R.string.app_name)) },
         actions = {
-            IconButton(onClick = { expanded = true }) {
+            IconButton(onClick = { navController.navigate(NextcloudCookbookScreen.Settings.name) }) {
                 Icon(
-                    Icons.Filled.MoreVert,
-                    contentDescription = stringResource(id = R.string.common_more)
+                    Icons.Outlined.Settings,
+                    contentDescription = stringResource(id = R.string.common_settings)
                 )
-                DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                    HomeScreenDropDownMenuItemAbout(context)
-                    HomeScreenDropDownMenuItemSettings(context, navController)
-                }
             }
         },
         backgroundColor = NcBlue,
         contentColor = Color.White
     )
-}
-
-@Composable
-fun HomeScreenDropDownMenuItemAbout(context: Context) {
-    DropdownMenuItem(onClick = {
-        Toast.makeText(
-            context,
-            "Function currently unavailable.",
-            Toast.LENGTH_SHORT
-        ).show()
-    }) {
-        Text(text = stringResource(R.string.common_about))
-    }
-}
-
-@Composable
-fun HomeScreenDropDownMenuItemSettings(context: Context, navController: NavController) {
-    DropdownMenuItem(onClick = {
-        navController.navigate(NextcloudCookbookScreen.Settings.name)
-    }) {
-        Text(text = stringResource(R.string.common_settings))
-    }
 }
 
 @ExperimentalCoilApi

@@ -9,7 +9,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Code
-import androidx.compose.material.icons.filled.PowerSettingsNew
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -76,7 +76,7 @@ fun SettingsGroupAccount() {
         SettingsMenuLink(
             icon = {
                 Icon(
-                    imageVector = Icons.Default.PowerSettingsNew,
+                    imageVector = Icons.Default.Logout,
                     contentDescription = stringResource(id = R.string.settings_logout)
                 )
             },
