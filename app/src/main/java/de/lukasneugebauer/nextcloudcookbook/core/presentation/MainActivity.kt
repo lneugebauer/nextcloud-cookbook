@@ -39,10 +39,11 @@ import de.lukasneugebauer.nextcloudcookbook.feature_recipe.presentation.home.Hom
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.presentation.list.RecipeListScreen
 import de.lukasneugebauer.nextcloudcookbook.feature_search.presentation.search.SearchScreen
 import de.lukasneugebauer.nextcloudcookbook.feature_settings.presentation.SettingsScreen
-import kotlinx.coroutines.FlowPreview
 import timber.log.Timber
 import javax.inject.Inject
 
+@ExperimentalCoilApi
+@ExperimentalMaterialApi
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
@@ -53,9 +54,6 @@ class MainActivity : ComponentActivity() {
     lateinit var api: ApiProvider
     private val viewModel: MainViewModel by viewModels()
 
-    @FlowPreview
-    @ExperimentalCoilApi
-    @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -109,7 +107,6 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@FlowPreview
 @ExperimentalCoilApi
 @ExperimentalMaterialApi
 @Composable
@@ -141,7 +138,6 @@ fun NextcloudCookbookApp(onSsoClick: () -> Unit) {
     }
 }
 
-@FlowPreview
 @ExperimentalCoilApi
 @ExperimentalMaterialApi
 @Composable

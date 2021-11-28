@@ -21,10 +21,9 @@ import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.*
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.authorized_image.AuthorizedImage
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue
+import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.model.HomeScreenDataResult
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.util.RecipeConstants.MORE_BUTTON_THRESHOLD
-import kotlinx.coroutines.FlowPreview
 
-@FlowPreview
 @ExperimentalCoilApi
 @ExperimentalMaterialApi
 @Composable
@@ -58,7 +57,7 @@ fun HomeScreen(
             ) {
                 items(state.data) { data ->
                     when (data) {
-                        is HomeScreenData.Row -> {
+                        is HomeScreenDataResult.Row -> {
                             Headline(
                                 text = data.headline,
                                 clickable = data.recipes.size > MORE_BUTTON_THRESHOLD
@@ -71,7 +70,7 @@ fun HomeScreen(
                                 }
                             })
                         }
-                        is HomeScreenData.Single -> {
+                        is HomeScreenDataResult.Single -> {
                             Headline(
                                 text = stringResource(id = data.headline),
                                 clickable = false,
