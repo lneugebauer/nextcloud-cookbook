@@ -26,7 +26,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.annotation.ExperimentalCoilApi
@@ -37,6 +36,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.authorized_image.AuthorizedImage
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.pluralResource
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue
+import de.lukasneugebauer.nextcloudcookbook.core.util.openInBrowser
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.model.Recipe
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.presentation.components.Chip
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.presentation.components.CircleChip
@@ -145,12 +145,7 @@ fun RecipeDetailTopBar(recipe: Recipe, onNavIconClick: () -> Unit, shareText: St
 @Composable
 fun RecipeDetailScreenDropDownMenuItemOpenSource(context: Context, recipeUrl: String) {
     if (recipeUrl.isNotBlank()) {
-        DropdownMenuItem(onClick = {
-            Intent(Intent.ACTION_VIEW).also { intent ->
-                intent.data = Uri.parse(recipeUrl)
-                startActivity(context, intent, null)
-            }
-        }) {
+        DropdownMenuItem(onClick = { Uri.parse(recipeUrl).openInBrowser(context) }) {
             Text(text = stringResource(id = R.string.recipe_more_menu_share))
         }
     }

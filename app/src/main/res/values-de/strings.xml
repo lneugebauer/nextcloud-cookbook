@@ -23,5 +23,15 @@
     <string name="recipe_prep_time">Vorbereitung</string>
     <string name="recipe_tools">Utensilien</string>
     <string name="recipe_total_time">Gesamt</string>
+    <string name="settings_account">Konto</string>
+    <string name="settings_contribution">Mitmachen</string>
+    <string name="settings_hosted_on_github">Dieses Projekt wird auf GitHub gehostet</string>
+    <string name="settings_license">Lizenz</string>
     <string name="settings_logout">Abmelden</string>
+    <string name="settings_mit_license">MIT Lizenz</string>
+    <string name="settings_privacy">Datenschutz</string>
+    <string name="settings_source_code">Quellcode</string>
+    <string name="settings_version_number">Version %1$s</string>
+    <string name="settings_version">Nextcloud Cookbook App</string>
+    <string name="settings_where_to_report_issues">Sie können Fehler, Verbesserungsvorschläge oder Wünsche für neue Funktionen als Issue auf GitHub erfassen</string>
 </resources>
