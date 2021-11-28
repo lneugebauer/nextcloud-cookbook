@@ -99,4 +99,9 @@ class PreferencesManager @Inject constructor(
             preferences[PreferencesKeys.RECIPE_OF_THE_DAY_UPDATED_AT] =
                 recipeOfTheDay.updatedAt.toEpochSecond(ZoneOffset.UTC)
         }
+
+    suspend fun clearPreferences() {
+        context.dataStore.edit { it.clear() }
+        sharedPreferences.edit().clear().apply()
+    }
 }
