@@ -10,7 +10,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import de.lukasneugebauer.nextcloudcookbook.NextcloudCookbookScreen
-import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue
+import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
 
 @Composable
 fun BottomBar(
@@ -19,7 +19,7 @@ fun BottomBar(
     currentScreen: NextcloudCookbookScreen
 ) {
     BottomNavigation(
-        backgroundColor = NcBlue,
+        backgroundColor = NcBlue700,
         elevation = 4.dp
     ) {
         allScreens

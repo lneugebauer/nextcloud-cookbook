@@ -18,7 +18,7 @@ import de.lukasneugebauer.nextcloudcookbook.NextcloudCookbookScreen
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.CommonListItem
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
-import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue
+import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
 
 @ExperimentalMaterialApi
 @Composable
@@ -58,7 +58,7 @@ fun CategoryListScreen(
 fun CategoryListTopBar() {
     TopAppBar(
         title = { Text(text = stringResource(R.string.common_categories)) },
-        backgroundColor = NcBlue,
+        backgroundColor = NcBlue700,
         contentColor = Color.White
     )
 }

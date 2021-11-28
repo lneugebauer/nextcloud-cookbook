@@ -20,7 +20,7 @@ import de.lukasneugebauer.nextcloudcookbook.NextcloudCookbookScreen.Recipe
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.*
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.authorized_image.AuthorizedImage
-import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue
+import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.model.HomeScreenDataResult
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.util.RecipeConstants.MORE_BUTTON_THRESHOLD
 
@@ -99,7 +99,7 @@ fun HomeTopBar(navController: NavController) {
                 )
             }
         },
-        backgroundColor = NcBlue,
+        backgroundColor = NcBlue700,
         contentColor = Color.White
     )
 }

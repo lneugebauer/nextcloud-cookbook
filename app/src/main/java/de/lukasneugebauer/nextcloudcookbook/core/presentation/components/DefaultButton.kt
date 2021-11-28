@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue
+import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
 
 // TODO: 05.10.21 Finalize styling of button
 @Composable
@@ -22,7 +22,7 @@ fun DefaultButton(
         modifier = modifier,
         colors = ButtonDefaults.buttonColors(
             backgroundColor = Color.White,
-            contentColor = NcBlue
+            contentColor = NcBlue700
         ),
         content = content
     )

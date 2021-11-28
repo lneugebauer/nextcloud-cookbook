@@ -35,7 +35,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Gap
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.authorized_image.AuthorizedImage
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.pluralResource
-import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue
+import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
 import de.lukasneugebauer.nextcloudcookbook.core.util.openInBrowser
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.model.Recipe
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.presentation.components.Chip
@@ -137,7 +137,7 @@ fun RecipeDetailTopBar(recipe: Recipe, onNavIconClick: () -> Unit, shareText: St
                 }
             }
         },
-        backgroundColor = NcBlue,
+        backgroundColor = NcBlue700,
         contentColor = Color.White
     )
 }

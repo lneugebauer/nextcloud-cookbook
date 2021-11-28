@@ -13,13 +13,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.dp
 import de.lukasneugebauer.nextcloudcookbook.R
-import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue
+import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
 
 @Composable
 fun Chip(text: String) {
     Box(
         modifier = Modifier
-            .border(width = 2.dp, color = NcBlue, shape = CircleShape)
+            .border(width = 2.dp, color = NcBlue700, shape = CircleShape)
             .padding(
                 horizontal = dimensionResource(id = R.dimen.padding_s),
                 vertical = dimensionResource(id = R.dimen.padding_xs)

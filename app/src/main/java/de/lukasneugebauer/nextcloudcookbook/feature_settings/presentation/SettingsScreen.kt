@@ -22,7 +22,7 @@ import com.alorma.compose.settings.ui.SettingsGroup
 import com.alorma.compose.settings.ui.SettingsMenuLink
 import de.lukasneugebauer.nextcloudcookbook.BuildConfig
 import de.lukasneugebauer.nextcloudcookbook.R
-import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue
+import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
 import de.lukasneugebauer.nextcloudcookbook.core.util.openInBrowser
 import de.lukasneugebauer.nextcloudcookbook.feature_settings.util.SettingsConstants.GITHUB_ISSUES_URL
 import de.lukasneugebauer.nextcloudcookbook.feature_settings.util.SettingsConstants.GITHUB_URL
@@ -54,7 +54,7 @@ fun SettingsTopBar(onNavIconClick: () -> Unit) {
                 )
             }
         },
-        backgroundColor = NcBlue,
+        backgroundColor = NcBlue700,
         contentColor = Color.White
     )
 }
