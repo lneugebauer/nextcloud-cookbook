@@ -1,6 +1,6 @@
 package de.lukasneugebauer.nextcloudcookbook.core.data.repository
 
-import de.lukasneugebauer.nextcloudcookbook.core.data.NcAccount
+import de.lukasneugebauer.nextcloudcookbook.core.domain.model.NcAccount
 import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
 import de.lukasneugebauer.nextcloudcookbook.di.ApiProvider
 import de.lukasneugebauer.nextcloudcookbook.core.domain.repository.AccountRepository

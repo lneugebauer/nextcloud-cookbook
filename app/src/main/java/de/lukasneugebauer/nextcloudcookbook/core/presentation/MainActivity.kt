@@ -1,7 +1,9 @@
 package de.lukasneugebauer.nextcloudcookbook.core.presentation
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.view.Window
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -48,19 +50,25 @@ import javax.inject.Inject
 class MainActivity : ComponentActivity() {
 
     @Inject
+    lateinit var api: ApiProvider
+
+    @Inject
     lateinit var preferencesManager: PreferencesManager
 
     @Inject
-    lateinit var api: ApiProvider
+    lateinit var sharedPreferences: SharedPreferences
     private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
-            NextcloudCookbookApp(onSsoClick = {
-                openAccountChooser()
-            })
+            NextcloudCookbookApp(
+                onSsoClick = { openAccountChooser() },
+                preferencesManager = preferencesManager,
+                sharedPreferences = sharedPreferences,
+                window = this.window
+            )
         }
     }
 
@@ -110,7 +118,12 @@ class MainActivity : ComponentActivity() {
 @ExperimentalCoilApi
 @ExperimentalMaterialApi
 @Composable
-fun NextcloudCookbookApp(onSsoClick: () -> Unit) {
+fun NextcloudCookbookApp(
+    onSsoClick: () -> Unit,
+    preferencesManager: PreferencesManager,
+    sharedPreferences: SharedPreferences,
+    window: Window
+) {
     NextcloudCookbookTheme {
         val allScreens = values().toList()
         val navController = rememberNavController()
@@ -130,9 +143,12 @@ fun NextcloudCookbookApp(onSsoClick: () -> Unit) {
             }
         ) { innerPadding ->
             NextcloudCookbookNavHost(
-                navController = navController,
                 modifier = Modifier.padding(paddingValues = innerPadding),
-                onSsoClick = onSsoClick
+                navController = navController,
+                onSsoClick = onSsoClick,
+                preferencesManager = preferencesManager,
+                sharedPreferences = sharedPreferences,
+                window = window
             )
         }
     }
@@ -142,9 +158,12 @@ fun NextcloudCookbookApp(onSsoClick: () -> Unit) {
 @ExperimentalMaterialApi
 @Composable
 fun NextcloudCookbookNavHost(
-    navController: NavHostController,
     modifier: Modifier,
-    onSsoClick: () -> Unit
+    navController: NavHostController,
+    onSsoClick: () -> Unit,
+    preferencesManager: PreferencesManager,
+    sharedPreferences: SharedPreferences,
+    window: Window
 ) {
     NavHost(navController = navController, startDestination = Launch.name, modifier = modifier) {
         composable(Launch.name) {
@@ -176,15 +195,17 @@ fun NextcloudCookbookNavHost(
             arguments = listOf(navArgument("recipeId") { type = NavType.IntType })
         ) { backStackEntry ->
             RecipeDetailScreen(
-                navController,
-                backStackEntry.arguments?.getInt("recipeId")
+                navController = navController,
+                preferencesManager = preferencesManager,
+                recipeId = backStackEntry.arguments?.getInt("recipeId"),
+                window = window
             )
         }
         composable(Search.name) {
             SearchScreen()
         }
         composable(Settings.name) {
-            SettingsScreen(navController)
+            SettingsScreen(navController, sharedPreferences)
         }
     }
 }

@@ -95,7 +95,8 @@ dependencies {
 
     implementation 'com.jakewharton.timber:timber:5.0.1'
 
-    implementation 'com.github.alorma:compose-settings-ui:0.7.2'
+    implementation "com.github.alorma:compose-settings-ui:$compose_settings_version"
+    implementation "com.github.alorma:compose-settings-storage-preferences:$compose_settings_version"
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

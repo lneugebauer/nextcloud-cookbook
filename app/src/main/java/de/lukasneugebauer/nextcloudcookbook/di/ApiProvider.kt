@@ -8,7 +8,7 @@ import com.nextcloud.android.sso.helper.SingleAccountHelper
 import de.lukasneugebauer.nextcloudcookbook.BuildConfig
 import de.lukasneugebauer.nextcloudcookbook.core.data.api.BasicAuthInterceptor
 import de.lukasneugebauer.nextcloudcookbook.core.data.api.NcCookbookApi
-import de.lukasneugebauer.nextcloudcookbook.core.data.NcAccount
+import de.lukasneugebauer.nextcloudcookbook.core.domain.model.NcAccount
 import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
 import de.lukasneugebauer.nextcloudcookbook.core.util.Constants
 import kotlinx.coroutines.CoroutineScope

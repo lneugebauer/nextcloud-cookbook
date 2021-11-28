@@ -3,7 +3,7 @@ package de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.use_case
 import com.dropbox.android.external.store4.get
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
-import de.lukasneugebauer.nextcloudcookbook.core.data.RecipeOfTheDay
+import de.lukasneugebauer.nextcloudcookbook.core.domain.model.RecipeOfTheDay
 import de.lukasneugebauer.nextcloudcookbook.di.CategoriesStore
 import de.lukasneugebauer.nextcloudcookbook.di.RecipePreviewsByCategoryStore
 import de.lukasneugebauer.nextcloudcookbook.di.RecipePreviewsStore

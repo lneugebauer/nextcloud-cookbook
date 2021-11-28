@@ -3,6 +3,8 @@ package de.lukasneugebauer.nextcloudcookbook.feature_recipe.presentation.detail
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.view.Window
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.*
@@ -31,6 +33,7 @@ import androidx.navigation.NavHostController
 import coil.annotation.ExperimentalCoilApi
 import com.google.accompanist.flowlayout.FlowRow
 import de.lukasneugebauer.nextcloudcookbook.R
+import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Gap
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.authorized_image.AuthorizedImage
@@ -47,11 +50,17 @@ import java.time.Duration
 @Composable
 fun RecipeDetailScreen(
     navController: NavHostController,
+    preferencesManager: PreferencesManager,
     recipeId: Int?,
+    window: Window,
     viewModel: RecipeDetailViewModel = hiltViewModel()
 ) {
     val state = viewModel.state.value
     var recipe: Recipe by remember { mutableStateOf(emptyRecipe()) }
+
+    if (preferencesManager.getStayAwake()) {
+        KeepScreenOn(window)
+    }
 
     Scaffold(
         topBar = {
@@ -79,6 +88,16 @@ fun RecipeDetailScreen(
                     .padding(paddingValues = innerPadding)
                     .verticalScroll(rememberScrollState())
             )
+        }
+    }
+}
+
+@Composable
+fun KeepScreenOn(window: Window) {
+    DisposableEffect(Unit) {
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        onDispose {
+            window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
     }
 }

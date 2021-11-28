@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nextcloud.android.sso.model.SingleSignOnAccount
 import dagger.hilt.android.lifecycle.HiltViewModel
-import de.lukasneugebauer.nextcloudcookbook.core.data.NcAccount
+import de.lukasneugebauer.nextcloudcookbook.core.domain.model.NcAccount
 import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
 import kotlinx.coroutines.launch
 import javax.inject.Inject

@@ -1,10 +1,15 @@
 package de.lukasneugebauer.nextcloudcookbook.core.data
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
-import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
+import dagger.hilt.android.qualifiers.ApplicationContext
+import de.lukasneugebauer.nextcloudcookbook.core.domain.model.NcAccount
+import de.lukasneugebauer.nextcloudcookbook.core.domain.model.RecipeOfTheDay
+import de.lukasneugebauer.nextcloudcookbook.feature_settings.util.SettingsConstants.STAY_AWAKE_DEFAULT
+import de.lukasneugebauer.nextcloudcookbook.feature_settings.util.SettingsConstants.STAY_AWAKE_KEY
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import timber.log.Timber
@@ -12,28 +17,16 @@ import java.io.IOException
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneOffset
-
-data class NcAccount(
-    val name: String,
-    val username: String,
-    val token: String,
-    val url: String
-)
-
-data class RecipeOfTheDay(
-    val id: Int,
-    val updatedAt: LocalDateTime
-)
-
-data class Preferences(
-    val ncAccount: NcAccount,
-    val useSingleSignOn: Boolean,
-    val recipeOfTheDay: RecipeOfTheDay
-)
+import javax.inject.Inject
+import javax.inject.Singleton
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "app")
 
-class PreferencesManager(private val context: Context) {
+@Singleton
+class PreferencesManager @Inject constructor(
+    @ApplicationContext private val context: Context,
+    private val sharedPreferences: SharedPreferences
+) {
 
     private object PreferencesKeys {
         val NC_NAME = stringPreferencesKey("nc_name")
@@ -64,7 +57,7 @@ class PreferencesManager(private val context: Context) {
             val recipeOfTheDayUpdatedAt =
                 preferences[PreferencesKeys.RECIPE_OF_THE_DAY_UPDATED_AT] ?: 0
 
-            Preferences(
+            de.lukasneugebauer.nextcloudcookbook.core.domain.model.Preferences(
                 ncAccount = NcAccount(
                     name = ncName,
                     username = ncUsername,
@@ -82,6 +75,10 @@ class PreferencesManager(private val context: Context) {
                 )
             )
         }
+
+    fun getStayAwake(): Boolean {
+        return sharedPreferences.getBoolean(STAY_AWAKE_KEY, STAY_AWAKE_DEFAULT)
+    }
 
     suspend fun updateNextcloudAccount(ncAccount: NcAccount) =
         context.dataStore.edit { preferences ->
