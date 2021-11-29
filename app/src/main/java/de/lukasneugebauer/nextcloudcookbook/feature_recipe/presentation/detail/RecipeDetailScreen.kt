@@ -210,7 +210,12 @@ fun RecipeDetailContent(recipe: Recipe, modifier: Modifier = Modifier) {
         if (recipe.description.isNotBlank()) {
             RecipeDetailDescription(recipe.description)
         }
-        RecipeDetailMeta(recipe.prepTime, recipe.cookTime, recipe.totalTime)
+        if ((recipe.prepTime != null && recipe.prepTime != Duration.ZERO) ||
+            (recipe.cookTime != null && recipe.prepTime != Duration.ZERO) ||
+            (recipe.totalTime != null && recipe.totalTime != Duration.ZERO)
+        ) {
+            RecipeDetailMeta(recipe.prepTime, recipe.cookTime, recipe.totalTime)
+        }
         if (recipe.ingredients.isNotEmpty()) {
             RecipeDetailIngredients(recipe.ingredients, recipe.yield)
         }
@@ -287,7 +292,7 @@ fun RecipeDetailMeta(prepTime: Duration?, cookTime: Duration?, totalTime: Durati
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
-        if (prepTime != null) {
+        if (prepTime != null && prepTime != Duration.ZERO) {
             // TODO: 18.11.21 Use prep icon
             RecipeDetailMetaBox(
                 icon = Icons.Filled.Timer,
@@ -295,7 +300,7 @@ fun RecipeDetailMeta(prepTime: Duration?, cookTime: Duration?, totalTime: Durati
                 text = R.string.recipe_prep_time
             )
         }
-        if (cookTime != null) {
+        if (cookTime != null && cookTime != Duration.ZERO) {
             // TODO: 18.11.21 Use cook icon
             RecipeDetailMetaBox(
                 icon = Icons.Filled.Timer,
@@ -303,7 +308,7 @@ fun RecipeDetailMeta(prepTime: Duration?, cookTime: Duration?, totalTime: Durati
                 text = R.string.recipe_cook_time
             )
         }
-        if (totalTime != null) {
+        if (totalTime != null && totalTime != Duration.ZERO) {
             RecipeDetailMetaBox(
                 icon = Icons.Filled.Timer,
                 duration = totalTime.toMinutes(),
