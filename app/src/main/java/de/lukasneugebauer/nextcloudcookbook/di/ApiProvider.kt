@@ -97,7 +97,7 @@ class ApiProvider(
             .build()
 
         val retrofit = Retrofit.Builder()
-            .baseUrl(ncAccount.url + Constants.API_ENDPOINT)
+            .baseUrl(ncAccount.url)
             .client(client)
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()

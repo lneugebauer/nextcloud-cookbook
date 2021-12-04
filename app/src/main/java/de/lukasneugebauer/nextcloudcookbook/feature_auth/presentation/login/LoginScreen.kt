@@ -123,16 +123,20 @@ fun ManualLogin(viewModel: LoginViewModel) {
     Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_s)))
     DefaultOutlinedTextField(
         value = username,
-        onValueChange = { username = it },
+        onValueChange = {
+            username = it
+            viewModel.clearErrors()
+        },
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
         label = {
             Text(
                 text = "Username",
-                color = Color.White
+                color = MaterialTheme.colors.onPrimary
             )
         },
+        errorText = viewModel.state.value.usernameError,
         keyboardOptions = KeyboardOptions.Default.copy(
             imeAction = ImeAction.Next
         ),
@@ -146,14 +150,17 @@ fun ManualLogin(viewModel: LoginViewModel) {
     Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_s)))
     DefaultOutlinedTextField(
         value = password,
-        onValueChange = { password = it },
+        onValueChange = {
+            password = it
+            viewModel.clearErrors()
+        },
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
         label = {
             Text(
                 text = "Password",
-                color = Color.White
+                color = MaterialTheme.colors.onPrimary
             )
         },
         visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
@@ -168,6 +175,7 @@ fun ManualLogin(viewModel: LoginViewModel) {
                 Icon(imageVector = image, "Show/hide password", tint = Color.White)
             }
         },
+        errorText = viewModel.state.value.passwordError,
         keyboardOptions = KeyboardOptions.Default.copy(
             keyboardType = KeyboardType.Password,
             imeAction = ImeAction.Next
@@ -182,16 +190,26 @@ fun ManualLogin(viewModel: LoginViewModel) {
     Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_s)))
     DefaultOutlinedTextField(
         value = url,
-        onValueChange = { url = it },
+        onValueChange = {
+            url = it
+            viewModel.clearErrors()
+        },
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
         label = {
             Text(
                 text = "Nextcloud root address",
-                color = Color.White
+                color = MaterialTheme.colors.onPrimary
             )
         },
+        placeholder = {
+            Text(
+                text = "https://cloud.example.tld",
+                color = MaterialTheme.colors.onPrimary.copy(alpha = 0.5f)
+            )
+        },
+        errorText = viewModel.state.value.urlError,
         keyboardOptions = KeyboardOptions.Default.copy(
             imeAction = ImeAction.Done
         ),
