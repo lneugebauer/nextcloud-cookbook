@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.lukasneugebauer.nextcloudcookbook.core.domain.repository.AccountRepository
 import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
+import de.lukasneugebauer.nextcloudcookbook.feature_auth.domain.state.LaunchScreenState
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject

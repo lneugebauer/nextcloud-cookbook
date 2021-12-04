@@ -12,8 +12,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.domain.model.NcAccount
 import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
 import de.lukasneugebauer.nextcloudcookbook.core.util.Constants
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -29,7 +28,9 @@ class ApiProvider(
 ) {
 
     private var ncSsoApi: NextcloudAPI? = null
-    private var ncCookbookApi: NcCookbookApi? = null
+
+    private val _ncCookbookApiFlow = MutableStateFlow<NcCookbookApi?>(null)
+    val ncCookbookApiFlow: StateFlow<NcCookbookApi?> = _ncCookbookApiFlow
 
     init {
         initApi(object : NextcloudAPI.ApiConnectedListener {
@@ -67,7 +68,7 @@ class ApiProvider(
             val ssoAccount = SingleAccountHelper.getCurrentSingleSignOnAccount(context)
             ncSsoApi = NextcloudAPI(context, ssoAccount, gson, callback)
             ncSsoApi?.let {
-                this.ncCookbookApi = NextcloudRetrofitApiBuilder(
+                this._ncCookbookApiFlow.value = NextcloudRetrofitApiBuilder(
                     it,
                     Constants.API_ENDPOINT
                 ).create(NcCookbookApi::class.java)
@@ -101,8 +102,8 @@ class ApiProvider(
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
 
-        ncCookbookApi = retrofit.create(NcCookbookApi::class.java)
+        _ncCookbookApiFlow.value = retrofit.create(NcCookbookApi::class.java)
     }
 
-    fun getNcCookbookApi(): NcCookbookApi? = ncCookbookApi
+    fun getNcCookbookApi(): NcCookbookApi? = _ncCookbookApiFlow.value
 }
