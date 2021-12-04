@@ -3,8 +3,10 @@ package de.lukasneugebauer.nextcloudcookbook.feature_auth.presentation.login
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
@@ -50,7 +52,8 @@ fun LoginScreen(
     Column(
         modifier = Modifier
             .background(NcBlueGradient)
-            .fillMaxSize(),
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -137,7 +140,8 @@ fun ManualLogin(viewModel: LoginViewModel) {
             onNext = {
                 focusManager.moveFocus(FocusDirection.Down)
             }
-        )
+        ),
+        singleLine = true
     )
     Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_s)))
     DefaultOutlinedTextField(
@@ -172,7 +176,8 @@ fun ManualLogin(viewModel: LoginViewModel) {
             onNext = {
                 focusManager.moveFocus(FocusDirection.Down)
             }
-        )
+        ),
+        singleLine = true
     )
     Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_s)))
     DefaultOutlinedTextField(
@@ -194,7 +199,8 @@ fun ManualLogin(viewModel: LoginViewModel) {
             onDone = {
                 viewModel.manualLogin(username, password, url)
             }
-        )
+        ),
+        singleLine = true
     )
     Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_m)))
     DefaultButton(

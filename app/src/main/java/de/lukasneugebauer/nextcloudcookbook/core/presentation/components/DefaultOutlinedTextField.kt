@@ -20,7 +20,8 @@ fun DefaultOutlinedTextField(
     trailingIcon: @Composable (() -> Unit)? = null,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    keyboardActions: KeyboardActions = KeyboardActions.Default
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
+    singleLine: Boolean = false
 ) {
     OutlinedTextField(
         value = value,
@@ -31,6 +32,7 @@ fun DefaultOutlinedTextField(
         visualTransformation = visualTransformation,
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions,
+        singleLine = singleLine,
         colors = TextFieldDefaults.outlinedTextFieldColors(
             textColor = Color.White,
             cursorColor = Color.White,
