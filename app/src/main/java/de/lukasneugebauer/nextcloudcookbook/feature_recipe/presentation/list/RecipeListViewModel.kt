@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.dropbox.android.external.store4.StoreResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.repository.RecipeRepository
+import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.state.RecipeListState
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -33,10 +34,12 @@ class RecipeListViewModel @Inject constructor(
 
             recipePreviewsFlow.collect { recipePreviewsResponse ->
                 when (recipePreviewsResponse) {
-                    is StoreResponse.Loading -> {}
-                    is StoreResponse.Data -> _state.value =
-                        RecipeListState(data = recipePreviewsResponse.value.map { it.toRecipePreview() })
-                    is StoreResponse.NoNewData -> {}
+                    is StoreResponse.Loading -> _state.value = _state.value.copy(loading = true)
+                    is StoreResponse.Data -> _state.value = _state.value.copy(
+                        loading = false,
+                        data = recipePreviewsResponse.value.map { it.toRecipePreview() }
+                    )
+                    is StoreResponse.NoNewData -> _state.value = _state.value.copy(loading = true)
                     is StoreResponse.Error.Exception -> {}
                     is StoreResponse.Error.Message -> {}
                 }

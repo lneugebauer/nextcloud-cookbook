@@ -14,6 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.time.LocalDateTime
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -45,12 +46,16 @@ class GetHomeScreenDataUseCase @Inject constructor(
         }
 
         withContext(Dispatchers.IO) {
-            homeScreenData.add(
-                HomeScreenDataResult.Single(
-                    R.string.home_recommendation,
-                    recipeStore.get(recipeOfTheDay.id).toRecipe()
+            try {
+                homeScreenData.add(
+                    HomeScreenDataResult.Single(
+                        R.string.home_recommendation,
+                        recipeStore.get(recipeOfTheDay.id).toRecipe()
+                    )
                 )
-            )
+            } catch (e: Exception) {
+                Timber.e(e.stackTraceToString())
+            }
         }
 
         withContext(Dispatchers.IO) {
@@ -58,14 +63,17 @@ class GetHomeScreenDataUseCase @Inject constructor(
                 .sortedByDescending { it.recipeCount }
                 .take(RecipeConstants.HOME_SCREEN_CATEGORIES)
                 .forEach { categoryDto ->
-                    homeScreenData.add(
-                        HomeScreenDataResult.Row(
-                            categoryDto.name,
-                            recipePreviewsByCategoryStore
-                                .get(categoryDto.name)
-                                .map { it.toRecipePreview() }
+                    val recipePreviews = recipePreviewsByCategoryStore
+                        .get(categoryDto.name)
+                        .map { it.toRecipePreview() }
+                    if (recipePreviews.isNotEmpty()) {
+                        homeScreenData.add(
+                            HomeScreenDataResult.Row(
+                                categoryDto.name,
+                                recipePreviews
+                            )
                         )
-                    )
+                    }
                 }
         }
 

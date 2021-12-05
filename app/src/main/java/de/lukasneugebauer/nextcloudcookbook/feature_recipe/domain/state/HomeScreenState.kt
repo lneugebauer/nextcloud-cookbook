@@ -1,4 +1,4 @@
-package de.lukasneugebauer.nextcloudcookbook.feature_recipe.presentation.home
+package de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.state
 
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.model.HomeScreenDataResult
 

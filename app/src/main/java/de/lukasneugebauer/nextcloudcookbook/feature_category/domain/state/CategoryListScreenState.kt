@@ -1,4 +1,4 @@
-package de.lukasneugebauer.nextcloudcookbook.feature_category.presentation.list
+package de.lukasneugebauer.nextcloudcookbook.feature_category.domain.state
 
 import de.lukasneugebauer.nextcloudcookbook.feature_category.domain.model.Category
 

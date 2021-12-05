@@ -18,6 +18,7 @@ import de.lukasneugebauer.nextcloudcookbook.NextcloudCookbookScreen
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.CommonListItem
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
+import de.lukasneugebauer.nextcloudcookbook.core.presentation.error.NotFoundScreen
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
 
 @ExperimentalMaterialApi
@@ -32,9 +33,15 @@ fun RecipeListScreen(
     Scaffold(
         topBar = { RecipeListTopBar(categoryName) }
     ) {
-        if (state.data.isEmpty()) {
+        if (state.loading) {
             Loader()
-        } else {
+        }
+
+        if (!state.loading && state.data.isEmpty()) {
+            NotFoundScreen()
+        }
+
+        if (state.data.isNotEmpty()) {
             LazyColumn(
                 contentPadding = PaddingValues(
                     horizontal = dimensionResource(id = R.dimen.padding_m),

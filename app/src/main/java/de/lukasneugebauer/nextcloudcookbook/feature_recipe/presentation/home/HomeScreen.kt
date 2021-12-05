@@ -20,6 +20,7 @@ import de.lukasneugebauer.nextcloudcookbook.NextcloudCookbookScreen.Recipe
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.*
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.authorized_image.AuthorizedImage
+import de.lukasneugebauer.nextcloudcookbook.core.presentation.error.NotFoundScreen
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.model.HomeScreenDataResult
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.util.RecipeConstants.MORE_BUTTON_THRESHOLD
@@ -38,12 +39,8 @@ fun HomeScreen(
             Loader()
         }
 
-        if (!state.loading && state.data == null) {
-            Text(text = "An error occurred.")
-        }
-
         if (!state.loading && state.data != null && state.data.isEmpty()) {
-            Text(text = "No recipes found.")
+            NotFoundScreen()
         }
 
         if (!state.loading && state.data != null && state.data.isNotEmpty()) {

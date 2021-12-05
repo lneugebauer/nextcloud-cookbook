@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.dropbox.android.external.store4.StoreResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.lukasneugebauer.nextcloudcookbook.feature_category.domain.repository.CategoryRepository
+import de.lukasneugebauer.nextcloudcookbook.feature_category.domain.state.CategoryListScreenState
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
