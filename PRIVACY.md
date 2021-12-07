@@ -13,11 +13,7 @@ This is a list of permissions required and asked by the App in order to properly
 
 - `android.permission.INTERNET`
 
-  Used by [Nextcloud Single Sign On library](https://github.com/nextcloud/Android-SingleSignOn/) to communicate with your Nextcloud instance and synchronize contents.
-
-- `android.permission.INTERNET`
-
-  Used by [Nextcloud Single Sign On library](https://github.com/nextcloud/Android-SingleSignOn/) to communicate with your Nextcloud instance and synchronize contents.
+  Used by [Nextcloud Single Sign On library](https://github.com/nextcloud/Android-SingleSignOn/) to communicate with your Nextcloud instance and by the App to synchronize contents.
 
 - `android.permission.GET_ACCOUNTS`
 
