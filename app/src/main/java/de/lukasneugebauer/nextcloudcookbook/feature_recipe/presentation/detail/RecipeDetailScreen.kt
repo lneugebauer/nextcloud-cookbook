@@ -14,8 +14,8 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Timer
+import androidx.compose.material.icons.outlined.Share
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -140,7 +140,7 @@ fun RecipeDetailTopBar(recipe: Recipe, onNavIconClick: () -> Unit, shareText: St
                 shareRecipe()
             }) {
                 Icon(
-                    Icons.Filled.Share,
+                    Icons.Outlined.Share,
                     contentDescription = stringResource(id = R.string.common_share)
                 )
             }
