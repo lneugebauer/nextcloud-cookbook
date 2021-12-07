@@ -4,10 +4,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
@@ -70,6 +69,14 @@ fun RecipeListTopBar(categoryName: String?) {
 
     TopAppBar(
         title = { Text(text = title) },
+        actions = {
+            IconButton(onClick = {}) {
+                Icon(
+                    Icons.Default.FilterList,
+                    contentDescription = stringResource(id = R.string.common_share)
+                )
+            }
+        },
         backgroundColor = NcBlue700,
         contentColor = Color.White
     )
