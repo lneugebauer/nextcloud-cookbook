@@ -190,7 +190,12 @@ fun SettingsGroupContribution(context: Context) {
         )
         SettingsMenuLink(
             title = { Text(text = stringResource(R.string.settings_issues)) },
-            subtitle = { Text(text = stringResource(R.string.settings_where_to_report_issues)) },
+            subtitle = {
+                Text(
+                    text = stringResource(R.string.settings_where_to_report_issues),
+                    modifier = Modifier.padding(end = dimensionResource(id = R.dimen.padding_m))
+                )
+            },
             onClick = { Uri.parse(GITHUB_ISSUES_URL).openInBrowser(context) }
         )
     }
