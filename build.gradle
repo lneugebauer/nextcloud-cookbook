@@ -23,6 +23,17 @@ buildscript {
     }
 }
 
+// https://stackoverflow.com/a/70217715
+allprojects {
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+        kotlinOptions {
+            freeCompilerArgs += [
+                    "-Xuse-experimental=androidx.compose.animation.ExperimentalAnimationApi"
+            ]
+        }
+    }
+}
+
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
