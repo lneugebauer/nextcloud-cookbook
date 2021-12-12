@@ -1,7 +1,5 @@
 package de.lukasneugebauer.nextcloudcookbook.feature_auth.presentation.login
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nextcloud.android.sso.api.NextcloudAPI
@@ -13,7 +11,12 @@ import de.lukasneugebauer.nextcloudcookbook.core.domain.use_case.ClearPreference
 import de.lukasneugebauer.nextcloudcookbook.core.util.Constants.VALID_URL_REGEX
 import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import de.lukasneugebauer.nextcloudcookbook.di.ApiProvider
+import de.lukasneugebauer.nextcloudcookbook.feature_auth.domain.repository.AuthRepository
 import de.lukasneugebauer.nextcloudcookbook.feature_auth.domain.state.LoginScreenState
+import de.lukasneugebauer.nextcloudcookbook.feature_auth.domain.state.LoginWebViewState
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
@@ -23,13 +26,17 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val accountRepository: AccountRepository,
+    private val authRepository: AuthRepository,
     private val apiProvider: ApiProvider,
     private val clearPreferencesUseCase: ClearPreferencesUseCase,
     private val preferencesManager: PreferencesManager
 ) : ViewModel() {
 
-    private val _state = mutableStateOf(LoginScreenState())
-    val state: State<LoginScreenState> = _state
+    private val _uiState = MutableStateFlow(LoginScreenState())
+    val uiState: StateFlow<LoginScreenState> = _uiState
+
+    private val _loginWebViewState = MutableStateFlow<LoginWebViewState>(LoginWebViewState.Gone)
+    val loginWebViewState: StateFlow<LoginWebViewState> = _loginWebViewState
 
     init {
         viewModelScope.launch {
@@ -39,47 +46,58 @@ class LoginViewModel @Inject constructor(
             ) { accountResource, ncCookbookApi ->
                 Pair(accountResource, ncCookbookApi)
             }.collect { (accountResource, ncCookbookApi) ->
+                Timber.d("accountResource: $accountResource, ncCookbookApi: $ncCookbookApi")
                 if (accountResource is Resource.Success && ncCookbookApi != null) {
                     when (val capabilitiesResource = accountRepository.getCapabilities()) {
-                        is Resource.Success -> _state.value = _state.value.copy(authorized = true)
+                        is Resource.Success -> _uiState.value = _uiState.value.copy(authorized = true)
                         is Resource.Error -> {
                             clearPreferencesUseCase()
-                            _state.value = _state.value.copy(urlError = capabilitiesResource.text)
+                            _uiState.value = _uiState.value.copy(urlError = capabilitiesResource.text)
                         }
                     }
                 } else {
-                    _state.value = _state.value.copy(authorized = false)
+                    _uiState.value = _uiState.value.copy(authorized = false)
                 }
             }
         }
     }
 
-    fun manualLogin(username: String, password: String, url: String) {
-        if (username.isBlank()) {
-            _state.value = _state.value.copy(usernameError = "Please enter an username")
-            return
-        }
+    fun getLoginEndpoint(url: String) {
+        if (!validUrl(url)) return
 
-        if (password.isBlank()) {
-            _state.value = _state.value.copy(passwordError = "Please enter a password")
-            return
+        viewModelScope.launch {
+            when (val result =
+                authRepository.getLoginEndpoint(url)) {
+                is Resource.Success -> {
+                    _loginWebViewState.value = LoginWebViewState.Visible(url = result.data?.loginUrl!!)
+                    pollLoginServer(result.data.pollUrl, result.data.token)
+                }
+                is Resource.Error -> _uiState.value = _uiState.value.copy(urlError = result.text)
+            }
         }
+    }
 
-        if (url.isBlank()) {
-            _state.value = _state.value.copy(urlError = "Please enter an URL")
-            return
+    private suspend fun pollLoginServer(url: String, token: String) {
+        when (val result = authRepository.tryLogin(url, token)) {
+            is Resource.Success -> {
+                preferencesManager.updateNextcloudAccount(result.data?.ncAccount!!)
+                preferencesManager.updateUseSingleSignOn(false)
+                apiProvider.initApi(object : NextcloudAPI.ApiConnectedListener {
+                    override fun onConnected() {}
+                    override fun onError(ex: Exception?) {}
+                })
+            }
+            is Resource.Error -> {
+                delay(1_000L)
+                pollLoginServer(url, token)
+            }
         }
+    }
 
-        if (!url.startsWith("https://")) {
-            _state.value =
-                _state.value.copy(urlError = "Invalid protocol; URL must start with https://")
-            return
-        }
-
-        if (!url.matches(VALID_URL_REGEX)) {
-            _state.value = _state.value.copy(urlError = "Invalid URL")
-            return
-        }
+    fun tryManualLogin(username: String, password: String, url: String) {
+        if (!validUsername(username)) return
+        if (!validPassword(password)) return
+        if (!validUrl(url)) return
 
         val ncAccount = NcAccount(
             name = "",
@@ -98,10 +116,48 @@ class LoginViewModel @Inject constructor(
     }
 
     fun clearErrors() {
-        _state.value = _state.value.copy(
+        _uiState.value = _uiState.value.copy(
             usernameError = null,
             passwordError = null,
             urlError = null
         )
+    }
+
+    private fun validUsername(username: String): Boolean {
+        if (username.isBlank()) {
+            _uiState.value = _uiState.value.copy(usernameError = "Please enter an username")
+            return false
+        }
+
+        return true
+    }
+
+    private fun validPassword(password: String): Boolean {
+        if (password.isBlank()) {
+            _uiState.value = _uiState.value.copy(passwordError = "Please enter a password")
+            return false
+        }
+
+        return true
+    }
+
+    private fun validUrl(url: String): Boolean {
+        if (url.isBlank()) {
+            _uiState.value = _uiState.value.copy(urlError = "Please enter an URL")
+            return false
+        }
+
+        if (!url.startsWith("https://")) {
+            _uiState.value =
+                _uiState.value.copy(urlError = "Invalid protocol; URL must start with https://")
+            return false
+        }
+
+        if (!url.matches(VALID_URL_REGEX)) {
+            _uiState.value = _uiState.value.copy(urlError = "Invalid URL")
+            return false
+        }
+
+        return true
     }
 }

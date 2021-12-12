@@ -1,18 +1,22 @@
 package de.lukasneugebauer.nextcloudcookbook.di
 
 import android.content.Context
-import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.nextcloud.android.sso.api.NextcloudAPI
 import com.nextcloud.android.sso.exceptions.SSOException
 import com.nextcloud.android.sso.helper.SingleAccountHelper
-import de.lukasneugebauer.nextcloudcookbook.BuildConfig
-import de.lukasneugebauer.nextcloudcookbook.core.data.api.BasicAuthInterceptor
-import de.lukasneugebauer.nextcloudcookbook.core.data.api.NcCookbookApi
-import de.lukasneugebauer.nextcloudcookbook.core.domain.model.NcAccount
 import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
+import de.lukasneugebauer.nextcloudcookbook.core.data.api.NcCookbookApi
+import de.lukasneugebauer.nextcloudcookbook.core.data.remote.BasicAuthInterceptor
+import de.lukasneugebauer.nextcloudcookbook.core.domain.model.NcAccount
 import de.lukasneugebauer.nextcloudcookbook.core.util.Constants
+import de.lukasneugebauer.nextcloudcookbook.feature_recipe.data.remote.deserializer.NutritionDeserializer
+import de.lukasneugebauer.nextcloudcookbook.feature_recipe.data.remote.dto.NutritionDto
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -23,10 +27,13 @@ import retrofit2.converter.gson.GsonConverterFactory
 class ApiProvider(
     private val context: Context,
     private val coroutineScope: CoroutineScope,
-    private val gson: Gson,
+    private val httpLoggingInterceptor: HttpLoggingInterceptor,
     private val preferencesManager: PreferencesManager
 ) {
 
+    private val gson = GsonBuilder()
+        .registerTypeAdapter(NutritionDto::class.java, NutritionDeserializer())
+        .create()
     private var ncSsoApi: NextcloudAPI? = null
 
     private val _ncCookbookApiFlow = MutableStateFlow<NcCookbookApi?>(null)
@@ -81,18 +88,10 @@ class ApiProvider(
     }
 
     private fun initRetrofitApi(ncAccount: NcAccount) {
-        val loggingInterceptor = HttpLoggingInterceptor().apply {
-            level = if (BuildConfig.DEBUG) {
-                HttpLoggingInterceptor.Level.BASIC
-            } else {
-                HttpLoggingInterceptor.Level.NONE
-            }
-        }
-
         val authInterceptor = BasicAuthInterceptor(ncAccount.username, ncAccount.token)
 
         val client = OkHttpClient.Builder()
-            .addInterceptor(loggingInterceptor)
+            .addInterceptor(httpLoggingInterceptor)
             .addInterceptor(authInterceptor)
             .build()
 

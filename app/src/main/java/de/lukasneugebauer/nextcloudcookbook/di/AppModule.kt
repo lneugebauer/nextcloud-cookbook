@@ -2,20 +2,18 @@ package de.lukasneugebauer.nextcloudcookbook.di
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import de.lukasneugebauer.nextcloudcookbook.BuildConfig
 import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
 import de.lukasneugebauer.nextcloudcookbook.core.util.Constants.SHARED_PREFERENCES_KEY
-import de.lukasneugebauer.nextcloudcookbook.feature_recipe.data.remote.deserializer.NutritionDeserializer
-import de.lukasneugebauer.nextcloudcookbook.feature_recipe.data.remote.dto.NutritionDto
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import okhttp3.logging.HttpLoggingInterceptor
 import javax.inject.Singleton
 
 @Module
@@ -44,16 +42,21 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideGson(): Gson = GsonBuilder()
-        .registerTypeAdapter(NutritionDto::class.java, NutritionDeserializer())
-        .create()
+    fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
+        level = if (BuildConfig.DEBUG) {
+            HttpLoggingInterceptor.Level.BASIC
+        } else {
+            HttpLoggingInterceptor.Level.NONE
+        }
+    }
 
     @Provides
     @Singleton
     fun provideApiProvider(
         @ApplicationContext context: Context,
         coroutineScope: CoroutineScope,
-        gson: Gson,
+        httpLoggingInterceptor: HttpLoggingInterceptor,
         preferencesManager: PreferencesManager
-    ): ApiProvider = ApiProvider(context, coroutineScope, gson, preferencesManager)
+    ): ApiProvider =
+        ApiProvider(context, coroutineScope, httpLoggingInterceptor, preferencesManager)
 }

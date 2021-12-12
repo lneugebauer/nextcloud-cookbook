@@ -1,4 +1,4 @@
-package de.lukasneugebauer.nextcloudcookbook.core.data.dto.response
+package de.lukasneugebauer.nextcloudcookbook.core.data.remote.response
 
 import de.lukasneugebauer.nextcloudcookbook.core.data.dto.OcsDto
 

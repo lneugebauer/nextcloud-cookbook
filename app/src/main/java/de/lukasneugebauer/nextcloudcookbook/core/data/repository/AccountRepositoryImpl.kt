@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import timber.log.Timber
-import java.net.SocketTimeoutException
 import java.util.*
 import javax.inject.Inject
 
@@ -42,12 +41,6 @@ class AccountRepositoryImpl @Inject constructor(
                     else -> "Unknown error"
                 }
                 Resource.Error(text = errorMessage)
-            } catch (e: SocketTimeoutException) {
-                Timber.e(e.stackTraceToString())
-                Resource.Error(text = "Timeout")
-            } catch (e: Exception) {
-                Timber.e(e.stackTraceToString())
-                Resource.Error(text = "Unknown error")
             }
         }
     }

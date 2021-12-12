@@ -1,5 +1,13 @@
 package de.lukasneugebauer.nextcloudcookbook.feature_auth.presentation.login
 
+import android.annotation.SuppressLint
+import android.net.Uri
+import android.webkit.WebResourceRequest
+import android.webkit.WebView
+import android.webkit.WebViewClient
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -7,7 +15,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.*
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
@@ -17,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -24,6 +36,8 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import de.lukasneugebauer.nextcloudcookbook.NextcloudCookbookScreen
@@ -32,6 +46,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Default
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.DefaultOutlinedTextField
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.DefaultTextButton
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlueGradient
+import de.lukasneugebauer.nextcloudcookbook.feature_auth.domain.state.LoginWebViewState
 
 @Composable
 fun LoginScreen(
@@ -39,16 +54,70 @@ fun LoginScreen(
     onSsoClick: () -> Unit,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
-    var openSsoWarningDialog by rememberSaveable { mutableStateOf(false) }
-    var manualLogin: Boolean by rememberSaveable { mutableStateOf(false) }
-    val state = viewModel.state.value
+    val density = LocalDensity.current
+    val focusManager = LocalFocusManager.current
 
-    LaunchedEffect(key1 = state) {
-        if (state.authorized) {
+    val uiState by viewModel.uiState.collectAsState()
+    val webViewState by viewModel.loginWebViewState.collectAsState()
+
+    var webViewVisible by remember { mutableStateOf(false) }
+    var showManualLogin: Boolean by rememberSaveable { mutableStateOf(false) }
+
+    LaunchedEffect(key1 = uiState) {
+        if (uiState.authorized) {
             navController.navigate(NextcloudCookbookScreen.Home.name)
         }
     }
 
+    webViewVisible = when (webViewState) {
+        is LoginWebViewState.Gone -> false
+        is LoginWebViewState.Visible -> true
+    }
+
+    LoginScreen(
+        showManualLogin = showManualLogin,
+        usernameError = uiState.usernameError,
+        passwordError = uiState.passwordError,
+        urlError = uiState.urlError,
+        onClearError = { viewModel.clearErrors() },
+        onSsoClick = onSsoClick,
+        onLoginClick = { url ->
+            viewModel.getLoginEndpoint(url)
+            focusManager.clearFocus()
+        },
+        onShowManualLoginClick = { showManualLogin = !showManualLogin },
+        onManualLoginClick = { username, password, url ->
+            viewModel.tryManualLogin(username, password, url)
+        }
+    )
+
+    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+        AnimatedVisibility(
+            visible = webViewVisible,
+            enter = slideInVertically(
+                initialOffsetY = { with(density) { maxHeight.roundToPx() } }
+            ),
+            exit = slideOutVertically()
+        ) {
+            val wvs = webViewState as LoginWebViewState.Visible
+            LoginWebViewScreen(wvs.url)
+        }
+    }
+}
+
+@Composable
+private fun LoginScreen(
+    showManualLogin: Boolean,
+    usernameError: String?,
+    passwordError: String?,
+    urlError: String?,
+    onClearError: () -> Unit,
+    onSsoClick: () -> Unit,
+    onLoginClick: (url: String) -> Unit,
+    onShowManualLoginClick: () -> Unit,
+    onManualLoginClick: (username: String, password: String, url: String) -> Unit
+) {
+    var url: String by rememberSaveable { mutableStateOf("") }
     Column(
         modifier = Modifier
             .background(NcBlueGradient)
@@ -69,63 +138,87 @@ fun LoginScreen(
             style = MaterialTheme.typography.h5
         )
         Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_l)))
-        DefaultButton(
-            onClick = {
-                // onSSOClick()
-                openSsoWarningDialog = true
+//        DefaultButton(
+//            onClick = onSsoClick,
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
+//        ) {
+//            Text(text = "Login using Nextcloud Files App")
+//        }
+        DefaultOutlinedTextField(
+            value = url,
+            onValueChange = {
+                url = it
+                onClearError()
             },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
+            label = {
+                Text(
+                    text = "Nextcloud root address",
+                    color = MaterialTheme.colors.onPrimary
+                )
+            },
+            placeholder = {
+                Text(
+                    text = "https://cloud.example.tld",
+                    color = MaterialTheme.colors.onPrimary.copy(alpha = 0.5f)
+                )
+            },
+            errorText = urlError,
+            keyboardOptions = KeyboardOptions.Default.copy(
+                imeAction = ImeAction.Done
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = { onLoginClick(url) }
+            ),
+            singleLine = true
+        )
+        Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_s)))
+        DefaultButton(
+            onClick = { onLoginClick(url) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
         ) {
-            Text(text = "Login using Nextcloud Files App")
+            Text(text = "Sign in")
         }
-        Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_s)))
-        DefaultTextButton(onClick = { manualLogin = !manualLogin }) {
+        Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_m)))
+        DefaultTextButton(onClick = onShowManualLoginClick) {
             Text(text = "Manual login")
         }
-        if (manualLogin) {
-            ManualLogin(viewModel)
-        }
-        if (openSsoWarningDialog) {
-            AlertDialog(
-                onDismissRequest = {
-                    openSsoWarningDialog = false
-                },
-                title = {
-                    Text(text = "Warning")
-                },
-                text = {
-                    Text(text = "Single sign on currently doesn't work with kotlin. Please use manual login.\n\nSee current status on GitHub: https://github.com/nextcloud/Android-SingleSignOn/issues/177")
-                },
-                confirmButton = { },
-                dismissButton = {
-                    TextButton(
-                        onClick = {
-                            openSsoWarningDialog = false
-                        }
-                    ) {
-                        Text(text = "OK")
-                    }
-                }
+        if (showManualLogin) {
+            ManualLoginForm(
+                usernameError = usernameError,
+                passwordError = passwordError,
+                urlError = urlError,
+                onClearError = onClearError,
+                onManualLoginClick = onManualLoginClick
             )
         }
     }
 }
 
 @Composable
-fun ManualLogin(viewModel: LoginViewModel) {
+private fun ManualLoginForm(
+    usernameError: String?,
+    passwordError: String?,
+    urlError: String?,
+    onClearError: () -> Unit,
+    onManualLoginClick: (username: String, password: String, url: String) -> Unit
+) {
     val focusManager = LocalFocusManager.current
     var username: String by rememberSaveable { mutableStateOf("") }
     var password: String by rememberSaveable { mutableStateOf("") }
     var passwordVisibility by rememberSaveable { mutableStateOf(false) }
     var url: String by rememberSaveable { mutableStateOf("") }
-    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_s)))
     DefaultOutlinedTextField(
         value = username,
         onValueChange = {
             username = it
-            viewModel.clearErrors()
+            onClearError()
         },
         modifier = Modifier
             .fillMaxWidth()
@@ -136,7 +229,7 @@ fun ManualLogin(viewModel: LoginViewModel) {
                 color = MaterialTheme.colors.onPrimary
             )
         },
-        errorText = viewModel.state.value.usernameError,
+        errorText = usernameError,
         keyboardOptions = KeyboardOptions.Default.copy(
             imeAction = ImeAction.Next
         ),
@@ -152,7 +245,7 @@ fun ManualLogin(viewModel: LoginViewModel) {
         value = password,
         onValueChange = {
             password = it
-            viewModel.clearErrors()
+            onClearError()
         },
         modifier = Modifier
             .fillMaxWidth()
@@ -175,7 +268,7 @@ fun ManualLogin(viewModel: LoginViewModel) {
                 Icon(imageVector = image, "Show/hide password", tint = Color.White)
             }
         },
-        errorText = viewModel.state.value.passwordError,
+        errorText = passwordError,
         keyboardOptions = KeyboardOptions.Default.copy(
             keyboardType = KeyboardType.Password,
             imeAction = ImeAction.Next
@@ -192,7 +285,7 @@ fun ManualLogin(viewModel: LoginViewModel) {
         value = url,
         onValueChange = {
             url = it
-            viewModel.clearErrors()
+            onClearError()
         },
         modifier = Modifier
             .fillMaxWidth()
@@ -209,30 +302,52 @@ fun ManualLogin(viewModel: LoginViewModel) {
                 color = MaterialTheme.colors.onPrimary.copy(alpha = 0.5f)
             )
         },
-        errorText = viewModel.state.value.urlError,
+        errorText = urlError,
         keyboardOptions = KeyboardOptions.Default.copy(
             imeAction = ImeAction.Done
         ),
         keyboardActions = KeyboardActions(
             onDone = {
-                viewModel.manualLogin(username, password, url)
+                onManualLoginClick(username, password, url)
             }
         ),
         singleLine = true
     )
-    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_m)))
+    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_s)))
     DefaultButton(
-        onClick = { viewModel.manualLogin(username, password, url) },
+        onClick = { onManualLoginClick(username, password, url) },
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
     ) {
-        Text(text = "Sign in")
+        Text(text = "Manual sign in")
     }
 }
 
-// @Composable
-// @Preview
-// fun LoginScreenPreview() {
-//     LoginScreen(onSSOClick = {})
-// }
+@SuppressLint("SetJavaScriptEnabled")
+@Composable
+fun LoginWebViewScreen(url: Uri) {
+    AndroidView(
+        factory = {
+            WebView(it).apply {
+                settings.javaScriptEnabled = true
+                loadUrl(url.toString())
+                webViewClient = object : WebViewClient() {
+                    override fun shouldOverrideUrlLoading(
+                        view: WebView?,
+                        request: WebResourceRequest?
+                    ): Boolean {
+                        return false
+                    }
+                }
+            }
+        },
+        modifier = Modifier.fillMaxSize()
+    )
+}
+
+@Preview
+@Composable
+private fun LoginScreenPreview() {
+    LoginScreen(false, null, null, null, {}, {}, {}, {}, { _, _, _ -> })
+}

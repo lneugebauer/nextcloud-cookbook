@@ -1,6 +1,6 @@
 package de.lukasneugebauer.nextcloudcookbook.core.data.api
 
-import de.lukasneugebauer.nextcloudcookbook.core.data.dto.response.CapabilitiesResponse
+import de.lukasneugebauer.nextcloudcookbook.core.data.remote.response.CapabilitiesResponse
 import de.lukasneugebauer.nextcloudcookbook.core.util.Constants
 import de.lukasneugebauer.nextcloudcookbook.feature_category.data.remote.dto.CategoryDto
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.data.remote.dto.RecipeDto
