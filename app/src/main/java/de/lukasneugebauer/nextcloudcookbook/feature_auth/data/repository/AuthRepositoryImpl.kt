@@ -35,7 +35,7 @@ class AuthRepositoryImpl(private val authApi: AuthApi) : AuthRepository {
             val response = authApi.tryLogin(url = url, token = token)
             val result = response.toLoginResult()
             Resource.Success(data = result)
-        } catch (e: HttpException) {
+        } catch (e: Exception) {
             Resource.Error(text = e.message ?: "Unknown error")
         }
     }

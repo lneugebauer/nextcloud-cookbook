@@ -69,7 +69,9 @@ class LoginViewModel @Inject constructor(
             when (val result =
                 authRepository.getLoginEndpoint(url)) {
                 is Resource.Success -> {
-                    _loginWebViewState.value = LoginWebViewState.Visible(url = result.data?.loginUrl!!)
+                    val webViewUrl = result.data?.loginUrl!!
+                    Timber.v("Open web view with url $webViewUrl")
+                    _loginWebViewState.value = LoginWebViewState.Visible(url = webViewUrl)
                     pollLoginServer(result.data.pollUrl, result.data.token)
                 }
                 is Resource.Error -> _uiState.value = _uiState.value.copy(urlError = result.text)
