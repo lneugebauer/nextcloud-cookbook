@@ -27,12 +27,19 @@ class RecipeDetailViewModel @Inject constructor(
             recipeRepository.getRecipe(id).collect { recipeResponse ->
                 when (recipeResponse) {
                     is StoreResponse.Loading -> _state.value = _state.value.copy(loading = true)
-                    is StoreResponse.Data -> _state.value =
-                        _state.value.copy(data = recipeResponse.value.toRecipe(), loading = false)
-                    is StoreResponse.NoNewData -> {}
-                    is StoreResponse.Error.Exception -> {}
-                    is StoreResponse.Error.Message -> _state.value =
-                        _state.value.copy(error = recipeResponse.message, loading = false)
+                    is StoreResponse.Data -> _state.value = _state.value.copy(
+                        data = recipeResponse.value.toRecipe(),
+                        loading = false
+                    )
+                    is StoreResponse.NoNewData -> _state.value = _state.value.copy(loading = false)
+                    is StoreResponse.Error.Exception -> _state.value = _state.value.copy(
+                        error = recipeResponse.errorMessageOrNull(),
+                        loading = false
+                    )
+                    is StoreResponse.Error.Message -> _state.value = _state.value.copy(
+                        error = recipeResponse.message,
+                        loading = false
+                    )
                 }
             }
         }
