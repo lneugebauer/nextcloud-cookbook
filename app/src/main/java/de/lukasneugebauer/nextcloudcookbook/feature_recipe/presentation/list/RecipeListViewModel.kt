@@ -1,7 +1,5 @@
 package de.lukasneugebauer.nextcloudcookbook.feature_recipe.presentation.list
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,6 +7,8 @@ import com.dropbox.android.external.store4.StoreResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.repository.RecipeRepository
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.state.RecipeListState
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -19,8 +19,8 @@ class RecipeListViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _state = mutableStateOf(RecipeListState())
-    val state: State<RecipeListState> = _state
+    private val _state = MutableStateFlow(RecipeListState())
+    val state: StateFlow<RecipeListState> = _state
 
     init {
         viewModelScope.launch {
