@@ -57,8 +57,9 @@ fun RecipeDetailScreen(
 ) {
     val state = viewModel.state.value
     var recipe: Recipe by remember { mutableStateOf(emptyRecipe()) }
+    val stayAwake by remember { mutableStateOf(preferencesManager.getStayAwake()) }
 
-    if (preferencesManager.getStayAwake()) {
+    if (stayAwake) {
         KeepScreenOn(window)
     }
 
