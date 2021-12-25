@@ -62,11 +62,23 @@ fun RecipeDetailScreen(
         KeepScreenOn(window)
     }
 
+    if (state.deleted) {
+        LaunchedEffect(state) {
+            navController.popBackStack()
+        }
+    }
+
     Scaffold(
         topBar = {
             RecipeDetailTopBar(
                 recipe = recipe,
                 onNavIconClick = { navController.popBackStack() },
+                onDeleteClick = {
+                    if (recipe.isNotEmpty()) viewModel.deleteRecipe(
+                        recipe.id,
+                        recipe.category
+                    )
+                },
                 shareText = viewModel.getShareText()
             )
         }
@@ -103,7 +115,12 @@ fun KeepScreenOn(window: Window) {
 }
 
 @Composable
-fun RecipeDetailTopBar(recipe: Recipe, onNavIconClick: () -> Unit, shareText: String) {
+fun RecipeDetailTopBar(
+    recipe: Recipe,
+    onNavIconClick: () -> Unit,
+    onDeleteClick: () -> Unit,
+    shareText: String
+) {
     val context = LocalContext.current
     var expanded by remember { mutableStateOf(false) }
 
@@ -152,7 +169,7 @@ fun RecipeDetailTopBar(recipe: Recipe, onNavIconClick: () -> Unit, shareText: St
                 DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
                     RecipeDetailScreenDropDownMenuItemOpenSource(context, recipe.url)
                     RecipeDetailScreenDropDownMenuItemEdit(context)
-                    RecipeDetailScreenDropDownMenuItemDelete(context)
+                    RecipeDetailScreenDropDownMenuItemDelete(onDeleteClick)
                 }
             }
         },
@@ -184,14 +201,8 @@ fun RecipeDetailScreenDropDownMenuItemEdit(context: Context) {
 }
 
 @Composable
-fun RecipeDetailScreenDropDownMenuItemDelete(context: Context) {
-    DropdownMenuItem(onClick = {
-        Toast.makeText(
-            context,
-            "Function currently unavailable.",
-            Toast.LENGTH_SHORT
-        ).show()
-    }) {
+fun RecipeDetailScreenDropDownMenuItemDelete(onClick: () -> Unit) {
+    DropdownMenuItem(onClick = onClick) {
         Text(text = stringResource(id = R.string.recipe_more_menu_delete))
     }
 }

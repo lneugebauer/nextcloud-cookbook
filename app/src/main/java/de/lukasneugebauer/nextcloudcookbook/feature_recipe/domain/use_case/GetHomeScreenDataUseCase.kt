@@ -45,6 +45,8 @@ class GetHomeScreenDataUseCase @Inject constructor(
             preferencesManager.updateRecipeOfTheDay(recipeOfTheDay)
         }
 
+        // FIXME: 25.12.21 Get different recipe of the day if api returns 404 error.
+        //  E.g. after deleting recipe of the day.
         withContext(Dispatchers.IO) {
             try {
                 homeScreenData.add(

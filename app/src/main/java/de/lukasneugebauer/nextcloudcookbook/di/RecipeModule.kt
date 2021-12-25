@@ -66,11 +66,13 @@ object RecipeModule {
     @Provides
     @Singleton
     fun provideRecipeRepository(
+        apiProvider: ApiProvider,
         recipesByCategoryStore: RecipePreviewsByCategoryStore,
         recipePreviewsStore: RecipePreviewsStore,
         recipeStore: RecipeStore
     ): RecipeRepository =
         RecipeRepositoryImpl(
+            apiProvider,
             recipesByCategoryStore,
             recipePreviewsStore,
             recipeStore

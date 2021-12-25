@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dropbox.android.external.store4.StoreResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
+import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.repository.RecipeRepository
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.state.RecipeDetailState
 import kotlinx.coroutines.flow.collect
@@ -70,5 +71,15 @@ class RecipeDetailViewModel @Inject constructor(
         }
 
         return textToShare
+    }
+
+    fun deleteRecipe(id: Int, categoryName: String) {
+        viewModelScope.launch {
+            when (val deleteRecipeResource = recipeRepository.deleteRecipe(id, categoryName)) {
+                is Resource.Success -> _state.value = _state.value.copy(deleted = true)
+                is Resource.Error -> _state.value =
+                    _state.value.copy(error = deleteRecipeResource.text)
+            }
+        }
     }
 }

@@ -5,6 +5,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.util.Constants
 import de.lukasneugebauer.nextcloudcookbook.feature_category.data.remote.dto.CategoryDto
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.data.remote.dto.RecipeDto
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.data.remote.dto.RecipePreviewDto
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.Path
@@ -30,6 +31,9 @@ interface NcCookbookApi {
 
     @GET("${Constants.API_ENDPOINT}/api/recipes/{id}")
     suspend fun getRecipe(@Path("id") id: Int): RecipeDto
+
+    @DELETE("${Constants.API_ENDPOINT}/api/recipes/{id}")
+    suspend fun deleteRecipe(@Path("id") id: Int): String
 
     @GET("${Constants.API_ENDPOINT}/api/search/{query}")
     suspend fun search(@Path("query") query: String): List<RecipePreviewDto>

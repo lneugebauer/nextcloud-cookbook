@@ -22,4 +22,12 @@ data class Recipe(
     // TODO: 19.08.21 Change createdAt and modifiedAt to date fields.
     val createdAt: String,
     val modifiedAt: String,
-)
+) {
+    fun isEmpty() : Boolean {
+        return this.id == 0
+    }
+
+    fun isNotEmpty() : Boolean {
+        return this.id != 0
+    }
+}
