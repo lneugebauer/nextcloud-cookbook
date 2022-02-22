@@ -73,34 +73,3 @@ fun CommonItemBody(name: String, modifier: Modifier, onClick: () -> Unit) {
         }
     }
 }
-
-@ExperimentalMaterialApi
-@Composable
-fun CommonListItem(
-    name: String,
-    modifier: Modifier = Modifier,
-    imageUrl: String? = null,
-    onClick: () -> Unit
-) {
-    Card(onClick = onClick, modifier = modifier) {
-        Row(modifier = Modifier.fillMaxWidth()) {
-            if (imageUrl != null) {
-                AuthorizedImage(
-                    imageUrl = imageUrl,
-                    contentDescription = name,
-                    modifier = Modifier.size(dimensionResource(id = R.dimen.common_item_width_s))
-                )
-            }
-            Spacer(modifier = Modifier.size(size = dimensionResource(id = R.dimen.padding_s)))
-            Text(
-                text = name,
-                modifier = Modifier
-                    .padding(vertical = dimensionResource(id = R.dimen.padding_s))
-                    .padding(end = dimensionResource(id = R.dimen.padding_s)),
-                overflow = TextOverflow.Ellipsis,
-                maxLines = 3,
-                style = MaterialTheme.typography.h6
-            )
-        }
-    }
-}
