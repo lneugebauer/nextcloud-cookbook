@@ -2,7 +2,6 @@ package de.lukasneugebauer.nextcloudcookbook.feature_auth.presentation.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nextcloud.android.sso.api.NextcloudAPI
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.NcAccount
@@ -83,11 +82,7 @@ class LoginViewModel @Inject constructor(
         when (val result = authRepository.tryLogin(url, token)) {
             is Resource.Success -> {
                 preferencesManager.updateNextcloudAccount(result.data?.ncAccount!!)
-                preferencesManager.updateUseSingleSignOn(false)
-                apiProvider.initApi(object : NextcloudAPI.ApiConnectedListener {
-                    override fun onConnected() {}
-                    override fun onError(ex: Exception?) {}
-                })
+                apiProvider.initApi()
             }
             is Resource.Error -> {
                 delay(1_000L)
@@ -109,11 +104,7 @@ class LoginViewModel @Inject constructor(
         )
         viewModelScope.launch {
             preferencesManager.updateNextcloudAccount(ncAccount)
-            preferencesManager.updateUseSingleSignOn(false)
-            apiProvider.initApi(object : NextcloudAPI.ApiConnectedListener {
-                override fun onConnected() {}
-                override fun onError(ex: Exception?) {}
-            })
+            apiProvider.initApi()
         }
     }
 

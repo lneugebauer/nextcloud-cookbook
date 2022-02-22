@@ -1,12 +1,10 @@
 package de.lukasneugebauer.nextcloudcookbook.core.presentation
 
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.Window
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
@@ -20,19 +18,12 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import coil.annotation.ExperimentalCoilApi
-import com.nextcloud.android.sso.AccountImporter
-import com.nextcloud.android.sso.api.NextcloudAPI.ApiConnectedListener
-import com.nextcloud.android.sso.exceptions.AndroidGetAccountsPermissionNotGranted
-import com.nextcloud.android.sso.exceptions.NextcloudFilesAppNotInstalledException
-import com.nextcloud.android.sso.helper.SingleAccountHelper
-import com.nextcloud.android.sso.ui.UiExceptionManager
 import dagger.hilt.android.AndroidEntryPoint
 import de.lukasneugebauer.nextcloudcookbook.NextcloudCookbookScreen
 import de.lukasneugebauer.nextcloudcookbook.NextcloudCookbookScreen.*
 import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.BottomBar
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
-import de.lukasneugebauer.nextcloudcookbook.di.ApiProvider
 import de.lukasneugebauer.nextcloudcookbook.feature_auth.presentation.launch.LaunchScreen
 import de.lukasneugebauer.nextcloudcookbook.feature_auth.presentation.login.LoginScreen
 import de.lukasneugebauer.nextcloudcookbook.feature_category.presentation.list.CategoryListScreen
@@ -41,7 +32,6 @@ import de.lukasneugebauer.nextcloudcookbook.feature_recipe.presentation.home.Hom
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.presentation.list.RecipeListScreen
 import de.lukasneugebauer.nextcloudcookbook.feature_search.presentation.search.SearchScreen
 import de.lukasneugebauer.nextcloudcookbook.feature_settings.presentation.SettingsScreen
-import timber.log.Timber
 import javax.inject.Inject
 
 @ExperimentalCoilApi
@@ -50,67 +40,20 @@ import javax.inject.Inject
 class MainActivity : ComponentActivity() {
 
     @Inject
-    lateinit var api: ApiProvider
-
-    @Inject
     lateinit var preferencesManager: PreferencesManager
 
     @Inject
     lateinit var sharedPreferences: SharedPreferences
-    private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
             NextcloudCookbookApp(
-                onSsoClick = { openAccountChooser() },
                 preferencesManager = preferencesManager,
                 sharedPreferences = sharedPreferences,
                 window = this.window
             )
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        try {
-            AccountImporter.onActivityResult(
-                requestCode,
-                resultCode,
-                data,
-                this
-            ) { ssoAccount ->
-                viewModel.storeNcSingleSignOnAccount(ssoAccount)
-
-                SingleAccountHelper.setCurrentAccount(applicationContext, ssoAccount.name)
-
-                api.initApi(object : ApiConnectedListener {
-                    override fun onConnected() {}
-                    override fun onError(ex: java.lang.Exception) {}
-                })
-            }
-        } catch (e: Exception) {
-            Timber.e(e.message)
-        }
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String?>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        AccountImporter.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
-    }
-
-    private fun openAccountChooser() {
-        try {
-            AccountImporter.pickNewAccount(this)
-        } catch (e: NextcloudFilesAppNotInstalledException) {
-            UiExceptionManager.showDialogForException(this, e)
-        } catch (e: AndroidGetAccountsPermissionNotGranted) {
-            UiExceptionManager.showDialogForException(this, e)
         }
     }
 }
@@ -119,7 +62,6 @@ class MainActivity : ComponentActivity() {
 @ExperimentalMaterialApi
 @Composable
 fun NextcloudCookbookApp(
-    onSsoClick: () -> Unit,
     preferencesManager: PreferencesManager,
     sharedPreferences: SharedPreferences,
     window: Window
@@ -145,7 +87,6 @@ fun NextcloudCookbookApp(
             NextcloudCookbookNavHost(
                 modifier = Modifier.padding(paddingValues = innerPadding),
                 navController = navController,
-                onSsoClick = onSsoClick,
                 preferencesManager = preferencesManager,
                 sharedPreferences = sharedPreferences,
                 window = window
@@ -160,7 +101,6 @@ fun NextcloudCookbookApp(
 fun NextcloudCookbookNavHost(
     modifier: Modifier,
     navController: NavHostController,
-    onSsoClick: () -> Unit,
     preferencesManager: PreferencesManager,
     sharedPreferences: SharedPreferences,
     window: Window
@@ -170,7 +110,7 @@ fun NextcloudCookbookNavHost(
             LaunchScreen(navController)
         }
         composable(Login.name) {
-            LoginScreen(navController, onSsoClick)
+            LoginScreen(navController)
         }
         composable(Home.name) {
             HomeScreen(navController)

@@ -49,14 +49,4 @@ object AppModule {
             HttpLoggingInterceptor.Level.NONE
         }
     }
-
-    @Provides
-    @Singleton
-    fun provideApiProvider(
-        @ApplicationContext context: Context,
-        coroutineScope: CoroutineScope,
-        httpLoggingInterceptor: HttpLoggingInterceptor,
-        preferencesManager: PreferencesManager
-    ): ApiProvider =
-        ApiProvider(context, coroutineScope, httpLoggingInterceptor, preferencesManager)
 }

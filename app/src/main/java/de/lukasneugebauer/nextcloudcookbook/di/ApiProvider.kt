@@ -1,15 +1,10 @@
 package de.lukasneugebauer.nextcloudcookbook.di
 
-import android.content.Context
 import com.google.gson.GsonBuilder
-import com.nextcloud.android.sso.api.NextcloudAPI
-import com.nextcloud.android.sso.exceptions.SSOException
-import com.nextcloud.android.sso.helper.SingleAccountHelper
 import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
 import de.lukasneugebauer.nextcloudcookbook.core.data.api.NcCookbookApi
 import de.lukasneugebauer.nextcloudcookbook.core.data.remote.BasicAuthInterceptor
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.NcAccount
-import de.lukasneugebauer.nextcloudcookbook.core.util.Constants
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.data.remote.deserializer.NutritionDeserializer
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.data.remote.dto.NutritionDto
 import kotlinx.coroutines.CoroutineScope
@@ -20,12 +15,13 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.NextcloudRetrofitApiBuilder
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class ApiProvider(
-    private val context: Context,
+@Singleton
+class ApiProvider @Inject constructor(
     private val coroutineScope: CoroutineScope,
     private val httpLoggingInterceptor: HttpLoggingInterceptor,
     private val preferencesManager: PreferencesManager
@@ -34,56 +30,26 @@ class ApiProvider(
     private val gson = GsonBuilder()
         .registerTypeAdapter(NutritionDto::class.java, NutritionDeserializer())
         .create()
-    private var ncSsoApi: NextcloudAPI? = null
 
     private val _ncCookbookApiFlow = MutableStateFlow<NcCookbookApi?>(null)
     val ncCookbookApiFlow: StateFlow<NcCookbookApi?> = _ncCookbookApiFlow
 
     init {
-        initApi(object : NextcloudAPI.ApiConnectedListener {
-            override fun onConnected() {}
-            override fun onError(ex: Exception?) {}
-        })
+        initApi()
     }
 
-    fun initApi(apiConnectedListener: NextcloudAPI.ApiConnectedListener) {
-        ncSsoApi?.let {
-            it.stop()
-            ncSsoApi = null
-        }
-
+    fun initApi() {
         coroutineScope.launch {
             val ncAccount = preferencesManager.preferencesFlow
                 .map { it.ncAccount }
                 .first()
-            val useSingleSignOn = preferencesManager.preferencesFlow
-                .map { it.useSingleSignOn }
-                .first()
 
-            if (ncAccount.username.isNotBlank() && ncAccount.token.isNotBlank() && ncAccount.url.isNotBlank()) {
-                if (useSingleSignOn) {
-                    initSsoApi(apiConnectedListener)
-                } else {
-                    initRetrofitApi(ncAccount)
-                }
+            if (ncAccount.username.isNotBlank() &&
+                ncAccount.token.isNotBlank() &&
+                ncAccount.url.isNotBlank()
+            ) {
+                initRetrofitApi(ncAccount)
             }
-        }
-    }
-
-    private fun initSsoApi(callback: NextcloudAPI.ApiConnectedListener) {
-        try {
-            val ssoAccount = SingleAccountHelper.getCurrentSingleSignOnAccount(context)
-            ncSsoApi = NextcloudAPI(context, ssoAccount, gson, callback)
-            ncSsoApi?.let {
-                this._ncCookbookApiFlow.value = NextcloudRetrofitApiBuilder(
-                    it,
-                    Constants.API_ENDPOINT
-                ).create(NcCookbookApi::class.java)
-            } ?: run {
-                throw NullPointerException("Nextcloud API couldn't be created.")
-            }
-        } catch (e: SSOException) {
-            callback.onError(e)
         }
     }
 

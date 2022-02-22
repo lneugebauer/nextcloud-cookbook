@@ -51,7 +51,6 @@ import de.lukasneugebauer.nextcloudcookbook.feature_auth.domain.state.LoginWebVi
 @Composable
 fun LoginScreen(
     navController: NavController,
-    onSsoClick: () -> Unit,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
     val density = LocalDensity.current
@@ -80,7 +79,6 @@ fun LoginScreen(
         passwordError = uiState.passwordError,
         urlError = uiState.urlError,
         onClearError = { viewModel.clearErrors() },
-        onSsoClick = onSsoClick,
         onLoginClick = { url ->
             viewModel.getLoginEndpoint(url)
             focusManager.clearFocus()
@@ -112,7 +110,6 @@ private fun LoginScreen(
     passwordError: String?,
     urlError: String?,
     onClearError: () -> Unit,
-    onSsoClick: () -> Unit,
     onLoginClick: (url: String) -> Unit,
     onShowManualLoginClick: () -> Unit,
     onManualLoginClick: (username: String, password: String, url: String) -> Unit
@@ -138,14 +135,6 @@ private fun LoginScreen(
             style = MaterialTheme.typography.h5
         )
         Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_l)))
-//        DefaultButton(
-//            onClick = onSsoClick,
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
-//        ) {
-//            Text(text = "Login using Nextcloud Files App")
-//        }
         DefaultOutlinedTextField(
             value = url,
             onValueChange = {
@@ -349,5 +338,5 @@ fun LoginWebViewScreen(url: Uri) {
 @Preview
 @Composable
 private fun LoginScreenPreview() {
-    LoginScreen(false, null, null, null, {}, {}, {}, {}, { _, _, _ -> })
+    LoginScreen(false, null, null, null, {}, {}, {}, { _, _, _ -> })
 }

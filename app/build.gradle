@@ -89,8 +89,6 @@ dependencies {
 
     implementation 'io.coil-kt:coil-compose:1.4.0'
 
-    implementation "com.github.nextcloud:Android-SingleSignOn:0.5.6"
-
     implementation "com.dropbox.mobile.store:store4:$store_version"
 
     implementation 'com.jakewharton.timber:timber:5.0.1'

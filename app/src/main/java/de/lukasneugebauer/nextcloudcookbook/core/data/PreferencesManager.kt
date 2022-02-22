@@ -33,7 +33,6 @@ class PreferencesManager @Inject constructor(
         val NC_USERNAME = stringPreferencesKey("nc_username")
         val NC_TOKEN = stringPreferencesKey("nc_token")
         val NC_URL = stringPreferencesKey("nc_url")
-        val USE_SINGLE_SIGN_ON = booleanPreferencesKey("use_single_sign_on")
         val RECIPE_OF_THE_DAY_ID = intPreferencesKey("recipe_of_the_day_id")
         val RECIPE_OF_THE_DAY_UPDATED_AT = longPreferencesKey("recipe_of_the_day_updated_at")
     }
@@ -52,7 +51,6 @@ class PreferencesManager @Inject constructor(
             val ncUsername = preferences[PreferencesKeys.NC_USERNAME] ?: ""
             val ncToken = preferences[PreferencesKeys.NC_TOKEN] ?: ""
             val ncUrl = preferences[PreferencesKeys.NC_URL] ?: ""
-            val useSingleSignOn = preferences[PreferencesKeys.USE_SINGLE_SIGN_ON] ?: false
             val recipeOfTheDayId = preferences[PreferencesKeys.RECIPE_OF_THE_DAY_ID] ?: 0
             val recipeOfTheDayUpdatedAt =
                 preferences[PreferencesKeys.RECIPE_OF_THE_DAY_UPDATED_AT] ?: 0
@@ -64,7 +62,6 @@ class PreferencesManager @Inject constructor(
                     token = ncToken,
                     url = ncUrl
                 ),
-                useSingleSignOn = useSingleSignOn,
                 recipeOfTheDay = RecipeOfTheDay(
                     id = recipeOfTheDayId,
                     updatedAt = LocalDateTime.ofInstant(
@@ -86,11 +83,6 @@ class PreferencesManager @Inject constructor(
             preferences[PreferencesKeys.NC_USERNAME] = ncAccount.username
             preferences[PreferencesKeys.NC_TOKEN] = ncAccount.token
             preferences[PreferencesKeys.NC_URL] = ncAccount.url
-        }
-
-    suspend fun updateUseSingleSignOn(useSingleSignOn: Boolean) =
-        context.dataStore.edit { preferences ->
-            preferences[PreferencesKeys.USE_SINGLE_SIGN_ON] = useSingleSignOn
         }
 
     suspend fun updateRecipeOfTheDay(recipeOfTheDay: RecipeOfTheDay) =
