@@ -12,7 +12,6 @@ import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import de.lukasneugebauer.nextcloudcookbook.di.ApiProvider
 import de.lukasneugebauer.nextcloudcookbook.feature_auth.domain.repository.AuthRepository
 import de.lukasneugebauer.nextcloudcookbook.feature_auth.domain.state.LoginScreenState
-import de.lukasneugebauer.nextcloudcookbook.feature_auth.domain.state.LoginWebViewState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -31,11 +30,10 @@ class LoginViewModel @Inject constructor(
     private val preferencesManager: PreferencesManager
 ) : ViewModel() {
 
+    private var pollLoginServerIsActive = false
+
     private val _uiState = MutableStateFlow(LoginScreenState())
     val uiState: StateFlow<LoginScreenState> = _uiState
-
-    private val _loginWebViewState = MutableStateFlow<LoginWebViewState>(LoginWebViewState.Gone)
-    val loginWebViewState: StateFlow<LoginWebViewState> = _loginWebViewState
 
     init {
         viewModelScope.launch {
@@ -62,7 +60,7 @@ class LoginViewModel @Inject constructor(
     }
 
     fun getLoginEndpoint(url: String) {
-        if (!validUrl(url)) return
+        if (!isValidUrl(url)) return
 
         viewModelScope.launch {
             when (val result =
@@ -70,7 +68,8 @@ class LoginViewModel @Inject constructor(
                 is Resource.Success -> {
                     val webViewUrl = result.data?.loginUrl!!
                     Timber.v("Open web view with url $webViewUrl")
-                    _loginWebViewState.value = LoginWebViewState.Visible(url = webViewUrl)
+                    _uiState.value = _uiState.value.copy(webViewUrl = webViewUrl)
+                    pollLoginServerIsActive = true
                     pollLoginServer(result.data.pollUrl, result.data.token)
                 }
                 is Resource.Error -> _uiState.value = _uiState.value.copy(urlError = result.text)
@@ -78,23 +77,10 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    private suspend fun pollLoginServer(url: String, token: String) {
-        when (val result = authRepository.tryLogin(url, token)) {
-            is Resource.Success -> {
-                preferencesManager.updateNextcloudAccount(result.data?.ncAccount!!)
-                apiProvider.initApi()
-            }
-            is Resource.Error -> {
-                delay(1_000L)
-                pollLoginServer(url, token)
-            }
-        }
-    }
-
     fun tryManualLogin(username: String, password: String, url: String) {
-        if (!validUsername(username)) return
-        if (!validPassword(password)) return
-        if (!validUrl(url)) return
+        if (!isValidUsername(username)) return
+        if (!isValidPassword(password)) return
+        if (!isValidUrl(url)) return
 
         val ncAccount = NcAccount(
             name = "",
@@ -108,6 +94,11 @@ class LoginViewModel @Inject constructor(
         }
     }
 
+    fun onHideWebView() {
+        pollLoginServerIsActive = false
+        _uiState.value = _uiState.value.copy(webViewUrl = null)
+    }
+
     fun clearErrors() {
         _uiState.value = _uiState.value.copy(
             usernameError = null,
@@ -116,7 +107,22 @@ class LoginViewModel @Inject constructor(
         )
     }
 
-    private fun validUsername(username: String): Boolean {
+    private suspend fun pollLoginServer(url: String, token: String) {
+        when (val result = authRepository.tryLogin(url, token)) {
+            is Resource.Success -> {
+                preferencesManager.updateNextcloudAccount(result.data?.ncAccount!!)
+                apiProvider.initApi()
+            }
+            is Resource.Error -> {
+                delay(1_000L)
+                if (pollLoginServerIsActive) {
+                    pollLoginServer(url, token)
+                }
+            }
+        }
+    }
+
+    private fun isValidUsername(username: String): Boolean {
         if (username.isBlank()) {
             _uiState.value = _uiState.value.copy(usernameError = "Please enter an username")
             return false
@@ -125,7 +131,7 @@ class LoginViewModel @Inject constructor(
         return true
     }
 
-    private fun validPassword(password: String): Boolean {
+    private fun isValidPassword(password: String): Boolean {
         if (password.isBlank()) {
             _uiState.value = _uiState.value.copy(passwordError = "Please enter a password")
             return false
@@ -134,7 +140,7 @@ class LoginViewModel @Inject constructor(
         return true
     }
 
-    private fun validUrl(url: String): Boolean {
+    private fun isValidUrl(url: String): Boolean {
         if (url.isBlank()) {
             _uiState.value = _uiState.value.copy(urlError = "Please enter an URL")
             return false
