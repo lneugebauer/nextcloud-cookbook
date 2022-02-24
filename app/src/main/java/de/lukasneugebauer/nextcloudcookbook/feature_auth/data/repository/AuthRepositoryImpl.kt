@@ -7,6 +7,7 @@ import de.lukasneugebauer.nextcloudcookbook.feature_auth.domain.model.LoginResul
 import de.lukasneugebauer.nextcloudcookbook.feature_auth.domain.repository.AuthRepository
 import retrofit2.HttpException
 import timber.log.Timber
+import java.net.UnknownHostException
 
 class AuthRepositoryImpl(private val authApi: AuthApi) : AuthRepository {
 
@@ -27,6 +28,12 @@ class AuthRepositoryImpl(private val authApi: AuthApi) : AuthRepository {
                 else -> "Unknown error"
             }
             Resource.Error(text = errorMessage)
+        } catch (e: UnknownHostException) {
+            Timber.e(e.stackTraceToString())
+            Resource.Error(text = e.localizedMessage ?: "Unknown host")
+        } catch (e: Error) {
+            Timber.e(e.stackTraceToString())
+            Resource.Error(text = e.localizedMessage ?: "Unknown error")
         }
     }
 
@@ -36,7 +43,7 @@ class AuthRepositoryImpl(private val authApi: AuthApi) : AuthRepository {
             val result = response.toLoginResult()
             Resource.Success(data = result)
         } catch (e: Exception) {
-            Resource.Error(text = e.message ?: "Unknown error")
+            Resource.Error(text = e.localizedMessage ?: "Unknown error")
         }
     }
 }
