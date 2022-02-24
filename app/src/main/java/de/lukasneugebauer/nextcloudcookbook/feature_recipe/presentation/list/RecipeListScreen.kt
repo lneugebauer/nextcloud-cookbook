@@ -12,10 +12,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import de.lukasneugebauer.nextcloudcookbook.NextcloudCookbookScreen
@@ -74,7 +74,9 @@ private fun RecipeListScreen(
                             AuthorizedImage(
                                 imageUrl = it.imageUrl,
                                 contentDescription = it.name,
-                                modifier = Modifier.size(dimensionResource(id = R.dimen.common_item_width_s))
+                                modifier = Modifier
+                                    .size(dimensionResource(id = R.dimen.common_item_width_s))
+                                    .clip(MaterialTheme.shapes.medium)
                             )
                         },
                         secondaryText = {
