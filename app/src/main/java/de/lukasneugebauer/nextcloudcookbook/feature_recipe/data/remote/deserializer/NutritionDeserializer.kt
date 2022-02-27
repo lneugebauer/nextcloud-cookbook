@@ -5,7 +5,7 @@ import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
 import com.google.gson.stream.JsonToken
-import de.lukasneugebauer.nextcloudcookbook.feature_recipe.data.remote.dto.NutritionDto
+import de.lukasneugebauer.nextcloudcookbook.feature_recipe.data.dto.NutritionDto
 import java.io.StringReader
 import java.lang.reflect.Type
 

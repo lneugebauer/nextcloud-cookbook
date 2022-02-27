@@ -7,7 +7,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import de.lukasneugebauer.nextcloudcookbook.feature_category.data.remote.dto.CategoryDto
+import de.lukasneugebauer.nextcloudcookbook.feature_category.data.dto.CategoryDto
 import de.lukasneugebauer.nextcloudcookbook.feature_category.data.repository.CategoryRepositoryImpl
 import de.lukasneugebauer.nextcloudcookbook.feature_category.domain.repository.CategoryRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi

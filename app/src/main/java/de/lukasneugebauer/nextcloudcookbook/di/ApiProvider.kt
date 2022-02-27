@@ -6,7 +6,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.data.api.NcCookbookApi
 import de.lukasneugebauer.nextcloudcookbook.core.data.remote.BasicAuthInterceptor
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.NcAccount
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.data.remote.deserializer.NutritionDeserializer
-import de.lukasneugebauer.nextcloudcookbook.feature_recipe.data.remote.dto.NutritionDto
+import de.lukasneugebauer.nextcloudcookbook.feature_recipe.data.dto.NutritionDto
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

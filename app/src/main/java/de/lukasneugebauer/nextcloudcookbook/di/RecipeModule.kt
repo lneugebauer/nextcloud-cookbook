@@ -7,8 +7,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import de.lukasneugebauer.nextcloudcookbook.feature_recipe.data.remote.dto.RecipeDto
-import de.lukasneugebauer.nextcloudcookbook.feature_recipe.data.remote.dto.RecipePreviewDto
+import de.lukasneugebauer.nextcloudcookbook.feature_recipe.data.dto.RecipeDto
+import de.lukasneugebauer.nextcloudcookbook.feature_recipe.data.dto.RecipePreviewDto
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.data.repository.RecipeRepositoryImpl
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.repository.RecipeRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi

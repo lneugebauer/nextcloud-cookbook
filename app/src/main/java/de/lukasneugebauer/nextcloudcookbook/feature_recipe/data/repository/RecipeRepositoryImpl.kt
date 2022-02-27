@@ -9,8 +9,8 @@ import de.lukasneugebauer.nextcloudcookbook.di.ApiProvider
 import de.lukasneugebauer.nextcloudcookbook.di.RecipePreviewsByCategoryStore
 import de.lukasneugebauer.nextcloudcookbook.di.RecipePreviewsStore
 import de.lukasneugebauer.nextcloudcookbook.di.RecipeStore
-import de.lukasneugebauer.nextcloudcookbook.feature_recipe.data.remote.dto.RecipeDto
-import de.lukasneugebauer.nextcloudcookbook.feature_recipe.data.remote.dto.RecipePreviewDto
+import de.lukasneugebauer.nextcloudcookbook.feature_recipe.data.dto.RecipeDto
+import de.lukasneugebauer.nextcloudcookbook.feature_recipe.data.dto.RecipePreviewDto
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.repository.RecipeRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow

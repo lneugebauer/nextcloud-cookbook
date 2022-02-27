@@ -1,7 +1,7 @@
 package de.lukasneugebauer.nextcloudcookbook.feature_category.domain.repository
 
 import com.dropbox.android.external.store4.StoreResponse
-import de.lukasneugebauer.nextcloudcookbook.feature_category.data.remote.dto.CategoryDto
+import de.lukasneugebauer.nextcloudcookbook.feature_category.data.dto.CategoryDto
 import kotlinx.coroutines.flow.Flow
 
 interface CategoryRepository {

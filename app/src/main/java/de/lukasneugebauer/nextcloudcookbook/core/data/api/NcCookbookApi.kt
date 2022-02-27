@@ -2,9 +2,9 @@ package de.lukasneugebauer.nextcloudcookbook.core.data.api
 
 import de.lukasneugebauer.nextcloudcookbook.core.data.remote.response.CapabilitiesResponse
 import de.lukasneugebauer.nextcloudcookbook.core.util.Constants
-import de.lukasneugebauer.nextcloudcookbook.feature_category.data.remote.dto.CategoryDto
-import de.lukasneugebauer.nextcloudcookbook.feature_recipe.data.remote.dto.RecipeDto
-import de.lukasneugebauer.nextcloudcookbook.feature_recipe.data.remote.dto.RecipePreviewDto
+import de.lukasneugebauer.nextcloudcookbook.feature_category.data.dto.CategoryDto
+import de.lukasneugebauer.nextcloudcookbook.feature_recipe.data.dto.RecipeDto
+import de.lukasneugebauer.nextcloudcookbook.feature_recipe.data.dto.RecipePreviewDto
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Headers
