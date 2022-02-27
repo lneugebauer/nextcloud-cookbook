@@ -169,7 +169,7 @@ fun RecipeDetailTopBar(
                 )
                 DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
                     RecipeDetailScreenDropDownMenuItemOpenSource(context, recipe.url)
-                    RecipeDetailScreenDropDownMenuItemEdit(context)
+//                    RecipeDetailScreenDropDownMenuItemEdit(context)
                     RecipeDetailScreenDropDownMenuItemDelete(onDeleteClick)
                 }
             }

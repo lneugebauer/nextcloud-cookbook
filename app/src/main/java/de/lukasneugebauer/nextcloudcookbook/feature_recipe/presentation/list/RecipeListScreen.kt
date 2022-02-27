@@ -95,23 +95,18 @@ private fun RecipeListScreen(
 
 @Composable
 fun RecipeListTopBar(categoryName: String?) {
-    val title =
-        if (categoryName == null) {
-            stringResource(id = R.string.common_recipes)
-        } else {
-            "${stringResource(id = R.string.common_recipes)}: $categoryName"
-        }
+    val title = categoryName ?: stringResource(id = R.string.common_recipes)
 
     TopAppBar(
         title = { Text(text = title) },
-        actions = {
-            IconButton(onClick = {}) {
-                Icon(
-                    Icons.Default.FilterList,
-                    contentDescription = stringResource(id = R.string.common_share)
-                )
-            }
-        },
+//        actions = {
+//            IconButton(onClick = {}) {
+//                Icon(
+//                    Icons.Default.FilterList,
+//                    contentDescription = stringResource(id = R.string.common_share)
+//                )
+//            }
+//        },
         backgroundColor = NcBlue700,
         contentColor = Color.White
     )
