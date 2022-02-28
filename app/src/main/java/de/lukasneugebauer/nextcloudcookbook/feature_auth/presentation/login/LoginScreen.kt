@@ -41,7 +41,9 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Default
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.DefaultOutlinedTextField
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.DefaultTextButton
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
+import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlueGradient
+import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -333,7 +335,9 @@ fun LoginWebView(url: Uri?, onCloseClick: () -> Unit) {
                     IconButton(onClick = onCloseClick) {
                         Icon(imageVector = Icons.Default.Close, contentDescription = "Close")
                     }
-                }
+                },
+                backgroundColor = NcBlue700,
+                contentColor = Color.White
             )
         }
     ) {
@@ -364,5 +368,15 @@ fun LoginWebView(url: Uri?, onCloseClick: () -> Unit) {
 @Preview
 @Composable
 private fun LoginScreenPreview() {
-    LoginScreen(false, null, null, null, {}, {}, {}, { _, _, _ -> })
+    NextcloudCookbookTheme {
+        LoginScreen(false, null, null, null, {}, {}, {}, { _, _, _ -> })
+    }
+}
+
+@Preview
+@Composable
+private fun LoginScreenDarkModePreview() {
+    NextcloudCookbookTheme(darkTheme = true) {
+        LoginScreen(false, null, null, null, {}, {}, {}, { _, _, _ -> })
+    }
 }
