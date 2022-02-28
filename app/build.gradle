@@ -12,12 +12,14 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    signingConfigs {
-        upload {
-            storeFile file(keystoreProperties['storeFile'])
-            storePassword keystoreProperties['storePassword']
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
+    if (keystoreProperties.containsKey('storeFile')) {
+        signingConfigs {
+            upload {
+                storeFile file(keystoreProperties['storeFile'])
+                storePassword keystoreProperties['storePassword']
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
+            }
         }
     }
     compileSdk 31
@@ -44,7 +46,7 @@ android {
             shrinkResources true
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.upload
+            signingConfig keystoreProperties.containsKey('storeFile') ? signingConfigs.upload : signingConfigs.debug
         }
     }
     compileOptions {
