@@ -14,5 +14,7 @@ jobs:
           bundler-cache: true
       - name: Install gems
         run: bundle install
+      - name: Create empty properties
+        run: touch keystore.properties
       - name: Run pipeline
         run: bundle exec fastlane debugPipeline
