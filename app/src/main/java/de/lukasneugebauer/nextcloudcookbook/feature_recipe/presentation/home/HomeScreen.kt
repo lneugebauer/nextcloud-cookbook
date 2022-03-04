@@ -1,9 +1,20 @@
 package de.lukasneugebauer.nextcloudcookbook.feature_recipe.presentation.home
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.*
+import androidx.compose.material.Card
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.runtime.Composable
@@ -18,7 +29,11 @@ import coil.annotation.ExperimentalCoilApi
 import de.lukasneugebauer.nextcloudcookbook.NextcloudCookbookScreen
 import de.lukasneugebauer.nextcloudcookbook.NextcloudCookbookScreen.Recipe
 import de.lukasneugebauer.nextcloudcookbook.R
-import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.*
+import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.CommonItemBody
+import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Headline
+import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
+import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.RowContainer
+import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.RowContent
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.authorized_image.AuthorizedImage
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.error.NotFoundScreen
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
@@ -61,11 +76,13 @@ fun HomeScreen(
                             ) {
                                 navController.navigate("${NextcloudCookbookScreen.Recipes.name}?categoryName=${data.headline}")
                             }
-                            RowContainer(data = data.recipes.map {
-                                RowContent(it.name, it.imageUrl) {
-                                    navController.navigate("${Recipe.name}?recipeId=${it.id}")
+                            RowContainer(
+                                data = data.recipes.map {
+                                    RowContent(it.name, it.imageUrl) {
+                                        navController.navigate("${Recipe.name}?recipeId=${it.id}")
+                                    }
                                 }
-                            })
+                            )
                         }
                         is HomeScreenDataResult.Single -> {
                             Headline(

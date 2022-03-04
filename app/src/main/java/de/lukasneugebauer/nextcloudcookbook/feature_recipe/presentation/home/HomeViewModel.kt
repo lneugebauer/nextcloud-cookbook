@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.state.HomeScreenState
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.use_case.GetHomeScreenDataUseCase
-import kotlinx.coroutines.*
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel

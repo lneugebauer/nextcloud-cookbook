@@ -7,7 +7,7 @@ import de.lukasneugebauer.nextcloudcookbook.BuildConfig
 import de.lukasneugebauer.nextcloudcookbook.R
 import okhttp3.Interceptor
 import okhttp3.Response
-import java.util.*
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 

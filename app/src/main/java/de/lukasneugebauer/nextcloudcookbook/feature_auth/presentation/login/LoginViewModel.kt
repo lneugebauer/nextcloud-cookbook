@@ -46,10 +46,12 @@ class LoginViewModel @Inject constructor(
                 Timber.d("accountResource: $accountResource, ncCookbookApi: $ncCookbookApi")
                 if (accountResource is Resource.Success && ncCookbookApi != null) {
                     when (val capabilitiesResource = accountRepository.getCapabilities()) {
-                        is Resource.Success -> _uiState.value = _uiState.value.copy(authorized = true)
+                        is Resource.Success -> _uiState.value =
+                            _uiState.value.copy(authorized = true)
                         is Resource.Error -> {
                             clearPreferencesUseCase()
-                            _uiState.value = _uiState.value.copy(urlError = capabilitiesResource.text)
+                            _uiState.value =
+                                _uiState.value.copy(urlError = capabilitiesResource.text)
                         }
                     }
                 } else {
@@ -63,8 +65,7 @@ class LoginViewModel @Inject constructor(
         if (!isValidUrl(url)) return
 
         viewModelScope.launch {
-            when (val result =
-                authRepository.getLoginEndpoint(url)) {
+            when (val result = authRepository.getLoginEndpoint(url)) {
                 is Resource.Success -> {
                     val webViewUrl = result.data?.loginUrl!!
                     Timber.v("Open web view with url $webViewUrl")

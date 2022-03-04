@@ -4,7 +4,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.*
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ListItem
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,7 +33,7 @@ fun CategoryListScreen(
     CategoryListScreen(
         data = state.data,
         onClick = { name ->
-            navController.navigate("${NextcloudCookbookScreen.Recipes.name}?categoryName=${name}")
+            navController.navigate("${NextcloudCookbookScreen.Recipes.name}?categoryName=$name")
         }
     )
 }

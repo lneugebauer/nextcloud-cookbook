@@ -4,7 +4,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Text
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.runtime.Composable
@@ -40,7 +44,13 @@ fun DefaultOutlinedTextField(
             label = label,
             placeholder = placeholder,
             trailingIcon = if (isError) {
-                { Icon(imageVector = Icons.Default.Error, contentDescription = "Error", tint = MaterialTheme.colors.error) }
+                {
+                    Icon(
+                        imageVector = Icons.Default.Error,
+                        contentDescription = "Error",
+                        tint = MaterialTheme.colors.error
+                    )
+                }
             } else {
                 trailingIcon
             },
@@ -77,5 +87,9 @@ fun DefaultOutlinedTextFieldPreview() {
 @Preview
 @Composable
 fun DefaultOutlinedTextFieldWithErrorPreview() {
-    DefaultOutlinedTextField(value = "OutlinedTextField", onValueChange = {}, errorText = "Error message")
+    DefaultOutlinedTextField(
+        value = "OutlinedTextField",
+        onValueChange = {},
+        errorText = "Error message"
+    )
 }

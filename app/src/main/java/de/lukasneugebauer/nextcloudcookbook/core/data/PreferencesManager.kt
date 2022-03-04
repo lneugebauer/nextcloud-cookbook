@@ -3,7 +3,12 @@ package de.lukasneugebauer.nextcloudcookbook.core.data
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.*
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.emptyPreferences
+import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.longPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.NcAccount
@@ -67,7 +72,8 @@ class PreferencesManager @Inject constructor(
                     updatedAt = LocalDateTime.ofInstant(
                         Instant.ofEpochSecond(
                             recipeOfTheDayUpdatedAt
-                        ), ZoneOffset.UTC
+                        ),
+                        ZoneOffset.UTC
                     )
                 )
             )

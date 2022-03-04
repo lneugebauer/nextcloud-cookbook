@@ -23,11 +23,11 @@ data class Recipe(
     val createdAt: String,
     val modifiedAt: String,
 ) {
-    fun isEmpty() : Boolean {
+    fun isEmpty(): Boolean {
         return this.id == 0
     }
 
-    fun isNotEmpty() : Boolean {
+    fun isNotEmpty(): Boolean {
         return this.id != 0
     }
 }

@@ -20,7 +20,15 @@ import androidx.navigation.navArgument
 import coil.annotation.ExperimentalCoilApi
 import dagger.hilt.android.AndroidEntryPoint
 import de.lukasneugebauer.nextcloudcookbook.NextcloudCookbookScreen
-import de.lukasneugebauer.nextcloudcookbook.NextcloudCookbookScreen.*
+import de.lukasneugebauer.nextcloudcookbook.NextcloudCookbookScreen.Categories
+import de.lukasneugebauer.nextcloudcookbook.NextcloudCookbookScreen.Home
+import de.lukasneugebauer.nextcloudcookbook.NextcloudCookbookScreen.Launch
+import de.lukasneugebauer.nextcloudcookbook.NextcloudCookbookScreen.Login
+import de.lukasneugebauer.nextcloudcookbook.NextcloudCookbookScreen.Recipe
+import de.lukasneugebauer.nextcloudcookbook.NextcloudCookbookScreen.Recipes
+import de.lukasneugebauer.nextcloudcookbook.NextcloudCookbookScreen.Search
+import de.lukasneugebauer.nextcloudcookbook.NextcloudCookbookScreen.Settings
+import de.lukasneugebauer.nextcloudcookbook.NextcloudCookbookScreen.values
 import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.BottomBar
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
@@ -120,10 +128,12 @@ fun NextcloudCookbookNavHost(
         }
         composable(
             "${Recipes.name}?categoryName={categoryName}",
-            arguments = listOf(navArgument("categoryName") {
-                nullable = true
-                type = NavType.StringType
-            })
+            arguments = listOf(
+                navArgument("categoryName") {
+                    nullable = true
+                    type = NavType.StringType
+                }
+            )
         ) { backStackEntry ->
             RecipeListScreen(
                 navController,

@@ -5,9 +5,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.FilterList
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ListItem
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -39,7 +42,7 @@ fun RecipeListScreen(
         data = state.data,
         isLoading = state.loading,
         onClick = { id ->
-            navController.navigate("${NextcloudCookbookScreen.Recipe.name}?recipeId=${id}")
+            navController.navigate("${NextcloudCookbookScreen.Recipe.name}?recipeId=$id")
         }
     )
 }

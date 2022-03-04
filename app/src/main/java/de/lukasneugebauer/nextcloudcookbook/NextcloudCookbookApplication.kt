@@ -10,7 +10,7 @@ class NextcloudCookbookApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-       initializeTimber()
+        initializeTimber()
     }
 
     private fun initializeTimber() {

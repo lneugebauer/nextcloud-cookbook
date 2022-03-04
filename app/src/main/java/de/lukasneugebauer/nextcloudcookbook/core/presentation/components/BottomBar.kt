@@ -35,9 +35,11 @@ fun BottomBar(
                         )
                     },
                     label = {
-                        Text(it.displayName?.let { stringRes ->
-                            stringResource(id = stringRes)
-                        } ?: it.name)
+                        Text(
+                            it.displayName?.let { stringRes ->
+                                stringResource(id = stringRes)
+                            } ?: it.name
+                        )
                     },
                     selectedContentColor = Color.White
                 )

@@ -20,5 +20,5 @@ val NcBlueGradient = Brush.linearGradient(
         Color(0xFF1CAFFF)
     ),
     start = Offset(0f, Float.POSITIVE_INFINITY),
-    end= Offset(Float.POSITIVE_INFINITY, 0f)
+    end = Offset(Float.POSITIVE_INFINITY, 0f)
 )
