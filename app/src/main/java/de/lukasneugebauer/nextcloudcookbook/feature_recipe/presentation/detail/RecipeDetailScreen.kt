@@ -3,7 +3,6 @@ package de.lukasneugebauer.nextcloudcookbook.feature_recipe.presentation.detail
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.view.Window
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.annotation.StringRes
@@ -50,16 +49,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
 import coil.annotation.ExperimentalCoilApi
 import com.google.accompanist.flowlayout.FlowRow
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import de.lukasneugebauer.nextcloudcookbook.R
-import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Gap
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.authorized_image.AuthorizedImage
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.pluralResource
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
+import de.lukasneugebauer.nextcloudcookbook.core.util.getActivity
 import de.lukasneugebauer.nextcloudcookbook.core.util.openInBrowser
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.model.Recipe
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.presentation.components.Chip
@@ -68,25 +68,23 @@ import de.lukasneugebauer.nextcloudcookbook.feature_recipe.util.emptyRecipe
 import java.time.Duration
 
 @ExperimentalCoilApi
+@Destination
 @Composable
 fun RecipeDetailScreen(
-    navController: NavHostController,
-    preferencesManager: PreferencesManager,
-    recipeId: Int?,
-    window: Window,
+    navigator: DestinationsNavigator,
+    recipeId: Int,
     viewModel: RecipeDetailViewModel = hiltViewModel()
 ) {
     val state = viewModel.state.value
     var recipe: Recipe by remember { mutableStateOf(emptyRecipe()) }
-    val stayAwake by remember { mutableStateOf(preferencesManager.getStayAwake()) }
 
-    if (stayAwake) {
-        KeepScreenOn(window)
+    if (viewModel.stayAwake) {
+        KeepScreenOn()
     }
 
     if (state.deleted) {
         LaunchedEffect(state) {
-            navController.popBackStack()
+            navigator.popBackStack()
         }
     }
 
@@ -94,7 +92,7 @@ fun RecipeDetailScreen(
         topBar = {
             RecipeDetailTopBar(
                 recipe = recipe,
-                onNavIconClick = { navController.popBackStack() },
+                onNavIconClick = { navigator.popBackStack() },
                 onDeleteClick = {
                     if (recipe.isNotEmpty()) viewModel.deleteRecipe(
                         recipe.id,
@@ -105,7 +103,7 @@ fun RecipeDetailScreen(
             )
         }
     ) { innerPadding ->
-        if (recipeId != null && state.data == null && state.error == null && state.loading) {
+        if (state.data == null && state.error == null && state.loading) {
             viewModel.getRecipe(recipeId)
         }
         if (state.loading) {
@@ -127,11 +125,12 @@ fun RecipeDetailScreen(
 }
 
 @Composable
-fun KeepScreenOn(window: Window) {
+fun KeepScreenOn() {
+    val window = LocalContext.current.getActivity()?.window
     DisposableEffect(Unit) {
-        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         onDispose {
-            window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
     }
 }

@@ -15,25 +15,27 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
-import de.lukasneugebauer.nextcloudcookbook.NextcloudCookbookScreen
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
+import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeListScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.feature_category.domain.model.Category
 import kotlin.random.Random.Default.nextInt
 
+@Destination
 @Composable
 fun CategoryListScreen(
-    navController: NavHostController,
+    navigator: DestinationsNavigator,
     viewModel: CategoryListViewModel = hiltViewModel()
 ) {
     val state = viewModel.state.value
 
     CategoryListScreen(
         data = state.data,
-        onClick = { name ->
-            navController.navigate("${NextcloudCookbookScreen.Recipes.name}?categoryName=$name")
+        onClick = { categoryName ->
+            navigator.navigate(RecipeListScreenDestination(categoryName))
         }
     )
 }

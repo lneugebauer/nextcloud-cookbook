@@ -27,19 +27,19 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.NavHostController
 import com.alorma.compose.settings.storage.preferences.rememberPreferenceBooleanSettingState
 import com.alorma.compose.settings.ui.SettingsGroup
 import com.alorma.compose.settings.ui.SettingsMenuLink
 import com.alorma.compose.settings.ui.SettingsSwitch
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import de.lukasneugebauer.nextcloudcookbook.BuildConfig
-import de.lukasneugebauer.nextcloudcookbook.NextcloudCookbookScreen
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Gap
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
 import de.lukasneugebauer.nextcloudcookbook.core.util.Constants.SHARED_PREFERENCES_KEY
 import de.lukasneugebauer.nextcloudcookbook.core.util.openInBrowser
+import de.lukasneugebauer.nextcloudcookbook.destinations.LoginScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.feature_settings.util.SettingsConstants.GITHUB_ISSUES_URL
 import de.lukasneugebauer.nextcloudcookbook.feature_settings.util.SettingsConstants.GITHUB_URL
 import de.lukasneugebauer.nextcloudcookbook.feature_settings.util.SettingsConstants.LICENSE_URL
@@ -47,14 +47,15 @@ import de.lukasneugebauer.nextcloudcookbook.feature_settings.util.SettingsConsta
 import de.lukasneugebauer.nextcloudcookbook.feature_settings.util.SettingsConstants.STAY_AWAKE_DEFAULT
 import de.lukasneugebauer.nextcloudcookbook.feature_settings.util.SettingsConstants.STAY_AWAKE_KEY
 
+@Destination
 @Composable
 fun SettingsScreen(
-    navController: NavHostController,
+    navigator: DestinationsNavigator,
     sharedPreferences: SharedPreferences,
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
     Scaffold(
-        topBar = { SettingsTopBar(onNavIconClick = { navController.popBackStack() }) }
+        topBar = { SettingsTopBar(onNavIconClick = { navigator.popBackStack() }) }
     ) { innerPadding ->
         SettingsContent(
             modifier = Modifier
@@ -63,9 +64,7 @@ fun SettingsScreen(
                 .verticalScroll(rememberScrollState()),
             onLogoutClick = {
                 viewModel.logout()
-                navController.navigate(NextcloudCookbookScreen.Login.name) {
-                    popUpTo(navController.graph.findStartDestination().id) { inclusive = true }
-                }
+                navigator.popBackStack(LoginScreenDestination(), inclusive = true)
             },
             sharedPreferences = sharedPreferences,
         )

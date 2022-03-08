@@ -23,11 +23,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import coil.annotation.ExperimentalCoilApi
-import de.lukasneugebauer.nextcloudcookbook.NextcloudCookbookScreen
-import de.lukasneugebauer.nextcloudcookbook.NextcloudCookbookScreen.Recipe
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.CommonItemBody
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Headline
@@ -37,19 +35,27 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.RowCont
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.authorized_image.AuthorizedImage
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.error.NotFoundScreen
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
+import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeDetailScreenDestination
+import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeListScreenDestination
+import de.lukasneugebauer.nextcloudcookbook.destinations.SettingsScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.model.HomeScreenDataResult
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.util.RecipeConstants.MORE_BUTTON_THRESHOLD
 
 @ExperimentalCoilApi
 @ExperimentalMaterialApi
+@Destination
 @Composable
 fun HomeScreen(
-    navController: NavHostController,
+    navigator: DestinationsNavigator,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val state = viewModel.state.value
 
-    Scaffold(topBar = { HomeTopBar(navController) }) {
+    Scaffold(topBar = {
+        HomeTopBar(
+            onSettingsIconClick = { navigator.navigate(SettingsScreenDestination()) }
+        )
+    }) {
         if (state.loading) {
             Loader()
         }
@@ -74,12 +80,12 @@ fun HomeScreen(
                                 text = data.headline,
                                 clickable = data.recipes.size > MORE_BUTTON_THRESHOLD
                             ) {
-                                navController.navigate("${NextcloudCookbookScreen.Recipes.name}?categoryName=${data.headline}")
+                                navigator.navigate(RecipeListScreenDestination(categoryName = data.headline))
                             }
                             RowContainer(
                                 data = data.recipes.map {
                                     RowContent(it.name, it.imageUrl) {
-                                        navController.navigate("${Recipe.name}?recipeId=${it.id}")
+                                        navigator.navigate(RecipeDetailScreenDestination(recipeId = it.id))
                                     }
                                 }
                             )
@@ -91,7 +97,7 @@ fun HomeScreen(
                                 onClick = {}
                             )
                             SingleItem(name = data.recipe.name, imageUrl = data.recipe.imageUrl) {
-                                navController.navigate("${Recipe.name}?recipeId=${data.recipe.id}")
+                                navigator.navigate(RecipeDetailScreenDestination(recipeId = data.recipe.id))
                             }
                         }
                     }
@@ -102,11 +108,11 @@ fun HomeScreen(
 }
 
 @Composable
-fun HomeTopBar(navController: NavController) {
+fun HomeTopBar(onSettingsIconClick: () -> Unit) {
     TopAppBar(
         title = { Text(text = stringResource(id = R.string.app_name)) },
         actions = {
-            IconButton(onClick = { navController.navigate(NextcloudCookbookScreen.Settings.name) }) {
+            IconButton(onClick = onSettingsIconClick) {
                 Icon(
                     Icons.Outlined.Settings,
                     contentDescription = stringResource(id = R.string.common_settings)

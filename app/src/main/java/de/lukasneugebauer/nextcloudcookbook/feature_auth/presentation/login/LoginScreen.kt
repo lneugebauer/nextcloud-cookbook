@@ -55,8 +55,8 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
-import de.lukasneugebauer.nextcloudcookbook.NextcloudCookbookScreen
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.DefaultButton
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.DefaultOutlinedTextField
@@ -65,12 +65,14 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlueGradient
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
+import de.lukasneugebauer.nextcloudcookbook.destinations.HomeScreenDestination
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
+@Destination
 @Composable
 fun LoginScreen(
-    navController: NavController,
+    navigator: DestinationsNavigator,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
     val focusManager = LocalFocusManager.current
@@ -91,7 +93,7 @@ fun LoginScreen(
     // Navigate to home screen if user authorized
     LaunchedEffect(key1 = uiState) {
         if (uiState.authorized) {
-            navController.navigate(NextcloudCookbookScreen.Home.name)
+            navigator.navigate(HomeScreenDestination())
         }
     }
 

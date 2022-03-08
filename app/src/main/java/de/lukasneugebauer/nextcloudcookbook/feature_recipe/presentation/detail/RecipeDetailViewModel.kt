@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dropbox.android.external.store4.StoreResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
+import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
 import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.repository.RecipeRepository
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.state.RecipeDetailState
@@ -15,11 +16,15 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RecipeDetailViewModel @Inject constructor(
+    private val preferencesManager: PreferencesManager,
     private val recipeRepository: RecipeRepository
 ) : ViewModel() {
 
     private val _state = mutableStateOf(RecipeDetailState())
     val state: State<RecipeDetailState> = _state
+
+    val stayAwake: Boolean
+        get() = preferencesManager.getStayAwake()
 
     fun getRecipe(id: Int) {
         _state.value = _state.value.copy(loading = true)
@@ -83,9 +88,12 @@ class RecipeDetailViewModel @Inject constructor(
     fun deleteRecipe(id: Int, categoryName: String) {
         viewModelScope.launch {
             when (val deleteRecipeResource = recipeRepository.deleteRecipe(id, categoryName)) {
-                is Resource.Success -> _state.value = _state.value.copy(deleted = true)
-                is Resource.Error -> _state.value =
-                    _state.value.copy(error = deleteRecipeResource.text)
+                is Resource.Success -> {
+                    _state.value = _state.value.copy(deleted = true)
+                }
+                is Resource.Error -> {
+                    _state.value = _state.value.copy(error = deleteRecipeResource.text)
+                }
             }
         }
     }

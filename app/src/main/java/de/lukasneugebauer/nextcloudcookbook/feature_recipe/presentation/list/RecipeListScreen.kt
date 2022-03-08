@@ -20,18 +20,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
-import de.lukasneugebauer.nextcloudcookbook.NextcloudCookbookScreen
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.authorized_image.AuthorizedImage
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.error.NotFoundScreen
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
+import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeDetailScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.model.RecipePreview
 
+@Destination
 @Composable
 fun RecipeListScreen(
-    navController: NavHostController,
+    navigator: DestinationsNavigator,
     categoryName: String?,
     viewModel: RecipeListViewModel = hiltViewModel()
 ) {
@@ -42,7 +44,7 @@ fun RecipeListScreen(
         data = state.data,
         isLoading = state.loading,
         onClick = { id ->
-            navController.navigate("${NextcloudCookbookScreen.Recipe.name}?recipeId=$id")
+            navigator.navigate(RecipeDetailScreenDestination(recipeId = id))
         }
     )
 }

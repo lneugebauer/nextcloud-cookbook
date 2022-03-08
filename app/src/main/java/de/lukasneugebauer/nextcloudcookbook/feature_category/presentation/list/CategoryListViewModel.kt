@@ -25,8 +25,11 @@ class CategoryListViewModel @Inject constructor(
             categoryRepository.getCategories().collect { categoriesResponse ->
                 when (categoriesResponse) {
                     is StoreResponse.Loading -> {}
-                    is StoreResponse.Data -> _state.value =
-                        _state.value.copy(data = categoriesResponse.value.map { it.toCategory() })
+                    is StoreResponse.Data -> {
+                        _state.value = _state.value.copy(
+                            data = categoriesResponse.value.map { it.toCategory() }
+                        )
+                    }
                     is StoreResponse.NoNewData -> {}
                     is StoreResponse.Error.Exception -> {}
                     is StoreResponse.Error.Message -> {}
