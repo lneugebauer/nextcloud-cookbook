@@ -17,4 +17,4 @@ jobs:
       - name: Create empty properties
         run: touch keystore.properties
       - name: Run pipeline
-        run: bundle exec fastlane debugPipeline
+        run: bundle exec fastlane build

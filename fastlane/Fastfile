@@ -22,44 +22,44 @@ platform :android do
     gradle(task: "clean")
   end
 
-  desc "Compile debug"
-  lane :compileDebug do
-    gradle(task: "compileDebugSources")
-    gradle(task: "compileDebugUnitTestSources")
-    gradle(task: "compileDebugAndroidTestSources")
+  desc "Ktlint"
+  lane :ktlint do
+    gradle(
+      task: "ktlint"
+    )
   end
 
-  desc "Lint debug"
-  lane :lintDebug do
+  desc "Lint"
+  lane :lint do
     gradle(
       task: "lint",
       build_type: "Debug"
     )
   end
 
-  desc "Test debug"
-  lane :testDebug do
+  desc "Test"
+  lane :test do
     gradle(
       task: "test",
       build_type: "Debug"
     )
   end
 
-  desc "Build debug"
-  lane :assembleDebug do
+  desc "Assemble"
+  lane :assemble do
     gradle(
       task: "assemble",
       build_type: "Debug"
     )
   end
 
-  desc "Run debug pipeline"
-  lane :debugPipeline do
+  desc "Build"
+  lane :build do
     clean
-    compileDebug
-    lintDebug
-    testDebug
-    assembleDebug
+    ktlint
+    lint
+    test
+    assemble
   end
 
 end
