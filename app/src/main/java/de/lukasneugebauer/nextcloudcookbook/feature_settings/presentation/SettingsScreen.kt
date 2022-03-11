@@ -40,6 +40,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
 import de.lukasneugebauer.nextcloudcookbook.core.util.Constants.SHARED_PREFERENCES_KEY
 import de.lukasneugebauer.nextcloudcookbook.core.util.openInBrowser
 import de.lukasneugebauer.nextcloudcookbook.destinations.LoginScreenDestination
+import de.lukasneugebauer.nextcloudcookbook.destinations.SplashScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.feature_settings.util.SettingsConstants.GITHUB_ISSUES_URL
 import de.lukasneugebauer.nextcloudcookbook.feature_settings.util.SettingsConstants.GITHUB_URL
 import de.lukasneugebauer.nextcloudcookbook.feature_settings.util.SettingsConstants.LICENSE_URL
@@ -51,7 +52,6 @@ import de.lukasneugebauer.nextcloudcookbook.feature_settings.util.SettingsConsta
 @Composable
 fun SettingsScreen(
     navigator: DestinationsNavigator,
-    sharedPreferences: SharedPreferences,
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
     Scaffold(
@@ -64,9 +64,15 @@ fun SettingsScreen(
                 .verticalScroll(rememberScrollState()),
             onLogoutClick = {
                 viewModel.logout()
-                navigator.popBackStack(LoginScreenDestination(), inclusive = true)
+                navigator.navigate(LoginScreenDestination) {
+                    popUpTo(
+                        SplashScreenDestination.route
+                    ) {
+                        inclusive = true
+                    }
+                }
             },
-            sharedPreferences = sharedPreferences,
+            sharedPreferences = viewModel.sharedPreferences,
         )
     }
 }

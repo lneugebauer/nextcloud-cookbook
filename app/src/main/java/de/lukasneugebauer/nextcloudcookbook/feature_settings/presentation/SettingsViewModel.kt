@@ -1,5 +1,6 @@
 package de.lukasneugebauer.nextcloudcookbook.feature_settings.presentation
 
+import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -9,7 +10,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val clearPreferencesUseCase: ClearPreferencesUseCase
+    private val clearPreferencesUseCase: ClearPreferencesUseCase,
+    val sharedPreferences: SharedPreferences
 ) : ViewModel() {
 
     fun logout() {
