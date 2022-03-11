@@ -4,11 +4,6 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <queries>
-        <package android:name="com.nextcloud.client" />
-        <package android:name="com.nextcloud.android.beta" />
-    </queries>
-
     <application
         android:name=".NextcloudCookbookApplication"
         android:allowBackup="true"
