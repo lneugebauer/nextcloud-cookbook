@@ -7,7 +7,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.hilt.navigation.compose.hiltViewModel
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.ImagePainter
 import coil.compose.rememberImagePainter
@@ -15,7 +14,6 @@ import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.LocalCredentials
 import de.lukasneugebauer.nextcloudcookbook.core.util.Constants
-import okhttp3.Credentials
 
 @ExperimentalCoilApi
 @Composable
