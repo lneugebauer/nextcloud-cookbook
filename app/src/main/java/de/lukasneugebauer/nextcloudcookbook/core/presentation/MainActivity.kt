@@ -9,6 +9,8 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -20,7 +22,10 @@ import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.manualcomposablecalls.composable
 import dagger.hilt.android.AndroidEntryPoint
 import de.lukasneugebauer.nextcloudcookbook.NavGraphs
-import de.lukasneugebauer.nextcloudcookbook.core.domain.state.MainState
+import de.lukasneugebauer.nextcloudcookbook.core.domain.model.Credentials
+import de.lukasneugebauer.nextcloudcookbook.core.domain.model.LocalCredentials
+import de.lukasneugebauer.nextcloudcookbook.core.domain.state.AuthState
+import de.lukasneugebauer.nextcloudcookbook.core.domain.state.SplashState
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.BottomBar
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
 import de.lukasneugebauer.nextcloudcookbook.destinations.LoginScreenDestination
@@ -42,15 +47,25 @@ class MainActivity : ComponentActivity() {
 
         splashScreen.setKeepOnScreenCondition { keepOnScreen }
 
-        viewModel.state.observe(this) { state ->
+        viewModel.splashState.observe(this) { state ->
             keepOnScreen = when (state) {
-                MainState.Initial -> true
-                else -> false
+                SplashState.Initial -> true
+                SplashState.Loaded -> false
             }
         }
 
         setContent {
-            NextcloudCookbookApp()
+            val authState by viewModel.authState.collectAsState()
+            val credentials: Credentials? by derivedStateOf {
+                when (authState) {
+                    is AuthState.Unauthorized -> null
+                    is AuthState.Authorized -> (authState as AuthState.Authorized).credentials
+                }
+            }
+
+            CompositionLocalProvider(LocalCredentials provides credentials) {
+                NextcloudCookbookApp()
+            }
         }
     }
 }
@@ -83,7 +98,7 @@ fun NextcloudCookbookApp() {
             ) {
                 composable(SplashScreenDestination) {
                     CompositionLocalProvider(
-                        LocalViewModelStoreOwner provides viewModelStoreOwner
+                        LocalViewModelStoreOwner provides viewModelStoreOwner,
                     ) {
                         SplashScreen(navigator = destinationsNavigator)
                     }

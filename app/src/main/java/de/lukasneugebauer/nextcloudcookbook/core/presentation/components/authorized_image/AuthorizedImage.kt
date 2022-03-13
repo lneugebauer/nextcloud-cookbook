@@ -13,22 +13,21 @@ import coil.compose.ImagePainter
 import coil.compose.rememberImagePainter
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import de.lukasneugebauer.nextcloudcookbook.R
+import de.lukasneugebauer.nextcloudcookbook.core.domain.model.LocalCredentials
 import de.lukasneugebauer.nextcloudcookbook.core.util.Constants
 import okhttp3.Credentials
 
 @ExperimentalCoilApi
 @Composable
-fun authorizedImagePainter(
-    baseUrl: String?,
-    imageUrl: String,
-    username: String?,
-    token: String?
-): Painter {
+fun authorizedImagePainter(imageUrl: String): Painter {
+    val credentials = LocalCredentials.current
+
     val painter = rememberImagePainter(
-        data = baseUrl + imageUrl,
+        data = credentials?.baseUrl + imageUrl,
         builder = {
-            val credentials = Credentials.basic(username ?: "", token ?: "")
-            addHeader("Authorization", credentials)
+            credentials?.basic?.let {
+                addHeader("Authorization", credentials.basic)
+            }
             crossfade(Constants.CROSSFADE_DURATION_MILLIS)
         }
     )
@@ -51,18 +50,10 @@ fun authorizedImagePainter(
 fun AuthorizedImage(
     imageUrl: String,
     contentDescription: String,
-    modifier: Modifier,
-    viewModel: AuthorizedImageViewModel = hiltViewModel()
+    modifier: Modifier
 ) {
-    val state = viewModel.state.value
-
     Image(
-        painter = authorizedImagePainter(
-            state.account?.url,
-            imageUrl,
-            state.account?.username,
-            state.account?.token
-        ),
+        painter = authorizedImagePainter(imageUrl),
         contentDescription = contentDescription,
         modifier = modifier,
         contentScale = ContentScale.Crop

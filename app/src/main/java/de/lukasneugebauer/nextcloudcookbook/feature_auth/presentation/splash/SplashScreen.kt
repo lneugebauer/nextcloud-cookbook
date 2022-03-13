@@ -28,11 +28,11 @@ fun SplashScreen(
         when (uiState) {
             SplashScreenState.Authorized -> {
                 // TODO: 04.10.21 Load (and cache) recipes initially
-                mainViewModel.setUserIsAuthorized()
+                mainViewModel.finishSplash()
                 navigator.navigate(HomeScreenDestination)
             }
             SplashScreenState.Unauthorized -> {
-                mainViewModel.setUserIsUnauthorized()
+                mainViewModel.finishSplash()
                 navigator.navigate(LoginScreenDestination)
             }
             else -> {}
