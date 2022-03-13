@@ -174,7 +174,8 @@ fun SettingsGroupAbout(context: Context) {
                 Text(
                     text = stringResource(
                         R.string.settings_version_number,
-                        BuildConfig.VERSION_NAME
+                        BuildConfig.VERSION_NAME,
+                        BuildConfig.VERSION_CODE
                     )
                 )
             },
