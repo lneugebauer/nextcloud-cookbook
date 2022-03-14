@@ -126,7 +126,9 @@ fun RecipeDetailScreen(
 
 @Composable
 fun KeepScreenOn() {
-    val window = LocalContext.current.getActivity()?.window
+    val context = LocalContext.current
+    val activity = context.getActivity()
+    val window = activity?.window
     DisposableEffect(Unit) {
         window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         onDispose {
