@@ -8,11 +8,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.ListItem
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -50,6 +54,9 @@ fun RecipeListScreen(
         isLoading = state.loading,
         onClick = { id ->
             navigator.navigate(RecipeDetailScreenDestination(recipeId = id))
+        },
+        onBackClick = {
+            navigator.popBackStack()
         }
     )
 }
@@ -60,10 +67,11 @@ private fun RecipeListScreen(
     categoryName: String?,
     data: List<RecipePreview>,
     isLoading: Boolean,
-    onClick: (Int) -> Unit
+    onClick: (Int) -> Unit,
+    onBackClick: () -> Unit
 ) {
     Scaffold(
-        topBar = { RecipeListTopBar(categoryName) }
+        topBar = { RecipeListTopBar(categoryName, onBackClick) }
     ) {
         if (isLoading) {
             Loader()
@@ -109,11 +117,21 @@ private fun RecipeListScreen(
 }
 
 @Composable
-fun RecipeListTopBar(categoryName: String?) {
+fun RecipeListTopBar(categoryName: String?, onBackClick: () -> Unit) {
     val title = categoryName ?: stringResource(id = R.string.common_recipes)
 
     TopAppBar(
         title = { Text(text = title) },
+        navigationIcon = if (categoryName == null) null else {
+            {
+                IconButton(onClick = onBackClick) {
+                    Icon(
+                        Icons.Filled.ArrowBack,
+                        contentDescription = stringResource(id = R.string.common_back)
+                    )
+                }
+            }
+        },
 //        actions = {
 //            IconButton(onClick = {}) {
 //                Icon(
@@ -141,6 +159,11 @@ fun RecipeListPreview() {
         )
     }
     NextcloudCookbookTheme {
-        RecipeListScreen(categoryName = null, data = data, isLoading = false, onClick = {})
+        RecipeListScreen(
+            categoryName = null,
+            data = data,
+            isLoading = false,
+            onClick = {},
+            onBackClick = {})
     }
 }
