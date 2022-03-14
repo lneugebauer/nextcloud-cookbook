@@ -12,6 +12,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.MainViewModel
 import de.lukasneugebauer.nextcloudcookbook.destinations.HomeScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.destinations.LoginScreenDestination
+import de.lukasneugebauer.nextcloudcookbook.destinations.SplashScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.feature_auth.domain.state.SplashScreenState
 
 @OptIn(ExperimentalMaterialApi::class, coil.annotation.ExperimentalCoilApi::class)
@@ -29,11 +30,19 @@ fun SplashScreen(
             SplashScreenState.Authorized -> {
                 // TODO: 04.10.21 Load (and cache) recipes initially
                 mainViewModel.finishSplash()
-                navigator.navigate(HomeScreenDestination)
+                navigator.navigate(HomeScreenDestination) {
+                    popUpTo(SplashScreenDestination.route) {
+                        inclusive = true
+                    }
+                }
             }
             SplashScreenState.Unauthorized -> {
                 mainViewModel.finishSplash()
-                navigator.navigate(LoginScreenDestination)
+                navigator.navigate(LoginScreenDestination) {
+                    popUpTo(SplashScreenDestination.route) {
+                        inclusive = true
+                    }
+                }
             }
             else -> {}
         }
