@@ -49,11 +49,7 @@ fun BottomBar(navController: NavController) {
                 onClick = {
                     selected = destination
                     navController.navigate(destination.direction.route) {
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
-                        }
                         launchSingleTop = true
-                        restoreState = true
                     }
                 },
                 icon = {
