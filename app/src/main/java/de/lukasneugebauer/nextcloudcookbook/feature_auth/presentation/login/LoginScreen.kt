@@ -66,9 +66,10 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlueGradient
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
 import de.lukasneugebauer.nextcloudcookbook.destinations.HomeScreenDestination
+import de.lukasneugebauer.nextcloudcookbook.destinations.LoginScreenDestination
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, coil.annotation.ExperimentalCoilApi::class)
 @Destination
 @Composable
 fun LoginScreen(
@@ -93,7 +94,11 @@ fun LoginScreen(
     // Navigate to home screen if user authorized
     LaunchedEffect(key1 = uiState) {
         if (uiState.authorized) {
-            navigator.navigate(HomeScreenDestination())
+            navigator.navigate(HomeScreenDestination()) {
+                popUpTo(LoginScreenDestination.route) {
+                    inclusive = true
+                }
+            }
         }
     }
 
