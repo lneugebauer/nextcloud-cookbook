@@ -164,6 +164,7 @@ fun RecipeListPreview() {
             data = data,
             isLoading = false,
             onClick = {},
-            onBackClick = {})
+            onBackClick = {}
+        )
     }
 }
