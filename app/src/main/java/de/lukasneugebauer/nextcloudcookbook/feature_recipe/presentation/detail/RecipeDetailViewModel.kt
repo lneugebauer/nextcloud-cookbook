@@ -29,7 +29,7 @@ class RecipeDetailViewModel @Inject constructor(
     fun getRecipe(id: Int) {
         _state.value = _state.value.copy(loading = true)
         viewModelScope.launch {
-            recipeRepository.getRecipe(id).collect { recipeResponse ->
+            recipeRepository.getRecipeFlow(id).collect { recipeResponse ->
                 when (recipeResponse) {
                     is StoreResponse.Loading -> _state.value = _state.value.copy(loading = true)
                     is StoreResponse.Data -> _state.value = _state.value.copy(

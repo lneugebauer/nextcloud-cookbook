@@ -2,6 +2,7 @@ package de.lukasneugebauer.nextcloudcookbook.feature_recipe.data.repository
 
 import com.dropbox.android.external.store4.StoreRequest
 import com.dropbox.android.external.store4.StoreResponse
+import com.dropbox.android.external.store4.get
 import de.lukasneugebauer.nextcloudcookbook.core.data.api.NcCookbookApi
 import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import de.lukasneugebauer.nextcloudcookbook.core.util.SimpleResource
@@ -45,9 +46,15 @@ class RecipeRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getRecipe(id: Int): Flow<StoreResponse<RecipeDto>> {
+    override suspend fun getRecipeFlow(id: Int): Flow<StoreResponse<RecipeDto>> {
         return withContext(Dispatchers.IO) {
             recipeStore.stream(StoreRequest.cached(key = id, refresh = false))
+        }
+    }
+
+    override suspend fun getRecipe(id: Int): RecipeDto {
+        return withContext(Dispatchers.IO) {
+            recipeStore.get(id)
         }
     }
 

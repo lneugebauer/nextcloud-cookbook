@@ -12,7 +12,9 @@ interface RecipeRepository {
 
     suspend fun getRecipePreviewsByCategory(categoryName: String): Flow<StoreResponse<List<RecipePreviewDto>>>
 
-    suspend fun getRecipe(id: Int): Flow<StoreResponse<RecipeDto>>
+    suspend fun getRecipeFlow(id: Int): Flow<StoreResponse<RecipeDto>>
+
+    suspend fun getRecipe(id: Int): RecipeDto
 
     suspend fun deleteRecipe(id: Int, categoryName: String): SimpleResource
 }
