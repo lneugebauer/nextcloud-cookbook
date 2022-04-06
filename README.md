@@ -1,8 +1,10 @@
 # Nextcloud Cookbook app for Android
 
 [![ci](https://github.com/lneugebauer/nextcloud-cookbook/actions/workflows/ci.yml/badge.svg)](https://github.com/lneugebauer/nextcloud-cookbook/actions/workflows/ci.yml)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=lneugebauer_nextcloud-cookbook&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=lneugebauer_nextcloud-cookbook)
 [![GitHub issues](https://img.shields.io/github/issues/lneugebauer/nextcloud-cookbook.svg)](https://github.com/lneugebauer/nextcloud-cookbook/issues)
-[![license](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/lneugebauer/nextcloud-cookbook/blob/main/LICENSE)
+[![license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/lneugebauer/nextcloud-cookbook/blob/main/LICENSE)
+[![ktlint](https://img.shields.io/badge/code%20style-%E2%9D%A4-FF4081.svg)](https://ktlint.github.io/)
 
 An Android client for [Nextcloud Cookbook app](https://github.com/nextcloud/cookbook).
 
@@ -26,7 +28,7 @@ An Android client for [Nextcloud Cookbook app](https://github.com/nextcloud/cook
 - Single Sign On through Nextcloud Files app
 - Login via QR-Code
 - Edit recipe
-- Add recipe
+- Create recipe
 - Import recipe via url
 
 ## Requirements :link:
