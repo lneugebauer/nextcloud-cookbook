@@ -63,6 +63,11 @@ fun RecipeEditScreen(
                 }
             )
         }
-        is RecipeEditState.Error -> Text(text = "Error")
+        is RecipeEditState.Updated -> navigator.popBackStack()
+        is RecipeEditState.Error -> {
+            val text = (uiState as RecipeEditState.Error).text
+
+            Text(text = "Error: $text")
+        }
     }
 }

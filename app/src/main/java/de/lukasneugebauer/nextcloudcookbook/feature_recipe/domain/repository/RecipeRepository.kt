@@ -1,6 +1,7 @@
 package de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.repository
 
 import com.dropbox.android.external.store4.StoreResponse
+import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import de.lukasneugebauer.nextcloudcookbook.core.util.SimpleResource
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.data.dto.RecipeDto
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.data.dto.RecipePreviewDto
@@ -15,6 +16,8 @@ interface RecipeRepository {
     suspend fun getRecipeFlow(id: Int): Flow<StoreResponse<RecipeDto>>
 
     suspend fun getRecipe(id: Int): RecipeDto
+
+    suspend fun updateRecipe(recipe: RecipeDto): SimpleResource
 
     suspend fun deleteRecipe(id: Int, categoryName: String): SimpleResource
 }

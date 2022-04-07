@@ -1,5 +1,6 @@
 package de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.model
 
+import de.lukasneugebauer.nextcloudcookbook.feature_recipe.data.dto.RecipeDto
 import java.time.Duration
 
 data class Recipe(
@@ -30,4 +31,27 @@ data class Recipe(
     fun isNotEmpty(): Boolean {
         return this.id != 0
     }
+
+    // FIXME: Do proper conversion
+    fun toRecipeDto(): RecipeDto = RecipeDto(
+        id = id,
+        name = name,
+        description = description,
+        url = url,
+        image = "",
+        printImage = true,
+        imageUrl = imageUrl,
+        recipeCategory = category,
+        keywords = null,
+        recipeYield = this.yield,
+        prepTime = null,
+        cookTime = null,
+        totalTime = null,
+        nutrition = null,
+        tool = tools,
+        recipeIngredient = ingredients,
+        recipeInstructions = instructions,
+        dateCreated = createdAt,
+        dateModified = modifiedAt,
+    )
 }

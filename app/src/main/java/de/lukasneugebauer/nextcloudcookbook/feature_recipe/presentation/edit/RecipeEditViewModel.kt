@@ -4,12 +4,14 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.repository.RecipeRepository
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.state.RecipeEditState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,7 +28,7 @@ class RecipeEditViewModel @Inject constructor(
         recipeId?.let {
             getRecipe(it)
         } ?: run {
-            _state.update { RecipeEditState.Error }
+            _state.update { RecipeEditState.Error("Recipe ID not supplied.") }
         }
     }
 
@@ -133,6 +135,20 @@ class RecipeEditViewModel @Inject constructor(
     }
 
     fun save() {
+        val currentState = _state.value
+        if (currentState is RecipeEditState.Success) {
+            _state.update { RecipeEditState.Loading }
+            val recipe = currentState.recipe.toRecipeDto()
+            viewModelScope.launch {
+                when (val result = recipeRepository.updateRecipe(recipe)) {
+                    is Resource.Error -> {
+                        Timber.d("result: ${result.text}")
+                        _state.update { RecipeEditState.Error(result.text ?: "Unknown error.") }
+                    }
+                    is Resource.Success -> _state.update { RecipeEditState.Updated }
+                }
+            }
+        }
     }
 
     private fun getRecipe(id: Int) {

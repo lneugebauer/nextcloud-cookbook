@@ -17,6 +17,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
+import timber.log.Timber
 import javax.inject.Inject
 
 class RecipeRepositoryImpl @Inject constructor(
@@ -55,6 +56,23 @@ class RecipeRepositoryImpl @Inject constructor(
     override suspend fun getRecipe(id: Int): RecipeDto {
         return withContext(Dispatchers.IO) {
             recipeStore.get(id)
+        }
+    }
+
+    override suspend fun updateRecipe(recipe: RecipeDto): SimpleResource {
+        return withContext(Dispatchers.IO) {
+            try {
+                ncCookbookApi?.updateRecipe(id = recipe.id, recipe = recipe)
+                // TODO: Clear or update other stores too
+                recipeStore.clear(recipe.id)
+                Resource.Success(Unit)
+            } catch (e: HttpException) {
+                Timber.e(e)
+                Resource.Error(text = "An error occurred (${e.code()})")
+            } catch (e: Exception) {
+                Timber.e(e)
+                Resource.Error(text = "An error occurred")
+            }
         }
     }
 
