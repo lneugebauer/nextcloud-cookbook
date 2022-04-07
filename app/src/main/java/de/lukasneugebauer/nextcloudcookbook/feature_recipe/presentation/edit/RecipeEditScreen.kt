@@ -24,14 +24,42 @@ fun RecipeEditScreen(
         is RecipeEditState.Loading -> Loader()
         is RecipeEditState.Success -> {
             val recipe = (uiState as RecipeEditState.Success).recipe
+
             CreateEditRecipeForm(
                 recipe = recipe,
                 onNavIconClick = { navigator.popBackStack() },
-                onNameChanged = { name ->
-                    viewModel.changeName(name)
+                onNameChanged = { newName ->
+                    viewModel.changeName(newName)
                 },
-                onDescriptionChanged = { description ->
-                    viewModel.changeDescription(description)
+                onDescriptionChanged = { newDescription ->
+                    viewModel.changeDescription(newDescription)
+                },
+                onUrlChanged = { newUrl ->
+                    viewModel.changeUrl(newUrl)
+                },
+                onYieldChanged = { newYield ->
+                    viewModel.changeYield(newYield)
+                },
+                onIngredientChanged = { index, newIngredient ->
+                    viewModel.changeIngredient(index, newIngredient)
+                },
+                onIngredientDeleted = { index ->
+                    viewModel.deleteIngredient(index)
+                },
+                onAddIngredient = {
+                    viewModel.addIngredient()
+                },
+                onInstructionChanged = { index, newInstruction ->
+                    viewModel.changeInstruction(index, newInstruction)
+                },
+                onInstructionDeleted = { index ->
+                    viewModel.deleteInstruction(index)
+                },
+                onAddInstruction = {
+                    viewModel.addInstruction()
+                },
+                onSaveClick = {
+                    viewModel.save()
                 }
             )
         }

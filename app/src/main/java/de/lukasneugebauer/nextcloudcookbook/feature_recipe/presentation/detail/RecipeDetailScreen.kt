@@ -18,6 +18,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -26,6 +27,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material.icons.outlined.Share
@@ -108,6 +110,15 @@ fun RecipeDetailScreen(
                 },
                 shareText = viewModel.getShareText()
             )
+        },
+        floatingActionButton = {
+            FloatingActionButton(onClick = {
+                if (recipe.isNotEmpty()) {
+                    navigator.navigate(RecipeEditScreenDestination(recipe.id))
+                }
+            }) {
+                Icon(imageVector = Icons.Default.Edit, contentDescription = "Edit")
+            }
         }
     ) { innerPadding ->
         if (state.data == null && state.error == null && state.loading) {
