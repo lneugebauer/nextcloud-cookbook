@@ -49,6 +49,15 @@ fun RecipeEditScreen(
                 onAddIngredient = {
                     viewModel.addIngredient()
                 },
+                onToolChanged = { index, newTool ->
+                    viewModel.changeTool(index, newTool)
+                },
+                onToolDeleted = { index ->
+                    viewModel.deleteTool(index)
+                },
+                onAddTool = {
+                    viewModel.addTool()
+                },
                 onInstructionChanged = { index, newInstruction ->
                     viewModel.changeInstruction(index, newInstruction)
                 },

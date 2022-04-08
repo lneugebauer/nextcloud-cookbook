@@ -12,7 +12,6 @@ data class Recipe(
     val category: String,
     val keywords: List<String>,
     val yield: Int,
-    // TODO: 19.08.21 Change prepTime, cookTime and totalTime to time fields.
     val prepTime: Duration?,
     val cookTime: Duration?,
     val totalTime: Duration?,
@@ -31,27 +30,4 @@ data class Recipe(
     fun isNotEmpty(): Boolean {
         return this.id != 0
     }
-
-    // FIXME: Do proper conversion
-    fun toRecipeDto(): RecipeDto = RecipeDto(
-        id = id,
-        name = name,
-        description = description,
-        url = url,
-        image = "",
-        printImage = true,
-        imageUrl = imageUrl,
-        recipeCategory = category,
-        keywords = null,
-        recipeYield = this.yield,
-        prepTime = null,
-        cookTime = null,
-        totalTime = null,
-        nutrition = null,
-        tool = tools,
-        recipeIngredient = ingredients,
-        recipeInstructions = instructions,
-        dateCreated = createdAt,
-        dateModified = modifiedAt,
-    )
 }

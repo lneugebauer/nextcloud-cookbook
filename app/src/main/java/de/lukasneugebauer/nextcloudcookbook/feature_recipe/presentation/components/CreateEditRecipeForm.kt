@@ -11,6 +11,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.TextFieldColors
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
@@ -45,6 +46,9 @@ fun CreateEditRecipeForm(
     onIngredientChanged: (index: Int, ingredient: String) -> Unit,
     onIngredientDeleted: (index: Int) -> Unit,
     onAddIngredient: () -> Unit,
+    onToolChanged: (index: Int, tool: String) -> Unit,
+    onToolDeleted: (index: Int) -> Unit,
+    onAddTool: () -> Unit,
     onInstructionChanged: (index: Int, instruction: String) -> Unit,
     onInstructionDeleted: (index: Int) -> Unit,
     onAddInstruction: () -> Unit,
@@ -77,102 +81,47 @@ fun CreateEditRecipeForm(
             )
 
             Gap(size = dimensionResource(id = R.dimen.padding_m))
-            DefaultOutlinedTextField(
-                value = recipe.name,
-                onValueChange = onNameChanged,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
-                label = { Text(text = "Name") },
-                singleLine = true,
-                colors = textFieldColors
+            Name(
+                recipe = recipe,
+                onNameChanged = onNameChanged,
+                textFieldColors = textFieldColors
             )
-            DefaultOutlinedTextField(
-                value = recipe.description,
-                onValueChange = onDescriptionChanged,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
-                label = { Text(text = "Description") },
-                colors = textFieldColors
+            Description(
+                recipe = recipe,
+                onDescriptionChanged = onDescriptionChanged,
+                textFieldColors = textFieldColors
             )
-            DefaultOutlinedTextField(
-                value = recipe.url,
-                onValueChange = onUrlChanged,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
-                label = { Text(text = "URL") },
-                singleLine = true,
-                colors = textFieldColors
+            Url(
+                recipe = recipe,
+                onUrlChanged = onUrlChanged,
+                textFieldColors = textFieldColors
             )
-            DefaultOutlinedTextField(
-                value = recipe.yield.toString(),
-                onValueChange = onYieldChanged,
-                modifier = Modifier
-                    .fillMaxWidth(1f / 3f)
-                    .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
-                label = { Text(text = "Yield") },
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    keyboardType = KeyboardType.Number
-                ),
-                singleLine = true,
-                colors = textFieldColors
+            Yield(
+                recipe = recipe,
+                onYieldChanged = onYieldChanged,
+                textFieldColors = textFieldColors
             )
-            recipe.ingredients.forEachIndexed { index, ingredient ->
-                DefaultOutlinedTextField(
-                    value = ingredient,
-                    onValueChange = { onIngredientChanged.invoke(index, it) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
-                    label = { Text(text = "Ingredient ${index + 1}") },
-                    trailingIcon = {
-                        IconButton(onClick = { onIngredientDeleted.invoke(index) }) {
-                            Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete")
-                        }
-                    },
-                    colors = textFieldColors
-                )
-            }
-            DefaultButton(
-                onClick = onAddIngredient,
-                modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.padding_m)),
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = NcBlue700,
-                    contentColor = Color.White
-                )
-            ) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = "Add ingredient")
-                Text(text = "Add ingredient")
-            }
-            recipe.instructions.forEachIndexed { index, instruction ->
-                DefaultOutlinedTextField(
-                    value = instruction,
-                    onValueChange = { onInstructionChanged.invoke(index, it) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
-                    label = { Text(text = "Instruction ${index + 1}") },
-                    trailingIcon = {
-                        IconButton(onClick = { onInstructionDeleted.invoke(index) }) {
-                            Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete")
-                        }
-                    },
-                    colors = textFieldColors
-                )
-            }
-            DefaultButton(
-                onClick = onAddInstruction,
-                modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.padding_m)),
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = NcBlue700,
-                    contentColor = Color.White
-                )
-            ) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = "Add instruction")
-                Text(text = "Add instruction")
-            }
+            Ingredients(
+                recipe = recipe,
+                onIngredientChanged = onIngredientChanged,
+                onIngredientDeleted = onIngredientDeleted,
+                onAddIngredient = onAddIngredient,
+                textFieldColors = textFieldColors
+            )
+            Tools(
+                recipe = recipe,
+                onToolChanged = onToolChanged,
+                onToolDeleted = onToolDeleted,
+                onAddTool = onAddTool,
+                textFieldColors = textFieldColors
+            )
+            Instructions(
+                recipe = recipe,
+                onInstructionChanged = onInstructionChanged,
+                onInstructionDeleted = onInstructionDeleted,
+                onAddInstruction = onAddInstruction,
+                textFieldColors = textFieldColors
+            )
         }
     }
 }
@@ -208,6 +157,200 @@ private fun RecipeEditTopBar(title: String, onNavIconClick: () -> Unit, onSaveCl
     )
 }
 
+@Composable
+private fun Name(
+    recipe: Recipe,
+    onNameChanged: (name: String) -> Unit,
+    textFieldColors: TextFieldColors
+) {
+    DefaultOutlinedTextField(
+        value = recipe.name,
+        onValueChange = onNameChanged,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
+        label = { Text(text = "Name") },
+        singleLine = true,
+        colors = textFieldColors
+    )
+}
+
+@Composable
+private fun Description(
+    recipe: Recipe,
+    onDescriptionChanged: (description: String) -> Unit,
+    textFieldColors: TextFieldColors
+) {
+    DefaultOutlinedTextField(
+        value = recipe.description,
+        onValueChange = onDescriptionChanged,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
+        label = { Text(text = "Description") },
+        colors = textFieldColors
+    )
+}
+
+@Composable
+private fun Url(
+    recipe: Recipe,
+    onUrlChanged: (url: String) -> Unit,
+    textFieldColors: TextFieldColors
+) {
+    DefaultOutlinedTextField(
+        value = recipe.url,
+        onValueChange = onUrlChanged,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
+        label = { Text(text = "URL") },
+        singleLine = true,
+        colors = textFieldColors
+    )
+}
+
+@Composable
+private fun Yield(
+    recipe: Recipe,
+    onYieldChanged: (yield: String) -> Unit,
+    textFieldColors: TextFieldColors
+) {
+    DefaultOutlinedTextField(
+        value = recipe.yield.toString(),
+        onValueChange = onYieldChanged,
+        modifier = Modifier
+            .fillMaxWidth(1f / 3f)
+            .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
+        label = { Text(text = "Yield") },
+        keyboardOptions = KeyboardOptions.Default.copy(
+            keyboardType = KeyboardType.Number
+        ),
+        singleLine = true,
+        colors = textFieldColors
+    )
+}
+
+@Composable
+private fun Ingredients(
+    recipe: Recipe,
+    onIngredientChanged: (index: Int, ingredient: String) -> Unit,
+    onIngredientDeleted: (index: Int) -> Unit,
+    onAddIngredient: () -> Unit,
+    textFieldColors: TextFieldColors
+) {
+    recipe.ingredients.forEachIndexed { index, ingredient ->
+        DefaultOutlinedTextField(
+            value = ingredient,
+            onValueChange = { onIngredientChanged.invoke(index, it) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
+            label = { Text(text = "Ingredient ${index + 1}") },
+            trailingIcon = {
+                IconButton(onClick = { onIngredientDeleted.invoke(index) }) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Delete ingredient"
+                    )
+                }
+            },
+            colors = textFieldColors
+        )
+    }
+    DefaultButton(
+        onClick = onAddIngredient,
+        modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.padding_m)),
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = NcBlue700,
+            contentColor = Color.White
+        )
+    ) {
+        Icon(imageVector = Icons.Default.Add, contentDescription = "Add ingredient")
+        Text(text = "Add ingredient")
+    }
+}
+
+@Composable
+private fun Tools(
+    recipe: Recipe,
+    onToolChanged: (index: Int, tool: String) -> Unit,
+    onToolDeleted: (index: Int) -> Unit,
+    onAddTool: () -> Unit,
+    textFieldColors: TextFieldColors
+) {
+    recipe.tools.forEachIndexed { index, tool ->
+        DefaultOutlinedTextField(
+            value = tool,
+            onValueChange = { onToolChanged.invoke(index, it) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
+            label = { Text(text = "Tool ${index + 1}") },
+            trailingIcon = {
+                IconButton(onClick = { onToolDeleted.invoke(index) }) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Delete tool"
+                    )
+                }
+            },
+            colors = textFieldColors
+        )
+    }
+    DefaultButton(
+        onClick = onAddTool,
+        modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.padding_m)),
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = NcBlue700,
+            contentColor = Color.White
+        )
+    ) {
+        Icon(imageVector = Icons.Default.Add, contentDescription = "Add tool")
+        Text(text = "Add tool")
+    }
+}
+
+@Composable
+private fun Instructions(
+    recipe: Recipe,
+    onInstructionChanged: (index: Int, instruction: String) -> Unit,
+    onInstructionDeleted: (index: Int) -> Unit,
+    onAddInstruction: () -> Unit,
+    textFieldColors: TextFieldColors
+) {
+    recipe.instructions.forEachIndexed { index, instruction ->
+        DefaultOutlinedTextField(
+            value = instruction,
+            onValueChange = { onInstructionChanged.invoke(index, it) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
+            label = { Text(text = "Instruction ${index + 1}") },
+            trailingIcon = {
+                IconButton(onClick = { onInstructionDeleted.invoke(index) }) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Delete instruction"
+                    )
+                }
+            },
+            colors = textFieldColors
+        )
+    }
+    DefaultButton(
+        onClick = onAddInstruction,
+        modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.padding_m)),
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = NcBlue700,
+            contentColor = Color.White
+        )
+    ) {
+        Icon(imageVector = Icons.Default.Add, contentDescription = "Add instruction")
+        Text(text = "Add instruction")
+    }
+}
+
 @Preview
 @Composable
 private fun CreateEditRecipeFormPreview() {
@@ -224,7 +367,9 @@ private fun CreateEditRecipeFormPreview() {
         cookTime = null,
         totalTime = null,
         nutrition = null,
-        tools = emptyList(),
+        tools = List(1) {
+            "Lorem ipsum"
+        },
         ingredients = List(2) {
             "Lorem ipsum"
         },
@@ -245,6 +390,9 @@ private fun CreateEditRecipeFormPreview() {
             onIngredientChanged = { _, _ -> },
             onIngredientDeleted = {},
             onAddIngredient = {},
+            onToolChanged = { _, _ -> },
+            onToolDeleted = {},
+            onAddTool = {},
             onInstructionChanged = { _, _ -> },
             onInstructionDeleted = {},
             onAddInstruction = {},

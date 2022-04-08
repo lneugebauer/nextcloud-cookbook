@@ -5,13 +5,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
+import de.lukasneugebauer.nextcloudcookbook.feature_recipe.data.dto.RecipeDto
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.repository.RecipeRepository
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.state.RecipeEditState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,6 +23,8 @@ class RecipeEditViewModel @Inject constructor(
     private val _state = MutableStateFlow<RecipeEditState>(RecipeEditState.Loading)
     val uiState: StateFlow<RecipeEditState> = _state
 
+    private lateinit var recipe: RecipeDto
+
     init {
         val recipeId: Int? = savedStateHandle["recipeId"]
         recipeId?.let {
@@ -33,117 +35,121 @@ class RecipeEditViewModel @Inject constructor(
     }
 
     fun changeName(newName: String) {
-        val currentState = _state.value
-        if (currentState is RecipeEditState.Success) {
-            _state.update {
-                RecipeEditState.Success(currentState.recipe.copy(name = newName))
-            }
+        if (_state.value is RecipeEditState.Success) {
+            recipe = recipe.copy(name = newName)
+            _state.update { RecipeEditState.Success(recipe.toRecipe()) }
         }
     }
 
     fun changeDescription(newDescription: String) {
-        val currentState = _state.value
-        if (currentState is RecipeEditState.Success) {
-            _state.update {
-                RecipeEditState.Success(currentState.recipe.copy(description = newDescription))
-            }
+        if (_state.value is RecipeEditState.Success) {
+            recipe = recipe.copy(description = newDescription)
+            _state.update { RecipeEditState.Success(recipe.toRecipe()) }
         }
     }
 
     fun changeUrl(newUrl: String) {
-        val currentState = _state.value
-        if (currentState is RecipeEditState.Success) {
-            _state.update {
-                RecipeEditState.Success(currentState.recipe.copy(url = newUrl))
-            }
+        if (_state.value is RecipeEditState.Success) {
+            recipe = recipe.copy(url = newUrl)
+            _state.update { RecipeEditState.Success(recipe.toRecipe()) }
         }
     }
 
     fun changeYield(newYield: String) {
-        val currentState = _state.value
-        if (currentState is RecipeEditState.Success) {
-            _state.update {
-                RecipeEditState.Success(currentState.recipe.copy(yield = newYield.toInt()))
-            }
+        if (_state.value is RecipeEditState.Success) {
+            recipe = recipe.copy(recipeYield = newYield.toInt())
+            _state.update { RecipeEditState.Success(recipe.toRecipe()) }
         }
     }
 
     fun changeIngredient(index: Int, newIngredient: String) {
-        val currentState = _state.value
-        if (currentState is RecipeEditState.Success) {
-            val ingredients = currentState.recipe.ingredients.toMutableList()
+        if (_state.value is RecipeEditState.Success) {
+            val ingredients = recipe.recipeIngredient.toMutableList()
             ingredients[index] = newIngredient
-            _state.update {
-                RecipeEditState.Success(currentState.recipe.copy(ingredients = ingredients))
-            }
+            recipe = recipe.copy(recipeIngredient = ingredients)
+            _state.update { RecipeEditState.Success(recipe.toRecipe()) }
         }
     }
 
     fun deleteIngredient(index: Int) {
-        val currentState = _state.value
-        if (currentState is RecipeEditState.Success) {
-            val ingredients = currentState.recipe.ingredients.toMutableList()
+        if (_state.value is RecipeEditState.Success) {
+            val ingredients = recipe.recipeIngredient.toMutableList()
             ingredients.removeAt(index)
-            _state.update {
-                RecipeEditState.Success(currentState.recipe.copy(ingredients = ingredients))
-            }
+            recipe = recipe.copy(recipeIngredient = ingredients)
+            _state.update { RecipeEditState.Success(recipe.toRecipe()) }
         }
     }
 
     fun addIngredient() {
-        val currentState = _state.value
-        if (currentState is RecipeEditState.Success) {
-            val ingredients = currentState.recipe.ingredients.toMutableList()
+        if (_state.value is RecipeEditState.Success) {
+            val ingredients = recipe.recipeIngredient.toMutableList()
             ingredients.add("")
-            _state.update {
-                RecipeEditState.Success(currentState.recipe.copy(ingredients = ingredients))
-            }
+            recipe = recipe.copy(recipeIngredient = ingredients)
+            _state.update { RecipeEditState.Success(recipe.toRecipe()) }
+        }
+    }
+
+    fun changeTool(index: Int, newTool: String) {
+        if (_state.value is RecipeEditState.Success) {
+            val tools = recipe.tool.toMutableList()
+            tools[index] = newTool
+            recipe = recipe.copy(tool = tools)
+            _state.update { RecipeEditState.Success(recipe.toRecipe()) }
+        }
+    }
+
+    fun deleteTool(index: Int) {
+        if (_state.value is RecipeEditState.Success) {
+            val tools = recipe.tool.toMutableList()
+            tools.removeAt(index)
+            recipe = recipe.copy(tool = tools)
+            _state.update { RecipeEditState.Success(recipe.toRecipe()) }
+        }
+    }
+
+    fun addTool() {
+        if (_state.value is RecipeEditState.Success) {
+            val tools = recipe.tool.toMutableList()
+            tools.add("")
+            recipe = recipe.copy(tool = tools)
+            _state.update { RecipeEditState.Success(recipe.toRecipe()) }
         }
     }
 
     fun changeInstruction(index: Int, newInstruction: String) {
-        val currentState = _state.value
-        if (currentState is RecipeEditState.Success) {
-            val instructions = currentState.recipe.instructions.toMutableList()
+        if (_state.value is RecipeEditState.Success) {
+            val instructions = recipe.recipeInstructions.toMutableList()
             instructions[index] = newInstruction
-            _state.update {
-                RecipeEditState.Success(currentState.recipe.copy(instructions = instructions))
-            }
+            recipe = recipe.copy(recipeInstructions = instructions)
+            _state.update { RecipeEditState.Success(recipe.toRecipe()) }
         }
     }
 
     fun deleteInstruction(index: Int) {
-        val currentState = _state.value
-        if (currentState is RecipeEditState.Success) {
-            val instructions = currentState.recipe.instructions.toMutableList()
+        if (_state.value is RecipeEditState.Success) {
+            val instructions = recipe.recipeInstructions.toMutableList()
             instructions.removeAt(index)
-            _state.update {
-                RecipeEditState.Success(currentState.recipe.copy(instructions = instructions))
-            }
+            recipe = recipe.copy(recipeInstructions = instructions)
+            _state.update { RecipeEditState.Success(recipe.toRecipe()) }
         }
     }
 
     fun addInstruction() {
-        val currentState = _state.value
-        if (currentState is RecipeEditState.Success) {
-            val instructions = currentState.recipe.instructions.toMutableList()
+        if (_state.value is RecipeEditState.Success) {
+            val instructions = recipe.recipeInstructions.toMutableList()
             instructions.add("")
-            _state.update {
-                RecipeEditState.Success(currentState.recipe.copy(instructions = instructions))
-            }
+            recipe = recipe.copy(recipeInstructions = instructions)
+            _state.update { RecipeEditState.Success(recipe.toRecipe()) }
         }
     }
 
     fun save() {
-        val currentState = _state.value
-        if (currentState is RecipeEditState.Success) {
+        if (_state.value is RecipeEditState.Success) {
             _state.update { RecipeEditState.Loading }
-            val recipe = currentState.recipe.toRecipeDto()
             viewModelScope.launch {
                 when (val result = recipeRepository.updateRecipe(recipe)) {
-                    is Resource.Error -> {
-                        Timber.d("result: ${result.text}")
-                        _state.update { RecipeEditState.Error(result.text ?: "Unknown error.") }
+                    is Resource.Error -> _state.update {
+                        RecipeEditState.Error(result.text ?: "Unknown error.")
                     }
                     is Resource.Success -> _state.update { RecipeEditState.Updated }
                 }
@@ -153,8 +159,8 @@ class RecipeEditViewModel @Inject constructor(
 
     private fun getRecipe(id: Int) {
         viewModelScope.launch {
-            val recipe = recipeRepository.getRecipe(id).toRecipe()
-            _state.update { RecipeEditState.Success(recipe) }
+            recipe = recipeRepository.getRecipe(id)
+            _state.update { RecipeEditState.Success(recipe.toRecipe()) }
         }
     }
 }
