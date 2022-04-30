@@ -3,12 +3,14 @@ package de.lukasneugebauer.nextcloudcookbook.feature_auth.presentation.login
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.NcAccount
 import de.lukasneugebauer.nextcloudcookbook.core.domain.repository.AccountRepository
 import de.lukasneugebauer.nextcloudcookbook.core.domain.use_case.ClearPreferencesUseCase
 import de.lukasneugebauer.nextcloudcookbook.core.util.Constants.VALID_URL_REGEX
 import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
+import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
 import de.lukasneugebauer.nextcloudcookbook.di.ApiProvider
 import de.lukasneugebauer.nextcloudcookbook.feature_auth.domain.repository.AuthRepository
 import de.lukasneugebauer.nextcloudcookbook.feature_auth.domain.state.LoginScreenState
@@ -17,6 +19,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -47,17 +50,15 @@ class LoginViewModel @Inject constructor(
                 if (accountResource is Resource.Success && ncCookbookApi != null) {
                     when (val capabilitiesResource = accountRepository.getCapabilities()) {
                         is Resource.Success -> {
-                            _uiState.value = _uiState.value.copy(authorized = true)
+                            _uiState.update { it.copy(authorized = true) }
                         }
                         is Resource.Error -> {
                             clearPreferencesUseCase()
-                            _uiState.value = _uiState.value.copy(
-                                urlError = capabilitiesResource.text
-                            )
+                            _uiState.update { it.copy(urlError = capabilitiesResource.message) }
                         }
                     }
                 } else {
-                    _uiState.value = _uiState.value.copy(authorized = false)
+                    _uiState.update { it.copy(authorized = false) }
                 }
             }
         }
@@ -69,13 +70,16 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             when (val result = authRepository.getLoginEndpoint(url)) {
                 is Resource.Success -> {
-                    val webViewUrl = result.data?.loginUrl!!
-                    Timber.v("Open web view with url $webViewUrl")
-                    _uiState.value = _uiState.value.copy(webViewUrl = webViewUrl)
-                    pollLoginServerIsActive = true
-                    pollLoginServer(result.data.pollUrl, result.data.token)
+                    result.data?.loginUrl?.let { webViewUrl ->
+                        Timber.v("Open web view with url $webViewUrl")
+                        _uiState.value = _uiState.value.copy(webViewUrl = webViewUrl)
+                        pollLoginServerIsActive = true
+                        pollLoginServer(result.data.pollUrl, result.data.token)
+                    } ?: run {
+                        _uiState.update { it.copy(urlError = UiText.StringResource(R.string.error_no_login_url)) }
+                    }
                 }
-                is Resource.Error -> _uiState.value = _uiState.value.copy(urlError = result.text)
+                is Resource.Error -> _uiState.update { it.copy(urlError = result.message) }
             }
         }
     }
@@ -127,7 +131,7 @@ class LoginViewModel @Inject constructor(
 
     private fun isValidUsername(username: String): Boolean {
         if (username.isBlank()) {
-            _uiState.value = _uiState.value.copy(usernameError = "Please enter an username")
+            _uiState.value = _uiState.value.copy(usernameError = UiText.StringResource(R.string.error_empty_username))
             return false
         }
 
@@ -136,7 +140,7 @@ class LoginViewModel @Inject constructor(
 
     private fun isValidPassword(password: String): Boolean {
         if (password.isBlank()) {
-            _uiState.value = _uiState.value.copy(passwordError = "Please enter a password")
+            _uiState.value = _uiState.value.copy(passwordError = UiText.StringResource(R.string.error_emtpy_password))
             return false
         }
 
@@ -145,18 +149,18 @@ class LoginViewModel @Inject constructor(
 
     private fun isValidUrl(url: String): Boolean {
         if (url.isBlank()) {
-            _uiState.value = _uiState.value.copy(urlError = "Please enter an URL")
+            _uiState.value = _uiState.value.copy(urlError = UiText.StringResource(R.string.error_empty_url))
             return false
         }
 
         if (!url.startsWith("https://")) {
             _uiState.value =
-                _uiState.value.copy(urlError = "Invalid protocol; URL must start with https://")
+                _uiState.value.copy(urlError = UiText.StringResource(R.string.error_invalid_protocol))
             return false
         }
 
         if (!url.matches(VALID_URL_REGEX)) {
-            _uiState.value = _uiState.value.copy(urlError = "Invalid URL")
+            _uiState.value = _uiState.value.copy(urlError = UiText.StringResource(R.string.error_invalid_url))
             return false
         }
 

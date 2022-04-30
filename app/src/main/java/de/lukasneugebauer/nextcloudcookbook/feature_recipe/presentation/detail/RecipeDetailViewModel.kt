@@ -8,6 +8,7 @@ import com.dropbox.android.external.store4.StoreResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
 import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
+import de.lukasneugebauer.nextcloudcookbook.core.util.asUiText
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.repository.RecipeRepository
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.state.RecipeDetailState
 import kotlinx.coroutines.flow.collect
@@ -38,11 +39,11 @@ class RecipeDetailViewModel @Inject constructor(
                     )
                     is StoreResponse.NoNewData -> _state.value = _state.value.copy(loading = false)
                     is StoreResponse.Error.Exception -> _state.value = _state.value.copy(
-                        error = recipeResponse.errorMessageOrNull(),
+                        error = recipeResponse.errorMessageOrNull()?.asUiText(),
                         loading = false
                     )
                     is StoreResponse.Error.Message -> _state.value = _state.value.copy(
-                        error = recipeResponse.message,
+                        error = recipeResponse.message.asUiText(),
                         loading = false
                     )
                 }
@@ -92,7 +93,7 @@ class RecipeDetailViewModel @Inject constructor(
                     _state.value = _state.value.copy(deleted = true)
                 }
                 is Resource.Error -> {
-                    _state.value = _state.value.copy(error = deleteRecipeResource.text)
+                    _state.value = _state.value.copy(error = deleteRecipeResource.message)
                 }
             }
         }

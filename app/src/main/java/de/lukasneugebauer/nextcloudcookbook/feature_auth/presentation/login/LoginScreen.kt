@@ -65,6 +65,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlueGradient
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
+import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
 import de.lukasneugebauer.nextcloudcookbook.destinations.HomeScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.destinations.LoginScreenDestination
 import kotlinx.coroutines.launch
@@ -142,9 +143,9 @@ fun LoginScreen(
 @Composable
 private fun LoginScreen(
     showManualLogin: Boolean,
-    usernameError: String?,
-    passwordError: String?,
-    urlError: String?,
+    usernameError: UiText?,
+    passwordError: UiText?,
+    urlError: UiText?,
     onClearError: () -> Unit,
     onLoginClick: (url: String) -> Unit,
     onShowManualLoginClick: () -> Unit,
@@ -192,7 +193,7 @@ private fun LoginScreen(
                     color = MaterialTheme.colors.onPrimary.copy(alpha = 0.5f)
                 )
             },
-            errorText = urlError,
+            errorText = urlError?.asString(),
             keyboardOptions = KeyboardOptions.Default.copy(
                 imeAction = ImeAction.Done
             ),
@@ -228,9 +229,9 @@ private fun LoginScreen(
 
 @Composable
 private fun ManualLoginForm(
-    usernameError: String?,
-    passwordError: String?,
-    urlError: String?,
+    usernameError: UiText?,
+    passwordError: UiText?,
+    urlError: UiText?,
     onClearError: () -> Unit,
     onManualLoginClick: (username: String, password: String, url: String) -> Unit
 ) {
@@ -254,7 +255,7 @@ private fun ManualLoginForm(
                 color = MaterialTheme.colors.onPrimary
             )
         },
-        errorText = usernameError,
+        errorText = usernameError?.asString(),
         keyboardOptions = KeyboardOptions.Default.copy(
             imeAction = ImeAction.Next
         ),
@@ -293,7 +294,7 @@ private fun ManualLoginForm(
                 Icon(imageVector = image, "Show/hide password", tint = Color.White)
             }
         },
-        errorText = passwordError,
+        errorText = passwordError?.asString(),
         keyboardOptions = KeyboardOptions.Default.copy(
             keyboardType = KeyboardType.Password,
             imeAction = ImeAction.Next
@@ -327,7 +328,7 @@ private fun ManualLoginForm(
                 color = MaterialTheme.colors.onPrimary.copy(alpha = 0.5f)
             )
         },
-        errorText = urlError,
+        errorText = urlError?.asString(),
         keyboardOptions = KeyboardOptions.Default.copy(
             imeAction = ImeAction.Done
         ),

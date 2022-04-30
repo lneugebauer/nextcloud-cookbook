@@ -2,9 +2,12 @@ package de.lukasneugebauer.nextcloudcookbook.feature_recipe.data.repository
 
 import com.dropbox.android.external.store4.StoreRequest
 import com.dropbox.android.external.store4.StoreResponse
+import com.google.gson.stream.MalformedJsonException
+import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.data.api.NcCookbookApi
 import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import de.lukasneugebauer.nextcloudcookbook.core.util.SimpleResource
+import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
 import de.lukasneugebauer.nextcloudcookbook.di.ApiProvider
 import de.lukasneugebauer.nextcloudcookbook.di.RecipePreviewsByCategoryStore
 import de.lukasneugebauer.nextcloudcookbook.di.RecipePreviewsStore
@@ -16,7 +19,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
+import timber.log.Timber
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
+import javax.net.ssl.SSLHandshakeException
 
 class RecipeRepositoryImpl @Inject constructor(
     private val apiProvider: ApiProvider,
@@ -60,9 +67,34 @@ class RecipeRepositoryImpl @Inject constructor(
                 recipeStore.clear(id)
                 Resource.Success(Unit)
             } catch (e: HttpException) {
-                Resource.Error(text = "An error occurred (${e.code()})")
+                Timber.e(e.stackTraceToString())
+                val message = when (e.code()) {
+                    400 -> UiText.StringResource(R.string.error_http_400)
+                    401 -> UiText.StringResource(R.string.error_http_401)
+                    403 -> UiText.StringResource(R.string.error_http_403)
+                    404 -> UiText.StringResource(R.string.error_http_404)
+                    500 -> UiText.StringResource(R.string.error_http_500)
+                    503 -> UiText.StringResource(R.string.error_http_503)
+                    else -> UiText.StringResource(R.string.error_http_unknown)
+                }
+                Resource.Error(message)
+            } catch (e: SocketTimeoutException) {
+                Timber.e(e.stackTraceToString())
+                Resource.Error(message = UiText.StringResource(R.string.error_timeout))
+            } catch (e: UnknownHostException) {
+                Timber.e(e.stackTraceToString())
+                Resource.Error(message = UiText.StringResource(R.string.error_unknown_host))
+            } catch (e: MalformedJsonException) {
+                Timber.e(e.stackTraceToString())
+                Resource.Error(message = UiText.StringResource(R.string.error_malformed_json))
+            } catch (e: SSLHandshakeException) {
+                Timber.e(e.stackTraceToString())
+                Resource.Error(message = UiText.StringResource(R.string.error_ssl_handshake))
             } catch (e: Exception) {
-                Resource.Error(text = "An error occurred")
+                Timber.e(e.stackTraceToString())
+                val message = e.localizedMessage?.let { UiText.DynamicString(it) }
+                    ?: run { UiText.StringResource(R.string.error_unknown) }
+                Resource.Error(message)
             }
         }
     }

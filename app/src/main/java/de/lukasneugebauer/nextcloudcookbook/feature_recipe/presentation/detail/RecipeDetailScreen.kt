@@ -110,7 +110,7 @@ fun RecipeDetailScreen(
             Loader()
         }
         if (state.error != null && !state.loading) {
-            Text(text = state.error)
+            Text(text = state.error.asString())
         }
         if (state.data != null && state.error == null && !state.loading) {
             recipe = state.data
