@@ -1,6 +1,5 @@
 package de.lukasneugebauer.nextcloudcookbook.feature_auth.presentation.splash
 
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -8,6 +7,7 @@ import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.MainViewModel
 import de.lukasneugebauer.nextcloudcookbook.destinations.HomeScreenDestination
@@ -15,8 +15,8 @@ import de.lukasneugebauer.nextcloudcookbook.destinations.LoginScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.destinations.SplashScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.feature_auth.domain.state.SplashScreenState
 
-@OptIn(ExperimentalMaterialApi::class, coil.annotation.ExperimentalCoilApi::class)
-@Destination(start = true)
+@RootNavGraph(start = true)
+@Destination()
 @Composable
 fun SplashScreen(
     navigator: DestinationsNavigator,

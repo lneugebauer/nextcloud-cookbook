@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
@@ -23,7 +22,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.annotation.ExperimentalCoilApi
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import de.lukasneugebauer.nextcloudcookbook.R
@@ -41,8 +39,6 @@ import de.lukasneugebauer.nextcloudcookbook.destinations.SettingsScreenDestinati
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.model.HomeScreenDataResult
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.util.RecipeConstants.MORE_BUTTON_THRESHOLD
 
-@ExperimentalCoilApi
-@ExperimentalMaterialApi
 @Destination
 @Composable
 fun HomeScreen(
@@ -124,8 +120,6 @@ fun HomeTopBar(onSettingsIconClick: () -> Unit) {
     )
 }
 
-@ExperimentalCoilApi
-@ExperimentalMaterialApi
 @Composable
 fun SingleItem(name: String, imageUrl: String, onClick: () -> Unit) {
     Card(

@@ -3,7 +3,6 @@ package de.lukasneugebauer.nextcloudcookbook.core.presentation.components
 import androidx.annotation.StringRes
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -31,13 +30,11 @@ enum class BottomBarDestination(
     val icon: ImageVector,
     @StringRes val label: Int
 ) {
-    @OptIn(ExperimentalMaterialApi::class, coil.annotation.ExperimentalCoilApi::class)
     Home(HomeScreenDestination, Icons.Default.Home, R.string.common_home),
     Categories(CategoryListScreenDestination, Icons.Default.Category, R.string.common_categories),
     Recipes(RecipeListScreenDestination, Icons.Default.Fastfood, R.string.common_recipes)
 }
 
-@OptIn(ExperimentalMaterialApi::class, coil.annotation.ExperimentalCoilApi::class)
 @Composable
 fun BottomBar(navController: NavController) {
     var selected by rememberSaveable { mutableStateOf(BottomBarDestination.Home) }

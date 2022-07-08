@@ -49,7 +49,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.annotation.ExperimentalCoilApi
 import com.google.accompanist.flowlayout.FlowRow
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -67,7 +66,6 @@ import de.lukasneugebauer.nextcloudcookbook.feature_recipe.presentation.componen
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.util.emptyRecipe
 import java.time.Duration
 
-@ExperimentalCoilApi
 @Destination
 @Composable
 fun RecipeDetailScreen(
@@ -230,7 +228,6 @@ fun RecipeDetailScreenDropDownMenuItemDelete(onClick: () -> Unit) {
     }
 }
 
-@ExperimentalCoilApi
 @Composable
 fun RecipeDetailContent(recipe: Recipe, modifier: Modifier = Modifier) {
     Column(
@@ -263,7 +260,6 @@ fun RecipeDetailContent(recipe: Recipe, modifier: Modifier = Modifier) {
     }
 }
 
-@ExperimentalCoilApi
 @Composable
 fun RecipeDetailImage(imageUrl: String, name: String) {
     AuthorizedImage(
@@ -408,9 +404,8 @@ fun RecipeDetailTools(tools: List<String>) {
             .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
         style = MaterialTheme.typography.h6
     )
-    val tools = tools.joinToString(separator = ", ")
     Text(
-        text = tools,
+        text = tools.joinToString(separator = ", "),
         modifier = Modifier
             .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
             .padding(bottom = dimensionResource(id = R.dimen.padding_l)),

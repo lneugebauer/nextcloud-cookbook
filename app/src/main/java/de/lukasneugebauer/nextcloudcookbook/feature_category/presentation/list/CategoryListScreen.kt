@@ -8,7 +8,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Badge
 import androidx.compose.material.Divider
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ListItem
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
@@ -47,7 +46,6 @@ fun CategoryListScreen(
     )
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun CategoryListScreen(
     data: List<Category>,
@@ -55,13 +53,15 @@ private fun CategoryListScreen(
 ) {
     Scaffold(
         topBar = { CategoryListTopBar() }
-    ) {
+    ) { innerPadding ->
         if (data.isEmpty()) {
             Loader()
         } else {
             val listState = rememberLazyListState()
             LazyColumn(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxSize(),
                 state = listState
             ) {
                 itemsIndexed(data) { index, category ->

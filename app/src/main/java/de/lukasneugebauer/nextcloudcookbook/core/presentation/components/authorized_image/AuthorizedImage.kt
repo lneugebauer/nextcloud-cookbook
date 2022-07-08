@@ -7,7 +7,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import coil.annotation.ExperimentalCoilApi
 import coil.compose.ImagePainter
 import coil.compose.rememberImagePainter
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
@@ -15,7 +14,6 @@ import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.LocalCredentials
 import de.lukasneugebauer.nextcloudcookbook.core.util.Constants
 
-@ExperimentalCoilApi
 @Composable
 fun authorizedImagePainter(imageUrl: String): Painter {
     val credentials = LocalCredentials.current
@@ -43,7 +41,6 @@ fun authorizedImagePainter(imageUrl: String): Painter {
     return painter
 }
 
-@ExperimentalCoilApi
 @Composable
 fun AuthorizedImage(
     imageUrl: String,
