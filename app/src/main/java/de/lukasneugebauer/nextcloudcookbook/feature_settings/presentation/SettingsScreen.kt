@@ -72,7 +72,7 @@ fun SettingsScreen(
                     }
                 }
             },
-            sharedPreferences = viewModel.sharedPreferences,
+            sharedPreferences = viewModel.sharedPreferences
         )
     }
 }

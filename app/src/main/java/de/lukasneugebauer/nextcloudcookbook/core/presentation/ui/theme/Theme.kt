@@ -21,7 +21,7 @@ private val LightColorPalette = lightColors(
     primary = NcBlue700,
     primaryVariant = NcBlue800,
     secondary = NcBlue700,
-    secondaryVariant = NcBlue800,
+    secondaryVariant = NcBlue800
 
     /* Other default colors to override
     background = Color.White,

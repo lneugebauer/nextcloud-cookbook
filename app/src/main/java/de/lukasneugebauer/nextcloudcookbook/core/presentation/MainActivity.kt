@@ -92,7 +92,7 @@ fun NextcloudCookbookApp() {
             ) {
                 composable(SplashScreenDestination) {
                     CompositionLocalProvider(
-                        LocalViewModelStoreOwner provides viewModelStoreOwner,
+                        LocalViewModelStoreOwner provides viewModelStoreOwner
                     ) {
                         SplashScreen(navigator = destinationsNavigator)
                     }

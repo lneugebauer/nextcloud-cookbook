@@ -21,7 +21,7 @@ import de.lukasneugebauer.nextcloudcookbook.feature_auth.domain.state.SplashScre
 fun SplashScreen(
     navigator: DestinationsNavigator,
     mainViewModel: MainViewModel = viewModel(),
-    viewModel: SplashViewModel = hiltViewModel(),
+    viewModel: SplashViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
 

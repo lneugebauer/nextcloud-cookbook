@@ -43,7 +43,7 @@ data class RecipeDto(
     @SerializedName("imageUrl")
     val imageUrl: String,
     @SerializedName("nutrition")
-    val nutrition: NutritionDto?,
+    val nutrition: NutritionDto?
 ) {
     fun toRecipe() = Recipe(
         id = id,
@@ -62,6 +62,6 @@ data class RecipeDto(
         ingredients = recipeIngredient,
         instructions = recipeInstructions,
         createdAt = dateCreated,
-        modifiedAt = dateModified,
+        modifiedAt = dateModified
     )
 }

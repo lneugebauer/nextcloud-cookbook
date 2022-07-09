@@ -15,7 +15,7 @@ interface NcCookbookApi {
     @Headers(
         "Accept: application/json",
         "OCS-APIRequest: true",
-        "Content-Type: application/json;charset=utf-8",
+        "Content-Type: application/json;charset=utf-8"
     )
     @GET("/ocs/v2.php/cloud/capabilities?format=json")
     suspend fun getCapabilities(): CapabilitiesResponse

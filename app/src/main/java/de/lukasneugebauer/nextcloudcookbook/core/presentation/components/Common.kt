@@ -64,7 +64,7 @@ fun CommonItemBody(name: String, modifier: Modifier, onClick: () -> Unit) {
                 .wrapContentWidth(Alignment.Start),
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,
-            style = MaterialTheme.typography.body1,
+            style = MaterialTheme.typography.body1
         )
         IconButton(
             onClick = onClick,
