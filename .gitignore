@@ -103,3 +103,8 @@ lint/tmp/
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# VuePress
+.cache/
+.temp/
+node_modules/
