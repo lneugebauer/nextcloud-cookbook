@@ -1,5 +1,6 @@
 package de.lukasneugebauer.nextcloudcookbook.feature_auth.presentation.login
 
+import android.util.Patterns.WEB_URL
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -8,7 +9,6 @@ import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.NcAccount
 import de.lukasneugebauer.nextcloudcookbook.core.domain.repository.AccountRepository
 import de.lukasneugebauer.nextcloudcookbook.core.domain.use_case.ClearPreferencesUseCase
-import de.lukasneugebauer.nextcloudcookbook.core.util.Constants.VALID_URL_REGEX
 import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
 import de.lukasneugebauer.nextcloudcookbook.di.ApiProvider
@@ -17,7 +17,6 @@ import de.lukasneugebauer.nextcloudcookbook.feature_auth.domain.state.LoginScree
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -131,7 +130,8 @@ class LoginViewModel @Inject constructor(
 
     private fun isValidUsername(username: String): Boolean {
         if (username.isBlank()) {
-            _uiState.value = _uiState.value.copy(usernameError = UiText.StringResource(R.string.error_empty_username))
+            _uiState.value =
+                _uiState.value.copy(usernameError = UiText.StringResource(R.string.error_empty_username))
             return false
         }
 
@@ -140,7 +140,8 @@ class LoginViewModel @Inject constructor(
 
     private fun isValidPassword(password: String): Boolean {
         if (password.isBlank()) {
-            _uiState.value = _uiState.value.copy(passwordError = UiText.StringResource(R.string.error_emtpy_password))
+            _uiState.value =
+                _uiState.value.copy(passwordError = UiText.StringResource(R.string.error_emtpy_password))
             return false
         }
 
@@ -149,7 +150,8 @@ class LoginViewModel @Inject constructor(
 
     private fun isValidUrl(url: String): Boolean {
         if (url.isBlank()) {
-            _uiState.value = _uiState.value.copy(urlError = UiText.StringResource(R.string.error_empty_url))
+            _uiState.value =
+                _uiState.value.copy(urlError = UiText.StringResource(R.string.error_empty_url))
             return false
         }
 
@@ -159,8 +161,9 @@ class LoginViewModel @Inject constructor(
             return false
         }
 
-        if (!url.matches(VALID_URL_REGEX)) {
-            _uiState.value = _uiState.value.copy(urlError = UiText.StringResource(R.string.error_invalid_url))
+        if (!WEB_URL.matcher(url).matches()) {
+            _uiState.value =
+                _uiState.value.copy(urlError = UiText.StringResource(R.string.error_invalid_url))
             return false
         }
 
