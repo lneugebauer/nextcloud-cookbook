@@ -2,7 +2,7 @@ import { defineUserConfig } from 'vuepress'
 import { defaultTheme } from 'vuepress'
 
 export default defineUserConfig({
-  base: '/',
+  base: '/nextcloud-cookbook/',
   lang: 'en-US',
   title: 'Nextcloud Cookbook Android client',
   description: 'An Android client for Nextcloud Cookbook app.',
