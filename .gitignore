@@ -76,11 +76,13 @@ freeline/
 freeline_project_description.json
 
 # fastlane
+.bundle/
 fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots
 fastlane/test_output
 fastlane/README.md
+vendor/
 
 # Version control
 vcs.xml
