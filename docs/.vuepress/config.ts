@@ -7,7 +7,7 @@ export default defineUserConfig({
   title: 'Nextcloud Cookbook Android client',
   description: 'An Android client for Nextcloud Cookbook app.',
   head: [
-    ['link', { rel: 'icon', href: '/images/logo.png' }]
+    ['link', { rel: 'icon', href: '/nextcloud-cookbook/images/logo.png' }]
   ],
   theme: defaultTheme({
     navbar: [
