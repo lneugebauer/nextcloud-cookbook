@@ -107,4 +107,5 @@ Thumbs.db
 # VuePress
 .cache/
 .temp/
+dist/
 node_modules/
