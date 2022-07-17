@@ -1,5 +1,6 @@
 import { defineUserConfig } from 'vuepress'
 import { defaultTheme } from 'vuepress'
+import { sitemapPlugin } from 'vuepress-plugin-sitemap2'
 
 export default defineUserConfig({
   base: '/nextcloud-cookbook/',
@@ -20,5 +21,11 @@ export default defineUserConfig({
     logo: 'images/logo.png',
     repo: 'lneugebauer/nextcloud-cookbook',
     docsDir: 'docs'
-  })
+  }),
+  plugins: [
+    sitemapPlugin({
+      hostname: 'https://lneugebauer.github.io/nextcloud-cookbook',
+      excludeUrls: ['/404.html']
+    })
+  ]
 })
