@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://lneugebauer.github.io/nextcloud-cookbook/nextcloud-cookbook/sitemap.xml
