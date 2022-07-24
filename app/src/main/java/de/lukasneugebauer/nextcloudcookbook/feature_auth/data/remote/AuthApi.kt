@@ -1,5 +1,6 @@
 package de.lukasneugebauer.nextcloudcookbook.feature_auth.data.remote
 
+import com.haroldadmin.cnradapter.NetworkResponse
 import de.lukasneugebauer.nextcloudcookbook.feature_auth.data.remote.response.LoginEndpointResponse
 import de.lukasneugebauer.nextcloudcookbook.feature_auth.data.remote.response.LoginResponse
 import retrofit2.http.POST
@@ -9,8 +10,8 @@ import retrofit2.http.Url
 interface AuthApi {
 
     @POST
-    suspend fun getLoginEndpoint(@Url url: String): LoginEndpointResponse
+    suspend fun getLoginEndpoint(@Url url: String): NetworkResponse<LoginEndpointResponse, Any>
 
     @POST
-    suspend fun tryLogin(@Url url: String, @Query("token") token: String): LoginResponse
+    suspend fun tryLogin(@Url url: String, @Query("token") token: String): NetworkResponse<LoginResponse, Any>
 }

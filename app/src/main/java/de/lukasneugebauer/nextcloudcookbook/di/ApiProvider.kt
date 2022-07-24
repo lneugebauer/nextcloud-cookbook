@@ -1,6 +1,7 @@
 package de.lukasneugebauer.nextcloudcookbook.di
 
 import com.google.gson.GsonBuilder
+import com.haroldadmin.cnradapter.NetworkResponseAdapterFactory
 import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
 import de.lukasneugebauer.nextcloudcookbook.core.data.api.NcCookbookApi
 import de.lukasneugebauer.nextcloudcookbook.core.data.remote.BasicAuthInterceptor
@@ -65,6 +66,7 @@ class ApiProvider @Inject constructor(
             .baseUrl(ncAccount.url)
             .client(client)
             .addConverterFactory(GsonConverterFactory.create(gson))
+            .addCallAdapterFactory(NetworkResponseAdapterFactory())
             .build()
 
         _ncCookbookApiFlow.value = retrofit.create(NcCookbookApi::class.java)

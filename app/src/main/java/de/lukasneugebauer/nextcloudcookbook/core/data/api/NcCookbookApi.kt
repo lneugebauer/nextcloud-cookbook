@@ -1,6 +1,8 @@
 package de.lukasneugebauer.nextcloudcookbook.core.data.api
 
+import com.haroldadmin.cnradapter.NetworkResponse
 import de.lukasneugebauer.nextcloudcookbook.core.data.remote.response.CapabilitiesResponse
+import de.lukasneugebauer.nextcloudcookbook.core.data.remote.response.ErrorResponse
 import de.lukasneugebauer.nextcloudcookbook.core.util.Constants
 import de.lukasneugebauer.nextcloudcookbook.feature_category.data.dto.CategoryDto
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.data.dto.RecipeDto
@@ -18,7 +20,7 @@ interface NcCookbookApi {
         "Content-Type: application/json;charset=utf-8"
     )
     @GET("/ocs/v2.php/cloud/capabilities?format=json")
-    suspend fun getCapabilities(): CapabilitiesResponse
+    suspend fun getCapabilities(): NetworkResponse<CapabilitiesResponse, ErrorResponse>
 
     @GET("${Constants.API_ENDPOINT}/categories")
     suspend fun getCategories(): List<CategoryDto>
@@ -33,7 +35,7 @@ interface NcCookbookApi {
     suspend fun getRecipe(@Path("id") id: Int): RecipeDto
 
     @DELETE("${Constants.API_ENDPOINT}/api/recipes/{id}")
-    suspend fun deleteRecipe(@Path("id") id: Int): String
+    suspend fun deleteRecipe(@Path("id") id: Int): NetworkResponse<String, ErrorResponse>
 
     @GET("${Constants.API_ENDPOINT}/api/search/{query}")
     suspend fun search(@Path("query") query: String): List<RecipePreviewDto>

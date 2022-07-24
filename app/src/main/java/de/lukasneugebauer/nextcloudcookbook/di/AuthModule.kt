@@ -1,6 +1,7 @@
 package de.lukasneugebauer.nextcloudcookbook.di
 
 import com.google.gson.GsonBuilder
+import com.haroldadmin.cnradapter.NetworkResponseAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -36,6 +37,7 @@ object AuthModule {
             .baseUrl("http://localhost/")
             .client(client)
             .addConverterFactory(GsonConverterFactory.create(gson))
+            .addCallAdapterFactory(NetworkResponseAdapterFactory())
             .build()
             .create(AuthApi::class.java)
     }

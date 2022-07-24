@@ -14,6 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import retrofit2.HttpException
 import timber.log.Timber
 import java.time.LocalDateTime
 import javax.inject.Inject
@@ -37,46 +38,52 @@ class GetHomeScreenDataUseCase @Inject constructor(
         var recipeOfTheDay = preferencesManager.preferencesFlow.map { it.recipeOfTheDay }.first()
 
         if (recipeOfTheDay.id == 0 || recipeOfTheDay.updatedAt.isBefore(currentDate)) {
-            val newRecipeOfTheDayId = recipePreviewsStore.get(Unit).random().toRecipePreview().id
-            recipeOfTheDay = RecipeOfTheDay(
-                id = newRecipeOfTheDayId,
-                updatedAt = LocalDateTime.now()
-            )
-            preferencesManager.updateRecipeOfTheDay(recipeOfTheDay)
+            try {
+                val newRecipeOfTheDayId = recipePreviewsStore.get(Unit).random().toRecipePreview().id
+                recipeOfTheDay = RecipeOfTheDay(
+                    id = newRecipeOfTheDayId,
+                    updatedAt = LocalDateTime.now()
+                )
+                preferencesManager.updateRecipeOfTheDay(recipeOfTheDay)
+            } catch (e: HttpException) {
+                Timber.e(e.stackTraceToString())
+            }
         }
 
         // FIXME: 25.12.21 Get different recipe of the day if api returns 404 error.
         //  E.g. after deleting recipe of the day.
         withContext(Dispatchers.IO) {
             try {
-                homeScreenData.add(
-                    HomeScreenDataResult.Single(
-                        R.string.home_recommendation,
-                        recipeStore.get(recipeOfTheDay.id).toRecipe()
-                    )
+                val result = HomeScreenDataResult.Single(
+                    R.string.home_recommendation,
+                    recipeStore.get(recipeOfTheDay.id).toRecipe()
                 )
+                homeScreenData.add(result)
             } catch (e: Exception) {
                 Timber.e(e.stackTraceToString())
             }
         }
 
         withContext(Dispatchers.IO) {
-            categoriesStore.get(Unit)
-                .sortedByDescending { it.recipeCount }
-                .take(RecipeConstants.HOME_SCREEN_CATEGORIES)
-                .forEach { categoryDto ->
-                    val recipePreviews = recipePreviewsByCategoryStore
-                        .get(categoryDto.name)
-                        .map { it.toRecipePreview() }
-                    if (recipePreviews.isNotEmpty()) {
-                        homeScreenData.add(
-                            HomeScreenDataResult.Row(
+            try {
+                categoriesStore.get(Unit)
+                    .sortedByDescending { it.recipeCount }
+                    .take(RecipeConstants.HOME_SCREEN_CATEGORIES)
+                    .forEach { categoryDto ->
+                        val recipePreviews = recipePreviewsByCategoryStore
+                            .get(categoryDto.name)
+                            .map { it.toRecipePreview() }
+                        if (recipePreviews.isNotEmpty()) {
+                            val result = HomeScreenDataResult.Row(
                                 categoryDto.name,
                                 recipePreviews
                             )
-                        )
+                            homeScreenData.add(result)
+                        }
                     }
-                }
+            } catch (e: Exception) {
+                Timber.e(e.stackTraceToString())
+            }
         }
 
         return homeScreenData.toList()
