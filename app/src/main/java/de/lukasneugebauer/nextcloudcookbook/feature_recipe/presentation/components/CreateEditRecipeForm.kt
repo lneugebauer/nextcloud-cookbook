@@ -1,5 +1,6 @@
 package de.lukasneugebauer.nextcloudcookbook.feature_recipe.presentation.components
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -39,6 +40,7 @@ import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.model.Recipe
 @Composable
 fun CreateEditRecipeForm(
     recipe: Recipe,
+    @StringRes title: Int,
     onNavIconClick: () -> Unit,
     onNameChanged: (name: String) -> Unit,
     onDescriptionChanged: (description: String) -> Unit,
@@ -62,7 +64,7 @@ fun CreateEditRecipeForm(
     Scaffold(
         topBar = {
             RecipeEditTopBar(
-                title = recipe.name,
+                title = stringResource(id = title),
                 onNavIconClick = onNavIconClick,
                 onSaveClick = onSaveClick
             )
@@ -395,6 +397,7 @@ private fun CreateEditRecipeFormPreview() {
     NextcloudCookbookTheme {
         CreateEditRecipeForm(
             recipe = recipe,
+            title = R.string.recipe_new,
             onNavIconClick = {},
             onNameChanged = {},
             onDescriptionChanged = {},

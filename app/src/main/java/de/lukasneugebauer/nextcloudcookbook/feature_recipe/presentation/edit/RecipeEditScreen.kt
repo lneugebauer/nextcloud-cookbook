@@ -7,6 +7,7 @@ import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.state.RecipeEditState
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.presentation.components.CreateEditRecipeForm
@@ -27,6 +28,7 @@ fun RecipeEditScreen(
 
             CreateEditRecipeForm(
                 recipe = recipe,
+                title = R.string.recipe_edit,
                 onNavIconClick = { navigator.popBackStack() },
                 onNameChanged = { newName ->
                     viewModel.changeName(newName)
