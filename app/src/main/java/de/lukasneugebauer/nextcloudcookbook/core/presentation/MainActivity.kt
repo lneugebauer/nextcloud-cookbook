@@ -29,6 +29,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.domain.state.SplashState
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.BottomBar
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
 import de.lukasneugebauer.nextcloudcookbook.destinations.LoginScreenDestination
+import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeCreateScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeEditScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.destinations.SplashScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.feature_auth.presentation.splash.SplashScreen
@@ -88,6 +89,7 @@ fun NextcloudCookbookApp() {
                 // TODO: Create app state to hide bottom navigation
                 if (currentDestination?.route != SplashScreenDestination.route &&
                     currentDestination?.route != LoginScreenDestination.route &&
+                    currentDestination?.route != RecipeCreateScreenDestination.route &&
                     currentDestination?.route != RecipeEditScreenDestination.route
                 ) {
                     BottomBar(navController = navController)

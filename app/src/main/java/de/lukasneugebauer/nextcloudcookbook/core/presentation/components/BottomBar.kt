@@ -37,7 +37,7 @@ enum class BottomBarDestination(
     Recipes(RecipeListScreenDestination, Icons.Default.Fastfood, R.string.common_recipes)
 }
 
-@OptIn(ExperimentalMaterialApi::class, coil.annotation.ExperimentalCoilApi::class)
+@OptIn(coil.annotation.ExperimentalCoilApi::class)
 @Composable
 fun BottomBar(navController: NavController) {
     var selected by rememberSaveable { mutableStateOf(BottomBarDestination.Home) }

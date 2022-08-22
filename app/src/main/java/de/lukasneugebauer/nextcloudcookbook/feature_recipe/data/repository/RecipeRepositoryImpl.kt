@@ -76,6 +76,10 @@ class RecipeRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun storeRecipe(recipe: RecipeDto): SimpleResource {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun deleteRecipe(id: Int, categoryName: String): SimpleResource {
         return withContext(Dispatchers.IO) {
             try {

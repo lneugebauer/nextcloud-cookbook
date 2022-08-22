@@ -1,4 +1,4 @@
-package de.lukasneugebauer.nextcloudcookbook.feature_recipe.presentation.edit
+package de.lukasneugebauer.nextcloudcookbook.feature_recipe.presentation.create
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class RecipeEditViewModel @Inject constructor(
+class RecipeCreateViewModel @Inject constructor(
     private val recipeRepository: RecipeRepository,
     savedStateHandle: SavedStateHandle
 ) : RecipeCreateEditViewModel(recipeRepository, savedStateHandle) {
@@ -21,7 +21,7 @@ class RecipeEditViewModel @Inject constructor(
         if (_uiState.value is RecipeEditState.Success) {
             _uiState.update { RecipeEditState.Loading }
             viewModelScope.launch {
-                when (val result = recipeRepository.updateRecipe(recipe)) {
+                when (val result = recipeRepository.storeRecipe(recipe)) {
                     is Resource.Error -> _uiState.update {
                         RecipeEditState.Error(result.text ?: "Unknown error.")
                     }
