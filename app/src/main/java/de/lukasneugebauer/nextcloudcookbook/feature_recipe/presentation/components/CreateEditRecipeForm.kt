@@ -9,6 +9,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldColors
@@ -239,6 +240,10 @@ private fun Ingredients(
     onAddIngredient: () -> Unit,
     textFieldColors: TextFieldColors
 ) {
+    Text(
+        text = stringResource(id = R.string.recipe_ingredients),
+        style = MaterialTheme.typography.h6
+    )
     recipe.ingredients.forEachIndexed { index, ingredient ->
         DefaultOutlinedTextField(
             value = ingredient,
@@ -279,6 +284,10 @@ private fun Tools(
     onAddTool: () -> Unit,
     textFieldColors: TextFieldColors
 ) {
+    Text(
+        text = stringResource(id = R.string.recipe_tools),
+        style = MaterialTheme.typography.h6
+    )
     recipe.tools.forEachIndexed { index, tool ->
         DefaultOutlinedTextField(
             value = tool,
@@ -319,6 +328,10 @@ private fun Instructions(
     onAddInstruction: () -> Unit,
     textFieldColors: TextFieldColors
 ) {
+    Text(
+        text = stringResource(id = R.string.recipe_instructions),
+        style = MaterialTheme.typography.h6
+    )
     recipe.instructions.forEachIndexed { index, instruction ->
         DefaultOutlinedTextField(
             value = instruction,

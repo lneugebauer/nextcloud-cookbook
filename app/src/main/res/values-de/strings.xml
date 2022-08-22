@@ -14,6 +14,7 @@
     <string name="home_recommendation">Vorschlag</string>
     <string name="recipe_cook_time">Kochen</string>
     <string name="recipe_duration">%1$d Min.</string>
+    <string name="recipe_ingredients">Zutaten</string>
     <plurals name="recipe_ingredients_servings">
         <item quantity="one">Zutaten für %1$d Portion</item>
         <item quantity="other">Zutaten für %1$d Portionen</item>
