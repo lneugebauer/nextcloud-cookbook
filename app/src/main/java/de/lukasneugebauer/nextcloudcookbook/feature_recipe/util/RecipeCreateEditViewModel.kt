@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.data.dto.RecipeDto
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.repository.RecipeRepository
-import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.state.RecipeEditState
+import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.state.RecipeCreateEditState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -16,8 +16,8 @@ abstract class RecipeCreateEditViewModel(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    protected val _uiState = MutableStateFlow<RecipeEditState>(RecipeEditState.Loading)
-    val uiState: StateFlow<RecipeEditState> = _uiState
+    protected val _uiState = MutableStateFlow<RecipeCreateEditState>(RecipeCreateEditState.Loading)
+    val uiState: StateFlow<RecipeCreateEditState> = _uiState
 
     protected lateinit var recipe: RecipeDto
 
@@ -33,28 +33,28 @@ abstract class RecipeCreateEditViewModel(
     abstract fun save()
 
     fun changeName(newName: String) {
-        if (_uiState.value is RecipeEditState.Success) {
+        if (_uiState.value is RecipeCreateEditState.Success) {
             recipe = recipe.copy(name = newName)
             updateRecipe()
         }
     }
 
     fun changeDescription(newDescription: String) {
-        if (_uiState.value is RecipeEditState.Success) {
+        if (_uiState.value is RecipeCreateEditState.Success) {
             recipe = recipe.copy(description = newDescription)
             updateRecipe()
         }
     }
 
     fun changeUrl(newUrl: String) {
-        if (_uiState.value is RecipeEditState.Success) {
+        if (_uiState.value is RecipeCreateEditState.Success) {
             recipe = recipe.copy(url = newUrl)
             updateRecipe()
         }
     }
 
     fun changeYield(newYield: String) {
-        if (_uiState.value is RecipeEditState.Success) {
+        if (_uiState.value is RecipeCreateEditState.Success) {
             // TODO: Check toInt actually works or don't apply the update
             recipe = recipe.copy(recipeYield = newYield.toInt())
             updateRecipe()
@@ -62,7 +62,7 @@ abstract class RecipeCreateEditViewModel(
     }
 
     fun changeIngredient(index: Int, newIngredient: String) {
-        if (_uiState.value is RecipeEditState.Success) {
+        if (_uiState.value is RecipeCreateEditState.Success) {
             val ingredients = recipe.recipeIngredient.toMutableList()
             ingredients[index] = newIngredient
             recipe = recipe.copy(recipeIngredient = ingredients)
@@ -71,7 +71,7 @@ abstract class RecipeCreateEditViewModel(
     }
 
     fun deleteIngredient(index: Int) {
-        if (_uiState.value is RecipeEditState.Success) {
+        if (_uiState.value is RecipeCreateEditState.Success) {
             val ingredients = recipe.recipeIngredient.toMutableList()
             ingredients.removeAt(index)
             recipe = recipe.copy(recipeIngredient = ingredients)
@@ -80,7 +80,7 @@ abstract class RecipeCreateEditViewModel(
     }
 
     fun addIngredient() {
-        if (_uiState.value is RecipeEditState.Success) {
+        if (_uiState.value is RecipeCreateEditState.Success) {
             val ingredients = recipe.recipeIngredient.toMutableList()
             ingredients.add("")
             recipe = recipe.copy(recipeIngredient = ingredients)
@@ -89,7 +89,7 @@ abstract class RecipeCreateEditViewModel(
     }
 
     fun changeTool(index: Int, newTool: String) {
-        if (_uiState.value is RecipeEditState.Success) {
+        if (_uiState.value is RecipeCreateEditState.Success) {
             val tools = recipe.tool.toMutableList()
             tools[index] = newTool
             recipe = recipe.copy(tool = tools)
@@ -98,7 +98,7 @@ abstract class RecipeCreateEditViewModel(
     }
 
     fun deleteTool(index: Int) {
-        if (_uiState.value is RecipeEditState.Success) {
+        if (_uiState.value is RecipeCreateEditState.Success) {
             val tools = recipe.tool.toMutableList()
             tools.removeAt(index)
             recipe = recipe.copy(tool = tools)
@@ -107,7 +107,7 @@ abstract class RecipeCreateEditViewModel(
     }
 
     fun addTool() {
-        if (_uiState.value is RecipeEditState.Success) {
+        if (_uiState.value is RecipeCreateEditState.Success) {
             val tools = recipe.tool.toMutableList()
             tools.add("")
             recipe = recipe.copy(tool = tools)
@@ -116,7 +116,7 @@ abstract class RecipeCreateEditViewModel(
     }
 
     fun changeInstruction(index: Int, newInstruction: String) {
-        if (_uiState.value is RecipeEditState.Success) {
+        if (_uiState.value is RecipeCreateEditState.Success) {
             val instructions = recipe.recipeInstructions.toMutableList()
             instructions[index] = newInstruction
             recipe = recipe.copy(recipeInstructions = instructions)
@@ -125,7 +125,7 @@ abstract class RecipeCreateEditViewModel(
     }
 
     fun deleteInstruction(index: Int) {
-        if (_uiState.value is RecipeEditState.Success) {
+        if (_uiState.value is RecipeCreateEditState.Success) {
             val instructions = recipe.recipeInstructions.toMutableList()
             instructions.removeAt(index)
             recipe = recipe.copy(recipeInstructions = instructions)
@@ -134,7 +134,7 @@ abstract class RecipeCreateEditViewModel(
     }
 
     fun addInstruction() {
-        if (_uiState.value is RecipeEditState.Success) {
+        if (_uiState.value is RecipeCreateEditState.Success) {
             val instructions = recipe.recipeInstructions.toMutableList()
             instructions.add("")
             recipe = recipe.copy(recipeInstructions = instructions)
@@ -155,6 +155,6 @@ abstract class RecipeCreateEditViewModel(
     }
 
     private fun updateRecipe() {
-        _uiState.update { RecipeEditState.Success(recipe.toRecipe()) }
+        _uiState.update { RecipeCreateEditState.Success(recipe.toRecipe()) }
     }
 }

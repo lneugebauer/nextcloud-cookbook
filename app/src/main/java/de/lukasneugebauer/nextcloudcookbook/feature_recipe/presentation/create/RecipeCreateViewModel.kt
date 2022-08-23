@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.repository.RecipeRepository
-import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.state.RecipeEditState
+import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.state.RecipeCreateEditState
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.util.RecipeCreateEditViewModel
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -18,14 +18,17 @@ class RecipeCreateViewModel @Inject constructor(
 ) : RecipeCreateEditViewModel(recipeRepository, savedStateHandle) {
 
     override fun save() {
-        if (_uiState.value is RecipeEditState.Success) {
-            _uiState.update { RecipeEditState.Loading }
+        if (_uiState.value is RecipeCreateEditState.Success) {
+            _uiState.update { RecipeCreateEditState.Loading }
             viewModelScope.launch {
-                when (val result = recipeRepository.storeRecipe(recipe)) {
-                    is Resource.Error -> _uiState.update {
-                        RecipeEditState.Error(result.text ?: "Unknown error.")
+                val result = recipeRepository.createRecipe(recipe)
+                _uiState.update {
+                    if (result is Resource.Success && result.data != null) {
+                        val recipeId = result.data
+                        RecipeCreateEditState.Updated(recipeId)
+                    } else {
+                        RecipeCreateEditState.Error(result.text ?: "Unknown error.")
                     }
-                    is Resource.Success -> _uiState.update { RecipeEditState.Updated }
                 }
             }
         }

@@ -59,6 +59,21 @@ class RecipeRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun createRecipe(recipe: RecipeDto): Resource<Int> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val id = ncCookbookApi?.createRecipe(recipe = recipe)
+                Resource.Success(data = id)
+            } catch (e: HttpException) {
+                Timber.e(e)
+                Resource.Error(text = "An error occurred (${e.code()})")
+            } catch (e: Exception) {
+                Timber.e(e)
+                Resource.Error(text = "An error occurred")
+            }
+        }
+    }
+
     override suspend fun updateRecipe(recipe: RecipeDto): SimpleResource {
         return withContext(Dispatchers.IO) {
             try {
@@ -74,10 +89,6 @@ class RecipeRepositoryImpl @Inject constructor(
                 Resource.Error(text = "An error occurred")
             }
         }
-    }
-
-    override suspend fun storeRecipe(recipe: RecipeDto): SimpleResource {
-        TODO("Not yet implemented")
     }
 
     override suspend fun deleteRecipe(id: Int, categoryName: String): SimpleResource {

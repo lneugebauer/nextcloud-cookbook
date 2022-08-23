@@ -9,7 +9,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
-import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.state.RecipeEditState
+import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.state.RecipeCreateEditState
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.presentation.components.CreateEditRecipeForm
 
 @Destination
@@ -22,9 +22,9 @@ fun RecipeEditScreen(
     val uiState by viewModel.uiState.collectAsState()
 
     when (uiState) {
-        is RecipeEditState.Loading -> Loader()
-        is RecipeEditState.Success -> {
-            val recipe = (uiState as RecipeEditState.Success).recipe
+        is RecipeCreateEditState.Loading -> Loader()
+        is RecipeCreateEditState.Success -> {
+            val recipe = (uiState as RecipeCreateEditState.Success).recipe
 
             CreateEditRecipeForm(
                 recipe = recipe,
@@ -74,9 +74,9 @@ fun RecipeEditScreen(
                 }
             )
         }
-        is RecipeEditState.Updated -> navigator.popBackStack()
-        is RecipeEditState.Error -> {
-            val text = (uiState as RecipeEditState.Error).text
+        is RecipeCreateEditState.Updated -> navigator.popBackStack()
+        is RecipeCreateEditState.Error -> {
+            val text = (uiState as RecipeCreateEditState.Error).text
 
             Text(text = "Error: $text")
         }

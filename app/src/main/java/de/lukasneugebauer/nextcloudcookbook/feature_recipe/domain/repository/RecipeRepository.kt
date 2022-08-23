@@ -17,9 +17,9 @@ interface RecipeRepository {
 
     suspend fun getRecipe(id: Int): RecipeDto
 
-    suspend fun updateRecipe(recipe: RecipeDto): SimpleResource
+    suspend fun createRecipe(recipe: RecipeDto): Resource<Int>
 
-    suspend fun storeRecipe(recipe: RecipeDto): SimpleResource
+    suspend fun updateRecipe(recipe: RecipeDto): SimpleResource
 
     suspend fun deleteRecipe(id: Int, categoryName: String): SimpleResource
 }

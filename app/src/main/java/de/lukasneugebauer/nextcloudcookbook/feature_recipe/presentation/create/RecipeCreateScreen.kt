@@ -9,7 +9,8 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
-import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.state.RecipeEditState
+import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeDetailScreenDestination
+import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.state.RecipeCreateEditState
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.presentation.components.CreateEditRecipeForm
 
 @Destination
@@ -21,9 +22,9 @@ fun RecipeCreateScreen(
     val uiState by viewModel.uiState.collectAsState()
 
     when (uiState) {
-        is RecipeEditState.Loading -> Loader()
-        is RecipeEditState.Success -> {
-            val recipe = (uiState as RecipeEditState.Success).recipe
+        is RecipeCreateEditState.Loading -> Loader()
+        is RecipeCreateEditState.Success -> {
+            val recipe = (uiState as RecipeCreateEditState.Success).recipe
 
             CreateEditRecipeForm(
                 recipe = recipe,
@@ -73,11 +74,12 @@ fun RecipeCreateScreen(
                 }
             )
         }
-        is RecipeEditState.Updated -> {
-            /* TODO: Navigate to recipe */
+        is RecipeCreateEditState.Updated -> {
+            val recipeId = (uiState as RecipeCreateEditState.Updated).recipeId
+            navigator.navigate(RecipeDetailScreenDestination(recipeId))
         }
-        is RecipeEditState.Error -> {
-            val text = (uiState as RecipeEditState.Error).text
+        is RecipeCreateEditState.Error -> {
+            val text = (uiState as RecipeCreateEditState.Error).text
 
             Text(text = "Error: $text")
         }
