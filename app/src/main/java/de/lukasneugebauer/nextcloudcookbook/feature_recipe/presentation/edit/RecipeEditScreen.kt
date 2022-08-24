@@ -39,6 +39,9 @@ fun RecipeEditScreen(
                 onUrlChanged = { newUrl ->
                     viewModel.changeUrl(newUrl)
                 },
+                onImageOriginChanged = { newImageUrl ->
+                    viewModel.changeImageOrigin(newImageUrl)
+                },
                 onYieldChanged = { newYield ->
                     viewModel.changeYield(newYield)
                 },

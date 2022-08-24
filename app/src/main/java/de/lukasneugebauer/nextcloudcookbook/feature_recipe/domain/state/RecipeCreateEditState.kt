@@ -8,3 +8,9 @@ sealed interface RecipeCreateEditState {
     data class Updated(val recipeId: Int) : RecipeCreateEditState
     data class Error(val text: String) : RecipeCreateEditState
 }
+
+fun RecipeCreateEditState.ifSuccess(f: () -> Unit) {
+    if (this is RecipeCreateEditState.Success) {
+        f.invoke()
+    }
+}

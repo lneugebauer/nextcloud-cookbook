@@ -7,6 +7,7 @@ fun emptyRecipe(): Recipe = Recipe(
     name = "",
     description = "",
     url = "",
+    imageOrigin = "",
     imageUrl = "",
     category = "",
     keywords = emptyList(),

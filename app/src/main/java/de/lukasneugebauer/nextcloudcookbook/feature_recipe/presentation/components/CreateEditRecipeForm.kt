@@ -45,6 +45,7 @@ fun CreateEditRecipeForm(
     onNameChanged: (name: String) -> Unit,
     onDescriptionChanged: (description: String) -> Unit,
     onUrlChanged: (url: String) -> Unit,
+    onImageOriginChanged: (imageUrl: String) -> Unit,
     onYieldChanged: (yield: String) -> Unit,
     onIngredientChanged: (index: Int, ingredient: String) -> Unit,
     onIngredientDeleted: (index: Int) -> Unit,
@@ -76,6 +77,9 @@ fun CreateEditRecipeForm(
                 .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
                 .verticalScroll(scrollState)
         ) {
+            val modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = dimensionResource(id = R.dimen.padding_m))
             val textFieldColors = TextFieldDefaults.outlinedTextFieldColors(
                 textColor = Color.Black,
                 cursorColor = Color.Black,
@@ -86,17 +90,26 @@ fun CreateEditRecipeForm(
             Gap(size = dimensionResource(id = R.dimen.padding_m))
             Name(
                 recipe = recipe,
+                modifier = modifier,
                 onNameChanged = onNameChanged,
                 textFieldColors = textFieldColors
             )
             Description(
                 recipe = recipe,
+                modifier = modifier,
                 onDescriptionChanged = onDescriptionChanged,
                 textFieldColors = textFieldColors
             )
             Url(
                 recipe = recipe,
+                modifier = modifier,
                 onUrlChanged = onUrlChanged,
+                textFieldColors = textFieldColors
+            )
+            ImageOrigin(
+                recipe = recipe,
+                modifier = modifier,
+                onImageOriginChanged = onImageOriginChanged,
                 textFieldColors = textFieldColors
             )
             Yield(
@@ -106,6 +119,7 @@ fun CreateEditRecipeForm(
             )
             Ingredients(
                 recipe = recipe,
+                ingredientModifier = modifier,
                 onIngredientChanged = onIngredientChanged,
                 onIngredientDeleted = onIngredientDeleted,
                 onAddIngredient = onAddIngredient,
@@ -113,6 +127,7 @@ fun CreateEditRecipeForm(
             )
             Tools(
                 recipe = recipe,
+                toolModifier = modifier,
                 onToolChanged = onToolChanged,
                 onToolDeleted = onToolDeleted,
                 onAddTool = onAddTool,
@@ -120,6 +135,7 @@ fun CreateEditRecipeForm(
             )
             Instructions(
                 recipe = recipe,
+                instructionModifier = modifier,
                 onInstructionChanged = onInstructionChanged,
                 onInstructionDeleted = onInstructionDeleted,
                 onAddInstruction = onAddInstruction,
@@ -163,15 +179,14 @@ private fun RecipeEditTopBar(title: String, onNavIconClick: () -> Unit, onSaveCl
 @Composable
 private fun Name(
     recipe: Recipe,
+    modifier: Modifier,
     onNameChanged: (name: String) -> Unit,
     textFieldColors: TextFieldColors
 ) {
     DefaultOutlinedTextField(
         value = recipe.name,
         onValueChange = onNameChanged,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
+        modifier = modifier,
         label = { Text(text = "Name") },
         singleLine = true,
         colors = textFieldColors
@@ -181,15 +196,14 @@ private fun Name(
 @Composable
 private fun Description(
     recipe: Recipe,
+    modifier: Modifier,
     onDescriptionChanged: (description: String) -> Unit,
     textFieldColors: TextFieldColors
 ) {
     DefaultOutlinedTextField(
         value = recipe.description,
         onValueChange = onDescriptionChanged,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
+        modifier = modifier,
         label = { Text(text = "Description") },
         colors = textFieldColors
     )
@@ -198,16 +212,32 @@ private fun Description(
 @Composable
 private fun Url(
     recipe: Recipe,
+    modifier: Modifier,
     onUrlChanged: (url: String) -> Unit,
     textFieldColors: TextFieldColors
 ) {
     DefaultOutlinedTextField(
         value = recipe.url,
         onValueChange = onUrlChanged,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
+        modifier = modifier,
         label = { Text(text = "URL") },
+        singleLine = true,
+        colors = textFieldColors
+    )
+}
+
+@Composable
+private fun ImageOrigin(
+    recipe: Recipe,
+    modifier: Modifier,
+    onImageOriginChanged: (imageOrigin: String) -> Unit,
+    textFieldColors: TextFieldColors
+) {
+    DefaultOutlinedTextField(
+        value = recipe.imageOrigin,
+        onValueChange = onImageOriginChanged,
+        modifier = modifier,
+        label = { Text(text = "Image URL") },
         singleLine = true,
         colors = textFieldColors
     )
@@ -237,6 +267,7 @@ private fun Yield(
 @Composable
 private fun Ingredients(
     recipe: Recipe,
+    ingredientModifier: Modifier,
     onIngredientChanged: (index: Int, ingredient: String) -> Unit,
     onIngredientDeleted: (index: Int) -> Unit,
     onAddIngredient: () -> Unit,
@@ -250,9 +281,7 @@ private fun Ingredients(
         DefaultOutlinedTextField(
             value = ingredient,
             onValueChange = { onIngredientChanged.invoke(index, it) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
+            modifier = ingredientModifier,
             label = { Text(text = "Ingredient ${index + 1}") },
             trailingIcon = {
                 IconButton(onClick = { onIngredientDeleted.invoke(index) }) {
@@ -281,6 +310,7 @@ private fun Ingredients(
 @Composable
 private fun Tools(
     recipe: Recipe,
+    toolModifier: Modifier,
     onToolChanged: (index: Int, tool: String) -> Unit,
     onToolDeleted: (index: Int) -> Unit,
     onAddTool: () -> Unit,
@@ -294,9 +324,7 @@ private fun Tools(
         DefaultOutlinedTextField(
             value = tool,
             onValueChange = { onToolChanged.invoke(index, it) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
+            modifier = toolModifier,
             label = { Text(text = "Tool ${index + 1}") },
             trailingIcon = {
                 IconButton(onClick = { onToolDeleted.invoke(index) }) {
@@ -325,6 +353,7 @@ private fun Tools(
 @Composable
 private fun Instructions(
     recipe: Recipe,
+    instructionModifier: Modifier,
     onInstructionChanged: (index: Int, instruction: String) -> Unit,
     onInstructionDeleted: (index: Int) -> Unit,
     onAddInstruction: () -> Unit,
@@ -338,9 +367,7 @@ private fun Instructions(
         DefaultOutlinedTextField(
             value = instruction,
             onValueChange = { onInstructionChanged.invoke(index, it) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
+            modifier = instructionModifier,
             label = { Text(text = "Instruction ${index + 1}") },
             trailingIcon = {
                 IconButton(onClick = { onInstructionDeleted.invoke(index) }) {
@@ -374,6 +401,7 @@ private fun CreateEditRecipeFormPreview() {
         name = "Lorem ipsum",
         description = "Lorem ipsum dolor sit amet",
         url = "https://www.example.com",
+        imageOrigin = "https://www.example.com/image.jpg",
         imageUrl = "/apps/cookbook/recipes/1/image?size=full",
         category = "",
         keywords = emptyList(),
@@ -402,6 +430,7 @@ private fun CreateEditRecipeFormPreview() {
             onNameChanged = {},
             onDescriptionChanged = {},
             onUrlChanged = {},
+            onImageOriginChanged = {},
             onYieldChanged = {},
             onIngredientChanged = { _, _ -> },
             onIngredientDeleted = {},

@@ -1,6 +1,5 @@
 package de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.model
 
-import de.lukasneugebauer.nextcloudcookbook.feature_recipe.data.dto.RecipeDto
 import java.time.Duration
 
 data class Recipe(
@@ -8,6 +7,7 @@ data class Recipe(
     val name: String,
     val description: String,
     val url: String,
+    val imageOrigin: String,
     val imageUrl: String,
     val category: String,
     val keywords: List<String>,
