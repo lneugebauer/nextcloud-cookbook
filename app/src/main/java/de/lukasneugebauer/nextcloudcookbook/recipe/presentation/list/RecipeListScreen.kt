@@ -83,7 +83,7 @@ private fun RecipeListScreen(
     data: List<RecipePreview>,
     isLoading: Boolean,
     onClick: (Int) -> Unit,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     if (isLoading) {
         Loader()
