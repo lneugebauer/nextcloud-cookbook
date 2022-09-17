@@ -25,12 +25,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import de.lukasneugebauer.nextcloudcookbook.R
+import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.AuthorizedImage
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.CommonItemBody
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Headline
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.RowContainer
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.RowContent
-import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.AuthorizedImage
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.error.NotFoundScreen
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
 import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeDetailScreenDestination
@@ -51,7 +51,7 @@ fun HomeScreen(
         HomeTopBar(
             onSettingsIconClick = { navigator.navigate(SettingsScreenDestination()) }
         )
-    }) {
+    }) { innerPadding ->
         if (state.loading) {
             Loader()
         }
@@ -62,7 +62,9 @@ fun HomeScreen(
 
         if (!state.loading && state.data != null && state.data.isNotEmpty()) {
             LazyColumn(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(innerPadding),
                 contentPadding = PaddingValues(
                     top = dimensionResource(id = R.dimen.padding_s),
                     bottom = dimensionResource(id = R.dimen.padding_m)

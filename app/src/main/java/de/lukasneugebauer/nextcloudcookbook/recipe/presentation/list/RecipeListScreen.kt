@@ -66,13 +66,14 @@ fun RecipeListScreen(
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
             }
         }
-    ) {
+    ) { innerPadding ->
         RecipeListScreen(
             data = state.data,
             isLoading = state.loading,
             onClick = { id ->
                 navigator.navigate(RecipeDetailScreenDestination(recipeId = id))
-            }
+            },
+            modifier = Modifier.padding(innerPadding)
         )
     }
 }
@@ -81,7 +82,8 @@ fun RecipeListScreen(
 private fun RecipeListScreen(
     data: List<RecipePreview>,
     isLoading: Boolean,
-    onClick: (Int) -> Unit
+    onClick: (Int) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     if (isLoading) {
         Loader()
@@ -89,7 +91,7 @@ private fun RecipeListScreen(
         NotFoundScreen()
     } else {
         LazyColumn(
-            modifier = Modifier.fillMaxSize()
+            modifier = modifier.fillMaxSize()
         ) {
             itemsIndexed(data) { index, recipePreview ->
                 ListItem(

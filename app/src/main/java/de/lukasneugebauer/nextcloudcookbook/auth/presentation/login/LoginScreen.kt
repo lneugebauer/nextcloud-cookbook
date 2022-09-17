@@ -367,7 +367,7 @@ fun LoginWebView(url: Uri?, onCloseClick: () -> Unit) {
                 contentColor = Color.White
             )
         }
-    ) {
+    ) { innerPadding ->
         if (url != null) {
             AndroidView(
                 factory = {
@@ -384,7 +384,9 @@ fun LoginWebView(url: Uri?, onCloseClick: () -> Unit) {
                         }
                     }
                 },
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
             )
         } else {
             Loader()
