@@ -50,6 +50,7 @@ data class RecipeDto(
         name = name,
         description = description,
         url = url,
+        imageOrigin = image,
         imageUrl = imageUrl,
         category = recipeCategory,
         keywords = if (keywords == null || keywords.isEmpty()) emptyList() else keywords.split(","),

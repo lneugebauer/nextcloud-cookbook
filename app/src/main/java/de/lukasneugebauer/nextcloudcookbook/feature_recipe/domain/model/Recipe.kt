@@ -7,11 +7,11 @@ data class Recipe(
     val name: String,
     val description: String,
     val url: String,
+    val imageOrigin: String,
     val imageUrl: String,
     val category: String,
     val keywords: List<String>,
     val yield: Int,
-    // TODO: 19.08.21 Change prepTime, cookTime and totalTime to time fields.
     val prepTime: Duration?,
     val cookTime: Duration?,
     val totalTime: Duration?,

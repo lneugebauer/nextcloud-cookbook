@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Divider
+import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.ListItem
@@ -15,6 +16,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -34,6 +36,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.authori
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.error.NotFoundScreen
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
+import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeCreateScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeDetailScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.model.RecipePreview
 import kotlin.random.Random.Default.nextInt
@@ -47,67 +50,76 @@ fun RecipeListScreen(
 ) {
     val state by viewModel.state.collectAsState()
 
-    RecipeListScreen(
-        categoryName = categoryName,
-        data = state.data,
-        isLoading = state.loading,
-        onClick = { id ->
-            navigator.navigate(RecipeDetailScreenDestination(recipeId = id))
+    Scaffold(
+        topBar = {
+            RecipeListTopBar(
+                categoryName = categoryName,
+                onBackClick = {
+                    navigator.popBackStack()
+                }
+            )
         },
-        onBackClick = {
-            navigator.popBackStack()
+        floatingActionButton = {
+            FloatingActionButton(onClick = {
+                navigator.navigate(RecipeCreateScreenDestination)
+            }) {
+                Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
+            }
         }
-    )
+    ) {
+        RecipeListScreen(
+            data = state.data,
+            isLoading = state.loading,
+            onClick = { id ->
+                navigator.navigate(RecipeDetailScreenDestination(recipeId = id))
+            }
+        )
+    }
 }
 
 @Composable
 private fun RecipeListScreen(
-    categoryName: String?,
     data: List<RecipePreview>,
     isLoading: Boolean,
-    onClick: (Int) -> Unit,
-    onBackClick: () -> Unit
+    onClick: (Int) -> Unit
 ) {
-    Scaffold(
-        topBar = { RecipeListTopBar(categoryName, onBackClick) }
-    ) {
-        if (isLoading) {
-            Loader()
-        } else if (!isLoading && data.isEmpty()) {
-            NotFoundScreen()
-        } else {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize()
-            ) {
-                itemsIndexed(data) { index, recipePreview ->
-                    ListItem(
-                        modifier = Modifier.clickable(
-                            onClick = {
-                                onClick.invoke(recipePreview.id)
-                            }
-                        ),
-                        icon = {
-                            AuthorizedImage(
-                                imageUrl = recipePreview.imageUrl,
-                                contentDescription = recipePreview.name,
-                                modifier = Modifier
-                                    .size(dimensionResource(id = R.dimen.common_item_width_s))
-                                    .clip(MaterialTheme.shapes.medium)
-                            )
-                        },
-                        secondaryText = {
-                            Text(text = recipePreview.keywords.joinToString(separator = ", "))
-                        },
-                        singleLineSecondaryText = false,
-                        text = {
-                            Text(text = recipePreview.name)
+
+    if (isLoading) {
+        Loader()
+    } else if (!isLoading && data.isEmpty()) {
+        NotFoundScreen()
+    } else {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            itemsIndexed(data) { index, recipePreview ->
+                ListItem(
+                    modifier = Modifier.clickable(
+                        onClick = {
+                            onClick.invoke(recipePreview.id)
                         }
-                    )
-                    if (index != data.size - 1) {
-                        Divider(
-                            modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_m))
+                    ),
+                    icon = {
+                        AuthorizedImage(
+                            imageUrl = recipePreview.imageUrl,
+                            contentDescription = recipePreview.name,
+                            modifier = Modifier
+                                .size(dimensionResource(id = R.dimen.common_item_width_s))
+                                .clip(MaterialTheme.shapes.medium)
                         )
+                    },
+                    secondaryText = {
+                        Text(text = recipePreview.keywords.joinToString(separator = ", "))
+                    },
+                    singleLineSecondaryText = false,
+                    text = {
+                        Text(text = recipePreview.name)
                     }
+                )
+                if (index != data.size - 1) {
+                    Divider(
+                        modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_m))
+                    )
                 }
             }
         }
@@ -158,11 +170,9 @@ fun RecipeListPreview() {
     }
     NextcloudCookbookTheme {
         RecipeListScreen(
-            categoryName = null,
             data = data,
             isLoading = false,
-            onClick = {},
-            onBackClick = {}
+            onClick = {}
         )
     }
 }

@@ -7,9 +7,12 @@ import de.lukasneugebauer.nextcloudcookbook.core.util.Constants
 import de.lukasneugebauer.nextcloudcookbook.feature_category.data.dto.CategoryDto
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.data.dto.RecipeDto
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.data.dto.RecipePreviewDto
+import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Headers
+import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface NcCookbookApi {
@@ -25,18 +28,23 @@ interface NcCookbookApi {
     @GET("${Constants.API_ENDPOINT}/categories")
     suspend fun getCategories(): List<CategoryDto>
 
-    @GET("${Constants.API_ENDPOINT}/api/recipes")
-    suspend fun getRecipes(): List<RecipePreviewDto>
-
-    @GET("${Constants.API_ENDPOINT}/api/category/{categoryName}")
+    @GET("${Constants.API_ENDPOINT}/category/{categoryName}")
     suspend fun getRecipesByCategory(@Path("categoryName") categoryName: String): List<RecipePreviewDto>
 
-    @GET("${Constants.API_ENDPOINT}/api/recipes/{id}")
+    @GET("${Constants.API_ENDPOINT}/recipes")
+    suspend fun getRecipes(): List<RecipePreviewDto>
+
+    @GET("${Constants.API_ENDPOINT}/recipes/{id}")
     suspend fun getRecipe(@Path("id") id: Int): RecipeDto
 
-    @DELETE("${Constants.API_ENDPOINT}/api/recipes/{id}")
-    suspend fun deleteRecipe(@Path("id") id: Int): NetworkResponse<String, ErrorResponse>
+    // TODO: Check if recipeDto model as body does work even in minified production build
+    @POST("${Constants.API_ENDPOINT}/recipes")
+    suspend fun createRecipe(@Body recipe: RecipeDto): Int
 
-    @GET("${Constants.API_ENDPOINT}/api/search/{query}")
-    suspend fun search(@Path("query") query: String): List<RecipePreviewDto>
+    // TODO: Check if recipeDto model as body does work even in minified production build
+    @PUT("${Constants.API_ENDPOINT}/recipes/{id}")
+    suspend fun updateRecipe(@Path("id") id: Int, @Body recipe: RecipeDto): Int
+
+    @DELETE("${Constants.API_ENDPOINT}/recipes/{id}")
+    suspend fun deleteRecipe(@Path("id") id: Int): NetworkResponse<String, ErrorResponse>
 }

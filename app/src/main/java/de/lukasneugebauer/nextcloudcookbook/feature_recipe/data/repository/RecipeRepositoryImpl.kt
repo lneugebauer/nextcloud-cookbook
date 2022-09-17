@@ -5,6 +5,8 @@ import com.dropbox.android.external.store4.StoreResponse
 import com.haroldadmin.cnradapter.NetworkResponse
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.domain.repository.BaseRepository
+import com.dropbox.android.external.store4.get
+import de.lukasneugebauer.nextcloudcookbook.core.data.api.NcCookbookApi
 import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import de.lukasneugebauer.nextcloudcookbook.core.util.SimpleResource
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
@@ -18,6 +20,8 @@ import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.repository.Rec
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
+import retrofit2.HttpException
+import timber.log.Timber
 import javax.inject.Inject
 
 class RecipeRepositoryImpl @Inject constructor(
@@ -44,9 +48,47 @@ class RecipeRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getRecipe(id: Int): Flow<StoreResponse<RecipeDto>> {
+    override suspend fun getRecipeFlow(id: Int): Flow<StoreResponse<RecipeDto>> {
         return withContext(Dispatchers.IO) {
             recipeStore.stream(StoreRequest.cached(key = id, refresh = false))
+        }
+    }
+
+    override suspend fun getRecipe(id: Int): RecipeDto {
+        return withContext(Dispatchers.IO) {
+            recipeStore.get(id)
+        }
+    }
+
+    override suspend fun createRecipe(recipe: RecipeDto): Resource<Int> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val id = ncCookbookApi?.createRecipe(recipe = recipe)
+                Resource.Success(data = id)
+            } catch (e: HttpException) {
+                Timber.e(e)
+                Resource.Error(text = "An error occurred (${e.code()})")
+            } catch (e: Exception) {
+                Timber.e(e)
+                Resource.Error(text = "An error occurred")
+            }
+        }
+    }
+
+    override suspend fun updateRecipe(recipe: RecipeDto): SimpleResource {
+        return withContext(Dispatchers.IO) {
+            try {
+                ncCookbookApi?.updateRecipe(id = recipe.id, recipe = recipe)
+                // TODO: Clear or update other stores too
+                recipeStore.clear(recipe.id)
+                Resource.Success(Unit)
+            } catch (e: HttpException) {
+                Timber.e(e)
+                Resource.Error(text = "An error occurred (${e.code()})")
+            } catch (e: Exception) {
+                Timber.e(e)
+                Resource.Error(text = "An error occurred")
+            }
         }
     }
 

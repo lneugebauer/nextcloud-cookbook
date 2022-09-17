@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.view.WindowManager
-import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,6 +18,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -27,6 +27,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material.icons.outlined.Share
@@ -60,6 +61,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.pluralR
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
 import de.lukasneugebauer.nextcloudcookbook.core.util.getActivity
 import de.lukasneugebauer.nextcloudcookbook.core.util.openInBrowser
+import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeEditScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.model.Recipe
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.presentation.components.Chip
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.presentation.components.CircleChip
@@ -91,14 +93,30 @@ fun RecipeDetailScreen(
             RecipeDetailTopBar(
                 recipe = recipe,
                 onNavIconClick = { navigator.popBackStack() },
+                onEditClick = {
+                    if (recipe.isNotEmpty()) {
+                        navigator.navigate(RecipeEditScreenDestination(recipe.id))
+                    }
+                },
                 onDeleteClick = {
-                    if (recipe.isNotEmpty()) viewModel.deleteRecipe(
-                        recipe.id,
-                        recipe.category
-                    )
+                    if (recipe.isNotEmpty()) {
+                        viewModel.deleteRecipe(
+                            recipe.id,
+                            recipe.category
+                        )
+                    }
                 },
                 shareText = viewModel.getShareText()
             )
+        },
+        floatingActionButton = {
+            FloatingActionButton(onClick = {
+                if (recipe.isNotEmpty()) {
+                    navigator.navigate(RecipeEditScreenDestination(recipe.id))
+                }
+            }) {
+                Icon(imageVector = Icons.Default.Edit, contentDescription = "Edit")
+            }
         }
     ) { innerPadding ->
         if (state.data == null && state.error == null && state.loading) {
@@ -139,6 +157,7 @@ fun KeepScreenOn() {
 fun RecipeDetailTopBar(
     recipe: Recipe,
     onNavIconClick: () -> Unit,
+    onEditClick: () -> Unit,
     onDeleteClick: () -> Unit,
     shareText: String
 ) {
@@ -189,7 +208,7 @@ fun RecipeDetailTopBar(
                 )
                 DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
                     RecipeDetailScreenDropDownMenuItemOpenSource(context, recipe.url)
-//                    RecipeDetailScreenDropDownMenuItemEdit(context)
+                    RecipeDetailScreenDropDownMenuItemEdit(onEditClick)
                     RecipeDetailScreenDropDownMenuItemDelete(onDeleteClick)
                 }
             }
@@ -209,14 +228,8 @@ fun RecipeDetailScreenDropDownMenuItemOpenSource(context: Context, recipeUrl: St
 }
 
 @Composable
-fun RecipeDetailScreenDropDownMenuItemEdit(context: Context) {
-    DropdownMenuItem(onClick = {
-        Toast.makeText(
-            context,
-            "Function currently unavailable.",
-            Toast.LENGTH_SHORT
-        ).show()
-    }) {
+fun RecipeDetailScreenDropDownMenuItemEdit(onClick: () -> Unit) {
+    DropdownMenuItem(onClick) {
         Text(text = stringResource(id = R.string.recipe_more_menu_edit))
     }
 }
