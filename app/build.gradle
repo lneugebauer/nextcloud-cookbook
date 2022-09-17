@@ -1,15 +1,24 @@
 plugins {
     id 'com.android.application'
     id 'com.google.devtools.ksp' version '1.7.0-1.0.6'
+    id 'dagger.hilt.android.plugin'
     id 'kotlin-android'
     id 'kotlin-kapt'
-    id 'dagger.hilt.android.plugin'
+    id "org.sonarqube" version "3.4.0.2513"
 }
 
 def keystorePropertiesFile = rootProject.file("keystore.properties")
 def keystoreProperties = new Properties()
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectKey", "lneugebauer_nextcloud-cookbook"
+        property "sonar.organization", "lneugebauer"
+        property "sonar.host.url", "https://sonarcloud.io"
+    }
 }
 
 android {
