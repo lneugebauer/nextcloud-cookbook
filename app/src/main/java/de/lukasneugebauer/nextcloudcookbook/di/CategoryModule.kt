@@ -7,9 +7,9 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import de.lukasneugebauer.nextcloudcookbook.feature_category.data.dto.CategoryDto
-import de.lukasneugebauer.nextcloudcookbook.feature_category.data.repository.CategoryRepositoryImpl
-import de.lukasneugebauer.nextcloudcookbook.feature_category.domain.repository.CategoryRepository
+import de.lukasneugebauer.nextcloudcookbook.category.data.dto.CategoryDto
+import de.lukasneugebauer.nextcloudcookbook.category.data.repository.CategoryRepositoryImpl
+import de.lukasneugebauer.nextcloudcookbook.category.domain.repository.CategoryRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import javax.inject.Singleton

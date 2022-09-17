@@ -30,7 +30,7 @@ import de.lukasneugebauer.nextcloudcookbook.destinations.LoginScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeCreateScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeEditScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.destinations.SplashScreenDestination
-import de.lukasneugebauer.nextcloudcookbook.feature_auth.presentation.splash.SplashScreen
+import de.lukasneugebauer.nextcloudcookbook.auth.presentation.splash.SplashScreen
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {

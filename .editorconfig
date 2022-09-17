@@ -1,0 +1,2 @@
+[*.{kt,kts}]
+ktlint_disabled_rules = import-ordering

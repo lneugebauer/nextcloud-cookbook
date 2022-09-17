@@ -13,8 +13,8 @@ import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.NcAccount
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.RecipeOfTheDay
-import de.lukasneugebauer.nextcloudcookbook.feature_settings.util.SettingsConstants.STAY_AWAKE_DEFAULT
-import de.lukasneugebauer.nextcloudcookbook.feature_settings.util.SettingsConstants.STAY_AWAKE_KEY
+import de.lukasneugebauer.nextcloudcookbook.settings.util.SettingsConstants.STAY_AWAKE_DEFAULT
+import de.lukasneugebauer.nextcloudcookbook.settings.util.SettingsConstants.STAY_AWAKE_KEY
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import timber.log.Timber
