@@ -7,6 +7,7 @@ import de.lukasneugebauer.nextcloudcookbook.feature_recipe.data.dto.RecipeDto
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.repository.RecipeRepository
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.state.RecipeCreateEditState
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.state.ifSuccess
+import de.lukasneugebauer.nextcloudcookbook.feature_recipe.util.RecipeConstants.DEFAULT_YIELD
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -63,8 +64,7 @@ abstract class RecipeCreateEditViewModel(
 
     fun changeYield(newYield: String) {
         _uiState.value.ifSuccess {
-            // TODO: Check toInt actually works or don't apply the update
-            recipe = recipe.copy(recipeYield = newYield.toInt())
+            recipe = recipe.copy(recipeYield = newYield.toIntOrNull() ?: DEFAULT_YIELD)
         }
     }
 
