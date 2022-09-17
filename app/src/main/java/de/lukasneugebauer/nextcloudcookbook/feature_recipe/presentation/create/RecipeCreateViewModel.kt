@@ -3,7 +3,9 @@ package de.lukasneugebauer.nextcloudcookbook.feature_recipe.presentation.create
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
+import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.repository.RecipeRepository
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.domain.state.RecipeCreateEditState
 import de.lukasneugebauer.nextcloudcookbook.feature_recipe.util.RecipeCreateEditViewModel
@@ -27,7 +29,9 @@ class RecipeCreateViewModel @Inject constructor(
                         val recipeId = result.data
                         RecipeCreateEditState.Updated(recipeId)
                     } else {
-                        RecipeCreateEditState.Error(result.text ?: "Unknown error.")
+                        RecipeCreateEditState.Error(
+                            result.message ?: UiText.StringResource(R.string.error_unknown)
+                        )
                     }
                 }
             }

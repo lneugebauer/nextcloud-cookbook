@@ -62,32 +62,30 @@ class RecipeRepositoryImpl @Inject constructor(
 
     override suspend fun createRecipe(recipe: RecipeDto): Resource<Int> {
         return withContext(Dispatchers.IO) {
+            val api = apiProvider.getNcCookbookApi()
+                ?: return@withContext Resource.Error(message = UiText.StringResource(R.string.error_api_not_initialized))
+
             try {
-                val id = ncCookbookApi?.createRecipe(recipe = recipe)
+                val id = api.createRecipe(recipe = recipe)
                 Resource.Success(data = id)
-            } catch (e: HttpException) {
-                Timber.e(e)
-                Resource.Error(text = "An error occurred (${e.code()})")
             } catch (e: Exception) {
-                Timber.e(e)
-                Resource.Error(text = "An error occurred")
+                handleResponseError(e.cause)
             }
         }
     }
 
     override suspend fun updateRecipe(recipe: RecipeDto): SimpleResource {
         return withContext(Dispatchers.IO) {
+            val api = apiProvider.getNcCookbookApi()
+                ?: return@withContext Resource.Error(message = UiText.StringResource(R.string.error_api_not_initialized))
+
             try {
-                ncCookbookApi?.updateRecipe(id = recipe.id, recipe = recipe)
+                api.updateRecipe(id = recipe.id, recipe = recipe)
                 // TODO: Clear or update other stores too
                 recipeStore.clear(recipe.id)
                 Resource.Success(Unit)
-            } catch (e: HttpException) {
-                Timber.e(e)
-                Resource.Error(text = "An error occurred (${e.code()})")
             } catch (e: Exception) {
-                Timber.e(e)
-                Resource.Error(text = "An error occurred")
+                handleResponseError(e.cause)
             }
         }
     }

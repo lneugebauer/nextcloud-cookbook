@@ -79,7 +79,7 @@ fun RecipeEditScreen(
         }
         is RecipeCreateEditState.Updated -> navigator.popBackStack()
         is RecipeCreateEditState.Error -> {
-            val text = (uiState as RecipeCreateEditState.Error).text
+            val text = (uiState as RecipeCreateEditState.Error).error.asString()
 
             Text(text = "Error: $text")
         }
