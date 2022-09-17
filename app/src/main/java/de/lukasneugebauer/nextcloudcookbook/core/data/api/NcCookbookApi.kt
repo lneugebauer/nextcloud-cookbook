@@ -26,26 +26,23 @@ interface NcCookbookApi {
     @GET("${Constants.API_ENDPOINT}/categories")
     suspend fun getCategories(): List<CategoryDto>
 
-    @GET("${Constants.API_ENDPOINT}/api/recipes")
-    suspend fun getRecipes(): List<RecipePreviewDto>
-
-    @GET("${Constants.API_ENDPOINT}/api/category/{categoryName}")
+    @GET("${Constants.API_ENDPOINT}/category/{categoryName}")
     suspend fun getRecipesByCategory(@Path("categoryName") categoryName: String): List<RecipePreviewDto>
 
-    @GET("${Constants.API_ENDPOINT}/api/recipes/{id}")
+    @GET("${Constants.API_ENDPOINT}/recipes")
+    suspend fun getRecipes(): List<RecipePreviewDto>
+
+    @GET("${Constants.API_ENDPOINT}/recipes/{id}")
     suspend fun getRecipe(@Path("id") id: Int): RecipeDto
 
     // TODO: Check if recipeDto model as body does work even in minified production build
-    @POST("${Constants.API_ENDPOINT}/api/recipes")
+    @POST("${Constants.API_ENDPOINT}/recipes")
     suspend fun createRecipe(@Body recipe: RecipeDto): Int
 
     // TODO: Check if recipeDto model as body does work even in minified production build 
-    @PUT("${Constants.API_ENDPOINT}/api/recipes/{id}")
+    @PUT("${Constants.API_ENDPOINT}/recipes/{id}")
     suspend fun updateRecipe(@Path("id") id: Int, @Body recipe: RecipeDto): Int
 
-    @DELETE("${Constants.API_ENDPOINT}/api/recipes/{id}")
+    @DELETE("${Constants.API_ENDPOINT}/recipes/{id}")
     suspend fun deleteRecipe(@Path("id") id: Int): String
-
-    @GET("${Constants.API_ENDPOINT}/api/search/{query}")
-    suspend fun search(@Path("query") query: String): List<RecipePreviewDto>
 }
