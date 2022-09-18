@@ -4,13 +4,14 @@ import com.dropbox.android.external.store4.get
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.RecipeOfTheDay
+import de.lukasneugebauer.nextcloudcookbook.core.util.IoDispatcher
 import de.lukasneugebauer.nextcloudcookbook.di.CategoriesStore
 import de.lukasneugebauer.nextcloudcookbook.di.RecipePreviewsByCategoryStore
 import de.lukasneugebauer.nextcloudcookbook.di.RecipePreviewsStore
 import de.lukasneugebauer.nextcloudcookbook.di.RecipeStore
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.HomeScreenDataResult
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.RecipeConstants
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -23,6 +24,7 @@ import javax.inject.Singleton
 @Singleton
 class GetHomeScreenDataUseCase @Inject constructor(
     private val categoriesStore: CategoriesStore,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
     private val preferencesManager: PreferencesManager,
     private val recipePreviewsByCategoryStore: RecipePreviewsByCategoryStore,
     private val recipePreviewsStore: RecipePreviewsStore,
@@ -39,7 +41,8 @@ class GetHomeScreenDataUseCase @Inject constructor(
 
         if (recipeOfTheDay.id == 0 || recipeOfTheDay.updatedAt.isBefore(currentDate)) {
             try {
-                val newRecipeOfTheDayId = recipePreviewsStore.get(Unit).random().toRecipePreview().id
+                val newRecipeOfTheDayId =
+                    recipePreviewsStore.get(Unit).random().toRecipePreview().id
                 recipeOfTheDay = RecipeOfTheDay(
                     id = newRecipeOfTheDayId,
                     updatedAt = LocalDateTime.now()
@@ -52,7 +55,7 @@ class GetHomeScreenDataUseCase @Inject constructor(
 
         // FIXME: 25.12.21 Get different recipe of the day if api returns 404 error.
         //  E.g. after deleting recipe of the day.
-        withContext(Dispatchers.IO) {
+        withContext(ioDispatcher) {
             try {
                 val result = HomeScreenDataResult.Single(
                     R.string.home_recommendation,
@@ -64,7 +67,7 @@ class GetHomeScreenDataUseCase @Inject constructor(
             }
         }
 
-        withContext(Dispatchers.IO) {
+        withContext(ioDispatcher) {
             try {
                 categoriesStore.get(Unit)
                     .sortedByDescending { it.recipeCount }

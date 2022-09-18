@@ -10,6 +10,8 @@ import de.lukasneugebauer.nextcloudcookbook.auth.data.remote.AuthApi
 import de.lukasneugebauer.nextcloudcookbook.auth.data.remote.UserAgentInterceptor
 import de.lukasneugebauer.nextcloudcookbook.auth.data.repository.AuthRepositoryImpl
 import de.lukasneugebauer.nextcloudcookbook.auth.domain.repository.AuthRepository
+import de.lukasneugebauer.nextcloudcookbook.core.util.IoDispatcher
+import kotlinx.coroutines.CoroutineDispatcher
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -44,5 +46,8 @@ object AuthModule {
 
     @Provides
     @Singleton
-    fun provideAuthRepository(authApi: AuthApi): AuthRepository = AuthRepositoryImpl(authApi)
+    fun provideAuthRepository(
+        authApi: AuthApi,
+        @IoDispatcher ioDispatcher: CoroutineDispatcher
+    ): AuthRepository = AuthRepositoryImpl(authApi, ioDispatcher)
 }

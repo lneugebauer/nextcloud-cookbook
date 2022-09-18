@@ -7,10 +7,11 @@ import de.lukasneugebauer.nextcloudcookbook.core.domain.model.Capabilities
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.NcAccount
 import de.lukasneugebauer.nextcloudcookbook.core.domain.repository.AccountRepository
 import de.lukasneugebauer.nextcloudcookbook.core.domain.repository.BaseRepository
+import de.lukasneugebauer.nextcloudcookbook.core.util.IoDispatcher
 import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
 import de.lukasneugebauer.nextcloudcookbook.di.ApiProvider
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
@@ -19,11 +20,12 @@ import javax.inject.Inject
 
 class AccountRepositoryImpl @Inject constructor(
     private val apiProvider: ApiProvider,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
     private val preferencesManager: PreferencesManager
 ) : AccountRepository, BaseRepository() {
 
     override suspend fun getCapabilities(): Resource<Capabilities> {
-        return withContext(Dispatchers.IO) {
+        return withContext(ioDispatcher) {
             val api = apiProvider.getNcCookbookApi()
                 ?: return@withContext Resource.Error(message = UiText.StringResource(R.string.error_api_not_initialized))
 

@@ -7,10 +7,12 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import de.lukasneugebauer.nextcloudcookbook.core.util.IoDispatcher
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipeDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipePreviewDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.repository.RecipeRepositoryImpl
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.repository.RecipeRepository
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import javax.inject.Singleton
@@ -67,12 +69,14 @@ object RecipeModule {
     @Singleton
     fun provideRecipeRepository(
         apiProvider: ApiProvider,
+        @IoDispatcher ioDispatcher: CoroutineDispatcher,
         recipesByCategoryStore: RecipePreviewsByCategoryStore,
         recipePreviewsStore: RecipePreviewsStore,
         recipeStore: RecipeStore
     ): RecipeRepository =
         RecipeRepositoryImpl(
             apiProvider,
+            ioDispatcher,
             recipesByCategoryStore,
             recipePreviewsStore,
             recipeStore
