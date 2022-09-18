@@ -30,6 +30,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.result.NavResult
+import com.ramcosta.composedestinations.result.ResultRecipient
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.AuthorizedImage
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
@@ -46,6 +48,7 @@ import kotlin.random.Random.Default.nextInt
 fun RecipeListScreen(
     navigator: DestinationsNavigator,
     categoryName: String?,
+    resultRecipient: ResultRecipient<RecipeCreateScreenDestination, Int>,
     viewModel: RecipeListViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
@@ -75,6 +78,16 @@ fun RecipeListScreen(
             },
             modifier = Modifier.padding(innerPadding)
         )
+    }
+    
+    resultRecipient.onNavResult { result ->
+        when (result) {
+            is NavResult.Canceled -> Unit
+            is NavResult.Value -> {
+                val recipeId = result.value
+                navigator.navigate(RecipeDetailScreenDestination(recipeId))
+            }
+        }
     }
 }
 

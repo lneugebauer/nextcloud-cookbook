@@ -7,9 +7,9 @@ import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.result.ResultBackNavigator
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
-import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeDetailScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.RecipeCreateEditState
 import de.lukasneugebauer.nextcloudcookbook.recipe.presentation.components.CreateEditRecipeForm
 
@@ -17,6 +17,7 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.presentation.components.Creat
 @Composable
 fun RecipeCreateScreen(
     navigator: DestinationsNavigator,
+    resultNavigator: ResultBackNavigator<Int>,
     viewModel: RecipeCreateViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -79,7 +80,7 @@ fun RecipeCreateScreen(
         }
         is RecipeCreateEditState.Updated -> {
             val recipeId = (uiState as RecipeCreateEditState.Updated).recipeId
-            navigator.navigate(RecipeDetailScreenDestination(recipeId))
+            resultNavigator.navigateBack(recipeId)
         }
         is RecipeCreateEditState.Error -> {
             val text = (uiState as RecipeCreateEditState.Error).error.asString()
