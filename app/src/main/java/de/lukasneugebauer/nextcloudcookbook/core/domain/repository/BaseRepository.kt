@@ -20,6 +20,7 @@ open class BaseRepository {
                 401 -> UiText.StringResource(R.string.error_http_401)
                 403 -> UiText.StringResource(R.string.error_http_403)
                 404 -> UiText.StringResource(R.string.error_http_404)
+                405 -> UiText.StringResource(R.string.error_http_405)
                 500 -> UiText.StringResource(R.string.error_http_500)
                 503 -> UiText.StringResource(R.string.error_http_503)
                 else -> unknownErrorUiText(t)

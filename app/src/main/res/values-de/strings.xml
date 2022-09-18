@@ -19,12 +19,14 @@
     <string name="error_http_401">401 Unauthorized</string>
     <string name="error_http_403">403 Forbidden</string>
     <string name="error_http_404">404 Not found</string>
+    <string name="error_http_405">405 Method not allowed</string>
     <string name="error_http_500">500 Internal server error</string>
     <string name="error_http_503">503 Service Unavailable</string>
     <string name="error_http_unknown">Unbekannter HTTP-Fehler</string>
     <string name="error_invalid_protocol">Invalides Protokol; URL muss mit https:// beginnen</string>
     <string name="error_invalid_url">Invalide URL</string>
     <string name="error_malformed_json">Fehlerhaftes JSON-Format</string>
+    <string name="error_recipe_id_missing">Unbekannte Rezept ID</string>
     <string name="error_no_login_url">Login URL konnte nicht geladen werden</string>
     <string name="error_no_recipes_found">Keine Rezepte gefunden</string>
     <string name="error_timeout">Zeitüberschreitung</string>

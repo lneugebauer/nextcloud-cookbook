@@ -79,7 +79,7 @@ fun RecipeListScreen(
             modifier = Modifier.padding(innerPadding)
         )
     }
-    
+
     resultRecipient.onNavResult { result ->
         when (result) {
             is NavResult.Canceled -> Unit

@@ -21,9 +21,15 @@ class RecipeListViewModel @Inject constructor(
     private val _state = MutableStateFlow(RecipeListState())
     val state: StateFlow<RecipeListState> = _state
 
+    private val categoryName: String?
+
     init {
+        categoryName = savedStateHandle["categoryName"]
+        getRecipePreviews()
+    }
+
+    private fun getRecipePreviews() {
         viewModelScope.launch {
-            val categoryName: String? = savedStateHandle["categoryName"]
             val recipePreviewsFlow =
                 if (categoryName == null) {
                     recipeRepository.getRecipePreviews()

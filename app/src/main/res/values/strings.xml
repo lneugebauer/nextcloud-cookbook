@@ -18,12 +18,14 @@
     <string name="error_http_401">401 Unauthorized</string>
     <string name="error_http_403">403 Forbidden</string>
     <string name="error_http_404">404 Not found</string>
+    <string name="error_http_405">405 Method not allowed</string>
     <string name="error_http_500">500 Internal server error</string>
     <string name="error_http_503">503 Service Unavailable</string>
     <string name="error_http_unknown">Unknown HTTP error</string>
     <string name="error_invalid_protocol">Invalid protocol; URL must start with https://</string>
     <string name="error_invalid_url">Invalid URL</string>
     <string name="error_malformed_json">Malformed JSON error</string>
+    <string name="error_recipe_id_missing">Recipe ID missing</string>
     <string name="error_no_login_url">Could not load login URL</string>
     <string name="error_no_recipes_found">No recipes found</string>
     <string name="error_timeout">Timeout error</string>

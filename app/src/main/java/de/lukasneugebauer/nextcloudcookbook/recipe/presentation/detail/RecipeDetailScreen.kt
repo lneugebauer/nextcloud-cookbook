@@ -34,6 +34,8 @@ import androidx.compose.material.icons.outlined.Share
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -53,8 +55,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.flowlayout.FlowRow
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.ramcosta.composedestinations.result.NavResult
-import com.ramcosta.composedestinations.result.ResultRecipient
+import com.ramcosta.composedestinations.result.ResultBackNavigator
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.AuthorizedImage
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Gap
@@ -75,11 +76,12 @@ import java.time.Duration
 fun RecipeDetailScreen(
     navigator: DestinationsNavigator,
     recipeId: Int,
-    resultRecipient: ResultRecipient<RecipeEditScreenDestination, Boolean>,
+    resultNavigator: ResultBackNavigator<Boolean>,
     viewModel: RecipeDetailViewModel = hiltViewModel()
 ) {
-    val state = viewModel.state.value
-    var recipe: Recipe by remember { mutableStateOf(emptyRecipe()) }
+    val state by viewModel.state.collectAsState()
+    val recipe by derivedStateOf { state.data ?: emptyRecipe() }
+    val errorMessage by derivedStateOf { state.error }
 
     if (viewModel.stayAwake) {
         KeepScreenOn()
@@ -87,7 +89,7 @@ fun RecipeDetailScreen(
 
     if (state.deleted) {
         LaunchedEffect(state) {
-            navigator.popBackStack()
+            resultNavigator.navigateBack(true)
         }
     }
 
@@ -122,35 +124,21 @@ fun RecipeDetailScreen(
             }
         }
     ) { innerPadding ->
-        if (state.data == null && state.error == null && state.loading) {
-            viewModel.getRecipe(recipeId)
-        }
         if (state.loading) {
             Loader()
         }
-        if (state.error != null && !state.loading) {
-            Text(text = state.error.asString())
+        errorMessage?.let {
+            if (!state.loading) {
+                Text(text = it.asString())
+            }
         }
-        if (state.data != null && state.error == null && !state.loading) {
-            recipe = state.data
+        if (recipe.isNotEmpty() && state.error == null && !state.loading) {
             RecipeDetailContent(
                 recipe = recipe,
                 modifier = Modifier
                     .padding(paddingValues = innerPadding)
                     .verticalScroll(rememberScrollState())
             )
-        }
-    }
-
-    resultRecipient.onNavResult { result ->
-        when (result) {
-            is NavResult.Canceled -> Unit
-            is NavResult.Value -> {
-                val hasUpdates = result.value
-                if (hasUpdates) {
-                    viewModel.getRecipe(recipeId)
-                }
-            }
         }
     }
 }

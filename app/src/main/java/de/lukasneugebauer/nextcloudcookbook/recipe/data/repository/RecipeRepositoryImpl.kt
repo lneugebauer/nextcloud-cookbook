@@ -2,10 +2,11 @@ package de.lukasneugebauer.nextcloudcookbook.recipe.data.repository
 
 import com.dropbox.android.external.store4.StoreRequest
 import com.dropbox.android.external.store4.StoreResponse
+import com.dropbox.android.external.store4.fresh
+import com.dropbox.android.external.store4.get
 import com.haroldadmin.cnradapter.NetworkResponse
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.domain.repository.BaseRepository
-import com.dropbox.android.external.store4.get
 import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import de.lukasneugebauer.nextcloudcookbook.core.util.SimpleResource
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
@@ -64,6 +65,7 @@ class RecipeRepositoryImpl @Inject constructor(
 
             try {
                 val id = api.createRecipe(recipe = recipe)
+                refreshCaches(id = recipe.id, categoryName = recipe.recipeCategory)
                 Resource.Success(data = id)
             } catch (e: Exception) {
                 handleResponseError(e.cause)
@@ -78,8 +80,7 @@ class RecipeRepositoryImpl @Inject constructor(
 
             try {
                 api.updateRecipe(id = recipe.id, recipe = recipe)
-                // TODO: Clear or update other stores too
-                recipeStore.clear(recipe.id)
+                refreshCaches(id = recipe.id, categoryName = recipe.recipeCategory)
                 Resource.Success(Unit)
             } catch (e: Exception) {
                 handleResponseError(e.cause)
@@ -94,13 +95,23 @@ class RecipeRepositoryImpl @Inject constructor(
 
             when (val response = api.deleteRecipe(id)) {
                 is NetworkResponse.Success -> {
-                    recipePreviewsByCategoryStore.clear(categoryName)
-                    recipePreviewsStore.clear(Unit)
-                    recipeStore.clear(id)
+                    refreshCaches(id = id, categoryName = categoryName, deleted = true)
                     Resource.Success(Unit)
                 }
                 is NetworkResponse.Error -> handleResponseError(response.error)
             }
+        }
+    }
+
+    private suspend fun refreshCaches(id: Int, categoryName: String, deleted: Boolean = false) {
+        if (categoryName.isNotBlank()) {
+            recipePreviewsByCategoryStore.fresh(categoryName)
+        }
+        recipePreviewsStore.fresh(Unit)
+        if (deleted) {
+            recipeStore.clear(id)
+        } else {
+            recipeStore.fresh(id)
         }
     }
 }
