@@ -53,10 +53,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.flowlayout.FlowRow
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.result.NavResult
+import com.ramcosta.composedestinations.result.ResultRecipient
 import de.lukasneugebauer.nextcloudcookbook.R
+import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.AuthorizedImage
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Gap
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
-import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.AuthorizedImage
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.pluralResource
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
 import de.lukasneugebauer.nextcloudcookbook.core.util.getActivity
@@ -73,6 +75,7 @@ import java.time.Duration
 fun RecipeDetailScreen(
     navigator: DestinationsNavigator,
     recipeId: Int,
+    resultRecipient: ResultRecipient<RecipeEditScreenDestination, Boolean>,
     viewModel: RecipeDetailViewModel = hiltViewModel()
 ) {
     val state = viewModel.state.value
@@ -136,6 +139,18 @@ fun RecipeDetailScreen(
                     .padding(paddingValues = innerPadding)
                     .verticalScroll(rememberScrollState())
             )
+        }
+    }
+
+    resultRecipient.onNavResult { result ->
+        when (result) {
+            is NavResult.Canceled -> Unit
+            is NavResult.Value -> {
+                val hasUpdates = result.value
+                if (hasUpdates) {
+                    viewModel.getRecipe(recipeId)
+                }
+            }
         }
     }
 }
