@@ -17,7 +17,7 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.presentation.components.Creat
 @Composable
 fun RecipeEditScreen(
     navigator: DestinationsNavigator,
-    recipeId: Int,
+    @Suppress("UNUSED_PARAMETER") recipeId: Int,
     resultNavigator: ResultBackNavigator<Boolean>,
     viewModel: RecipeEditViewModel = hiltViewModel()
 ) {

@@ -75,7 +75,7 @@ import java.time.Duration
 @Composable
 fun RecipeDetailScreen(
     navigator: DestinationsNavigator,
-    recipeId: Int,
+    @Suppress("UNUSED_PARAMETER") recipeId: Int,
     resultNavigator: ResultBackNavigator<Boolean>,
     viewModel: RecipeDetailViewModel = hiltViewModel()
 ) {
