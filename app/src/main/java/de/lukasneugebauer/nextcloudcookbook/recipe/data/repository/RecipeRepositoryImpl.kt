@@ -18,6 +18,7 @@ import de.lukasneugebauer.nextcloudcookbook.di.RecipeStore
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipeDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipePreviewDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.repository.RecipeRepository
+import de.lukasneugebauer.nextcloudcookbook.recipe.util.emptyRecipeDto
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
@@ -70,7 +71,7 @@ class RecipeRepositoryImpl @Inject constructor(
                 refreshCaches(id = recipe.id, categoryName = recipe.recipeCategory)
                 Resource.Success(data = id)
             } catch (e: Exception) {
-                handleResponseError(e.cause)
+                handleResponseError(e.fillInStackTrace())
             }
         }
     }
@@ -85,7 +86,7 @@ class RecipeRepositoryImpl @Inject constructor(
                 refreshCaches(id = recipe.id, categoryName = recipe.recipeCategory)
                 Resource.Success(Unit)
             } catch (e: Exception) {
-                handleResponseError(e.cause)
+                handleResponseError(e.fillInStackTrace())
             }
         }
     }
@@ -112,7 +113,7 @@ class RecipeRepositoryImpl @Inject constructor(
         recipePreviewsStore.fresh(Unit)
         if (deleted) {
             recipeStore.clear(id)
-        } else {
+        } else if (id != emptyRecipeDto().id) {
             recipeStore.fresh(id)
         }
     }
