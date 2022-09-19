@@ -19,7 +19,9 @@ footer: MIT Licensed
 
 - List all recipes
 - List all recipes by category
+- Create recipe
 - View recipe
+- Edit recipe
 - Stay awake on recipe screen
 - Settings
 
@@ -28,8 +30,6 @@ footer: MIT Licensed
 - Offline usage
 - Single Sign On through Nextcloud Files app
 - Login via QR-Code
-- Edit recipe
-- Create recipe
 - Import recipe via url
 
 ## Requirements :link:
