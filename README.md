@@ -21,7 +21,9 @@ An Android client for [Nextcloud Cookbook app](https://github.com/nextcloud/cook
 
 - List all recipes
 - List all recipes by category
+- Create recipe
 - View recipe
+- Edit recipe
 - Stay awake on recipe screen
 - Settings
 
@@ -30,8 +32,6 @@ An Android client for [Nextcloud Cookbook app](https://github.com/nextcloud/cook
 - Offline usage
 - Single Sign On through Nextcloud Files app
 - Login via QR-Code
-- Edit recipe
-- Create recipe
 - Import recipe via url
 
 ## Requirements :link:
