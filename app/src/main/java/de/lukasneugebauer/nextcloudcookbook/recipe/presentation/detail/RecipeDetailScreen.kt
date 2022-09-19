@@ -55,7 +55,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.flowlayout.FlowRow
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.ramcosta.composedestinations.result.ResultBackNavigator
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.AuthorizedImage
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Gap
@@ -76,7 +75,6 @@ import java.time.Duration
 fun RecipeDetailScreen(
     navigator: DestinationsNavigator,
     @Suppress("UNUSED_PARAMETER") recipeId: Int,
-    resultNavigator: ResultBackNavigator<Boolean>,
     viewModel: RecipeDetailViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
@@ -89,7 +87,7 @@ fun RecipeDetailScreen(
 
     if (state.deleted) {
         LaunchedEffect(state) {
-            resultNavigator.navigateBack(true)
+            navigator.popBackStack()
         }
     }
 
