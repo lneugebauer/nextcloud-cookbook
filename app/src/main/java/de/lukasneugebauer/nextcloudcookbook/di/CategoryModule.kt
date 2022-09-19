@@ -26,7 +26,7 @@ object CategoryModule {
     @FlowPreview
     @Provides
     @Singleton
-    fun provideCategories(apiProvider: ApiProvider): CategoriesStore {
+    fun provideCategoriesStore(apiProvider: ApiProvider): CategoriesStore {
         val ncCookbookApi = apiProvider.getNcCookbookApi()
             ?: throw NullPointerException("Nextcloud Cookbook API is null.")
         return StoreBuilder

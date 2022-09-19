@@ -4,6 +4,7 @@ import com.haroldadmin.cnradapter.NetworkResponse
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.Capabilities
+import de.lukasneugebauer.nextcloudcookbook.core.domain.model.CookbookVersions
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.NcAccount
 import de.lukasneugebauer.nextcloudcookbook.core.domain.repository.AccountRepository
 import de.lukasneugebauer.nextcloudcookbook.core.domain.repository.BaseRepository
@@ -32,6 +33,21 @@ class AccountRepositoryImpl @Inject constructor(
             when (val response = api.getCapabilities()) {
                 is NetworkResponse.Success -> {
                     val result = response.body.ocs.data.capabilities.toCapabilities()
+                    Resource.Success(data = result)
+                }
+                is NetworkResponse.Error -> handleResponseError(response.error?.cause)
+            }
+        }
+    }
+
+    override suspend fun getVersions(): Resource<CookbookVersions> {
+        return withContext(ioDispatcher) {
+            val api = apiProvider.getNcCookbookApi()
+                ?: return@withContext Resource.Error(message = UiText.StringResource(R.string.error_api_not_initialized))
+
+            when (val response = api.getVersions()) {
+                is NetworkResponse.Success -> {
+                    val result = response.body.toCookbookVersions()
                     Resource.Success(data = result)
                 }
                 is NetworkResponse.Error -> handleResponseError(response.error?.cause)

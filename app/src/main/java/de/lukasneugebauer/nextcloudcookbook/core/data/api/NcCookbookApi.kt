@@ -2,9 +2,11 @@ package de.lukasneugebauer.nextcloudcookbook.core.data.api
 
 import com.haroldadmin.cnradapter.NetworkResponse
 import de.lukasneugebauer.nextcloudcookbook.category.data.dto.CategoryDto
+import de.lukasneugebauer.nextcloudcookbook.core.data.dto.CookbookVersionsDto
 import de.lukasneugebauer.nextcloudcookbook.core.data.remote.response.CapabilitiesResponse
 import de.lukasneugebauer.nextcloudcookbook.core.data.remote.response.ErrorResponse
-import de.lukasneugebauer.nextcloudcookbook.core.util.Constants
+import de.lukasneugebauer.nextcloudcookbook.core.util.Constants.API_ENDPOINT
+import de.lukasneugebauer.nextcloudcookbook.core.util.Constants.FULL_PATH
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipeDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipePreviewDto
 import retrofit2.http.Body
@@ -25,26 +27,29 @@ interface NcCookbookApi {
     @GET("/ocs/v2.php/cloud/capabilities?format=json")
     suspend fun getCapabilities(): NetworkResponse<CapabilitiesResponse, ErrorResponse>
 
-    @GET("${Constants.API_ENDPOINT}/categories")
+    @GET("$FULL_PATH/categories")
     suspend fun getCategories(): List<CategoryDto>
 
-    @GET("${Constants.API_ENDPOINT}/category/{categoryName}")
+    @GET("$FULL_PATH/category/{categoryName}")
     suspend fun getRecipesByCategory(@Path("categoryName") categoryName: String): List<RecipePreviewDto>
 
-    @GET("${Constants.API_ENDPOINT}/recipes")
+    @GET("$FULL_PATH/recipes")
     suspend fun getRecipes(): List<RecipePreviewDto>
 
-    @GET("${Constants.API_ENDPOINT}/recipes/{id}")
+    @GET("$FULL_PATH/recipes/{id}")
     suspend fun getRecipe(@Path("id") id: Int): RecipeDto
 
     // TODO: Check if recipeDto model as body does work even in minified production build
-    @POST("${Constants.API_ENDPOINT}/recipes")
+    @POST("$FULL_PATH/recipes")
     suspend fun createRecipe(@Body recipe: RecipeDto): Int
 
     // TODO: Check if recipeDto model as body does work even in minified production build
-    @PUT("${Constants.API_ENDPOINT}/recipes/{id}")
+    @PUT("$FULL_PATH/recipes/{id}")
     suspend fun updateRecipe(@Path("id") id: Int, @Body recipe: RecipeDto): Int
 
-    @DELETE("${Constants.API_ENDPOINT}/recipes/{id}")
+    @DELETE("$FULL_PATH/recipes/{id}")
     suspend fun deleteRecipe(@Path("id") id: Int): NetworkResponse<String, ErrorResponse>
+
+    @GET("$API_ENDPOINT/version")
+    suspend fun getVersions(): NetworkResponse<CookbookVersionsDto, ErrorResponse>
 }

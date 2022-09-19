@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.lukasneugebauer.nextcloudcookbook.auth.domain.state.SplashScreenState
+import de.lukasneugebauer.nextcloudcookbook.core.domain.model.SemVer2
 import de.lukasneugebauer.nextcloudcookbook.core.domain.repository.AccountRepository
 import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import de.lukasneugebauer.nextcloudcookbook.di.ApiProvider
@@ -33,7 +34,15 @@ class SplashViewModel @Inject constructor(
             }.collect { (account, ncCookbookApi) ->
                 when {
                     account is Resource.Success && ncCookbookApi != null -> {
-                        _uiState.update { SplashScreenState.Authorized }
+                        val userEnabled = accountRepository.getCapabilities().data?.userStatus?.enabled
+                        if (userEnabled == true) {
+                            val appVersion = accountRepository.getVersions().data?.appVersion
+                            if (appVersion?.isGreaterThanOrEqual(MINIMUM_REQUIRED_VERSION) == true) {
+                                _uiState.update { SplashScreenState.Authorized }
+                            } else {
+                                _uiState.update { SplashScreenState.UnsupportedAppVersion }
+                            }
+                        }
                     }
                     account is Resource.Error -> {
                         _uiState.update { SplashScreenState.Unauthorized }
@@ -41,5 +50,9 @@ class SplashViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    companion object {
+        private val MINIMUM_REQUIRED_VERSION: SemVer2 = SemVer2(major = 0, minor = 9, patch = 15)
     }
 }

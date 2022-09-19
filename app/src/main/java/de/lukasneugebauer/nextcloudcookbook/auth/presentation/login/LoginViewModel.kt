@@ -47,11 +47,12 @@ class LoginViewModel @Inject constructor(
             }.collect { (accountResource, ncCookbookApi) ->
                 Timber.d("accountResource: $accountResource, ncCookbookApi: $ncCookbookApi")
                 if (accountResource is Resource.Success && ncCookbookApi != null) {
-                    when (val capabilitiesResource = accountRepository.getCapabilities()) {
-                        is Resource.Success -> {
+                    val capabilitiesResource = accountRepository.getCapabilities()
+                    when {
+                        capabilitiesResource is Resource.Success && capabilitiesResource.data?.userStatus?.enabled == true -> {
                             _uiState.update { it.copy(authorized = true) }
                         }
-                        is Resource.Error -> {
+                        else -> {
                             clearPreferencesUseCase()
                             _uiState.update { it.copy(urlError = capabilitiesResource.message) }
                         }

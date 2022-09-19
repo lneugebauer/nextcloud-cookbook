@@ -5,9 +5,12 @@ import de.lukasneugebauer.nextcloudcookbook.core.domain.model.Capabilities
 
 data class CapabilitiesDto(
     @SerializedName("theming")
-    val theming: ThemingDto
+    val theming: ThemingDto,
+    @SerializedName("user_status")
+    val userStatus: UserStatusDto
 ) {
     fun toCapabilities(): Capabilities = Capabilities(
-        theming = theming.toTheming()
+        theming = theming.toTheming(),
+        userStatus = userStatus.toUserStatus()
     )
 }
