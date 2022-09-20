@@ -14,23 +14,21 @@ private val DarkColorPalette = darkColors(
     primaryVariant = NcBlue800,
     secondary = NcBlue700,
     secondaryVariant = NcBlue800,
-    onPrimary = Color.White
+    background = Color.Black,
+    onPrimary = Color.White,
+    onSecondary = Color.White,
+    onBackground = Color.White
 )
 
 private val LightColorPalette = lightColors(
     primary = NcBlue700,
     primaryVariant = NcBlue800,
     secondary = NcBlue700,
-    secondaryVariant = NcBlue800
-
-    /* Other default colors to override
+    secondaryVariant = NcBlue800,
     background = Color.White,
-    surface = Color.White,
     onPrimary = Color.White,
-    onSecondary = Color.Black,
-    onBackground = Color.Black,
-    onSurface = Color.Black,
-    */
+    onSecondary = Color.White,
+    onBackground = Color.Black
 )
 
 @Composable

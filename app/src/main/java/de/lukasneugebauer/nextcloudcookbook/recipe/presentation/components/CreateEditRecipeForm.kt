@@ -81,10 +81,10 @@ fun CreateEditRecipeForm(
                 .fillMaxWidth()
                 .padding(bottom = dimensionResource(id = R.dimen.padding_m))
             val textFieldColors = TextFieldDefaults.outlinedTextFieldColors(
-                textColor = Color.Black,
-                cursorColor = Color.Black,
-                focusedBorderColor = NcBlue700,
-                unfocusedBorderColor = NcBlue700
+                textColor = MaterialTheme.colors.onBackground,
+                cursorColor = MaterialTheme.colors.onBackground,
+                focusedBorderColor = MaterialTheme.colors.primary,
+                unfocusedBorderColor = MaterialTheme.colors.primary
             )
 
             Gap(size = dimensionResource(id = R.dimen.padding_m))
@@ -171,8 +171,8 @@ private fun RecipeEditTopBar(title: String, onNavIconClick: () -> Unit, onSaveCl
                 )
             }
         },
-        backgroundColor = NcBlue700,
-        contentColor = Color.White
+        backgroundColor = MaterialTheme.colors.primary,
+        contentColor = MaterialTheme.colors.onPrimary
     )
 }
 
