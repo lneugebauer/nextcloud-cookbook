@@ -24,9 +24,13 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.outlined.Save
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -59,6 +63,7 @@ fun CreateEditRecipeForm(
     onAddInstruction: () -> Unit,
     onSaveClick: () -> Unit
 ) {
+    val focusManager = LocalFocusManager.current
     val scrollState = rememberScrollState()
 
     // TODO: Hide bottom navigation
@@ -92,6 +97,7 @@ fun CreateEditRecipeForm(
             Name(
                 recipe = recipe,
                 modifier = modifier,
+                focusManager = focusManager,
                 onNameChanged = onNameChanged,
                 textFieldColors = textFieldColors
             )
@@ -104,23 +110,27 @@ fun CreateEditRecipeForm(
             Url(
                 recipe = recipe,
                 modifier = modifier,
+                focusManager = focusManager,
                 onUrlChanged = onUrlChanged,
                 textFieldColors = textFieldColors
             )
             ImageOrigin(
                 recipe = recipe,
                 modifier = modifier,
+                focusManager = focusManager,
                 onImageOriginChanged = onImageOriginChanged,
                 textFieldColors = textFieldColors
             )
             Yield(
                 recipe = recipe,
+                focusManager = focusManager,
                 onYieldChanged = onYieldChanged,
                 textFieldColors = textFieldColors
             )
             Ingredients(
                 recipe = recipe,
                 ingredientModifier = modifier,
+                focusManager = focusManager,
                 onIngredientChanged = onIngredientChanged,
                 onIngredientDeleted = onIngredientDeleted,
                 onAddIngredient = onAddIngredient,
@@ -129,6 +139,7 @@ fun CreateEditRecipeForm(
             Tools(
                 recipe = recipe,
                 toolModifier = modifier,
+                focusManager = focusManager,
                 onToolChanged = onToolChanged,
                 onToolDeleted = onToolDeleted,
                 onAddTool = onAddTool,
@@ -181,6 +192,7 @@ private fun RecipeEditTopBar(title: String, onNavIconClick: () -> Unit, onSaveCl
 private fun Name(
     recipe: Recipe,
     modifier: Modifier,
+    focusManager: FocusManager,
     onNameChanged: (name: String) -> Unit,
     textFieldColors: TextFieldColors
 ) {
@@ -189,6 +201,14 @@ private fun Name(
         onValueChange = onNameChanged,
         modifier = modifier,
         label = { Text(text = stringResource(R.string.recipe_name)) },
+        keyboardOptions = KeyboardOptions.Default.copy(
+            imeAction = ImeAction.Next
+        ),
+        keyboardActions = KeyboardActions(
+            onNext = {
+                focusManager.moveFocus(FocusDirection.Down)
+            }
+        ),
         singleLine = true,
         colors = textFieldColors
     )
@@ -214,6 +234,7 @@ private fun Description(
 private fun Url(
     recipe: Recipe,
     modifier: Modifier,
+    focusManager: FocusManager,
     onUrlChanged: (url: String) -> Unit,
     textFieldColors: TextFieldColors
 ) {
@@ -222,6 +243,14 @@ private fun Url(
         onValueChange = onUrlChanged,
         modifier = modifier,
         label = { Text(text = stringResource(R.string.recipe_url)) },
+        keyboardOptions = KeyboardOptions.Default.copy(
+            imeAction = ImeAction.Next
+        ),
+        keyboardActions = KeyboardActions(
+            onNext = {
+                focusManager.moveFocus(FocusDirection.Down)
+            }
+        ),
         singleLine = true,
         colors = textFieldColors
     )
@@ -231,6 +260,7 @@ private fun Url(
 private fun ImageOrigin(
     recipe: Recipe,
     modifier: Modifier,
+    focusManager: FocusManager,
     onImageOriginChanged: (imageOrigin: String) -> Unit,
     textFieldColors: TextFieldColors
 ) {
@@ -239,6 +269,14 @@ private fun ImageOrigin(
         onValueChange = onImageOriginChanged,
         modifier = modifier,
         label = { Text(text = stringResource(R.string.recipe_image_url)) },
+        keyboardOptions = KeyboardOptions.Default.copy(
+            imeAction = ImeAction.Next
+        ),
+        keyboardActions = KeyboardActions(
+            onNext = {
+                focusManager.moveFocus(FocusDirection.Down)
+            }
+        ),
         singleLine = true,
         colors = textFieldColors
     )
@@ -247,6 +285,7 @@ private fun ImageOrigin(
 @Composable
 private fun Yield(
     recipe: Recipe,
+    focusManager: FocusManager,
     onYieldChanged: (yield: String) -> Unit,
     textFieldColors: TextFieldColors
 ) {
@@ -257,6 +296,15 @@ private fun Yield(
             .fillMaxWidth(1f / 3f)
             .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
         label = { Text(text = stringResource(R.string.recipe_yield)) },
+        keyboardOptions = KeyboardOptions.Default.copy(
+            keyboardType = KeyboardType.Number,
+            imeAction = ImeAction.Next
+        ),
+        keyboardActions = KeyboardActions(
+            onNext = {
+                focusManager.moveFocus(FocusDirection.Down)
+            }
+        ),
         singleLine = true,
         colors = textFieldColors
     )
@@ -266,6 +314,7 @@ private fun Yield(
 private fun Ingredients(
     recipe: Recipe,
     ingredientModifier: Modifier,
+    focusManager: FocusManager,
     onIngredientChanged: (index: Int, ingredient: String) -> Unit,
     onIngredientDeleted: (index: Int) -> Unit,
     onAddIngredient: () -> Unit,
@@ -289,6 +338,15 @@ private fun Ingredients(
                     )
                 }
             },
+            keyboardOptions = KeyboardOptions.Default.copy(
+                imeAction = ImeAction.Next
+            ),
+            keyboardActions = KeyboardActions(
+                onNext = {
+                    focusManager.moveFocus(FocusDirection.Down)
+                }
+            ),
+            singleLine = true,
             colors = textFieldColors
         )
     }
@@ -300,7 +358,10 @@ private fun Ingredients(
             contentColor = Color.White
         )
     ) {
-        Icon(imageVector = Icons.Default.Add, contentDescription = stringResource(R.string.recipe_ingredient_add))
+        Icon(
+            imageVector = Icons.Default.Add,
+            contentDescription = stringResource(R.string.recipe_ingredient_add)
+        )
         Text(text = stringResource(R.string.recipe_ingredient_add))
     }
 }
@@ -309,6 +370,7 @@ private fun Ingredients(
 private fun Tools(
     recipe: Recipe,
     toolModifier: Modifier,
+    focusManager: FocusManager,
     onToolChanged: (index: Int, tool: String) -> Unit,
     onToolDeleted: (index: Int) -> Unit,
     onAddTool: () -> Unit,
@@ -332,6 +394,15 @@ private fun Tools(
                     )
                 }
             },
+            keyboardOptions = KeyboardOptions.Default.copy(
+                imeAction = ImeAction.Next
+            ),
+            keyboardActions = KeyboardActions(
+                onNext = {
+                    focusManager.moveFocus(FocusDirection.Down)
+                }
+            ),
+            singleLine = true,
             colors = textFieldColors
         )
     }
@@ -343,7 +414,10 @@ private fun Tools(
             contentColor = Color.White
         )
     ) {
-        Icon(imageVector = Icons.Default.Add, contentDescription = stringResource(R.string.recipe_tool_add))
+        Icon(
+            imageVector = Icons.Default.Add,
+            contentDescription = stringResource(R.string.recipe_tool_add)
+        )
         Text(text = stringResource(R.string.recipe_tool_add))
     }
 }
@@ -386,7 +460,10 @@ private fun Instructions(
             contentColor = Color.White
         )
     ) {
-        Icon(imageVector = Icons.Default.Add, contentDescription = stringResource(R.string.recipe_instruction_add))
+        Icon(
+            imageVector = Icons.Default.Add,
+            contentDescription = stringResource(R.string.recipe_instruction_add)
+        )
         Text(text = stringResource(R.string.recipe_instruction_add))
     }
 }
