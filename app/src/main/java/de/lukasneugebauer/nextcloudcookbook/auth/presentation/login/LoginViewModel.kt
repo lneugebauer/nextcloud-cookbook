@@ -142,7 +142,7 @@ class LoginViewModel @Inject constructor(
     private fun isValidPassword(password: String): Boolean {
         if (password.isBlank()) {
             _uiState.value =
-                _uiState.value.copy(passwordError = UiText.StringResource(R.string.error_emtpy_password))
+                _uiState.value.copy(passwordError = UiText.StringResource(R.string.error_empty_password))
             return false
         }
 

@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ButtonDefaults
@@ -167,7 +168,7 @@ private fun RecipeEditTopBar(title: String, onNavIconClick: () -> Unit, onSaveCl
             IconButton(onClick = onSaveClick) {
                 Icon(
                     Icons.Outlined.Save,
-                    contentDescription = "Save"
+                    contentDescription = stringResource(R.string.common_save)
                 )
             }
         },
@@ -187,7 +188,7 @@ private fun Name(
         value = recipe.name,
         onValueChange = onNameChanged,
         modifier = modifier,
-        label = { Text(text = "Name") },
+        label = { Text(text = stringResource(R.string.recipe_name)) },
         singleLine = true,
         colors = textFieldColors
     )
@@ -204,7 +205,7 @@ private fun Description(
         value = recipe.description,
         onValueChange = onDescriptionChanged,
         modifier = modifier,
-        label = { Text(text = "Description") },
+        label = { Text(text = stringResource(R.string.recipe_description)) },
         colors = textFieldColors
     )
 }
@@ -220,7 +221,7 @@ private fun Url(
         value = recipe.url,
         onValueChange = onUrlChanged,
         modifier = modifier,
-        label = { Text(text = "URL") },
+        label = { Text(text = stringResource(R.string.recipe_url)) },
         singleLine = true,
         colors = textFieldColors
     )
@@ -237,7 +238,7 @@ private fun ImageOrigin(
         value = recipe.imageOrigin,
         onValueChange = onImageOriginChanged,
         modifier = modifier,
-        label = { Text(text = "Image URL") },
+        label = { Text(text = stringResource(R.string.recipe_image_url)) },
         singleLine = true,
         colors = textFieldColors
     )
@@ -255,10 +256,7 @@ private fun Yield(
         modifier = Modifier
             .fillMaxWidth(1f / 3f)
             .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
-        label = { Text(text = "Yield") },
-        keyboardOptions = KeyboardOptions.Default.copy(
-            keyboardType = KeyboardType.Number
-        ),
+        label = { Text(text = stringResource(R.string.recipe_yield)) },
         singleLine = true,
         colors = textFieldColors
     )
@@ -282,12 +280,12 @@ private fun Ingredients(
             value = ingredient,
             onValueChange = { onIngredientChanged.invoke(index, it) },
             modifier = ingredientModifier,
-            label = { Text(text = "Ingredient ${index + 1}") },
+            label = { Text(text = stringResource(id = R.string.recipe_ingredient) + " ${index + 1}") },
             trailingIcon = {
                 IconButton(onClick = { onIngredientDeleted.invoke(index) }) {
                     Icon(
                         imageVector = Icons.Default.Delete,
-                        contentDescription = "Delete ingredient"
+                        contentDescription = stringResource(R.string.recipe_ingredient_delete)
                     )
                 }
             },
@@ -302,8 +300,8 @@ private fun Ingredients(
             contentColor = Color.White
         )
     ) {
-        Icon(imageVector = Icons.Default.Add, contentDescription = "Add ingredient")
-        Text(text = "Add ingredient")
+        Icon(imageVector = Icons.Default.Add, contentDescription = stringResource(R.string.recipe_ingredient_add))
+        Text(text = stringResource(R.string.recipe_ingredient_add))
     }
 }
 
@@ -325,12 +323,12 @@ private fun Tools(
             value = tool,
             onValueChange = { onToolChanged.invoke(index, it) },
             modifier = toolModifier,
-            label = { Text(text = "Tool ${index + 1}") },
+            label = { Text(text = stringResource(id = R.string.recipe_tool) + " ${index + 1}") },
             trailingIcon = {
                 IconButton(onClick = { onToolDeleted.invoke(index) }) {
                     Icon(
                         imageVector = Icons.Default.Delete,
-                        contentDescription = "Delete tool"
+                        contentDescription = stringResource(R.string.recipe_tool_delete)
                     )
                 }
             },
@@ -345,8 +343,8 @@ private fun Tools(
             contentColor = Color.White
         )
     ) {
-        Icon(imageVector = Icons.Default.Add, contentDescription = "Add tool")
-        Text(text = "Add tool")
+        Icon(imageVector = Icons.Default.Add, contentDescription = stringResource(R.string.recipe_tool_add))
+        Text(text = stringResource(R.string.recipe_tool_add))
     }
 }
 
@@ -368,12 +366,12 @@ private fun Instructions(
             value = instruction,
             onValueChange = { onInstructionChanged.invoke(index, it) },
             modifier = instructionModifier,
-            label = { Text(text = "Instruction ${index + 1}") },
+            label = { Text(text = stringResource(id = R.string.recipe_instruction) + " ${index + 1}") },
             trailingIcon = {
                 IconButton(onClick = { onInstructionDeleted.invoke(index) }) {
                     Icon(
                         imageVector = Icons.Default.Delete,
-                        contentDescription = "Delete instruction"
+                        contentDescription = stringResource(R.string.recipe_instruction_delete)
                     )
                 }
             },
@@ -388,8 +386,8 @@ private fun Instructions(
             contentColor = Color.White
         )
     ) {
-        Icon(imageVector = Icons.Default.Add, contentDescription = "Add instruction")
-        Text(text = "Add instruction")
+        Icon(imageVector = Icons.Default.Add, contentDescription = stringResource(R.string.recipe_instruction_add))
+        Text(text = stringResource(R.string.recipe_instruction_add))
     }
 }
 
