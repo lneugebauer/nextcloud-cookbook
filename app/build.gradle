@@ -71,6 +71,11 @@ android {
     buildFeatures {
         compose true
     }
+    bundle {
+        storeArchive {
+            enable = false
+        }
+    }
     composeOptions {
         kotlinCompilerExtensionVersion compose_compiler_version
     }
