@@ -78,8 +78,8 @@ fun RecipeDetailScreen(
     viewModel: RecipeDetailViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
-    val recipe by derivedStateOf { state.data ?: emptyRecipe() }
-    val errorMessage by derivedStateOf { state.error }
+    val recipe by remember { derivedStateOf { state.data ?: emptyRecipe() } }
+    val errorMessage by remember { derivedStateOf { state.error } }
 
     if (viewModel.stayAwake) {
         KeepScreenOn()

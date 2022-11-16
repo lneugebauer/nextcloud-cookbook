@@ -12,6 +12,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
@@ -40,8 +41,10 @@ fun SplashScreen(
     viewModel: SplashViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val unsupportedAppVersion by derivedStateOf {
-        uiState is SplashScreenState.UnsupportedAppVersion
+    val unsupportedAppVersion by remember {
+        derivedStateOf {
+            uiState is SplashScreenState.UnsupportedAppVersion
+        }
     }
 
     LaunchedEffect(key1 = uiState) {

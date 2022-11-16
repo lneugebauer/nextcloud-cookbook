@@ -11,6 +11,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
@@ -54,10 +55,12 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val authState by viewModel.authState.collectAsState()
-            val credentials: Credentials? by derivedStateOf {
-                when (authState) {
-                    is AuthState.Unauthorized -> null
-                    is AuthState.Authorized -> (authState as AuthState.Authorized).credentials
+            val credentials: Credentials? by remember {
+                derivedStateOf {
+                    when (authState) {
+                        is AuthState.Unauthorized -> null
+                        is AuthState.Authorized -> (authState as AuthState.Authorized).credentials
+                    }
                 }
             }
 
