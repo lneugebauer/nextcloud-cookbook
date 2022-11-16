@@ -17,14 +17,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SplashViewModel @Inject constructor(
-    accountRepository: AccountRepository,
-    apiProvider: ApiProvider
+    private val accountRepository: AccountRepository,
+    private val apiProvider: ApiProvider
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<SplashScreenState>(SplashScreenState.Initial)
     val uiState: StateFlow<SplashScreenState> = _uiState
 
-    init {
+    fun initialize() {
         viewModelScope.launch {
             combine(
                 accountRepository.getAccount(),

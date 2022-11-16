@@ -49,6 +49,7 @@ fun SplashScreen(
 
     LaunchedEffect(key1 = uiState) {
         when (uiState) {
+            SplashScreenState.Initial -> viewModel.initialize()
             SplashScreenState.Authorized -> {
                 // TODO: 04.10.21 Load (and cache) recipes initially
                 mainViewModel.finishSplash()
@@ -69,7 +70,6 @@ fun SplashScreen(
             SplashScreenState.UnsupportedAppVersion -> {
                 mainViewModel.finishSplash()
             }
-            else -> {}
         }
     }
 
