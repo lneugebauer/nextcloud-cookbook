@@ -53,7 +53,8 @@ fun CommonItem(
 @Composable
 fun CommonItemBody(name: String, modifier: Modifier, onClick: () -> Unit) {
     Row(
-        modifier = modifier
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = name,
