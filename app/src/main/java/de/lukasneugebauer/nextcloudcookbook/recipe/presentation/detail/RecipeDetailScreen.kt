@@ -62,6 +62,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.pluralResource
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
 import de.lukasneugebauer.nextcloudcookbook.core.util.getActivity
+import de.lukasneugebauer.nextcloudcookbook.core.util.notZero
 import de.lukasneugebauer.nextcloudcookbook.core.util.openInBrowser
 import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeEditScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Recipe
@@ -77,6 +78,7 @@ fun RecipeDetailScreen(
     @Suppress("UNUSED_PARAMETER") recipeId: Int,
     viewModel: RecipeDetailViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
     val state by viewModel.state.collectAsState()
     val recipe by remember { derivedStateOf { state.data ?: emptyRecipe() } }
     val errorMessage by remember { derivedStateOf { state.error } }
@@ -109,7 +111,31 @@ fun RecipeDetailScreen(
                         )
                     }
                 },
-                shareText = viewModel.getShareText()
+                shareText = viewModel.getShareText(
+                    sourceTitle = stringResource(id = R.string.recipe_source),
+                    prepTime = { duration ->
+                        context.getString(R.string.recipe_prep_time)
+                            .plus(": ")
+                            .plus(context.getString(R.string.recipe_duration, duration))
+                    },
+                    cookTime = { duration ->
+                        context.getString(R.string.recipe_cook_time)
+                            .plus(": ")
+                            .plus(context.getString(R.string.recipe_duration, duration))
+                    },
+                    totalTime = { duration ->
+                        context.getString(R.string.recipe_total_time)
+                            .plus(": ")
+                            .plus(context.getString(R.string.recipe_duration, duration))
+                    },
+                    ingredientsTitle = pluralResource(
+                        R.plurals.recipe_ingredients_servings,
+                        recipe.yield,
+                        recipe.yield
+                    ),
+                    toolsTitle = stringResource(id = R.string.recipe_tools),
+                    instructionsTitle = stringResource(id = R.string.recipe_instructions)
+                )
             )
         },
         floatingActionButton = {
@@ -118,7 +144,10 @@ fun RecipeDetailScreen(
                     navigator.navigate(RecipeEditScreenDestination(recipe.id))
                 }
             }) {
-                Icon(imageVector = Icons.Default.Edit, contentDescription = "Edit")
+                Icon(
+                    imageVector = Icons.Default.Edit,
+                    contentDescription = stringResource(id = R.string.common_edit)
+                )
             }
         }
     ) { innerPadding ->
@@ -255,9 +284,9 @@ fun RecipeDetailContent(recipe: Recipe, modifier: Modifier = Modifier) {
         if (recipe.description.isNotBlank()) {
             RecipeDetailDescription(recipe.description)
         }
-        if ((recipe.prepTime != null && recipe.prepTime != Duration.ZERO) ||
-            (recipe.cookTime != null && recipe.prepTime != Duration.ZERO) ||
-            (recipe.totalTime != null && recipe.totalTime != Duration.ZERO)
+        if (recipe.prepTime?.notZero() == true ||
+            recipe.cookTime?.notZero() == true ||
+            recipe.totalTime?.notZero() == true
         ) {
             RecipeDetailMeta(recipe.prepTime, recipe.cookTime, recipe.totalTime)
         }

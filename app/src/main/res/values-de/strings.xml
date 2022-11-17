@@ -4,6 +4,7 @@
     <string name="common_about">Über</string>
     <string name="common_back">Zurück</string>
     <string name="common_categories">Kategorien</string>
+    <string name="common_edit">Bearbeiten</string>
     <string name="common_home">Start</string>
     <string name="common_more">Mehr</string>
     <string name="common_recipes">Rezepte</string>
@@ -59,6 +60,7 @@
     <string name="recipe_name">Name</string>
     <string name="recipe_new">Neues Rezept</string>
     <string name="recipe_prep_time">Vorbereitung</string>
+    <string name="recipe_source">Quelle</string>
     <string name="recipe_tool_add">Utensil hinzufügen</string>
     <string name="recipe_tool_delete">Utensil löschen</string>
     <string name="recipe_tools">Utensilien</string>

@@ -3,6 +3,7 @@
     <string name="common_about">About</string>
     <string name="common_back">Back</string>
     <string name="common_categories">Categories</string>
+    <string name="common_edit">Edit</string>
     <string name="common_home">Home</string>
     <string name="common_more">More</string>
     <string name="common_recipes">Recipes</string>
@@ -58,6 +59,7 @@
     <string name="recipe_name">Name</string>
     <string name="recipe_new">New recipe</string>
     <string name="recipe_prep_time">Preparation</string>
+    <string name="recipe_source">Source</string>
     <string name="recipe_tool_add">Add tool</string>
     <string name="recipe_tool_delete">Delete tool</string>
     <string name="recipe_tools">Tools</string>
