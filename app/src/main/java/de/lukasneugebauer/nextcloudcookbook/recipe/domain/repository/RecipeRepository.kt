@@ -9,11 +9,11 @@ import kotlinx.coroutines.flow.Flow
 
 interface RecipeRepository {
 
-    suspend fun getRecipePreviews(): Flow<StoreResponse<List<RecipePreviewDto>>>
+    fun getRecipePreviews(): Flow<StoreResponse<List<RecipePreviewDto>>>
 
-    suspend fun getRecipePreviewsByCategory(categoryName: String): Flow<StoreResponse<List<RecipePreviewDto>>>
+    fun getRecipePreviewsByCategory(categoryName: String): Flow<StoreResponse<List<RecipePreviewDto>>>
 
-    suspend fun getRecipeFlow(id: Int): Flow<StoreResponse<RecipeDto>>
+    fun getRecipeFlow(id: Int): Flow<StoreResponse<RecipeDto>>
 
     suspend fun getRecipe(id: Int): RecipeDto
 

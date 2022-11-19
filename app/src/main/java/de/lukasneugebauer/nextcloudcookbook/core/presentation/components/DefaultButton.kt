@@ -11,7 +11,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
 
-// TODO: 05.10.21 Finalize styling of button
 @Composable
 fun DefaultButton(
     onClick: () -> Unit,

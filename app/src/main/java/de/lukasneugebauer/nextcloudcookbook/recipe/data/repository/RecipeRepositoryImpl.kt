@@ -32,34 +32,21 @@ class RecipeRepositoryImpl @Inject constructor(
     private val recipeStore: RecipeStore
 ) : RecipeRepository, BaseRepository() {
 
-    override suspend fun getRecipePreviews(): Flow<StoreResponse<List<RecipePreviewDto>>> {
-        return withContext(ioDispatcher) {
-            recipePreviewsStore.stream(StoreRequest.cached(key = Unit, refresh = false))
-        }
-    }
+    override fun getRecipePreviews(): Flow<StoreResponse<List<RecipePreviewDto>>> =
+        recipePreviewsStore.stream(StoreRequest.cached(key = Unit, refresh = false))
 
-    override suspend fun getRecipePreviewsByCategory(categoryName: String): Flow<StoreResponse<List<RecipePreviewDto>>> {
-        return withContext(ioDispatcher) {
-            recipePreviewsByCategoryStore.stream(
-                StoreRequest.cached(
-                    key = categoryName,
-                    refresh = false
-                )
+    override fun getRecipePreviewsByCategory(categoryName: String): Flow<StoreResponse<List<RecipePreviewDto>>> =
+        recipePreviewsByCategoryStore.stream(
+            StoreRequest.cached(
+                key = categoryName,
+                refresh = false
             )
-        }
-    }
+        )
 
-    override suspend fun getRecipeFlow(id: Int): Flow<StoreResponse<RecipeDto>> {
-        return withContext(ioDispatcher) {
-            recipeStore.stream(StoreRequest.cached(key = id, refresh = false))
-        }
-    }
+    override fun getRecipeFlow(id: Int): Flow<StoreResponse<RecipeDto>> =
+        recipeStore.stream(StoreRequest.cached(key = id, refresh = false))
 
-    override suspend fun getRecipe(id: Int): RecipeDto {
-        return withContext(ioDispatcher) {
-            recipeStore.get(id)
-        }
-    }
+    override suspend fun getRecipe(id: Int): RecipeDto = recipeStore.get(id)
 
     override suspend fun createRecipe(recipe: RecipeDto): Resource<Int> {
         return withContext(ioDispatcher) {

@@ -12,5 +12,5 @@ interface AccountRepository {
 
     suspend fun getVersions(): Resource<CookbookVersions>
 
-    suspend fun getAccount(): Flow<Resource<NcAccount>>
+    fun getAccount(): Flow<Resource<NcAccount>>
 }

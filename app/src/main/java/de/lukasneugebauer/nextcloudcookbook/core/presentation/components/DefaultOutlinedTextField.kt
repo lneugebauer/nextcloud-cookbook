@@ -21,7 +21,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
 
-// TODO: 05.10.21 Finalize styling of text field
 @Composable
 fun DefaultOutlinedTextField(
     value: String,

@@ -39,11 +39,9 @@ interface NcCookbookApi {
     @GET("$FULL_PATH/recipes/{id}")
     suspend fun getRecipe(@Path("id") id: Int): RecipeDto
 
-    // TODO: Check if recipeDto model as body does work even in minified production build
     @POST("$FULL_PATH/recipes")
     suspend fun createRecipe(@Body recipe: RecipeDto): Int
 
-    // TODO: Check if recipeDto model as body does work even in minified production build
     @PUT("$FULL_PATH/recipes/{id}")
     suspend fun updateRecipe(@Path("id") id: Int, @Body recipe: RecipeDto): Int
 

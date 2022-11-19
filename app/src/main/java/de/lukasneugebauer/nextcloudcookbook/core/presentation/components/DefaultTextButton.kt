@@ -9,7 +9,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 
-// TODO: 05.10.21 Finalize styling of text button
 @Composable
 fun DefaultTextButton(
     onClick: () -> Unit,

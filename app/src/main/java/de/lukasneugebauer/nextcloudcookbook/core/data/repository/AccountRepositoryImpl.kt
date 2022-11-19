@@ -55,7 +55,7 @@ class AccountRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getAccount(): Flow<Resource<NcAccount>> {
+    override fun getAccount(): Flow<Resource<NcAccount>> {
         return preferencesManager.preferencesFlow
             .distinctUntilChanged()
             .map {
