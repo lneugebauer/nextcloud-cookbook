@@ -1,7 +1,5 @@
 package de.lukasneugebauer.nextcloudcookbook.core.presentation
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,7 +10,6 @@ import de.lukasneugebauer.nextcloudcookbook.core.domain.state.SplashState
 import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -23,8 +20,8 @@ class MainViewModel @Inject constructor(
     private val accountRepository: AccountRepository
 ) : ViewModel() {
 
-    private val _splashState = MutableLiveData<SplashState>(SplashState.Initial)
-    val splashState: LiveData<SplashState> = _splashState
+    private val _splashState = MutableStateFlow<SplashState>(SplashState.Initial)
+    val splashState: StateFlow<SplashState> = _splashState
 
     private val _authState = MutableStateFlow<AuthState>(AuthState.Unauthorized)
     val authState: StateFlow<AuthState> = _authState

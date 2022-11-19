@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -21,6 +22,7 @@ import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.manualcomposablecalls.composable
 import dagger.hilt.android.AndroidEntryPoint
 import de.lukasneugebauer.nextcloudcookbook.NavGraphs
+import de.lukasneugebauer.nextcloudcookbook.auth.presentation.splash.SplashScreen
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.Credentials
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.LocalCredentials
 import de.lukasneugebauer.nextcloudcookbook.core.domain.state.AuthState
@@ -31,12 +33,10 @@ import de.lukasneugebauer.nextcloudcookbook.destinations.LoginScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeCreateScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeEditScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.destinations.SplashScreenDestination
-import de.lukasneugebauer.nextcloudcookbook.auth.presentation.splash.SplashScreen
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    private var keepOnScreen = true
     private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,17 +44,9 @@ class MainActivity : ComponentActivity() {
 
         super.onCreate(savedInstanceState)
 
-        splashScreen.setKeepOnScreenCondition { keepOnScreen }
-
-        viewModel.splashState.observe(this) { state ->
-            keepOnScreen = when (state) {
-                SplashState.Initial -> true
-                SplashState.Loaded -> false
-            }
-        }
-
         setContent {
             val authState by viewModel.authState.collectAsState()
+            val splashState by viewModel.splashState.collectAsState()
             val credentials: Credentials? by remember {
                 derivedStateOf {
                     when (authState) {
@@ -62,6 +54,18 @@ class MainActivity : ComponentActivity() {
                         is AuthState.Authorized -> (authState as AuthState.Authorized).credentials
                     }
                 }
+            }
+            val keepOnScreen by remember {
+                derivedStateOf {
+                    when (splashState) {
+                        SplashState.Initial -> true
+                        SplashState.Loaded -> false
+                    }
+                }
+            }
+
+            SideEffect {
+                splashScreen.setKeepOnScreenCondition { keepOnScreen }
             }
 
             CompositionLocalProvider(LocalCredentials provides credentials) {
