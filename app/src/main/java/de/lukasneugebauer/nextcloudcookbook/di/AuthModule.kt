@@ -10,6 +10,7 @@ import de.lukasneugebauer.nextcloudcookbook.auth.data.remote.AuthApi
 import de.lukasneugebauer.nextcloudcookbook.auth.data.remote.UserAgentInterceptor
 import de.lukasneugebauer.nextcloudcookbook.auth.data.repository.AuthRepositoryImpl
 import de.lukasneugebauer.nextcloudcookbook.auth.domain.repository.AuthRepository
+import de.lukasneugebauer.nextcloudcookbook.core.data.remote.NetworkInterceptor
 import de.lukasneugebauer.nextcloudcookbook.core.util.IoDispatcher
 import kotlinx.coroutines.CoroutineDispatcher
 import okhttp3.OkHttpClient
@@ -31,6 +32,7 @@ object AuthModule {
         val client = OkHttpClient.Builder()
             .addInterceptor(httpLoggingInterceptor)
             .addInterceptor(userAgentInterceptor)
+            .addNetworkInterceptor(NetworkInterceptor())
             .build()
 
         val gson = GsonBuilder().create()

@@ -23,9 +23,8 @@ object AppModule {
     // https://medium.com/androiddevelopers/create-an-application-coroutinescope-using-hilt-dd444e721528
     @Provides
     @Singleton
-    fun provideCoroutineScope(): CoroutineScope {
-        return CoroutineScope(SupervisorJob() + Dispatchers.Default)
-    }
+    fun provideCoroutineScope(): CoroutineScope =
+        CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
     @Provides
     @Singleton
@@ -37,8 +36,7 @@ object AppModule {
     fun providePreferencesManager(
         @ApplicationContext context: Context,
         sharedPreferences: SharedPreferences
-    ): PreferencesManager =
-        PreferencesManager(context, sharedPreferences)
+    ): PreferencesManager = PreferencesManager(context, sharedPreferences)
 
     @Provides
     @Singleton

@@ -6,6 +6,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
 import retrofit2.HttpException
 import timber.log.Timber
+import java.io.EOFException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.net.ssl.SSLHandshakeException
@@ -29,6 +30,7 @@ open class BaseRepository {
             is UnknownHostException -> UiText.StringResource(R.string.error_unknown_host)
             is MalformedJsonException -> UiText.StringResource(R.string.error_malformed_json)
             is SSLHandshakeException -> UiText.StringResource(R.string.error_ssl_handshake)
+            is EOFException -> UiText.StringResource(R.string.error_eof)
             else -> unknownErrorUiText(t)
         }
         return Resource.Error(message)

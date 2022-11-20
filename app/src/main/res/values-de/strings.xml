@@ -11,12 +11,11 @@
     <string name="common_save">Speichern</string>
     <string name="common_settings">Einstellungen</string>
     <string name="common_share">Teilen</string>
-    <string name="error_no_account_data">Konto-Daten nicht gefunden</string>
     <string name="error_api_not_initialized">API nicht initialisiert</string>
-    <string name="error_ssl_handshake">Zertifikatsfehler</string>
     <string name="error_empty_password">Bitte gebe ein Passwort ein</string>
     <string name="error_empty_url">Bitte gebe eine URL ein</string>
     <string name="error_empty_username">Bitte gebe einen Benutzernamen ein</string>
+    <string name="error_eof">Dateiende</string>
     <string name="error_http_400">400 Bad request</string>
     <string name="error_http_401">401 Unauthorized</string>
     <string name="error_http_403">403 Forbidden</string>
@@ -29,8 +28,10 @@
     <string name="error_invalid_url">Invalide URL</string>
     <string name="error_malformed_json">Fehlerhaftes JSON-Format</string>
     <string name="error_recipe_id_missing">Unbekannte Rezept ID</string>
+    <string name="error_no_account_data">Konto-Daten nicht gefunden</string>
     <string name="error_no_login_url">Login URL konnte nicht geladen werden</string>
     <string name="error_no_recipes_found">Keine Rezepte gefunden</string>
+    <string name="error_ssl_handshake">Zertifikatsfehler</string>
     <string name="error_timeout">Zeitüberschreitung</string>
     <string name="error_unknown_host">Unbekannter Host</string>
     <string name="error_unknown">Ein unbekannter Fehler ist aufgetreten</string>

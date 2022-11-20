@@ -5,6 +5,7 @@ import com.haroldadmin.cnradapter.NetworkResponseAdapterFactory
 import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
 import de.lukasneugebauer.nextcloudcookbook.core.data.api.NcCookbookApi
 import de.lukasneugebauer.nextcloudcookbook.core.data.remote.BasicAuthInterceptor
+import de.lukasneugebauer.nextcloudcookbook.core.data.remote.NetworkInterceptor
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.NcAccount
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.NutritionDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.remote.deserializer.NutritionDeserializer
@@ -60,6 +61,7 @@ class ApiProvider @Inject constructor(
         val client = OkHttpClient.Builder()
             .addInterceptor(httpLoggingInterceptor)
             .addInterceptor(authInterceptor)
+            .addNetworkInterceptor(NetworkInterceptor())
             .build()
 
         val retrofit = Retrofit.Builder()
