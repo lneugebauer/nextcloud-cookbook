@@ -68,7 +68,7 @@ class LoginViewModel @Inject constructor(
         if (!isValidUrl(url)) return
 
         viewModelScope.launch {
-            when (val result = authRepository.getLoginEndpoint(url)) {
+            when (val result = authRepository.getLoginEndpoint(url.removeSuffix("/"))) {
                 is Resource.Success -> {
                     result.data?.loginUrl?.let { webViewUrl ->
                         Timber.v("Open web view with url $webViewUrl")
@@ -93,7 +93,7 @@ class LoginViewModel @Inject constructor(
             name = "",
             username = username,
             token = password,
-            url = url.replace("/$", "")
+            url = url.removeSuffix("/")
         )
         viewModelScope.launch {
             preferencesManager.updateNextcloudAccount(ncAccount)
