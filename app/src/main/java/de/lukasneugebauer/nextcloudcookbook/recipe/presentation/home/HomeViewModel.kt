@@ -1,13 +1,13 @@
 package de.lukasneugebauer.nextcloudcookbook.recipe.presentation.home
 
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.HomeScreenState
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.usecase.GetHomeScreenDataUseCase
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -16,12 +16,12 @@ class HomeViewModel @Inject constructor(
     getHomeScreenDataUseCase: GetHomeScreenDataUseCase
 ) : ViewModel() {
 
-    private val _state: MutableState<HomeScreenState> = mutableStateOf(HomeScreenState())
-    val state: State<HomeScreenState> = _state
+    private val _uiState = MutableStateFlow<HomeScreenState>(HomeScreenState.Initial)
+    val uiState: StateFlow<HomeScreenState> = _uiState
 
     init {
         viewModelScope.launch {
-            _state.value = _state.value.copy(loading = false, data = getHomeScreenDataUseCase())
+            _uiState.update { HomeScreenState.Loaded(getHomeScreenDataUseCase()) }
         }
     }
 }

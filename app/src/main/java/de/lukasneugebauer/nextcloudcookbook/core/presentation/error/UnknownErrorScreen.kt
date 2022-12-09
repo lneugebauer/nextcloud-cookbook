@@ -7,14 +7,14 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.Nextcloud
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
 
 @Composable
-fun NotFoundScreen() {
-    AbstractErrorScreen(uiText = UiText.StringResource(R.string.error_no_recipes_found))
+fun UnknownErrorScreen() {
+    AbstractErrorScreen(uiText = UiText.StringResource(R.string.error_unknown))
 }
 
-@Preview
 @Composable
-fun NotFoundScreenPreview() {
+@Preview
+private fun UnknownErrorScreenPreview() {
     NextcloudCookbookTheme {
-        NotFoundScreen()
+        UnknownErrorScreen()
     }
 }

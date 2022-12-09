@@ -17,6 +17,8 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
@@ -32,11 +34,13 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.RowContainer
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.RowContent
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.error.NotFoundScreen
+import de.lukasneugebauer.nextcloudcookbook.core.presentation.error.UnknownErrorScreen
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
 import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeDetailScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeListScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.destinations.SettingsScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.HomeScreenDataResult
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.HomeScreenState
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.RecipeConstants.MORE_BUTTON_THRESHOLD
 
 @Destination
@@ -45,62 +49,70 @@ fun HomeScreen(
     navigator: DestinationsNavigator,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
-    val state = viewModel.state.value
+    val uiState by viewModel.uiState.collectAsState()
 
     Scaffold(topBar = {
         HomeTopBar(
             onSettingsIconClick = { navigator.navigate(SettingsScreenDestination()) }
         )
     }) { innerPadding ->
-        if (state.loading) {
-            Loader()
-        }
-
-        if (!state.loading && state.data != null && state.data.isEmpty()) {
-            NotFoundScreen()
-        }
-
-        if (!state.loading && state.data != null && state.data.isNotEmpty()) {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(innerPadding),
-                contentPadding = PaddingValues(
-                    top = dimensionResource(id = R.dimen.padding_s),
-                    bottom = dimensionResource(id = R.dimen.padding_m)
-                ),
-                verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_s))
-            ) {
-                items(state.data) { data ->
-                    when (data) {
-                        is HomeScreenDataResult.Row -> {
-                            Headline(
-                                text = data.headline,
-                                clickable = data.recipes.size > MORE_BUTTON_THRESHOLD
-                            ) {
-                                navigator.navigate(RecipeListScreenDestination(categoryName = data.headline))
-                            }
-                            RowContainer(
-                                data = data.recipes.map {
-                                    RowContent(it.name, it.imageUrl) {
-                                        navigator.navigate(RecipeDetailScreenDestination(recipeId = it.id))
+        when (uiState) {
+            HomeScreenState.Initial -> Loader()
+            is HomeScreenState.Loaded -> {
+                val homeScreenData = (uiState as HomeScreenState.Loaded).data
+                if (homeScreenData.isEmpty()) {
+                    NotFoundScreen()
+                } else {
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(innerPadding),
+                        contentPadding = PaddingValues(
+                            top = dimensionResource(id = R.dimen.padding_s),
+                            bottom = dimensionResource(id = R.dimen.padding_m)
+                        ),
+                        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_s))
+                    ) {
+                        items(homeScreenData) { item ->
+                            when (item) {
+                                is HomeScreenDataResult.Row -> {
+                                    Headline(
+                                        text = item.headline,
+                                        clickable = item.recipes.size > MORE_BUTTON_THRESHOLD
+                                    ) {
+                                        navigator.navigate(RecipeListScreenDestination(categoryName = item.headline))
+                                    }
+                                    RowContainer(
+                                        data = item.recipes.map {
+                                            RowContent(it.name, it.imageUrl) {
+                                                navigator.navigate(
+                                                    RecipeDetailScreenDestination(
+                                                        recipeId = it.id
+                                                    )
+                                                )
+                                            }
+                                        }
+                                    )
+                                }
+                                is HomeScreenDataResult.Single -> {
+                                    Headline(
+                                        text = stringResource(id = item.headline),
+                                        clickable = false,
+                                        onClick = {}
+                                    )
+                                    SingleItem(
+                                        name = item.recipe.name,
+                                        imageUrl = item.recipe.imageUrl
+                                    ) {
+                                        navigator.navigate(RecipeDetailScreenDestination(recipeId = item.recipe.id))
                                     }
                                 }
-                            )
-                        }
-                        is HomeScreenDataResult.Single -> {
-                            Headline(
-                                text = stringResource(id = data.headline),
-                                clickable = false,
-                                onClick = {}
-                            )
-                            SingleItem(name = data.recipe.name, imageUrl = data.recipe.imageUrl) {
-                                navigator.navigate(RecipeDetailScreenDestination(recipeId = data.recipe.id))
                             }
                         }
                     }
                 }
             }
+            is HomeScreenState.Error -> UnknownErrorScreen()
         }
     }
 }
