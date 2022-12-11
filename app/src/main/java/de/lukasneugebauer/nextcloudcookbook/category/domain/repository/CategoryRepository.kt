@@ -6,5 +6,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface CategoryRepository {
 
-    suspend fun getCategories(): Flow<StoreResponse<List<CategoryDto>>>
+    fun getCategories(): Flow<StoreResponse<List<CategoryDto>>>
 }

@@ -29,6 +29,7 @@
     <string name="error_malformed_json">Fehlerhaftes JSON-Format</string>
     <string name="error_recipe_id_missing">Unbekannte Rezept ID</string>
     <string name="error_no_account_data">Konto-Daten nicht gefunden</string>
+    <string name="error_no_categories_found">Keine Kategorien gefunden</string>
     <string name="error_no_login_url">Login URL konnte nicht geladen werden</string>
     <string name="error_no_recipes_found">Keine Rezepte gefunden</string>
     <string name="error_ssl_handshake">Zertifikatsfehler</string>

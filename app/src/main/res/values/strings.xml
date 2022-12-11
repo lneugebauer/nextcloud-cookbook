@@ -28,6 +28,7 @@
     <string name="error_malformed_json">Malformed JSON error</string>
     <string name="error_recipe_id_missing">Recipe ID missing</string>
     <string name="error_no_account_data">Account data not found</string>
+    <string name="error_no_categories_found">No categories found</string>
     <string name="error_no_login_url">Could not load login URL</string>
     <string name="error_no_recipes_found">No recipes found</string>
     <string name="error_ssl_handshake">Certificate error</string>

@@ -10,8 +10,6 @@ import dagger.hilt.components.SingletonComponent
 import de.lukasneugebauer.nextcloudcookbook.category.data.dto.CategoryDto
 import de.lukasneugebauer.nextcloudcookbook.category.data.repository.CategoryRepositoryImpl
 import de.lukasneugebauer.nextcloudcookbook.category.domain.repository.CategoryRepository
-import de.lukasneugebauer.nextcloudcookbook.core.util.IoDispatcher
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import javax.inject.Singleton
@@ -37,7 +35,6 @@ object CategoryModule {
     @Provides
     @Singleton
     fun provideCategoryRepository(
-        categoriesStore: CategoriesStore,
-        @IoDispatcher ioDispatcher: CoroutineDispatcher
-    ): CategoryRepository = CategoryRepositoryImpl(categoriesStore, ioDispatcher)
+        categoriesStore: CategoriesStore
+    ): CategoryRepository = CategoryRepositoryImpl(categoriesStore)
 }

@@ -14,6 +14,8 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
@@ -24,9 +26,12 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.category.domain.model.Category
+import de.lukasneugebauer.nextcloudcookbook.category.domain.state.CategoryListScreenState
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
+import de.lukasneugebauer.nextcloudcookbook.core.presentation.error.AbstractErrorScreen
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
+import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
 import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeListScreenDestination
 import kotlin.random.Random.Default.nextInt
 
@@ -36,55 +41,64 @@ fun CategoryListScreen(
     navigator: DestinationsNavigator,
     viewModel: CategoryListViewModel = hiltViewModel()
 ) {
-    val state = viewModel.state.value
+    val uiState by viewModel.uiState.collectAsState()
 
-    CategoryListScreen(
-        data = state.data,
-        onClick = { categoryName ->
-            navigator.navigate(RecipeListScreenDestination(categoryName))
+    Scaffold(
+        topBar = { CategoryListTopBar() }
+    ) { innerPadding ->
+        when (uiState) {
+            is CategoryListScreenState.Initial -> Loader()
+            is CategoryListScreenState.Loaded -> {
+                val categories = (uiState as CategoryListScreenState.Loaded).data
+                CategoryListScreen(
+                    data = categories,
+                    modifier = Modifier.padding(innerPadding)
+                ) { categoryName ->
+                    navigator.navigate(RecipeListScreenDestination(categoryName))
+                }
+            }
+            is CategoryListScreenState.Error -> {
+                val errorText = (uiState as CategoryListScreenState.Error).uiText
+                AbstractErrorScreen(uiText = errorText)
+            }
         }
-    )
+    }
 }
 
 @Composable
 private fun CategoryListScreen(
     data: List<Category>,
+    modifier: Modifier,
     onClick: (String) -> Unit
 ) {
-    Scaffold(
-        topBar = { CategoryListTopBar() }
-    ) { innerPadding ->
-        if (data.isEmpty()) {
-            Loader()
-        } else {
-            val listState = rememberLazyListState()
-            LazyColumn(
-                modifier = Modifier
-                    .padding(innerPadding)
-                    .fillMaxSize(),
-                state = listState
-            ) {
-                itemsIndexed(data) { index, category ->
-                    ListItem(
-                        modifier = Modifier.clickable(
-                            onClick = {
-                                onClick.invoke(category.name)
-                            }
-                        ),
-                        trailing = {
-                            Badge(backgroundColor = MaterialTheme.colors.primary) {
-                                Text(text = category.recipeCount.toString())
-                            }
-                        },
-                        text = {
-                            Text(text = category.name)
+    if (data.isEmpty()) {
+        AbstractErrorScreen(uiText = UiText.StringResource(R.string.error_no_categories_found))
+    } else {
+        val listState = rememberLazyListState()
+        LazyColumn(
+            modifier = modifier.fillMaxSize(),
+            state = listState
+        ) {
+            itemsIndexed(data) { index, category ->
+                ListItem(
+                    modifier = Modifier.clickable(
+                        onClick = {
+                            onClick.invoke(category.name)
                         }
-                    )
-                    if (index != data.size - 1) {
-                        Divider(
-                            modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_m))
-                        )
+                    ),
+                    trailing = {
+                        Badge(backgroundColor = MaterialTheme.colors.primary) {
+                            Text(text = category.recipeCount.toString())
+                        }
+                    },
+                    text = {
+                        Text(text = category.name)
                     }
+                )
+                if (index != data.size - 1) {
+                    Divider(
+                        modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_m))
+                    )
                 }
             }
         }
@@ -107,6 +121,6 @@ private fun CategoryListScreen() {
         Category(name = "Category $it", nextInt(0, 20))
     }
     NextcloudCookbookTheme {
-        CategoryListScreen(data = categories, onClick = {})
+        CategoryListScreen(data = categories, modifier = Modifier, onClick = {})
     }
 }

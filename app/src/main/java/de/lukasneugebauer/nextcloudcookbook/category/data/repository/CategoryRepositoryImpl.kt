@@ -4,21 +4,15 @@ import com.dropbox.android.external.store4.StoreRequest
 import com.dropbox.android.external.store4.StoreResponse
 import de.lukasneugebauer.nextcloudcookbook.category.data.dto.CategoryDto
 import de.lukasneugebauer.nextcloudcookbook.category.domain.repository.CategoryRepository
-import de.lukasneugebauer.nextcloudcookbook.core.util.IoDispatcher
 import de.lukasneugebauer.nextcloudcookbook.di.CategoriesStore
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class CategoryRepositoryImpl @Inject constructor(
-    private val categoriesStore: CategoriesStore,
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
+    private val categoriesStore: CategoriesStore
 ) : CategoryRepository {
 
-    override suspend fun getCategories(): Flow<StoreResponse<List<CategoryDto>>> {
-        return withContext(ioDispatcher) {
-            categoriesStore.stream(StoreRequest.cached(key = Unit, refresh = false))
-        }
+    override fun getCategories(): Flow<StoreResponse<List<CategoryDto>>> {
+        return categoriesStore.stream(StoreRequest.cached(key = Unit, refresh = false))
     }
 }
