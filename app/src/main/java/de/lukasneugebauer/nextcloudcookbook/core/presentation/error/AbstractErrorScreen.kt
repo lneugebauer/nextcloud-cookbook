@@ -19,7 +19,7 @@ fun AbstractErrorScreen(uiText: UiText) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = uiText.toString())
+        Text(text = uiText.asString())
     }
 }
 
