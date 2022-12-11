@@ -58,8 +58,8 @@ fun CategoryListScreen(
                 }
             }
             is CategoryListScreenState.Error -> {
-                val errorText = (uiState as CategoryListScreenState.Error).uiText
-                AbstractErrorScreen(uiText = errorText)
+                val message = (uiState as CategoryListScreenState.Error).uiText
+                AbstractErrorScreen(uiText = message)
             }
         }
     }

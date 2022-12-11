@@ -35,12 +35,14 @@ import com.ramcosta.composedestinations.result.ResultRecipient
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.AuthorizedImage
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
+import de.lukasneugebauer.nextcloudcookbook.core.presentation.error.AbstractErrorScreen
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.error.NotFoundScreen
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
 import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeCreateScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeDetailScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipePreview
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.RecipeListScreenState
 import kotlin.random.Random.Default.nextInt
 
 @Destination
@@ -51,7 +53,7 @@ fun RecipeListScreen(
     resultRecipient: ResultRecipient<RecipeCreateScreenDestination, Int>,
     viewModel: RecipeListViewModel = hiltViewModel()
 ) {
-    val state by viewModel.state.collectAsState()
+    val uiState by viewModel.state.collectAsState()
 
     Scaffold(
         topBar = {
@@ -70,14 +72,22 @@ fun RecipeListScreen(
             }
         }
     ) { innerPadding ->
-        RecipeListScreen(
-            data = state.data,
-            isLoading = state.loading,
-            onClick = { id ->
-                navigator.navigate(RecipeDetailScreenDestination(recipeId = id))
-            },
-            modifier = Modifier.padding(innerPadding)
-        )
+        when (uiState) {
+            is RecipeListScreenState.Initial -> Loader()
+            is RecipeListScreenState.Loaded -> {
+                val recipePreviews = (uiState as RecipeListScreenState.Loaded).data
+                RecipeListScreen(
+                    data = recipePreviews,
+                    modifier = Modifier.padding(innerPadding)
+                ) { id ->
+                    navigator.navigate(RecipeDetailScreenDestination(recipeId = id))
+                }
+            }
+            is RecipeListScreenState.Error -> {
+                val message = (uiState as RecipeListScreenState.Error).uiText
+                AbstractErrorScreen(uiText = message)
+            }
+        }
     }
 
     resultRecipient.onNavResult { result ->
@@ -94,13 +104,10 @@ fun RecipeListScreen(
 @Composable
 private fun RecipeListScreen(
     data: List<RecipePreview>,
-    isLoading: Boolean,
-    onClick: (Int) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: (Int) -> Unit
 ) {
-    if (isLoading) {
-        Loader()
-    } else if (!isLoading && data.isEmpty()) {
+    if (data.isEmpty()) {
         NotFoundScreen()
     } else {
         LazyColumn(
@@ -187,7 +194,6 @@ fun RecipeListPreview() {
     NextcloudCookbookTheme {
         RecipeListScreen(
             data = data,
-            isLoading = false,
             onClick = {}
         )
     }

@@ -34,15 +34,11 @@ class CategoryListViewModel @Inject constructor(
                     )
                 }
                 is StoreResponse.NoNewData -> Unit
-                is StoreResponse.Error.Exception -> _uiState.update {
-                    CategoryListScreenState.Error(
-                        UiText.StringResource(R.string.error_unknown)
-                    )
-                }
-                is StoreResponse.Error.Message -> _uiState.update {
-                    CategoryListScreenState.Error(
-                        UiText.DynamicString(categoriesResponse.message)
-                    )
+                is StoreResponse.Error -> {
+                    val message = categoriesResponse.errorMessageOrNull()
+                        ?.let { UiText.DynamicString(it) }
+                        ?: run { UiText.StringResource(R.string.error_unknown) }
+                    _uiState.update { CategoryListScreenState.Error(message) }
                 }
             }
 
