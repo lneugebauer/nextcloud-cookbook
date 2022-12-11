@@ -72,20 +72,21 @@ fun RecipeListScreen(
             }
         }
     ) { innerPadding ->
+        val modifierWithInnerPadding = Modifier.padding(innerPadding)
         when (uiState) {
-            is RecipeListScreenState.Initial -> Loader()
+            is RecipeListScreenState.Initial -> Loader(modifier = modifierWithInnerPadding)
             is RecipeListScreenState.Loaded -> {
                 val recipePreviews = (uiState as RecipeListScreenState.Loaded).data
                 RecipeListScreen(
                     data = recipePreviews,
-                    modifier = Modifier.padding(innerPadding)
+                    modifier = modifierWithInnerPadding
                 ) { id ->
                     navigator.navigate(RecipeDetailScreenDestination(recipeId = id))
                 }
             }
             is RecipeListScreenState.Error -> {
                 val message = (uiState as RecipeListScreenState.Error).uiText
-                AbstractErrorScreen(uiText = message)
+                AbstractErrorScreen(uiText = message, modifier = modifierWithInnerPadding)
             }
         }
     }
