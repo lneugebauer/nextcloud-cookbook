@@ -47,6 +47,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -181,13 +182,13 @@ private fun LoginScreen(
                 .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
             label = {
                 Text(
-                    text = "Nextcloud root address",
+                    text = stringResource(R.string.login_root_address),
                     color = MaterialTheme.colors.onPrimary
                 )
             },
             placeholder = {
                 Text(
-                    text = "https://cloud.example.tld",
+                    text = stringResource(R.string.login_example_url),
                     color = MaterialTheme.colors.onPrimary.copy(alpha = 0.5f)
                 )
             },
@@ -207,11 +208,11 @@ private fun LoginScreen(
                 .fillMaxWidth()
                 .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
         ) {
-            Text(text = "Sign in")
+            Text(text = stringResource(R.string.login))
         }
         Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_m)))
         DefaultTextButton(onClick = onShowManualLoginClick) {
-            Text(text = "Manual login")
+            Text(text = stringResource(R.string.login_manual))
         }
         if (showManualLogin) {
             ManualLoginForm(
@@ -249,7 +250,7 @@ private fun ManualLoginForm(
             .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
         label = {
             Text(
-                text = "Username",
+                text = stringResource(R.string.common_username),
                 color = MaterialTheme.colors.onPrimary
             )
         },
@@ -276,7 +277,7 @@ private fun ManualLoginForm(
             .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
         label = {
             Text(
-                text = "Password",
+                text = stringResource(R.string.common_password),
                 color = MaterialTheme.colors.onPrimary
             )
         },
@@ -316,13 +317,13 @@ private fun ManualLoginForm(
             .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
         label = {
             Text(
-                text = "Nextcloud root address",
+                text = stringResource(R.string.login_root_address),
                 color = MaterialTheme.colors.onPrimary
             )
         },
         placeholder = {
             Text(
-                text = "https://cloud.example.tld",
+                text = stringResource(R.string.login_example_url),
                 color = MaterialTheme.colors.onPrimary.copy(alpha = 0.5f)
             )
         },
@@ -344,7 +345,7 @@ private fun ManualLoginForm(
             .fillMaxWidth()
             .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
     ) {
-        Text(text = "Manual sign in")
+        Text(text = stringResource(R.string.login_manual))
     }
 }
 
@@ -356,11 +357,14 @@ fun LoginWebView(url: Uri?, onCloseClick: () -> Unit) {
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = "Login")
+                    Text(text = stringResource(R.string.login))
                 },
                 navigationIcon = {
                     IconButton(onClick = onCloseClick) {
-                        Icon(imageVector = Icons.Default.Close, contentDescription = "Close")
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = stringResource(R.string.common_close)
+                        )
                     }
                 },
                 backgroundColor = NcBlue700,

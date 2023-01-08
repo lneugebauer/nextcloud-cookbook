@@ -4,13 +4,16 @@
     <string name="common_about">Über</string>
     <string name="common_back">Zurück</string>
     <string name="common_categories">Kategorien</string>
+    <string name="common_close">Schließen</string>
     <string name="common_edit">Bearbeiten</string>
     <string name="common_home">Start</string>
     <string name="common_more">Mehr</string>
+    <string name="common_password">Passwort</string>
     <string name="common_recipes">Rezepte</string>
     <string name="common_save">Speichern</string>
     <string name="common_settings">Einstellungen</string>
     <string name="common_share">Teilen</string>
+    <string name="common_username">Benutzername</string>
     <string name="error_api_not_initialized">API nicht initialisiert</string>
     <string name="error_empty_password">Bitte gebe ein Passwort ein</string>
     <string name="error_empty_url">Bitte gebe eine URL ein</string>
@@ -39,6 +42,9 @@
     <string name="error_unsupported_app_version">Inkompatible Version. Bitte aktualisiere die Kochbuch App in Nextcloud auf Version 0.9.15 oder höher.</string>
     <string name="home_category">Kategorie: %1s</string>
     <string name="home_recommendation">Vorschlag</string>
+    <string name="login">Anmelden</string>
+    <string name="login_manual">Manuell anmelden</string>
+    <string name="login_root_address">Nextcloud Adresse</string>
     <string name="recipe_cook_time">Kochen</string>
     <string name="recipe_description">Beschreibung</string>
     <string name="recipe_duration">%1$d Min.</string>
