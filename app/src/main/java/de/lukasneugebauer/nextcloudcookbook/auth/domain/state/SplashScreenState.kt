@@ -4,5 +4,4 @@ sealed interface SplashScreenState {
     object Initial : SplashScreenState
     object Authorized : SplashScreenState
     object Unauthorized : SplashScreenState
-    object UnsupportedAppVersion : SplashScreenState
 }

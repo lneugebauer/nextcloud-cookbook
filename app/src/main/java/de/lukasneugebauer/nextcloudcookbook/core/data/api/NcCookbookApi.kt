@@ -2,10 +2,8 @@ package de.lukasneugebauer.nextcloudcookbook.core.data.api
 
 import com.haroldadmin.cnradapter.NetworkResponse
 import de.lukasneugebauer.nextcloudcookbook.category.data.dto.CategoryDto
-import de.lukasneugebauer.nextcloudcookbook.core.data.dto.CookbookVersionsDto
 import de.lukasneugebauer.nextcloudcookbook.core.data.remote.response.CapabilitiesResponse
 import de.lukasneugebauer.nextcloudcookbook.core.data.remote.response.ErrorResponse
-import de.lukasneugebauer.nextcloudcookbook.core.util.Constants.API_ENDPOINT
 import de.lukasneugebauer.nextcloudcookbook.core.util.Constants.FULL_PATH
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipeDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipePreviewDto
@@ -47,7 +45,4 @@ interface NcCookbookApi {
 
     @DELETE("$FULL_PATH/recipes/{id}")
     suspend fun deleteRecipe(@Path("id") id: Int): NetworkResponse<String, ErrorResponse>
-
-    @GET("$API_ENDPOINT/version")
-    suspend fun getVersions(): NetworkResponse<CookbookVersionsDto, ErrorResponse>
 }
