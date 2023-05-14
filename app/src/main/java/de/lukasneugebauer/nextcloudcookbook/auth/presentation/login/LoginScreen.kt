@@ -25,6 +25,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Scaffold
+import androidx.compose.material.SwipeableDefaults
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
@@ -80,13 +81,15 @@ fun LoginScreen(
     val scope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
-        confirmStateChange = {
+        animationSpec = SwipeableDefaults.AnimationSpec,
+        confirmValueChange = {
             when (it) {
                 ModalBottomSheetValue.Hidden -> true
                 ModalBottomSheetValue.Expanded -> true
                 ModalBottomSheetValue.HalfExpanded -> false
             }
-        }
+        },
+        skipHalfExpanded = true
     )
     var showManualLogin: Boolean by rememberSaveable { mutableStateOf(false) }
     val uiState by viewModel.uiState.collectAsState()
@@ -105,7 +108,7 @@ fun LoginScreen(
     // Open modal bottom sheet as soon as an url is available
     LaunchedEffect(key1 = uiState) {
         if (uiState.webViewUrl != null) {
-            sheetState.animateTo(ModalBottomSheetValue.Expanded)
+            sheetState.show()
         }
     }
 
