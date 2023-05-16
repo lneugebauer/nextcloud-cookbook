@@ -5,5 +5,5 @@ import de.lukasneugebauer.nextcloudcookbook.core.data.dto.OcsDto
 
 data class CapabilitiesResponse(
     @SerializedName("ocs")
-    val ocs: OcsDto
+    val ocs: OcsDto,
 )

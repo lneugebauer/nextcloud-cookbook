@@ -26,7 +26,7 @@ import javax.inject.Singleton
 class ApiProvider @Inject constructor(
     private val coroutineScope: CoroutineScope,
     private val httpLoggingInterceptor: HttpLoggingInterceptor,
-    private val preferencesManager: PreferencesManager
+    private val preferencesManager: PreferencesManager,
 ) {
 
     private val gson = GsonBuilder()

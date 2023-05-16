@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class CategoryRepositoryImpl @Inject constructor(
-    private val categoriesStore: CategoriesStore
+    private val categoriesStore: CategoriesStore,
 ) : CategoryRepository {
 
     override fun getCategories(): Flow<StoreResponse<List<CategoryDto>>> {

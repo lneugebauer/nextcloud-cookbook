@@ -21,7 +21,7 @@ import javax.inject.Inject
 class AccountRepositoryImpl @Inject constructor(
     private val apiProvider: ApiProvider,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
-    private val preferencesManager: PreferencesManager
+    private val preferencesManager: PreferencesManager,
 ) : AccountRepository, BaseRepository() {
 
     override suspend fun getCapabilities(): Resource<Capabilities> {
@@ -50,7 +50,7 @@ class AccountRepositoryImpl @Inject constructor(
                 ) {
                     return@map Resource.Error(
                         data = account,
-                        message = UiText.StringResource(R.string.error_no_account_data)
+                        message = UiText.StringResource(R.string.error_no_account_data),
                     )
                 }
 

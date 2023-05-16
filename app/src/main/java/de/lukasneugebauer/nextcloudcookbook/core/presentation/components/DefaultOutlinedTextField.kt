@@ -38,8 +38,8 @@ fun DefaultOutlinedTextField(
         textColor = Color.White,
         cursorColor = Color.White,
         focusedBorderColor = Color.White,
-        unfocusedBorderColor = Color.White
-    )
+        unfocusedBorderColor = Color.White,
+    ),
 ) {
     val isError = errorText?.isNotBlank() == true
 
@@ -55,7 +55,7 @@ fun DefaultOutlinedTextField(
                     Icon(
                         imageVector = Icons.Default.Error,
                         contentDescription = "Error",
-                        tint = MaterialTheme.colors.error
+                        tint = MaterialTheme.colors.error,
                     )
                 }
             } else {
@@ -66,7 +66,7 @@ fun DefaultOutlinedTextField(
             keyboardOptions = keyboardOptions,
             keyboardActions = keyboardActions,
             singleLine = singleLine,
-            colors = colors
+            colors = colors,
         )
         if (isError) {
             Text(
@@ -74,7 +74,7 @@ fun DefaultOutlinedTextField(
                 color = MaterialTheme.colors.error,
                 style = MaterialTheme.typography.caption,
                 modifier = Modifier
-                    .padding(horizontal = dimensionResource(id = R.dimen.padding_l))
+                    .padding(horizontal = dimensionResource(id = R.dimen.padding_l)),
             )
         }
     }
@@ -95,7 +95,7 @@ private fun DefaultOutlinedTextFieldWithErrorPreview() {
         DefaultOutlinedTextField(
             value = "OutlinedTextField",
             onValueChange = {},
-            errorText = "Error message"
+            errorText = "Error message",
         )
     }
 }

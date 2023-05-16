@@ -19,7 +19,7 @@ fun RecipeEditScreen(
     navigator: DestinationsNavigator,
     @Suppress("UNUSED_PARAMETER") recipeId: Int,
     resultNavigator: ResultBackNavigator<Boolean>,
-    viewModel: RecipeEditViewModel = hiltViewModel()
+    viewModel: RecipeEditViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -43,6 +43,15 @@ fun RecipeEditScreen(
                 },
                 onImageOriginChanged = { newImageUrl ->
                     viewModel.changeImageOrigin(newImageUrl)
+                },
+                onPrepTimeChanged = { newPrepTime ->
+                    viewModel.changePrepTime(newPrepTime)
+                },
+                onCookTimeChanged = { newCookTime ->
+                    viewModel.changeCookTime(newCookTime)
+                },
+                onTotalTimeChanged = { newTotalTime ->
+                    viewModel.changeTotalTime(newTotalTime)
                 },
                 onYieldChanged = { newYield ->
                     viewModel.changeYield(newYield)
@@ -76,7 +85,7 @@ fun RecipeEditScreen(
                 },
                 onSaveClick = {
                     viewModel.save()
-                }
+                },
             )
         }
         is RecipeCreateEditState.Updated -> resultNavigator.navigateBack(true)

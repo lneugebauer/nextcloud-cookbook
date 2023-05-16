@@ -39,12 +39,12 @@ import kotlin.random.Random.Default.nextInt
 @Composable
 fun CategoryListScreen(
     navigator: DestinationsNavigator,
-    viewModel: CategoryListViewModel = hiltViewModel()
+    viewModel: CategoryListViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
     Scaffold(
-        topBar = { CategoryListTopBar() }
+        topBar = { CategoryListTopBar() },
     ) { innerPadding ->
         when (uiState) {
             is CategoryListScreenState.Initial -> Loader()
@@ -52,7 +52,7 @@ fun CategoryListScreen(
                 val categories = (uiState as CategoryListScreenState.Loaded).data
                 CategoryListScreen(
                     data = categories,
-                    modifier = Modifier.padding(innerPadding)
+                    modifier = Modifier.padding(innerPadding),
                 ) { categoryName ->
                     navigator.navigate(RecipeListScreenDestination(categoryName))
                 }
@@ -69,7 +69,7 @@ fun CategoryListScreen(
 private fun CategoryListScreen(
     data: List<Category>,
     modifier: Modifier,
-    onClick: (String) -> Unit
+    onClick: (String) -> Unit,
 ) {
     if (data.isEmpty()) {
         AbstractErrorScreen(uiText = UiText.StringResource(R.string.error_no_categories_found))
@@ -77,14 +77,14 @@ private fun CategoryListScreen(
         val listState = rememberLazyListState()
         LazyColumn(
             modifier = modifier.fillMaxSize(),
-            state = listState
+            state = listState,
         ) {
             itemsIndexed(data) { index, category ->
                 ListItem(
                     modifier = Modifier.clickable(
                         onClick = {
                             onClick.invoke(category.name)
-                        }
+                        },
                     ),
                     trailing = {
                         Badge(backgroundColor = MaterialTheme.colors.primary) {
@@ -93,11 +93,11 @@ private fun CategoryListScreen(
                     },
                     text = {
                         Text(text = category.name)
-                    }
+                    },
                 )
                 if (index != data.size - 1) {
                     Divider(
-                        modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_m))
+                        modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
                     )
                 }
             }
@@ -110,7 +110,7 @@ fun CategoryListTopBar() {
     TopAppBar(
         title = { Text(text = stringResource(R.string.common_categories)) },
         backgroundColor = NcBlue700,
-        contentColor = Color.White
+        contentColor = Color.White,
     )
 }
 

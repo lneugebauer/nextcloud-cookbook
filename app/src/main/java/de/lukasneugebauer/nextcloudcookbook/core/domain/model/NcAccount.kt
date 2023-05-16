@@ -4,5 +4,5 @@ data class NcAccount(
     val name: String,
     val username: String,
     val token: String,
-    val url: String
+    val url: String,
 )

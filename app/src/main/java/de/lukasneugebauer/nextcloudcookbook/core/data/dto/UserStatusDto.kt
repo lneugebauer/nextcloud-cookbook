@@ -7,9 +7,9 @@ data class UserStatusDto(
     @SerializedName("enabled")
     val enabled: Boolean,
     @SerializedName("supports_emoji")
-    val supportsEmoji: Boolean
+    val supportsEmoji: Boolean,
 ) {
     fun toUserStatus() = UserStatus(
-        enabled = enabled
+        enabled = enabled,
     )
 }

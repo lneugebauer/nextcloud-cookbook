@@ -17,7 +17,7 @@ data class RecipePreviewDto(
     @SerializedName("imageUrl")
     val imageUrl: String,
     @SerializedName("imagePlaceholderUrl")
-    val imagePlaceholderUrl: String
+    val imagePlaceholderUrl: String,
 ) {
     fun toRecipePreview() = RecipePreview(
         id = recipeId.toInt(),
@@ -25,6 +25,6 @@ data class RecipePreviewDto(
         keywords = keywords?.split(",") ?: emptyList(),
         imageUrl = imageUrl,
         createdAt = dateCreated,
-        modifiedAt = dateModified
+        modifiedAt = dateModified,
     )
 }

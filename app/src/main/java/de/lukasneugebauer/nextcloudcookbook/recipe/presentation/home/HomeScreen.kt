@@ -47,13 +47,13 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.util.RecipeConstants.MORE_BUT
 @Composable
 fun HomeScreen(
     navigator: DestinationsNavigator,
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
     Scaffold(topBar = {
         HomeTopBar(
-            onSettingsIconClick = { navigator.navigate(SettingsScreenDestination()) }
+            onSettingsIconClick = { navigator.navigate(SettingsScreenDestination()) },
         )
     }) { innerPadding ->
         when (uiState) {
@@ -69,16 +69,16 @@ fun HomeScreen(
                             .padding(innerPadding),
                         contentPadding = PaddingValues(
                             top = dimensionResource(id = R.dimen.padding_s),
-                            bottom = dimensionResource(id = R.dimen.padding_m)
+                            bottom = dimensionResource(id = R.dimen.padding_m),
                         ),
-                        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_s))
+                        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_s)),
                     ) {
                         items(homeScreenData) { item ->
                             when (item) {
                                 is HomeScreenDataResult.Row -> {
                                     Headline(
                                         text = item.headline,
-                                        clickable = item.recipes.size > MORE_BUTTON_THRESHOLD
+                                        clickable = item.recipes.size > MORE_BUTTON_THRESHOLD,
                                     ) {
                                         navigator.navigate(RecipeListScreenDestination(categoryName = item.headline))
                                     }
@@ -87,22 +87,22 @@ fun HomeScreen(
                                             RowContent(it.name, it.imageUrl) {
                                                 navigator.navigate(
                                                     RecipeDetailScreenDestination(
-                                                        recipeId = it.id
-                                                    )
+                                                        recipeId = it.id,
+                                                    ),
                                                 )
                                             }
-                                        }
+                                        },
                                     )
                                 }
                                 is HomeScreenDataResult.Single -> {
                                     Headline(
                                         text = stringResource(id = item.headline),
                                         clickable = false,
-                                        onClick = {}
+                                        onClick = {},
                                     )
                                     SingleItem(
                                         name = item.recipe.name,
-                                        imageUrl = item.recipe.imageUrl
+                                        imageUrl = item.recipe.imageUrl,
                                     ) {
                                         navigator.navigate(RecipeDetailScreenDestination(recipeId = item.recipe.id))
                                     }
@@ -125,12 +125,12 @@ fun HomeTopBar(onSettingsIconClick: () -> Unit) {
             IconButton(onClick = onSettingsIconClick) {
                 Icon(
                     Icons.Outlined.Settings,
-                    contentDescription = stringResource(id = R.string.common_settings)
+                    contentDescription = stringResource(id = R.string.common_settings),
                 )
             }
         },
         backgroundColor = NcBlue700,
-        contentColor = Color.White
+        contentColor = Color.White,
     )
 }
 
@@ -138,7 +138,7 @@ fun HomeTopBar(onSettingsIconClick: () -> Unit) {
 fun SingleItem(name: String, imageUrl: String, onClick: () -> Unit) {
     Card(
         modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
-        onClick = onClick
+        onClick = onClick,
     ) {
         Column {
             AuthorizedImage(
@@ -146,7 +146,7 @@ fun SingleItem(name: String, imageUrl: String, onClick: () -> Unit) {
                 contentDescription = name,
                 modifier = Modifier
                     .aspectRatio(16f / 9f)
-                    .fillMaxWidth()
+                    .fillMaxWidth(),
             )
             CommonItemBody(name = name, modifier = Modifier.fillMaxWidth(), onClick = {})
         }

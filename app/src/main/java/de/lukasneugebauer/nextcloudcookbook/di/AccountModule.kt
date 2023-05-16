@@ -20,6 +20,6 @@ object AccountModule {
     fun provideAccountRepository(
         apiProvider: ApiProvider,
         @IoDispatcher ioDispatcher: CoroutineDispatcher,
-        preferencesManager: PreferencesManager
+        preferencesManager: PreferencesManager,
     ): AccountRepository = AccountRepositoryImpl(apiProvider, ioDispatcher, preferencesManager)
 }

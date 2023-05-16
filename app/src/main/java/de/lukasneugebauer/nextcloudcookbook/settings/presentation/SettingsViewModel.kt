@@ -11,7 +11,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val clearPreferencesUseCase: ClearPreferencesUseCase,
-    val sharedPreferences: SharedPreferences
+    val sharedPreferences: SharedPreferences,
 ) : ViewModel() {
 
     fun logout() {

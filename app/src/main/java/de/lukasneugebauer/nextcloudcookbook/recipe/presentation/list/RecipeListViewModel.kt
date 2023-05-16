@@ -19,7 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class RecipeListViewModel @Inject constructor(
     private val recipeRepository: RecipeRepository,
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<RecipeListScreenState>(RecipeListScreenState.Initial)
@@ -44,7 +44,7 @@ class RecipeListViewModel @Inject constructor(
                 is StoreResponse.Loading -> _uiState.update { RecipeListScreenState.Initial }
                 is StoreResponse.Data -> _uiState.update {
                     RecipeListScreenState.Loaded(
-                        data = recipePreviewsResponse.value.map { it.toRecipePreview() }
+                        data = recipePreviewsResponse.value.map { it.toRecipePreview() },
                     )
                 }
                 is StoreResponse.NoNewData -> Unit

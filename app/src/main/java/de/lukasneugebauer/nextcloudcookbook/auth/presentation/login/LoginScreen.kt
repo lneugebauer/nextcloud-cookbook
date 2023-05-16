@@ -75,7 +75,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun LoginScreen(
     navigator: DestinationsNavigator,
-    viewModel: LoginViewModel = hiltViewModel()
+    viewModel: LoginViewModel = hiltViewModel(),
 ) {
     val focusManager = LocalFocusManager.current
     val scope = rememberCoroutineScope()
@@ -89,7 +89,7 @@ fun LoginScreen(
                 ModalBottomSheetValue.HalfExpanded -> false
             }
         },
-        skipHalfExpanded = true
+        skipHalfExpanded = true,
     )
     var showManualLogin: Boolean by rememberSaveable { mutableStateOf(false) }
     val uiState by viewModel.uiState.collectAsState()
@@ -119,10 +119,10 @@ fun LoginScreen(
                 onCloseClick = {
                     scope.launch { sheetState.hide() }
                     viewModel.onHideWebView()
-                }
+                },
             )
         },
-        sheetState = sheetState
+        sheetState = sheetState,
     ) {
         LoginScreen(
             showManualLogin = showManualLogin,
@@ -137,7 +137,7 @@ fun LoginScreen(
             onShowManualLoginClick = { showManualLogin = !showManualLogin },
             onManualLoginClick = { username, password, url ->
                 viewModel.tryManualLogin(username, password, url)
-            }
+            },
         )
     }
 }
@@ -151,7 +151,7 @@ private fun LoginScreen(
     onClearError: () -> Unit,
     onLoginClick: (url: String) -> Unit,
     onShowManualLoginClick: () -> Unit,
-    onManualLoginClick: (username: String, password: String, url: String) -> Unit
+    onManualLoginClick: (username: String, password: String, url: String) -> Unit,
 ) {
     var url: String by rememberSaveable { mutableStateOf("") }
     Column(
@@ -160,18 +160,18 @@ private fun LoginScreen(
             .fillMaxSize()
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Image(
             painter = painterResource(id = R.drawable.ic_nextcloud_logo_symbol),
             contentDescription = "Nextcloud Logo",
-            alignment = Alignment.Center
+            alignment = Alignment.Center,
         )
         Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_s)))
         Text(
             text = "Nextcloud Cookbook",
             color = Color.White,
-            style = MaterialTheme.typography.h5
+            style = MaterialTheme.typography.h5,
         )
         Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_l)))
         DefaultOutlinedTextField(
@@ -186,30 +186,30 @@ private fun LoginScreen(
             label = {
                 Text(
                     text = stringResource(R.string.login_root_address),
-                    color = MaterialTheme.colors.onPrimary
+                    color = MaterialTheme.colors.onPrimary,
                 )
             },
             placeholder = {
                 Text(
                     text = stringResource(R.string.login_example_url),
-                    color = MaterialTheme.colors.onPrimary.copy(alpha = 0.5f)
+                    color = MaterialTheme.colors.onPrimary.copy(alpha = 0.5f),
                 )
             },
             errorText = urlError?.asString(),
             keyboardOptions = KeyboardOptions.Default.copy(
-                imeAction = ImeAction.Done
+                imeAction = ImeAction.Done,
             ),
             keyboardActions = KeyboardActions(
-                onDone = { onLoginClick.invoke(url) }
+                onDone = { onLoginClick.invoke(url) },
             ),
-            singleLine = true
+            singleLine = true,
         )
         Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_s)))
         DefaultButton(
             onClick = { onLoginClick.invoke(url) },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
+                .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
         ) {
             Text(text = stringResource(R.string.login))
         }
@@ -223,7 +223,7 @@ private fun LoginScreen(
                 passwordError = passwordError,
                 urlError = urlError,
                 onClearError = onClearError,
-                onManualLoginClick = onManualLoginClick
+                onManualLoginClick = onManualLoginClick,
             )
         }
     }
@@ -235,7 +235,7 @@ private fun ManualLoginForm(
     passwordError: UiText?,
     urlError: UiText?,
     onClearError: () -> Unit,
-    onManualLoginClick: (username: String, password: String, url: String) -> Unit
+    onManualLoginClick: (username: String, password: String, url: String) -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
     var username: String by rememberSaveable { mutableStateOf("") }
@@ -254,19 +254,19 @@ private fun ManualLoginForm(
         label = {
             Text(
                 text = stringResource(R.string.common_username),
-                color = MaterialTheme.colors.onPrimary
+                color = MaterialTheme.colors.onPrimary,
             )
         },
         errorText = usernameError?.asString(),
         keyboardOptions = KeyboardOptions.Default.copy(
-            imeAction = ImeAction.Next
+            imeAction = ImeAction.Next,
         ),
         keyboardActions = KeyboardActions(
             onNext = {
                 focusManager.moveFocus(FocusDirection.Down)
-            }
+            },
         ),
-        singleLine = true
+        singleLine = true,
     )
     Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_s)))
     DefaultOutlinedTextField(
@@ -281,7 +281,7 @@ private fun ManualLoginForm(
         label = {
             Text(
                 text = stringResource(R.string.common_password),
-                color = MaterialTheme.colors.onPrimary
+                color = MaterialTheme.colors.onPrimary,
             )
         },
         visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
@@ -299,14 +299,14 @@ private fun ManualLoginForm(
         errorText = passwordError?.asString(),
         keyboardOptions = KeyboardOptions.Default.copy(
             keyboardType = KeyboardType.Password,
-            imeAction = ImeAction.Next
+            imeAction = ImeAction.Next,
         ),
         keyboardActions = KeyboardActions(
             onNext = {
                 focusManager.moveFocus(FocusDirection.Down)
-            }
+            },
         ),
-        singleLine = true
+        singleLine = true,
     )
     Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_s)))
     DefaultOutlinedTextField(
@@ -321,32 +321,32 @@ private fun ManualLoginForm(
         label = {
             Text(
                 text = stringResource(R.string.login_root_address),
-                color = MaterialTheme.colors.onPrimary
+                color = MaterialTheme.colors.onPrimary,
             )
         },
         placeholder = {
             Text(
                 text = stringResource(R.string.login_example_url),
-                color = MaterialTheme.colors.onPrimary.copy(alpha = 0.5f)
+                color = MaterialTheme.colors.onPrimary.copy(alpha = 0.5f),
             )
         },
         errorText = urlError?.asString(),
         keyboardOptions = KeyboardOptions.Default.copy(
-            imeAction = ImeAction.Done
+            imeAction = ImeAction.Done,
         ),
         keyboardActions = KeyboardActions(
             onDone = {
                 onManualLoginClick(username, password, url)
-            }
+            },
         ),
-        singleLine = true
+        singleLine = true,
     )
     Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_s)))
     DefaultButton(
         onClick = { onManualLoginClick(username, password, url) },
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
+            .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
     ) {
         Text(text = stringResource(R.string.login_manual))
     }
@@ -366,14 +366,14 @@ fun LoginWebView(url: Uri?, onCloseClick: () -> Unit) {
                     IconButton(onClick = onCloseClick) {
                         Icon(
                             imageVector = Icons.Default.Close,
-                            contentDescription = stringResource(R.string.common_close)
+                            contentDescription = stringResource(R.string.common_close),
                         )
                     }
                 },
                 backgroundColor = NcBlue700,
-                contentColor = Color.White
+                contentColor = Color.White,
             )
-        }
+        },
     ) { innerPadding ->
         if (url != null) {
             AndroidView(
@@ -384,7 +384,7 @@ fun LoginWebView(url: Uri?, onCloseClick: () -> Unit) {
                         webViewClient = object : WebViewClient() {
                             override fun shouldOverrideUrlLoading(
                                 view: WebView?,
-                                request: WebResourceRequest?
+                                request: WebResourceRequest?,
                             ): Boolean {
                                 return false
                             }
@@ -393,7 +393,7 @@ fun LoginWebView(url: Uri?, onCloseClick: () -> Unit) {
                 },
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(innerPadding)
+                    .padding(innerPadding),
             )
         } else {
             Loader()

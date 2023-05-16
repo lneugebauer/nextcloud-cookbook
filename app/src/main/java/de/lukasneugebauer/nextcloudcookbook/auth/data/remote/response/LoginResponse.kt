@@ -10,14 +10,14 @@ data class LoginResponse(
     @SerializedName("loginName")
     val loginName: String,
     @SerializedName("appPassword")
-    val appPassword: String
+    val appPassword: String,
 ) {
     fun toLoginResult(): LoginResult = LoginResult(
         ncAccount = NcAccount(
             name = "",
             username = loginName,
             token = appPassword,
-            url = server
-        )
+            url = server,
+        ),
     )
 }

@@ -14,7 +14,7 @@ import javax.inject.Singleton
 // https://gist.github.com/twaddington/e66e495e14950b4437216ab5c704835b
 @Singleton
 class UserAgentInterceptor @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
 ) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
@@ -27,7 +27,7 @@ class UserAgentInterceptor @Inject constructor(
             Build.MODEL,
             Build.BRAND,
             Build.DEVICE,
-            Locale.getDefault().language
+            Locale.getDefault().language,
         )
 
         val request = chain.request()

@@ -9,11 +9,11 @@ data class LoginEndpointResponse(
     @SerializedName("poll")
     val poll: PollDto,
     @SerializedName("login")
-    val login: String
+    val login: String,
 ) {
     fun toLoginEndpointResult() = LoginEndpointResult(
         token = poll.token,
         pollUrl = poll.endpoint,
-        loginUrl = login.toUri()
+        loginUrl = login.toUri(),
     )
 }

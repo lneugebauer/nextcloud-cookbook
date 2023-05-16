@@ -20,5 +20,5 @@ fun emptyRecipe(): Recipe = Recipe(
     ingredients = emptyList(),
     instructions = emptyList(),
     createdAt = "",
-    modifiedAt = ""
+    modifiedAt = "",
 )

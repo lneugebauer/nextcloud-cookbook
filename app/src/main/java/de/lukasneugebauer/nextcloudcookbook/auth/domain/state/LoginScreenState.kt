@@ -8,5 +8,5 @@ data class LoginScreenState(
     val usernameError: UiText? = null,
     val passwordError: UiText? = null,
     val urlError: UiText? = null,
-    val webViewUrl: Uri? = null
+    val webViewUrl: Uri? = null,
 )

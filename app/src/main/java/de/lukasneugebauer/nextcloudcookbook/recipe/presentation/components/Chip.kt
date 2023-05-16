@@ -22,10 +22,10 @@ fun Chip(text: String) {
             .border(width = 2.dp, color = NcBlue700, shape = CircleShape)
             .padding(
                 horizontal = dimensionResource(id = R.dimen.padding_s),
-                vertical = dimensionResource(id = R.dimen.padding_xs)
+                vertical = dimensionResource(id = R.dimen.padding_xs),
             )
             .heightIn(min = dimensionResource(id = R.dimen.chip_min_height)),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         Text(text = text, style = MaterialTheme.typography.body2)
     }

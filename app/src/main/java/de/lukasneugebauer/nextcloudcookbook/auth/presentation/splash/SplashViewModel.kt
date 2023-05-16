@@ -17,7 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SplashViewModel @Inject constructor(
     private val accountRepository: AccountRepository,
-    private val apiProvider: ApiProvider
+    private val apiProvider: ApiProvider,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<SplashScreenState>(SplashScreenState.Initial)
@@ -27,7 +27,7 @@ class SplashViewModel @Inject constructor(
         viewModelScope.launch {
             combine(
                 accountRepository.getAccount(),
-                apiProvider.ncCookbookApiFlow
+                apiProvider.ncCookbookApiFlow,
             ) { account, ncCookbookApi ->
                 Pair(account, ncCookbookApi)
             }.collect { (account, ncCookbookApi) ->

@@ -36,7 +36,7 @@ object RecipeModule {
             .from(
                 fetcher = Fetcher.of { categoryName: String ->
                     ncCookbookApi.getRecipesByCategory(categoryName)
-                }
+                },
             )
             .build()
     }
@@ -72,13 +72,13 @@ object RecipeModule {
         @IoDispatcher ioDispatcher: CoroutineDispatcher,
         recipesByCategoryStore: RecipePreviewsByCategoryStore,
         recipePreviewsStore: RecipePreviewsStore,
-        recipeStore: RecipeStore
+        recipeStore: RecipeStore,
     ): RecipeRepository =
         RecipeRepositoryImpl(
             apiProvider,
             ioDispatcher,
             recipesByCategoryStore,
             recipePreviewsStore,
-            recipeStore
+            recipeStore,
         )
 }

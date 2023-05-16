@@ -13,15 +13,15 @@ import androidx.compose.ui.tooling.preview.Preview
 fun DefaultTextButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    content: @Composable RowScope.() -> Unit
+    content: @Composable RowScope.() -> Unit,
 ) {
     TextButton(
         onClick = onClick,
         modifier = modifier,
         colors = ButtonDefaults.textButtonColors(
-            contentColor = Color.White
+            contentColor = Color.White,
         ),
-        content = content
+        content = content,
     )
 }
 

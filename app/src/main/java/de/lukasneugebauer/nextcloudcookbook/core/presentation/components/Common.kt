@@ -28,21 +28,21 @@ fun CommonItem(
     name: String,
     imageUrl: String,
     width: Dp,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     Card(
         onClick = onClick,
-        modifier = Modifier.width(width)
+        modifier = Modifier.width(width),
     ) {
         Column {
             AuthorizedImage(
                 imageUrl = imageUrl,
                 contentDescription = name,
-                modifier = Modifier.size(width)
+                modifier = Modifier.size(width),
             )
             CommonItemBody(
                 name = name,
-                modifier = Modifier.width(width)
+                modifier = Modifier.width(width),
             ) {
                 Timber.d("More icon clicked")
             }
@@ -54,7 +54,7 @@ fun CommonItem(
 fun CommonItemBody(name: String, modifier: Modifier, onClick: () -> Unit) {
     Row(
         modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
             text = name,
@@ -64,17 +64,17 @@ fun CommonItemBody(name: String, modifier: Modifier, onClick: () -> Unit) {
                 .wrapContentWidth(Alignment.Start),
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,
-            style = MaterialTheme.typography.body1
+            style = MaterialTheme.typography.body1,
         )
         IconButton(
             onClick = onClick,
             modifier = Modifier
                 .weight(1f)
-                .wrapContentWidth(Alignment.End)
+                .wrapContentWidth(Alignment.End),
         ) {
             Icon(
                 Icons.Filled.MoreVert,
-                contentDescription = stringResource(id = R.string.common_more)
+                contentDescription = stringResource(id = R.string.common_more),
             )
         }
     }

@@ -35,7 +35,7 @@ object AppModule {
     @Singleton
     fun providePreferencesManager(
         @ApplicationContext context: Context,
-        sharedPreferences: SharedPreferences
+        sharedPreferences: SharedPreferences,
     ): PreferencesManager = PreferencesManager(context, sharedPreferences)
 
     @Provides

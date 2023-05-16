@@ -6,5 +6,5 @@ data class PollDto(
     @SerializedName("token")
     val token: String,
     @SerializedName("endpoint")
-    val endpoint: String
+    val endpoint: String,
 )

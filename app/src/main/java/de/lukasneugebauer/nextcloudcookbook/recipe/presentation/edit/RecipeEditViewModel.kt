@@ -16,7 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class RecipeEditViewModel @Inject constructor(
     private val recipeRepository: RecipeRepository,
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
 ) : RecipeCreateEditViewModel(recipeRepository, savedStateHandle) {
 
     override fun save() {
@@ -26,7 +26,7 @@ class RecipeEditViewModel @Inject constructor(
                 _uiState.update {
                     when (val result = recipeRepository.updateRecipe(recipe)) {
                         is Resource.Error -> RecipeCreateEditState.Error(
-                            result.message ?: UiText.StringResource(R.string.error_unknown)
+                            result.message ?: UiText.StringResource(R.string.error_unknown),
                         )
                         is Resource.Success -> RecipeCreateEditState.Updated(recipe.id)
                     }

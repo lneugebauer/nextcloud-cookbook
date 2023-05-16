@@ -30,7 +30,7 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "ap
 @Singleton
 class PreferencesManager @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val sharedPreferences: SharedPreferences
+    private val sharedPreferences: SharedPreferences,
 ) {
 
     private object PreferencesKeys {
@@ -65,17 +65,17 @@ class PreferencesManager @Inject constructor(
                     name = ncName,
                     username = ncUsername,
                     token = ncToken,
-                    url = ncUrl
+                    url = ncUrl,
                 ),
                 recipeOfTheDay = RecipeOfTheDay(
                     id = recipeOfTheDayId,
                     updatedAt = LocalDateTime.ofInstant(
                         Instant.ofEpochSecond(
-                            recipeOfTheDayUpdatedAt
+                            recipeOfTheDayUpdatedAt,
                         ),
-                        ZoneOffset.UTC
-                    )
-                )
+                        ZoneOffset.UTC,
+                    ),
+                ),
             )
         }
 

@@ -35,6 +35,6 @@ object CategoryModule {
     @Provides
     @Singleton
     fun provideCategoryRepository(
-        categoriesStore: CategoriesStore
+        categoriesStore: CategoriesStore,
     ): CategoryRepository = CategoryRepositoryImpl(categoriesStore)
 }
