@@ -2,7 +2,7 @@ package de.lukasneugebauer.nextcloudcookbook.recipe.data.dto
 
 import com.google.gson.annotations.SerializedName
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Recipe
-import java.time.Duration
+import de.lukasneugebauer.nextcloudcookbook.recipe.util.parseAsDuration
 import java.util.Collections.emptyList
 
 data class RecipeDto(
@@ -43,7 +43,7 @@ data class RecipeDto(
     @SerializedName("imageUrl")
     val imageUrl: String,
     @SerializedName("nutrition")
-    val nutrition: NutritionDto?
+    val nutrition: NutritionDto?,
 ) {
     fun toRecipe() = Recipe(
         id = id,
@@ -53,16 +53,16 @@ data class RecipeDto(
         imageOrigin = image,
         imageUrl = imageUrl,
         category = recipeCategory,
-        keywords = if (keywords == null || keywords.isEmpty()) emptyList() else keywords.split(","),
+        keywords = if (keywords.isNullOrEmpty()) emptyList() else keywords.split(","),
         yield = recipeYield,
-        prepTime = if (prepTime == null || prepTime.isBlank()) null else Duration.parse(prepTime),
-        cookTime = if (cookTime == null || cookTime.isBlank()) null else Duration.parse(cookTime),
-        totalTime = if (totalTime == null || totalTime.isBlank()) null else Duration.parse(totalTime),
+        prepTime = prepTime.parseAsDuration(),
+        cookTime = cookTime.parseAsDuration(),
+        totalTime = totalTime.parseAsDuration(),
         nutrition = nutrition?.toNutrition(),
         tools = tool,
         ingredients = recipeIngredient,
         instructions = recipeInstructions,
         createdAt = dateCreated,
-        modifiedAt = dateModified
+        modifiedAt = dateModified,
     )
 }
