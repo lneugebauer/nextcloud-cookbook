@@ -49,7 +49,8 @@ class LoginViewModel @Inject constructor(
                 if (accountResource is Resource.Success && ncCookbookApi != null) {
                     val capabilitiesResource = accountRepository.getCapabilities()
                     when {
-                        capabilitiesResource is Resource.Success && capabilitiesResource.data?.userStatus?.enabled == true -> {
+                        capabilitiesResource is Resource.Success &&
+                            capabilitiesResource.data?.userStatus?.enabled == true -> {
                             _uiState.update { it.copy(authorized = true) }
                         }
                         else -> {
