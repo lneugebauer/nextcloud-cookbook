@@ -25,7 +25,7 @@ fun authorizedImagePainter(imageUrl: String): Painter {
                 addHeader("Authorization", credentials.basic)
             }
             crossfade(Constants.CROSSFADE_DURATION_MILLIS)
-        }
+        },
     )
 
     val painterState = painter.state
@@ -33,8 +33,8 @@ fun authorizedImagePainter(imageUrl: String): Painter {
         return rememberDrawablePainter(
             drawable = AppCompatResources.getDrawable(
                 LocalContext.current,
-                R.drawable.common_image_placeholder
-            )
+                R.drawable.common_image_placeholder,
+            ),
         )
     }
 
@@ -45,12 +45,12 @@ fun authorizedImagePainter(imageUrl: String): Painter {
 fun AuthorizedImage(
     imageUrl: String,
     contentDescription: String,
-    modifier: Modifier
+    modifier: Modifier,
 ) {
     Image(
         painter = authorizedImagePainter(imageUrl),
         contentDescription = contentDescription,
         modifier = modifier,
-        contentScale = ContentScale.Crop
+        contentScale = ContentScale.Crop,
     )
 }

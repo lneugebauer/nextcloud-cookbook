@@ -17,7 +17,7 @@ import okhttp3.Credentials as Okhttp3Credentials
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val accountRepository: AccountRepository
+    private val accountRepository: AccountRepository,
 ) : ViewModel() {
 
     private val _splashState = MutableStateFlow<SplashState>(SplashState.Initial)
@@ -45,9 +45,9 @@ class MainViewModel @Inject constructor(
                                     baseUrl = accountResource.data.url,
                                     basic = Okhttp3Credentials.basic(
                                         username = accountResource.data.username,
-                                        password = accountResource.data.token
-                                    )
-                                )
+                                        password = accountResource.data.token,
+                                    ),
+                                ),
                             )
                         }
                     }

@@ -52,10 +52,10 @@ import de.lukasneugebauer.nextcloudcookbook.settings.util.SettingsConstants.STAY
 @Composable
 fun SettingsScreen(
     navigator: DestinationsNavigator,
-    viewModel: SettingsViewModel = hiltViewModel()
+    viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     Scaffold(
-        topBar = { SettingsTopBar(onNavIconClick = { navigator.popBackStack() }) }
+        topBar = { SettingsTopBar(onNavIconClick = { navigator.popBackStack() }) },
     ) { innerPadding ->
         SettingsContent(
             modifier = Modifier
@@ -66,13 +66,13 @@ fun SettingsScreen(
                 viewModel.logout()
                 navigator.navigate(LoginScreenDestination) {
                     popUpTo(
-                        SplashScreenDestination.route
+                        SplashScreenDestination.route,
                     ) {
                         inclusive = true
                     }
                 }
             },
-            sharedPreferences = viewModel.sharedPreferences
+            sharedPreferences = viewModel.sharedPreferences,
         )
     }
 }
@@ -85,12 +85,12 @@ fun SettingsTopBar(onNavIconClick: () -> Unit) {
             IconButton(onClick = onNavIconClick) {
                 Icon(
                     Icons.Default.ArrowBack,
-                    contentDescription = stringResource(id = R.string.common_back)
+                    contentDescription = stringResource(id = R.string.common_back),
                 )
             }
         },
         backgroundColor = NcBlue700,
-        contentColor = Color.White
+        contentColor = Color.White,
     )
 }
 
@@ -98,7 +98,7 @@ fun SettingsTopBar(onNavIconClick: () -> Unit) {
 fun SettingsContent(
     modifier: Modifier,
     onLogoutClick: () -> Unit,
-    sharedPreferences: SharedPreferences
+    sharedPreferences: SharedPreferences,
 ) {
     val context = LocalContext.current
 
@@ -115,7 +115,7 @@ fun SettingsGroupGeneral(sharedPreferences: SharedPreferences) {
     val stayAwakeState = rememberPreferenceBooleanSettingState(
         key = STAY_AWAKE_KEY,
         defaultValue = STAY_AWAKE_DEFAULT,
-        preferences = sharedPreferences
+        preferences = sharedPreferences,
     )
 
     SettingsGroup(title = { Text(text = stringResource(R.string.settings_general)) }) {
@@ -124,12 +124,12 @@ fun SettingsGroupGeneral(sharedPreferences: SharedPreferences) {
             icon = {
                 Icon(
                     imageVector = Icons.Outlined.LightMode,
-                    contentDescription = stringResource(R.string.settings_stay_awake)
+                    contentDescription = stringResource(R.string.settings_stay_awake),
                 )
             },
             title = { Text(text = stringResource(R.string.settings_stay_awake)) },
             subtitle = { Text(text = stringResource(R.string.settings_stay_awake_on_recipe_screen)) },
-            onCheckedChange = {}
+            onCheckedChange = {},
         )
     }
 }
@@ -141,11 +141,11 @@ fun SettingsGroupAccount(onLogoutClick: () -> Unit) {
             icon = {
                 Icon(
                     imageVector = Icons.Default.Logout,
-                    contentDescription = stringResource(id = R.string.settings_logout)
+                    contentDescription = stringResource(id = R.string.settings_logout),
                 )
             },
             title = { Text(text = stringResource(id = R.string.settings_logout)) },
-            onClick = onLogoutClick
+            onClick = onLogoutClick,
         )
     }
 }
@@ -157,16 +157,16 @@ fun SettingsGroupAbout(context: Context) {
             icon = {
                 Icon(
                     imageVector = Icons.Outlined.Lock,
-                    contentDescription = stringResource(R.string.settings_privacy)
+                    contentDescription = stringResource(R.string.settings_privacy),
                 )
             },
             title = { Text(text = stringResource(R.string.settings_privacy)) },
-            onClick = { Uri.parse(PRIVACY_URL).openInBrowser(context) }
+            onClick = { Uri.parse(PRIVACY_URL).openInBrowser(context) },
         )
         SettingsMenuLink(
             title = { Text(text = stringResource(R.string.settings_license)) },
             subtitle = { Text(text = stringResource(R.string.settings_mit_license)) },
-            onClick = { Uri.parse(LICENSE_URL).openInBrowser(context) }
+            onClick = { Uri.parse(LICENSE_URL).openInBrowser(context) },
         )
         SettingsMenuLink(
             title = { Text(text = stringResource(R.string.settings_version)) },
@@ -175,11 +175,11 @@ fun SettingsGroupAbout(context: Context) {
                     text = stringResource(
                         R.string.settings_version_number,
                         BuildConfig.VERSION_NAME,
-                        BuildConfig.VERSION_CODE
-                    )
+                        BuildConfig.VERSION_CODE,
+                    ),
                 )
             },
-            onClick = {}
+            onClick = {},
         )
     }
 }
@@ -191,22 +191,22 @@ fun SettingsGroupContribution(context: Context) {
             icon = {
                 Icon(
                     imageVector = Icons.Default.Code,
-                    contentDescription = stringResource(R.string.settings_source_code)
+                    contentDescription = stringResource(R.string.settings_source_code),
                 )
             },
             title = { Text(text = stringResource(R.string.settings_source_code)) },
             subtitle = { Text(text = stringResource(R.string.settings_hosted_on_github)) },
-            onClick = { Uri.parse(GITHUB_URL).openInBrowser(context) }
+            onClick = { Uri.parse(GITHUB_URL).openInBrowser(context) },
         )
         SettingsMenuLink(
             title = { Text(text = stringResource(R.string.settings_issues)) },
             subtitle = {
                 Text(
                     text = stringResource(R.string.settings_where_to_report_issues),
-                    modifier = Modifier.padding(end = dimensionResource(id = R.dimen.padding_m))
+                    modifier = Modifier.padding(end = dimensionResource(id = R.dimen.padding_m)),
                 )
             },
-            onClick = { Uri.parse(GITHUB_ISSUES_URL).openInBrowser(context) }
+            onClick = { Uri.parse(GITHUB_ISSUES_URL).openInBrowser(context) },
         )
     }
     Gap(size = dimensionResource(id = R.dimen.padding_s))

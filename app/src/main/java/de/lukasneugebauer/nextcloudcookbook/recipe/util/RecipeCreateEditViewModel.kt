@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 
 abstract class RecipeCreateEditViewModel(
     private val recipeRepository: RecipeRepository,
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
     protected val _uiState = MutableStateFlow<RecipeCreateEditState>(RecipeCreateEditState.Loading)
@@ -59,6 +59,24 @@ abstract class RecipeCreateEditViewModel(
     fun changeImageOrigin(newImageOrigin: String) {
         _uiState.value.ifSuccess {
             recipe = recipe.copy(image = newImageOrigin)
+        }
+    }
+
+    fun changePrepTime(newPrepTime: String) {
+        _uiState.value.ifSuccess {
+            recipe = recipe.copy(prepTime = newPrepTime)
+        }
+    }
+
+    fun changeCookTime(newCookTime: String) {
+        _uiState.value.ifSuccess {
+            recipe = recipe.copy(cookTime = newCookTime)
+        }
+    }
+
+    fun changeTotalTime(newTotalTime: String) {
+        _uiState.value.ifSuccess {
+            recipe = recipe.copy(totalTime = newTotalTime)
         }
     }
 

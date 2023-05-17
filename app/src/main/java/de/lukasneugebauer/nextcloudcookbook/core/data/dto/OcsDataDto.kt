@@ -4,5 +4,5 @@ import com.google.gson.annotations.SerializedName
 
 data class OcsDataDto(
     @SerializedName("capabilities")
-    val capabilities: CapabilitiesDto
+    val capabilities: CapabilitiesDto,
 )

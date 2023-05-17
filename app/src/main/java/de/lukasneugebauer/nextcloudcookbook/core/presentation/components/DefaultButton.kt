@@ -17,15 +17,15 @@ fun DefaultButton(
     modifier: Modifier = Modifier,
     colors: ButtonColors = ButtonDefaults.buttonColors(
         backgroundColor = Color.White,
-        contentColor = NcBlue700
+        contentColor = NcBlue700,
     ),
-    content: @Composable RowScope.() -> Unit
+    content: @Composable RowScope.() -> Unit,
 ) {
     Button(
         onClick = onClick,
         modifier = modifier,
         colors = colors,
-        content = content
+        content = content,
     )
 }
 

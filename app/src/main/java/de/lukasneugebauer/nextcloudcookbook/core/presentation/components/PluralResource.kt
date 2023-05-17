@@ -8,7 +8,7 @@ import androidx.compose.ui.platform.LocalContext
 fun pluralResource(
     @PluralsRes resId: Int,
     quantity: Int,
-    vararg formatArgs: Any? = emptyArray()
+    vararg formatArgs: Any? = emptyArray(),
 ): String {
     return LocalContext.current.resources.getQuantityString(resId, quantity, *formatArgs)
 }

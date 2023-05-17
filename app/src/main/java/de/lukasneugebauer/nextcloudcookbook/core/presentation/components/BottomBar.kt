@@ -28,11 +28,11 @@ import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeListScreenDestina
 enum class BottomBarDestination(
     val direction: Destination,
     val icon: ImageVector,
-    @StringRes val label: Int
+    @StringRes val label: Int,
 ) {
     Home(HomeScreenDestination, Icons.Default.Home, R.string.common_home),
     Categories(CategoryListScreenDestination, Icons.Default.Category, R.string.common_categories),
-    Recipes(RecipeListScreenDestination, Icons.Default.Fastfood, R.string.common_recipes)
+    Recipes(RecipeListScreenDestination, Icons.Default.Fastfood, R.string.common_recipes),
 }
 
 @Composable
@@ -51,11 +51,11 @@ fun BottomBar(navController: NavController) {
                 icon = {
                     Icon(
                         destination.icon,
-                        contentDescription = stringResource(destination.label)
+                        contentDescription = stringResource(destination.label),
                     )
                 },
                 label = { Text(stringResource(destination.label)) },
-                selectedContentColor = Color.White
+                selectedContentColor = Color.White,
             )
         }
     }

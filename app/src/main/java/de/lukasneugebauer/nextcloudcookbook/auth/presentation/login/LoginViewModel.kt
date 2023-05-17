@@ -29,7 +29,7 @@ class LoginViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val apiProvider: ApiProvider,
     private val clearPreferencesUseCase: ClearPreferencesUseCase,
-    private val preferencesManager: PreferencesManager
+    private val preferencesManager: PreferencesManager,
 ) : ViewModel() {
 
     private var pollLoginServerIsActive = false
@@ -41,7 +41,7 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             combine(
                 accountRepository.getAccount(),
-                apiProvider.ncCookbookApiFlow
+                apiProvider.ncCookbookApiFlow,
             ) { accountResource, ncCookbookApi ->
                 Pair(accountResource, ncCookbookApi)
             }.collect { (accountResource, ncCookbookApi) ->
@@ -93,7 +93,7 @@ class LoginViewModel @Inject constructor(
             name = "",
             username = username,
             token = password,
-            url = url.removeSuffix("/")
+            url = url.removeSuffix("/"),
         )
         viewModelScope.launch {
             preferencesManager.updateNextcloudAccount(ncAccount)
@@ -110,7 +110,7 @@ class LoginViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(
             usernameError = null,
             passwordError = null,
-            urlError = null
+            urlError = null,
         )
     }
 

@@ -31,11 +31,11 @@ data class ThemingDto(
     @SerializedName("logoheader")
     val logoheader: String,
     @SerializedName("favicon")
-    val favicon: String
+    val favicon: String,
 ) {
     fun toTheming() = Theming(
         color = color,
         colorText = colorText,
-        colorBackground = background
+        colorBackground = background,
     )
 }

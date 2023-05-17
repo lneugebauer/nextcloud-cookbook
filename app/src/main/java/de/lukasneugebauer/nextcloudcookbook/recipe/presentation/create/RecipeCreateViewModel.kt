@@ -16,7 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class RecipeCreateViewModel @Inject constructor(
     private val recipeRepository: RecipeRepository,
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
 ) : RecipeCreateEditViewModel(recipeRepository, savedStateHandle) {
 
     override fun save() {
@@ -30,7 +30,7 @@ class RecipeCreateViewModel @Inject constructor(
                         RecipeCreateEditState.Updated(recipeId)
                     } else {
                         RecipeCreateEditState.Error(
-                            result.message ?: UiText.StringResource(R.string.error_unknown)
+                            result.message ?: UiText.StringResource(R.string.error_unknown),
                         )
                     }
                 }

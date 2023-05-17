@@ -18,7 +18,7 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.presentation.components.Creat
 fun RecipeCreateScreen(
     navigator: DestinationsNavigator,
     resultNavigator: ResultBackNavigator<Int>,
-    viewModel: RecipeCreateViewModel = hiltViewModel()
+    viewModel: RecipeCreateViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -42,6 +42,15 @@ fun RecipeCreateScreen(
                 },
                 onImageOriginChanged = { newImageUrl ->
                     viewModel.changeImageOrigin(newImageUrl)
+                },
+                onPrepTimeChanged = { newPrepTime ->
+                    viewModel.changePrepTime(newPrepTime)
+                },
+                onCookTimeChanged = { newCookTime ->
+                    viewModel.changeCookTime(newCookTime)
+                },
+                onTotalTimeChanged = { newTotalTime ->
+                    viewModel.changeTotalTime(newTotalTime)
                 },
                 onYieldChanged = { newYield ->
                     viewModel.changeYield(newYield)
@@ -75,7 +84,7 @@ fun RecipeCreateScreen(
                 },
                 onSaveClick = {
                     viewModel.save()
-                }
+                },
             )
         }
         is RecipeCreateEditState.Updated -> {

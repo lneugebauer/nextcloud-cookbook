@@ -27,7 +27,7 @@ data class NutritionDto(
     @SerializedName("transFatContent")
     val transFatContent: String?,
     @SerializedName("unsaturatedFatContent")
-    val unsaturatedFatContent: String?
+    val unsaturatedFatContent: String?,
 ) {
     fun toNutrition() = Nutrition(
         calories = calories,
@@ -41,6 +41,6 @@ data class NutritionDto(
         sodiumContent = sodiumContent,
         sugarContent = sugarContent,
         transFatContent = transFatContent,
-        unsaturatedFatContent = unsaturatedFatContent
+        unsaturatedFatContent = unsaturatedFatContent,
     )
 }

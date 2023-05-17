@@ -29,7 +29,7 @@ class RecipeRepositoryImpl @Inject constructor(
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
     private val recipePreviewsByCategoryStore: RecipePreviewsByCategoryStore,
     private val recipePreviewsStore: RecipePreviewsStore,
-    private val recipeStore: RecipeStore
+    private val recipeStore: RecipeStore,
 ) : RecipeRepository, BaseRepository() {
 
     override fun getRecipePreviews(): Flow<StoreResponse<List<RecipePreviewDto>>> =
@@ -39,8 +39,8 @@ class RecipeRepositoryImpl @Inject constructor(
         recipePreviewsByCategoryStore.stream(
             StoreRequest.cached(
                 key = categoryName,
-                refresh = false
-            )
+                refresh = false,
+            ),
         )
 
     override fun getRecipeFlow(id: Int): Flow<StoreResponse<RecipeDto>> =

@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CategoryListViewModel @Inject constructor(
-    categoryRepository: CategoryRepository
+    categoryRepository: CategoryRepository,
 ) : ViewModel() {
 
     private val _uiState =
@@ -30,7 +30,7 @@ class CategoryListViewModel @Inject constructor(
                 is StoreResponse.Loading -> _uiState.update { CategoryListScreenState.Initial }
                 is StoreResponse.Data -> _uiState.update {
                     CategoryListScreenState.Loaded(
-                        categoriesResponse.value.map { it.toCategory() }
+                        categoriesResponse.value.map { it.toCategory() },
                     )
                 }
                 is StoreResponse.NoNewData -> Unit
@@ -41,7 +41,6 @@ class CategoryListViewModel @Inject constructor(
                     _uiState.update { CategoryListScreenState.Error(message) }
                 }
             }
-
         }.launchIn(viewModelScope)
     }
 }

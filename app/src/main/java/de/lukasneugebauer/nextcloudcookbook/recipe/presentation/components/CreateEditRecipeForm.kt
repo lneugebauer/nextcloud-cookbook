@@ -41,6 +41,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Gap
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Recipe
+import java.time.Duration
 
 @Composable
 fun CreateEditRecipeForm(
@@ -51,6 +52,9 @@ fun CreateEditRecipeForm(
     onDescriptionChanged: (description: String) -> Unit,
     onUrlChanged: (url: String) -> Unit,
     onImageOriginChanged: (imageUrl: String) -> Unit,
+    onPrepTimeChanged: (time: String) -> Unit,
+    onCookTimeChanged: (time: String) -> Unit,
+    onTotalTimeChanged: (time: String) -> Unit,
     onYieldChanged: (yield: String) -> Unit,
     onIngredientChanged: (index: Int, ingredient: String) -> Unit,
     onIngredientDeleted: (index: Int) -> Unit,
@@ -61,7 +65,7 @@ fun CreateEditRecipeForm(
     onInstructionChanged: (index: Int, instruction: String) -> Unit,
     onInstructionDeleted: (index: Int) -> Unit,
     onAddInstruction: () -> Unit,
-    onSaveClick: () -> Unit
+    onSaveClick: () -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
     val scrollState = rememberScrollState()
@@ -73,15 +77,15 @@ fun CreateEditRecipeForm(
             RecipeEditTopBar(
                 title = stringResource(id = title),
                 onNavIconClick = onNavIconClick,
-                onSaveClick = onSaveClick
+                onSaveClick = onSaveClick,
             )
-        }
+        },
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .padding(innerPadding)
                 .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
-                .verticalScroll(scrollState)
+                .verticalScroll(scrollState),
         ) {
             val modifier = Modifier
                 .fillMaxWidth()
@@ -90,7 +94,7 @@ fun CreateEditRecipeForm(
                 textColor = MaterialTheme.colors.onBackground,
                 cursorColor = MaterialTheme.colors.onBackground,
                 focusedBorderColor = MaterialTheme.colors.primary,
-                unfocusedBorderColor = MaterialTheme.colors.primary
+                unfocusedBorderColor = MaterialTheme.colors.primary,
             )
 
             Gap(size = dimensionResource(id = R.dimen.padding_m))
@@ -99,59 +103,77 @@ fun CreateEditRecipeForm(
                 modifier = modifier,
                 focusManager = focusManager,
                 onNameChanged = onNameChanged,
-                textFieldColors = textFieldColors
+                textFieldColors = textFieldColors,
             )
             Description(
                 recipe = recipe,
                 modifier = modifier,
                 onDescriptionChanged = onDescriptionChanged,
-                textFieldColors = textFieldColors
+                textFieldColors = textFieldColors,
             )
             Url(
                 recipe = recipe,
                 modifier = modifier,
                 focusManager = focusManager,
                 onUrlChanged = onUrlChanged,
-                textFieldColors = textFieldColors
+                textFieldColors = textFieldColors,
             )
             ImageOrigin(
                 recipe = recipe,
                 modifier = modifier,
                 focusManager = focusManager,
                 onImageOriginChanged = onImageOriginChanged,
-                textFieldColors = textFieldColors
+                textFieldColors = textFieldColors,
+            )
+            PrepTime(
+                recipe = recipe,
+                focusManager = focusManager,
+                onPrepTimeChange = onPrepTimeChanged,
+                textFieldColors = textFieldColors,
+            )
+            CookTime(
+                recipe = recipe,
+                focusManager = focusManager,
+                onCookTimeChange = onCookTimeChanged,
+                textFieldColors = textFieldColors,
+            )
+            TotalTime(
+                recipe = recipe,
+                focusManager = focusManager,
+                onTotalTimeChange = onTotalTimeChanged,
+                textFieldColors = textFieldColors,
             )
             Yield(
                 recipe = recipe,
                 focusManager = focusManager,
                 onYieldChanged = onYieldChanged,
-                textFieldColors = textFieldColors
+                textFieldColors = textFieldColors,
             )
             Ingredients(
                 recipe = recipe,
-                ingredientModifier = modifier,
+                modifier = modifier,
                 focusManager = focusManager,
                 onIngredientChanged = onIngredientChanged,
                 onIngredientDeleted = onIngredientDeleted,
                 onAddIngredient = onAddIngredient,
-                textFieldColors = textFieldColors
+                textFieldColors = textFieldColors,
             )
             Tools(
                 recipe = recipe,
-                toolModifier = modifier,
+                modifier = modifier,
                 focusManager = focusManager,
                 onToolChanged = onToolChanged,
                 onToolDeleted = onToolDeleted,
                 onAddTool = onAddTool,
-                textFieldColors = textFieldColors
+                textFieldColors = textFieldColors,
             )
             Instructions(
                 recipe = recipe,
-                instructionModifier = modifier,
+                modifier = modifier,
                 onInstructionChanged = onInstructionChanged,
                 onInstructionDeleted = onInstructionDeleted,
                 onAddInstruction = onAddInstruction,
-                textFieldColors = textFieldColors
+                textFieldColors = textFieldColors,
             )
         }
     }
@@ -164,14 +186,14 @@ private fun RecipeEditTopBar(title: String, onNavIconClick: () -> Unit, onSaveCl
             Text(
                 text = title,
                 overflow = TextOverflow.Ellipsis,
-                maxLines = 1
+                maxLines = 1,
             )
         },
         navigationIcon = {
             IconButton(onClick = onNavIconClick) {
                 Icon(
                     Icons.Filled.ArrowBack,
-                    contentDescription = stringResource(id = R.string.common_back)
+                    contentDescription = stringResource(id = R.string.common_back),
                 )
             }
         },
@@ -179,12 +201,12 @@ private fun RecipeEditTopBar(title: String, onNavIconClick: () -> Unit, onSaveCl
             IconButton(onClick = onSaveClick) {
                 Icon(
                     Icons.Outlined.Save,
-                    contentDescription = stringResource(R.string.common_save)
+                    contentDescription = stringResource(R.string.common_save),
                 )
             }
         },
         backgroundColor = MaterialTheme.colors.primary,
-        contentColor = MaterialTheme.colors.onPrimary
+        contentColor = MaterialTheme.colors.onPrimary,
     )
 }
 
@@ -194,7 +216,7 @@ private fun Name(
     modifier: Modifier,
     focusManager: FocusManager,
     onNameChanged: (name: String) -> Unit,
-    textFieldColors: TextFieldColors
+    textFieldColors: TextFieldColors,
 ) {
     DefaultOutlinedTextField(
         value = recipe.name,
@@ -202,15 +224,15 @@ private fun Name(
         modifier = modifier,
         label = { Text(text = stringResource(R.string.recipe_name)) },
         keyboardOptions = KeyboardOptions.Default.copy(
-            imeAction = ImeAction.Next
+            imeAction = ImeAction.Next,
         ),
         keyboardActions = KeyboardActions(
             onNext = {
                 focusManager.moveFocus(FocusDirection.Down)
-            }
+            },
         ),
         singleLine = true,
-        colors = textFieldColors
+        colors = textFieldColors,
     )
 }
 
@@ -219,14 +241,14 @@ private fun Description(
     recipe: Recipe,
     modifier: Modifier,
     onDescriptionChanged: (description: String) -> Unit,
-    textFieldColors: TextFieldColors
+    textFieldColors: TextFieldColors,
 ) {
     DefaultOutlinedTextField(
         value = recipe.description,
         onValueChange = onDescriptionChanged,
         modifier = modifier,
         label = { Text(text = stringResource(R.string.recipe_description)) },
-        colors = textFieldColors
+        colors = textFieldColors,
     )
 }
 
@@ -236,7 +258,7 @@ private fun Url(
     modifier: Modifier,
     focusManager: FocusManager,
     onUrlChanged: (url: String) -> Unit,
-    textFieldColors: TextFieldColors
+    textFieldColors: TextFieldColors,
 ) {
     DefaultOutlinedTextField(
         value = recipe.url,
@@ -244,15 +266,15 @@ private fun Url(
         modifier = modifier,
         label = { Text(text = stringResource(R.string.recipe_url)) },
         keyboardOptions = KeyboardOptions.Default.copy(
-            imeAction = ImeAction.Next
+            imeAction = ImeAction.Next,
         ),
         keyboardActions = KeyboardActions(
             onNext = {
                 focusManager.moveFocus(FocusDirection.Down)
-            }
+            },
         ),
         singleLine = true,
-        colors = textFieldColors
+        colors = textFieldColors,
     )
 }
 
@@ -262,7 +284,7 @@ private fun ImageOrigin(
     modifier: Modifier,
     focusManager: FocusManager,
     onImageOriginChanged: (imageOrigin: String) -> Unit,
-    textFieldColors: TextFieldColors
+    textFieldColors: TextFieldColors,
 ) {
     DefaultOutlinedTextField(
         value = recipe.imageOrigin,
@@ -270,15 +292,129 @@ private fun ImageOrigin(
         modifier = modifier,
         label = { Text(text = stringResource(R.string.recipe_image_url)) },
         keyboardOptions = KeyboardOptions.Default.copy(
-            imeAction = ImeAction.Next
+            imeAction = ImeAction.Next,
         ),
         keyboardActions = KeyboardActions(
             onNext = {
                 focusManager.moveFocus(FocusDirection.Down)
-            }
+            },
         ),
         singleLine = true,
-        colors = textFieldColors
+        colors = textFieldColors,
+    )
+}
+
+@Composable
+private fun PrepTime(
+    recipe: Recipe,
+    focusManager: FocusManager,
+    onPrepTimeChange: (time: String) -> Unit,
+    textFieldColors: TextFieldColors,
+) {
+    TimeTextField(
+        hours = recipe.prepTime?.toHoursPart()?.toString() ?: "",
+        minutes = recipe.prepTime?.toMinutesPart()?.toString() ?: "",
+        onHoursChange = {
+            val hours = it.ifBlank { "0" }
+            val minutes = recipe.prepTime?.toMinutesPart() ?: 0
+            onPrepTimeChange.invoke("PT${hours}H${minutes}M0S")
+        },
+        onMinutesChange = {
+            val hours = recipe.prepTime?.toHoursPart()?.toString() ?: 0
+            val minutes = it.ifBlank { "0" }
+            onPrepTimeChange.invoke("PT${hours}H${minutes}M0S")
+        },
+        label = R.string.recipe_prep_time,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
+        colors = textFieldColors,
+        hoursKeyboardActions = KeyboardActions(
+            onNext = {
+                focusManager.moveFocus(FocusDirection.Next)
+            },
+        ),
+        minutesKeyboardActions = KeyboardActions(
+            onNext = {
+                focusManager.moveFocus(FocusDirection.Next)
+            },
+        ),
+    )
+}
+
+@Composable
+private fun CookTime(
+    recipe: Recipe,
+    focusManager: FocusManager,
+    onCookTimeChange: (time: String) -> Unit,
+    textFieldColors: TextFieldColors,
+) {
+    TimeTextField(
+        hours = recipe.cookTime?.toHoursPart()?.toString() ?: "",
+        minutes = recipe.cookTime?.toMinutesPart()?.toString() ?: "",
+        onHoursChange = {
+            val hours = it.ifBlank { "0" }
+            val minutes = recipe.cookTime?.toMinutesPart() ?: 0
+            onCookTimeChange.invoke("PT${hours}H${minutes}M0S")
+        },
+        onMinutesChange = {
+            val hours = recipe.cookTime?.toHoursPart() ?: 0
+            val minutes = it.ifBlank { "0" }
+            onCookTimeChange.invoke("PT${hours}H${minutes}M0S")
+        },
+        label = R.string.recipe_cook_time,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
+        colors = textFieldColors,
+        hoursKeyboardActions = KeyboardActions(
+            onNext = {
+                focusManager.moveFocus(FocusDirection.Next)
+            },
+        ),
+        minutesKeyboardActions = KeyboardActions(
+            onNext = {
+                focusManager.moveFocus(FocusDirection.Next)
+            },
+        ),
+    )
+}
+
+@Composable
+private fun TotalTime(
+    recipe: Recipe,
+    focusManager: FocusManager,
+    onTotalTimeChange: (time: String) -> Unit,
+    textFieldColors: TextFieldColors,
+) {
+    TimeTextField(
+        hours = recipe.totalTime?.toHoursPart()?.toString() ?: "",
+        minutes = recipe.totalTime?.toMinutesPart()?.toString() ?: "",
+        onHoursChange = {
+            val hours = it.ifBlank { "0" }
+            val minutes = recipe.totalTime?.toMinutesPart() ?: 0
+            onTotalTimeChange.invoke("PT${hours}H${minutes}M0S")
+        },
+        onMinutesChange = {
+            val hours = recipe.totalTime?.toHoursPart() ?: 0
+            val minutes = it.ifBlank { "0" }
+            onTotalTimeChange.invoke("PT${hours}H${minutes}M0S")
+        },
+        label = R.string.recipe_total_time,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
+        colors = textFieldColors,
+        hoursKeyboardActions = KeyboardActions(
+            onNext = {
+                focusManager.moveFocus(FocusDirection.Next)
+            },
+        ),
+        minutesKeyboardActions = KeyboardActions(
+            onNext = {
+                focusManager.moveFocus(FocusDirection.Next)
+            },
+        ),
     )
 }
 
@@ -287,7 +423,7 @@ private fun Yield(
     recipe: Recipe,
     focusManager: FocusManager,
     onYieldChanged: (yield: String) -> Unit,
-    textFieldColors: TextFieldColors
+    textFieldColors: TextFieldColors,
 ) {
     DefaultOutlinedTextField(
         value = recipe.yield.toString(),
@@ -298,56 +434,56 @@ private fun Yield(
         label = { Text(text = stringResource(R.string.recipe_yield)) },
         keyboardOptions = KeyboardOptions.Default.copy(
             keyboardType = KeyboardType.Number,
-            imeAction = ImeAction.Next
+            imeAction = ImeAction.Next,
         ),
         keyboardActions = KeyboardActions(
             onNext = {
                 focusManager.moveFocus(FocusDirection.Down)
-            }
+            },
         ),
         singleLine = true,
-        colors = textFieldColors
+        colors = textFieldColors,
     )
 }
 
 @Composable
 private fun Ingredients(
     recipe: Recipe,
-    ingredientModifier: Modifier,
+    modifier: Modifier,
     focusManager: FocusManager,
     onIngredientChanged: (index: Int, ingredient: String) -> Unit,
     onIngredientDeleted: (index: Int) -> Unit,
     onAddIngredient: () -> Unit,
-    textFieldColors: TextFieldColors
+    textFieldColors: TextFieldColors,
 ) {
     Text(
         text = stringResource(id = R.string.recipe_ingredients),
-        style = MaterialTheme.typography.h6
+        style = MaterialTheme.typography.h6,
     )
     recipe.ingredients.forEachIndexed { index, ingredient ->
         DefaultOutlinedTextField(
             value = ingredient,
             onValueChange = { onIngredientChanged.invoke(index, it) },
-            modifier = ingredientModifier,
+            modifier = modifier,
             label = { Text(text = stringResource(id = R.string.recipe_ingredient) + " ${index + 1}") },
             trailingIcon = {
                 IconButton(onClick = { onIngredientDeleted.invoke(index) }) {
                     Icon(
                         imageVector = Icons.Default.Delete,
-                        contentDescription = stringResource(R.string.recipe_ingredient_delete)
+                        contentDescription = stringResource(R.string.recipe_ingredient_delete),
                     )
                 }
             },
             keyboardOptions = KeyboardOptions.Default.copy(
-                imeAction = ImeAction.Next
+                imeAction = ImeAction.Next,
             ),
             keyboardActions = KeyboardActions(
                 onNext = {
                     focusManager.moveFocus(FocusDirection.Down)
-                }
+                },
             ),
             singleLine = true,
-            colors = textFieldColors
+            colors = textFieldColors,
         )
     }
     DefaultButton(
@@ -355,12 +491,12 @@ private fun Ingredients(
         modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.padding_m)),
         colors = ButtonDefaults.buttonColors(
             backgroundColor = NcBlue700,
-            contentColor = Color.White
-        )
+            contentColor = Color.White,
+        ),
     ) {
         Icon(
             imageVector = Icons.Default.Add,
-            contentDescription = stringResource(R.string.recipe_ingredient_add)
+            contentDescription = stringResource(R.string.recipe_ingredient_add),
         )
         Text(text = stringResource(R.string.recipe_ingredient_add))
     }
@@ -369,41 +505,41 @@ private fun Ingredients(
 @Composable
 private fun Tools(
     recipe: Recipe,
-    toolModifier: Modifier,
+    modifier: Modifier,
     focusManager: FocusManager,
     onToolChanged: (index: Int, tool: String) -> Unit,
     onToolDeleted: (index: Int) -> Unit,
     onAddTool: () -> Unit,
-    textFieldColors: TextFieldColors
+    textFieldColors: TextFieldColors,
 ) {
     Text(
         text = stringResource(id = R.string.recipe_tools),
-        style = MaterialTheme.typography.h6
+        style = MaterialTheme.typography.h6,
     )
     recipe.tools.forEachIndexed { index, tool ->
         DefaultOutlinedTextField(
             value = tool,
             onValueChange = { onToolChanged.invoke(index, it) },
-            modifier = toolModifier,
+            modifier = modifier,
             label = { Text(text = stringResource(id = R.string.recipe_tool) + " ${index + 1}") },
             trailingIcon = {
                 IconButton(onClick = { onToolDeleted.invoke(index) }) {
                     Icon(
                         imageVector = Icons.Default.Delete,
-                        contentDescription = stringResource(R.string.recipe_tool_delete)
+                        contentDescription = stringResource(R.string.recipe_tool_delete),
                     )
                 }
             },
             keyboardOptions = KeyboardOptions.Default.copy(
-                imeAction = ImeAction.Next
+                imeAction = ImeAction.Next,
             ),
             keyboardActions = KeyboardActions(
                 onNext = {
                     focusManager.moveFocus(FocusDirection.Down)
-                }
+                },
             ),
             singleLine = true,
-            colors = textFieldColors
+            colors = textFieldColors,
         )
     }
     DefaultButton(
@@ -411,12 +547,12 @@ private fun Tools(
         modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.padding_m)),
         colors = ButtonDefaults.buttonColors(
             backgroundColor = NcBlue700,
-            contentColor = Color.White
-        )
+            contentColor = Color.White,
+        ),
     ) {
         Icon(
             imageVector = Icons.Default.Add,
-            contentDescription = stringResource(R.string.recipe_tool_add)
+            contentDescription = stringResource(R.string.recipe_tool_add),
         )
         Text(text = stringResource(R.string.recipe_tool_add))
     }
@@ -425,31 +561,31 @@ private fun Tools(
 @Composable
 private fun Instructions(
     recipe: Recipe,
-    instructionModifier: Modifier,
+    modifier: Modifier,
     onInstructionChanged: (index: Int, instruction: String) -> Unit,
     onInstructionDeleted: (index: Int) -> Unit,
     onAddInstruction: () -> Unit,
-    textFieldColors: TextFieldColors
+    textFieldColors: TextFieldColors,
 ) {
     Text(
         text = stringResource(id = R.string.recipe_instructions),
-        style = MaterialTheme.typography.h6
+        style = MaterialTheme.typography.h6,
     )
     recipe.instructions.forEachIndexed { index, instruction ->
         DefaultOutlinedTextField(
             value = instruction,
             onValueChange = { onInstructionChanged.invoke(index, it) },
-            modifier = instructionModifier,
+            modifier = modifier,
             label = { Text(text = stringResource(id = R.string.recipe_instruction) + " ${index + 1}") },
             trailingIcon = {
                 IconButton(onClick = { onInstructionDeleted.invoke(index) }) {
                     Icon(
                         imageVector = Icons.Default.Delete,
-                        contentDescription = stringResource(R.string.recipe_instruction_delete)
+                        contentDescription = stringResource(R.string.recipe_instruction_delete),
                     )
                 }
             },
-            colors = textFieldColors
+            colors = textFieldColors,
         )
     }
     DefaultButton(
@@ -457,12 +593,12 @@ private fun Instructions(
         modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.padding_m)),
         colors = ButtonDefaults.buttonColors(
             backgroundColor = NcBlue700,
-            contentColor = Color.White
-        )
+            contentColor = Color.White,
+        ),
     ) {
         Icon(
             imageVector = Icons.Default.Add,
-            contentDescription = stringResource(R.string.recipe_instruction_add)
+            contentDescription = stringResource(R.string.recipe_instruction_add),
         )
         Text(text = stringResource(R.string.recipe_instruction_add))
     }
@@ -482,8 +618,8 @@ private fun CreateEditRecipeFormPreview() {
         keywords = emptyList(),
         yield = 2,
         prepTime = null,
-        cookTime = null,
-        totalTime = null,
+        cookTime = Duration.parse("PT0H35M0S"),
+        totalTime = Duration.parse("PT1H50M0S"),
         nutrition = null,
         tools = List(1) {
             "Lorem ipsum"
@@ -495,7 +631,7 @@ private fun CreateEditRecipeFormPreview() {
             "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
         },
         createdAt = "",
-        modifiedAt = ""
+        modifiedAt = "",
     )
     NextcloudCookbookTheme {
         CreateEditRecipeForm(
@@ -506,6 +642,9 @@ private fun CreateEditRecipeFormPreview() {
             onDescriptionChanged = {},
             onUrlChanged = {},
             onImageOriginChanged = {},
+            onPrepTimeChanged = {},
+            onCookTimeChanged = {},
+            onTotalTimeChanged = {},
             onYieldChanged = {},
             onIngredientChanged = { _, _ -> },
             onIngredientDeleted = {},
@@ -516,7 +655,7 @@ private fun CreateEditRecipeFormPreview() {
             onInstructionChanged = { _, _ -> },
             onInstructionDeleted = {},
             onAddInstruction = {},
-            onSaveClick = {}
+            onSaveClick = {},
         )
     }
 }

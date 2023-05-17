@@ -4,7 +4,7 @@ import androidx.compose.runtime.compositionLocalOf
 
 data class Credentials(
     val baseUrl: String,
-    val basic: String
+    val basic: String,
 )
 
 val LocalCredentials = compositionLocalOf<Credentials?> { null }

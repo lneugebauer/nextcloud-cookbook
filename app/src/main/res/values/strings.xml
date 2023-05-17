@@ -6,6 +6,8 @@
     <string name="common_close">Close</string>
     <string name="common_edit">Edit</string>
     <string name="common_home">Home</string>
+    <string name="common_hours">Hours</string>
+    <string name="common_minutes">Minutes</string>
     <string name="common_more">More</string>
     <string name="common_password">Password</string>
     <string name="common_recipes">Recipes</string>

@@ -26,21 +26,21 @@ fun Headline(text: String, clickable: Boolean, onClick: () -> Unit) {
             .fillMaxWidth()
             .padding(
                 horizontal = dimensionResource(id = R.dimen.padding_m),
-                vertical = dimensionResource(id = R.dimen.padding_s)
+                vertical = dimensionResource(id = R.dimen.padding_s),
             ),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
             text = text,
             modifier = Modifier.weight(1f),
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,
-            style = MaterialTheme.typography.h5
+            style = MaterialTheme.typography.h5,
         )
         if (clickable) {
             Icon(
                 imageVector = Icons.Filled.ArrowForward,
-                contentDescription = stringResource(id = R.string.common_more)
+                contentDescription = stringResource(id = R.string.common_more),
             )
         }
     }

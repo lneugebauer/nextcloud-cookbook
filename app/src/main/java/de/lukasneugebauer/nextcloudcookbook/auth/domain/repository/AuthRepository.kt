@@ -8,7 +8,7 @@ interface AuthRepository {
 
     suspend fun getLoginEndpoint(
         baseUrl: String,
-        retryCount: Int = 0
+        retryCount: Int = 0,
     ): Resource<LoginEndpointResult>
 
     suspend fun tryLogin(url: String, token: String): Resource<LoginResult>

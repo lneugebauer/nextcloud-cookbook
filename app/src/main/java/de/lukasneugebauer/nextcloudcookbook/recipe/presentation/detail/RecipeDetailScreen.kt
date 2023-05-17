@@ -76,7 +76,7 @@ import java.time.Duration
 fun RecipeDetailScreen(
     navigator: DestinationsNavigator,
     @Suppress("UNUSED_PARAMETER") recipeId: Int,
-    viewModel: RecipeDetailViewModel = hiltViewModel()
+    viewModel: RecipeDetailViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
     val state by viewModel.state.collectAsState()
@@ -107,7 +107,7 @@ fun RecipeDetailScreen(
                     if (recipe.isNotEmpty()) {
                         viewModel.deleteRecipe(
                             recipe.id,
-                            recipe.category
+                            recipe.category,
                         )
                     }
                 },
@@ -131,11 +131,11 @@ fun RecipeDetailScreen(
                     ingredientsTitle = pluralResource(
                         R.plurals.recipe_ingredients_servings,
                         recipe.yield,
-                        recipe.yield
+                        recipe.yield,
                     ),
                     toolsTitle = stringResource(id = R.string.recipe_tools),
-                    instructionsTitle = stringResource(id = R.string.recipe_instructions)
-                )
+                    instructionsTitle = stringResource(id = R.string.recipe_instructions),
+                ),
             )
         },
         floatingActionButton = {
@@ -146,10 +146,10 @@ fun RecipeDetailScreen(
             }) {
                 Icon(
                     imageVector = Icons.Default.Edit,
-                    contentDescription = stringResource(id = R.string.common_edit)
+                    contentDescription = stringResource(id = R.string.common_edit),
                 )
             }
-        }
+        },
     ) { innerPadding ->
         if (state.loading) {
             Loader()
@@ -164,7 +164,7 @@ fun RecipeDetailScreen(
                 recipe = recipe,
                 modifier = Modifier
                     .padding(paddingValues = innerPadding)
-                    .verticalScroll(rememberScrollState())
+                    .verticalScroll(rememberScrollState()),
             )
         }
     }
@@ -189,7 +189,7 @@ fun RecipeDetailTopBar(
     onNavIconClick: () -> Unit,
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit,
-    shareText: String
+    shareText: String,
 ) {
     val context = LocalContext.current
     var expanded by remember { mutableStateOf(false) }
@@ -211,14 +211,14 @@ fun RecipeDetailTopBar(
             Text(
                 text = recipe.name,
                 overflow = TextOverflow.Ellipsis,
-                maxLines = 1
+                maxLines = 1,
             )
         },
         navigationIcon = {
             IconButton(onClick = onNavIconClick) {
                 Icon(
                     Icons.Filled.ArrowBack,
-                    contentDescription = stringResource(id = R.string.common_back)
+                    contentDescription = stringResource(id = R.string.common_back),
                 )
             }
         },
@@ -228,13 +228,13 @@ fun RecipeDetailTopBar(
             }) {
                 Icon(
                     Icons.Outlined.Share,
-                    contentDescription = stringResource(id = R.string.common_share)
+                    contentDescription = stringResource(id = R.string.common_share),
                 )
             }
             IconButton(onClick = { expanded = true }) {
                 Icon(
                     Icons.Filled.MoreVert,
-                    contentDescription = stringResource(id = R.string.common_more)
+                    contentDescription = stringResource(id = R.string.common_more),
                 )
                 DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
                     RecipeDetailScreenDropDownMenuItemOpenSource(context, recipe.url)
@@ -244,7 +244,7 @@ fun RecipeDetailTopBar(
             }
         },
         backgroundColor = NcBlue700,
-        contentColor = Color.White
+        contentColor = Color.White,
     )
 }
 
@@ -274,7 +274,7 @@ fun RecipeDetailScreenDropDownMenuItemDelete(onClick: () -> Unit) {
 @Composable
 fun RecipeDetailContent(recipe: Recipe, modifier: Modifier = Modifier) {
     Column(
-        modifier = modifier
+        modifier = modifier,
     ) {
         RecipeDetailImage(recipe.imageUrl, recipe.name)
         RecipeDetailName(recipe.name)
@@ -311,7 +311,7 @@ fun RecipeDetailImage(imageUrl: String, name: String) {
         modifier = Modifier
             .aspectRatio(4f / 3f)
             .fillMaxWidth()
-            .padding(bottom = dimensionResource(id = R.dimen.padding_m))
+            .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
     )
 }
 
@@ -322,7 +322,7 @@ fun RecipeDetailName(name: String) {
         modifier = Modifier
             .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
             .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
-        style = MaterialTheme.typography.h5
+        style = MaterialTheme.typography.h5,
     )
 }
 
@@ -333,7 +333,7 @@ fun RecipeDetailKeywords(keywords: List<String>) {
             .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
             .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
         mainAxisSpacing = dimensionResource(id = R.dimen.padding_s),
-        crossAxisSpacing = dimensionResource(id = R.dimen.padding_s)
+        crossAxisSpacing = dimensionResource(id = R.dimen.padding_s),
     ) {
         keywords.forEach {
             Chip(text = it)
@@ -349,7 +349,7 @@ fun RecipeDetailDescription(description: String) {
             .fillMaxWidth()
             .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
             .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
-        style = MaterialTheme.typography.body1
+        style = MaterialTheme.typography.body1,
     )
 }
 
@@ -360,17 +360,17 @@ fun RecipeDetailMeta(prepTime: Duration?, cookTime: Duration?, totalTime: Durati
             .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
             .padding(
                 top = dimensionResource(id = R.dimen.padding_m),
-                bottom = dimensionResource(id = R.dimen.padding_l)
+                bottom = dimensionResource(id = R.dimen.padding_l),
             )
             .fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceEvenly
+        horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
         if (prepTime != null && prepTime != Duration.ZERO) {
             // TODO: 18.11.21 Use prep icon
             RecipeDetailMetaBox(
                 icon = Icons.Filled.Timer,
                 duration = prepTime.toMinutes(),
-                text = R.string.recipe_prep_time
+                text = R.string.recipe_prep_time,
             )
         }
         if (cookTime != null && cookTime != Duration.ZERO) {
@@ -378,14 +378,14 @@ fun RecipeDetailMeta(prepTime: Duration?, cookTime: Duration?, totalTime: Durati
             RecipeDetailMetaBox(
                 icon = Icons.Filled.Timer,
                 duration = cookTime.toMinutes(),
-                text = R.string.recipe_cook_time
+                text = R.string.recipe_cook_time,
             )
         }
         if (totalTime != null && totalTime != Duration.ZERO) {
             RecipeDetailMetaBox(
                 icon = Icons.Filled.Timer,
                 duration = totalTime.toMinutes(),
-                text = R.string.recipe_total_time
+                text = R.string.recipe_total_time,
             )
         }
     }
@@ -398,12 +398,12 @@ fun RowScope.RecipeDetailMetaBox(icon: ImageVector, duration: Long, @StringRes t
             Icon(icon, contentDescription = "")
             Text(
                 text = stringResource(id = R.string.recipe_duration, duration),
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
             )
             Text(
                 text = stringResource(id = text),
                 modifier = Modifier.fillMaxWidth(),
-                style = TextStyle.Default.copy(textAlign = TextAlign.Center)
+                style = TextStyle.Default.copy(textAlign = TextAlign.Center),
             )
         }
     }
@@ -416,7 +416,7 @@ fun RecipeDetailIngredients(ingredients: List<String>, servings: Int) {
         modifier = Modifier
             .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
             .padding(bottom = dimensionResource(id = R.dimen.padding_s)),
-        style = MaterialTheme.typography.h6
+        style = MaterialTheme.typography.h6,
     )
     ingredients.forEachIndexed { index, ingredient ->
         val paddingBottom =
@@ -431,9 +431,9 @@ fun RecipeDetailIngredients(ingredients: List<String>, servings: Int) {
                 .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
                 .padding(
                     top = dimensionResource(id = R.dimen.padding_xs),
-                    bottom = paddingBottom
+                    bottom = paddingBottom,
                 ),
-            style = MaterialTheme.typography.body1
+            style = MaterialTheme.typography.body1,
         )
     }
 }
@@ -445,14 +445,14 @@ fun RecipeDetailTools(tools: List<String>) {
         modifier = Modifier
             .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
             .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
-        style = MaterialTheme.typography.h6
+        style = MaterialTheme.typography.h6,
     )
     Text(
         text = tools.joinToString(separator = ", "),
         modifier = Modifier
             .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
             .padding(bottom = dimensionResource(id = R.dimen.padding_l)),
-        style = MaterialTheme.typography.body1
+        style = MaterialTheme.typography.body1,
     )
 }
 
@@ -463,14 +463,14 @@ fun RecipeDetailInstructions(instructions: List<String>) {
         modifier = Modifier
             .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
             .padding(bottom = dimensionResource(id = R.dimen.padding_s)),
-        style = MaterialTheme.typography.h6
+        style = MaterialTheme.typography.h6,
     )
     instructions.forEachIndexed { index, instruction ->
         Row(
             modifier = Modifier.padding(
                 horizontal = dimensionResource(id = R.dimen.padding_m),
-                vertical = dimensionResource(id = R.dimen.padding_s)
-            )
+                vertical = dimensionResource(id = R.dimen.padding_s),
+            ),
         ) {
             CircleChip(text = "${index + 1}", modifier = Modifier.weight(1f))
             Gap(size = dimensionResource(id = R.dimen.padding_s))
@@ -480,7 +480,7 @@ fun RecipeDetailInstructions(instructions: List<String>) {
                     .align(Alignment.Top)
                     .fillMaxHeight()
                     .weight(11f),
-                style = MaterialTheme.typography.body1
+                style = MaterialTheme.typography.body1,
             )
         }
     }

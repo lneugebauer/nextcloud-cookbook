@@ -23,7 +23,7 @@ import javax.inject.Inject
 class RecipeDetailViewModel @Inject constructor(
     private val preferencesManager: PreferencesManager,
     private val recipeRepository: RecipeRepository,
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(RecipeDetailState())
@@ -49,16 +49,16 @@ class RecipeDetailViewModel @Inject constructor(
                     is StoreResponse.Loading -> _state.value = _state.value.copy(loading = true)
                     is StoreResponse.Data -> _state.value = _state.value.copy(
                         data = recipeResponse.value.toRecipe(),
-                        loading = false
+                        loading = false,
                     )
                     is StoreResponse.NoNewData -> _state.value = _state.value.copy(loading = false)
                     is StoreResponse.Error.Exception -> _state.value = _state.value.copy(
                         error = recipeResponse.errorMessageOrNull()?.asUiText(),
-                        loading = false
+                        loading = false,
                     )
                     is StoreResponse.Error.Message -> _state.value = _state.value.copy(
                         error = recipeResponse.message.asUiText(),
-                        loading = false
+                        loading = false,
                     )
                 }
             }
@@ -72,7 +72,7 @@ class RecipeDetailViewModel @Inject constructor(
         totalTime: (duration: Long) -> String,
         ingredientsTitle: String,
         toolsTitle: String,
-        instructionsTitle: String
+        instructionsTitle: String,
     ): String {
         val recipe = _state.value.data ?: return ""
 

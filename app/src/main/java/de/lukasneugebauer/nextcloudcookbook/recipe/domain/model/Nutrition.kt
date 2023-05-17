@@ -12,5 +12,5 @@ data class Nutrition(
     val sodiumContent: String?,
     val sugarContent: String?,
     val transFatContent: String?,
-    val unsaturatedFatContent: String?
+    val unsaturatedFatContent: String?,
 )

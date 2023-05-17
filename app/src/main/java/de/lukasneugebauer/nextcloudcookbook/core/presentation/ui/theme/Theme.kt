@@ -17,7 +17,7 @@ private val DarkColorPalette = darkColors(
     background = Color.Black,
     onPrimary = Color.White,
     onSecondary = Color.White,
-    onBackground = Color.White
+    onBackground = Color.White,
 )
 
 private val LightColorPalette = lightColors(
@@ -28,13 +28,13 @@ private val LightColorPalette = lightColors(
     background = Color.White,
     onPrimary = Color.White,
     onSecondary = Color.White,
-    onBackground = Color.Black
+    onBackground = Color.Black,
 )
 
 @Composable
 fun NextcloudCookbookTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     val colors = if (darkTheme) {
         DarkColorPalette
@@ -46,6 +46,6 @@ fun NextcloudCookbookTheme(
         colors = colors,
         typography = Typography,
         shapes = Shapes,
-        content = content
+        content = content,
     )
 }

@@ -21,5 +21,5 @@ fun emptyRecipeDto(): RecipeDto = RecipeDto(
     dateModified = "",
     printImage = true,
     imageUrl = "",
-    nutrition = null
+    nutrition = null,
 )

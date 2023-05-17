@@ -28,7 +28,7 @@ class GetHomeScreenDataUseCase @Inject constructor(
     private val preferencesManager: PreferencesManager,
     private val recipePreviewsByCategoryStore: RecipePreviewsByCategoryStore,
     private val recipePreviewsStore: RecipePreviewsStore,
-    private val recipeStore: RecipeStore
+    private val recipeStore: RecipeStore,
 ) {
 
     suspend operator fun invoke(): List<HomeScreenDataResult> {
@@ -45,7 +45,7 @@ class GetHomeScreenDataUseCase @Inject constructor(
                     recipePreviewsStore.get(Unit).random().toRecipePreview().id
                 recipeOfTheDay = RecipeOfTheDay(
                     id = newRecipeOfTheDayId,
-                    updatedAt = LocalDateTime.now()
+                    updatedAt = LocalDateTime.now(),
                 )
                 preferencesManager.updateRecipeOfTheDay(recipeOfTheDay)
             } catch (e: HttpException) {
@@ -59,7 +59,7 @@ class GetHomeScreenDataUseCase @Inject constructor(
             try {
                 val result = HomeScreenDataResult.Single(
                     R.string.home_recommendation,
-                    recipeStore.get(recipeOfTheDay.id).toRecipe()
+                    recipeStore.get(recipeOfTheDay.id).toRecipe(),
                 )
                 homeScreenData.add(result)
             } catch (e: Exception) {
@@ -79,7 +79,7 @@ class GetHomeScreenDataUseCase @Inject constructor(
                         if (recipePreviews.isNotEmpty()) {
                             val result = HomeScreenDataResult.Row(
                                 categoryDto.name,
-                                recipePreviews
+                                recipePreviews,
                             )
                             homeScreenData.add(result)
                         }

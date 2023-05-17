@@ -14,7 +14,7 @@ class NutritionDeserializer : JsonDeserializer<NutritionDto?> {
     override fun deserialize(
         json: JsonElement?,
         typeOfT: Type?,
-        context: JsonDeserializationContext?
+        context: JsonDeserializationContext?,
     ): NutritionDto? {
         val gson = Gson()
         val reader = gson.newJsonReader(StringReader(json.toString()))

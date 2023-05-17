@@ -4,5 +4,5 @@ import java.time.LocalDateTime
 
 data class RecipeOfTheDay(
     val id: Int,
-    val updatedAt: LocalDateTime
+    val updatedAt: LocalDateTime,
 )

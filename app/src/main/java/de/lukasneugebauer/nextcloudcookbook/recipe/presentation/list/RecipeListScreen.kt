@@ -51,7 +51,7 @@ fun RecipeListScreen(
     navigator: DestinationsNavigator,
     categoryName: String?,
     resultRecipient: ResultRecipient<RecipeCreateScreenDestination, Int>,
-    viewModel: RecipeListViewModel = hiltViewModel()
+    viewModel: RecipeListViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.state.collectAsState()
 
@@ -61,7 +61,7 @@ fun RecipeListScreen(
                 categoryName = categoryName,
                 onBackClick = {
                     navigator.popBackStack()
-                }
+                },
             )
         },
         floatingActionButton = {
@@ -70,7 +70,7 @@ fun RecipeListScreen(
             }) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
             }
-        }
+        },
     ) { innerPadding ->
         val modifierWithInnerPadding = Modifier.padding(innerPadding)
         when (uiState) {
@@ -79,7 +79,7 @@ fun RecipeListScreen(
                 val recipePreviews = (uiState as RecipeListScreenState.Loaded).data
                 RecipeListScreen(
                     data = recipePreviews,
-                    modifier = modifierWithInnerPadding
+                    modifier = modifierWithInnerPadding,
                 ) { id ->
                     navigator.navigate(RecipeDetailScreenDestination(recipeId = id))
                 }
@@ -106,20 +106,20 @@ fun RecipeListScreen(
 private fun RecipeListScreen(
     data: List<RecipePreview>,
     modifier: Modifier = Modifier,
-    onClick: (Int) -> Unit
+    onClick: (Int) -> Unit,
 ) {
     if (data.isEmpty()) {
         NotFoundScreen()
     } else {
         LazyColumn(
-            modifier = modifier.fillMaxSize()
+            modifier = modifier.fillMaxSize(),
         ) {
             itemsIndexed(data) { index, recipePreview ->
                 ListItem(
                     modifier = Modifier.clickable(
                         onClick = {
                             onClick.invoke(recipePreview.id)
-                        }
+                        },
                     ),
                     icon = {
                         AuthorizedImage(
@@ -127,7 +127,7 @@ private fun RecipeListScreen(
                             contentDescription = recipePreview.name,
                             modifier = Modifier
                                 .size(dimensionResource(id = R.dimen.common_item_width_s))
-                                .clip(MaterialTheme.shapes.medium)
+                                .clip(MaterialTheme.shapes.medium),
                         )
                     },
                     secondaryText = {
@@ -136,11 +136,11 @@ private fun RecipeListScreen(
                     singleLineSecondaryText = false,
                     text = {
                         Text(text = recipePreview.name)
-                    }
+                    },
                 )
                 if (index != data.size - 1) {
                     Divider(
-                        modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_m))
+                        modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
                     )
                 }
             }
@@ -161,7 +161,7 @@ fun RecipeListTopBar(categoryName: String?, onBackClick: () -> Unit) {
                 IconButton(onClick = onBackClick) {
                     Icon(
                         Icons.Filled.ArrowBack,
-                        contentDescription = stringResource(id = R.string.common_back)
+                        contentDescription = stringResource(id = R.string.common_back),
                     )
                 }
             }
@@ -175,7 +175,7 @@ fun RecipeListTopBar(categoryName: String?, onBackClick: () -> Unit) {
 //            }
 //        },
         backgroundColor = NcBlue700,
-        contentColor = Color.White
+        contentColor = Color.White,
     )
 }
 
@@ -189,13 +189,13 @@ fun RecipeListPreview() {
             keywords = List(nextInt(0, 5)) { "Keyword $it" },
             imageUrl = "",
             createdAt = "",
-            modifiedAt = ""
+            modifiedAt = "",
         )
     }
     NextcloudCookbookTheme {
         RecipeListScreen(
             data = data,
-            onClick = {}
+            onClick = {},
         )
     }
 }

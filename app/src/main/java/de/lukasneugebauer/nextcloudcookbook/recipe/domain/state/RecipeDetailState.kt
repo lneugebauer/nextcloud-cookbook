@@ -7,5 +7,5 @@ data class RecipeDetailState(
     val data: Recipe? = null,
     val deleted: Boolean = false,
     val error: UiText? = null,
-    val loading: Boolean = true
+    val loading: Boolean = true,
 )

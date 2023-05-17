@@ -95,16 +95,16 @@ fun NextcloudCookbookApp() {
                 ) {
                     BottomBar(navController = navController)
                 }
-            }
+            },
         ) { innerPadding ->
             DestinationsNavHost(
                 navGraph = NavGraphs.root,
                 modifier = Modifier.padding(innerPadding),
-                navController = navController
+                navController = navController,
             ) {
                 composable(SplashScreenDestination) {
                     CompositionLocalProvider(
-                        LocalViewModelStoreOwner provides viewModelStoreOwner
+                        LocalViewModelStoreOwner provides viewModelStoreOwner,
                     ) {
                         SplashScreen(navigator = destinationsNavigator)
                     }

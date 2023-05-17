@@ -11,14 +11,14 @@ import de.lukasneugebauer.nextcloudcookbook.R
 data class RowContent(
     val name: String,
     val imageUrl: String,
-    val onClick: () -> Unit
+    val onClick: () -> Unit,
 )
 
 @Composable
 fun RowContainer(data: List<RowContent>) {
     LazyRow(
         contentPadding = PaddingValues(horizontal = dimensionResource(id = R.dimen.padding_m)),
-        horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_s))
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_s)),
     ) {
         items(data) {
             RowItem(name = it.name, imageUrl = it.imageUrl, it.onClick)
@@ -32,6 +32,6 @@ fun RowItem(name: String, imageUrl: String, onClick: () -> Unit) {
         name = name,
         imageUrl = imageUrl,
         width = dimensionResource(id = R.dimen.common_item_width_m),
-        onClick = onClick
+        onClick = onClick,
     )
 }

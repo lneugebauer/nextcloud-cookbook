@@ -25,14 +25,14 @@ fun AbstractErrorScreen(
     uiText: UiText,
     modifier: Modifier = Modifier,
     icon: ImageVector = Icons.Default.Warning,
-    iconContentDescription: UiText? = null
+    iconContentDescription: UiText? = null,
 ) {
     Column(
         modifier = modifier
             .fillMaxSize()
             .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.Start
+        horizontalAlignment = Alignment.Start,
     ) {
         Icon(
             imageVector = icon,
@@ -40,7 +40,7 @@ fun AbstractErrorScreen(
             modifier = Modifier
                 .size(dimensionResource(id = R.dimen.error_icon_size))
                 .padding(bottom = dimensionResource(id = R.dimen.padding_s)),
-            tint = MaterialTheme.colors.onBackground
+            tint = MaterialTheme.colors.onBackground,
         )
         Text(text = uiText.asString())
     }

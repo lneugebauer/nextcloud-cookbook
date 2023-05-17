@@ -13,12 +13,12 @@ import kotlinx.coroutines.withContext
 
 class AuthRepositoryImpl(
     private val api: AuthApi,
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : AuthRepository, BaseRepository() {
 
     override suspend fun getLoginEndpoint(
         baseUrl: String,
-        retryCount: Int
+        retryCount: Int,
     ): Resource<LoginEndpointResult> {
         return withContext(ioDispatcher) {
             when (val response = api.getLoginEndpoint("$baseUrl/login/v2")) {
@@ -30,7 +30,7 @@ class AuthRepositoryImpl(
                     if (!baseUrl.contains("index.php") && retryCount < 2) {
                         return@withContext getLoginEndpoint(
                             baseUrl = "$baseUrl/index.php",
-                            retryCount = retryCount + 1
+                            retryCount = retryCount + 1,
                         )
                     }
 

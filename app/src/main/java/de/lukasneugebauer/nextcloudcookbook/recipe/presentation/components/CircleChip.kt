@@ -26,17 +26,17 @@ fun CircleChip(text: String, modifier: Modifier) {
             .border(width = 2.dp, color = NcBlue700, shape = CircleShape)
             .padding(
                 horizontal = dimensionResource(id = R.dimen.padding_s),
-                vertical = dimensionResource(id = R.dimen.padding_xs)
+                vertical = dimensionResource(id = R.dimen.padding_xs),
             )
             .heightIn(min = dimensionResource(id = R.dimen.chip_min_height))
             .wrapContentSize()
             .then(modifier),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         Text(
             text = text,
             textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.body2
+            style = MaterialTheme.typography.body2,
         )
     }
 }

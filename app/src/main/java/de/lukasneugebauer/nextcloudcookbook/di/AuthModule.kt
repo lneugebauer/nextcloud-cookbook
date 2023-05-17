@@ -27,7 +27,7 @@ object AuthModule {
     @Singleton
     fun provideAuthApi(
         httpLoggingInterceptor: HttpLoggingInterceptor,
-        userAgentInterceptor: UserAgentInterceptor
+        userAgentInterceptor: UserAgentInterceptor,
     ): AuthApi {
         val client = OkHttpClient.Builder()
             .addInterceptor(httpLoggingInterceptor)
@@ -50,6 +50,6 @@ object AuthModule {
     @Singleton
     fun provideAuthRepository(
         authApi: AuthApi,
-        @IoDispatcher ioDispatcher: CoroutineDispatcher
+        @IoDispatcher ioDispatcher: CoroutineDispatcher,
     ): AuthRepository = AuthRepositoryImpl(authApi, ioDispatcher)
 }
