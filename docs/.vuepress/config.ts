@@ -15,8 +15,12 @@ export default defineUserConfig({
     navbar: [
       {
         text: 'Home',
-        link: '/',
+        link: '/'
       },
+      {
+        text: 'Contributing',
+        link: '/contributing'
+      }
     ],
     logo: 'images/logo.png',
     repo: 'lneugebauer/nextcloud-cookbook',
