@@ -324,6 +324,7 @@ private fun PrepTime(
             val minutes = it.ifBlank { "0" }
             onPrepTimeChange.invoke("PT${hours}H${minutes}M0S")
         },
+        label = R.string.recipe_prep_time,
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
@@ -361,6 +362,7 @@ private fun CookTime(
             val minutes = it.ifBlank { "0" }
             onCookTimeChange.invoke("PT${hours}H${minutes}M0S")
         },
+        label = R.string.recipe_cook_time,
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
@@ -398,6 +400,7 @@ private fun TotalTime(
             val minutes = it.ifBlank { "0" }
             onTotalTimeChange.invoke("PT${hours}H${minutes}M0S")
         },
+        label = R.string.recipe_total_time,
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
