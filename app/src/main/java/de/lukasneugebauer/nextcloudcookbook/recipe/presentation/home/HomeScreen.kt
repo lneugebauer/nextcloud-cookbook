@@ -71,7 +71,9 @@ fun HomeScreen(
                             top = dimensionResource(id = R.dimen.padding_s),
                             bottom = dimensionResource(id = R.dimen.padding_m)
                         ),
-                        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_s))
+                        verticalArrangement = Arrangement.spacedBy(
+                            dimensionResource(id = R.dimen.padding_s)
+                        )
                     ) {
                         items(homeScreenData) { item ->
                             when (item) {
@@ -80,7 +82,11 @@ fun HomeScreen(
                                         text = item.headline,
                                         clickable = item.recipes.size > MORE_BUTTON_THRESHOLD
                                     ) {
-                                        navigator.navigate(RecipeListScreenDestination(categoryName = item.headline))
+                                        navigator.navigate(
+                                            RecipeListScreenDestination(
+                                                categoryName = item.headline
+                                            )
+                                        )
                                     }
                                     RowContainer(
                                         data = item.recipes.map {
@@ -104,7 +110,9 @@ fun HomeScreen(
                                         name = item.recipe.name,
                                         imageUrl = item.recipe.imageUrl
                                     ) {
-                                        navigator.navigate(RecipeDetailScreenDestination(recipeId = item.recipe.id))
+                                        navigator.navigate(
+                                            RecipeDetailScreenDestination(recipeId = item.recipe.id)
+                                        )
                                     }
                                 }
                             }

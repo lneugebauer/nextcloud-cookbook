@@ -57,7 +57,13 @@ data class RecipeDto(
         yield = recipeYield,
         prepTime = if (prepTime == null || prepTime.isBlank()) null else Duration.parse(prepTime),
         cookTime = if (cookTime == null || cookTime.isBlank()) null else Duration.parse(cookTime),
-        totalTime = if (totalTime == null || totalTime.isBlank()) null else Duration.parse(totalTime),
+        totalTime = if (totalTime == null || totalTime.isBlank()) {
+            null
+        } else {
+            Duration.parse(
+                totalTime
+            )
+        },
         nutrition = nutrition?.toNutrition(),
         tools = tool,
         ingredients = recipeIngredient,

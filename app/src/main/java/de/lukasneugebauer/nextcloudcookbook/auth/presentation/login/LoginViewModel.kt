@@ -76,7 +76,11 @@ class LoginViewModel @Inject constructor(
                         pollLoginServerIsActive = true
                         pollLoginServer(result.data.pollUrl, result.data.token)
                     } ?: run {
-                        _uiState.update { it.copy(urlError = UiText.StringResource(R.string.error_no_login_url)) }
+                        _uiState.update {
+                            it.copy(
+                                urlError = UiText.StringResource(R.string.error_no_login_url)
+                            )
+                        }
                     }
                 }
                 is Resource.Error -> _uiState.update { it.copy(urlError = result.message) }
@@ -132,7 +136,9 @@ class LoginViewModel @Inject constructor(
     private fun isValidUsername(username: String): Boolean {
         if (username.isBlank()) {
             _uiState.value =
-                _uiState.value.copy(usernameError = UiText.StringResource(R.string.error_empty_username))
+                _uiState.value.copy(
+                    usernameError = UiText.StringResource(R.string.error_empty_username)
+                )
             return false
         }
 
@@ -142,7 +148,9 @@ class LoginViewModel @Inject constructor(
     private fun isValidPassword(password: String): Boolean {
         if (password.isBlank()) {
             _uiState.value =
-                _uiState.value.copy(passwordError = UiText.StringResource(R.string.error_empty_password))
+                _uiState.value.copy(
+                    passwordError = UiText.StringResource(R.string.error_empty_password)
+                )
             return false
         }
 
@@ -158,7 +166,9 @@ class LoginViewModel @Inject constructor(
 
         if (!url.startsWith("https://")) {
             _uiState.value =
-                _uiState.value.copy(urlError = UiText.StringResource(R.string.error_invalid_protocol))
+                _uiState.value.copy(
+                    urlError = UiText.StringResource(R.string.error_invalid_protocol)
+                )
             return false
         }
 

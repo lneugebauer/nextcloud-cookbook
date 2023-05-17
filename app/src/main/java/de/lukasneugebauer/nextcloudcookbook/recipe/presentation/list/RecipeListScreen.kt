@@ -140,7 +140,9 @@ private fun RecipeListScreen(
                 )
                 if (index != data.size - 1) {
                     Divider(
-                        modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_m))
+                        modifier = Modifier.padding(
+                            horizontal = dimensionResource(id = R.dimen.padding_m)
+                        )
                     )
                 }
             }

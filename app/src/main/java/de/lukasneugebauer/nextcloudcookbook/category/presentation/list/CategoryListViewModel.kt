@@ -41,7 +41,6 @@ class CategoryListViewModel @Inject constructor(
                     _uiState.update { CategoryListScreenState.Error(message) }
                 }
             }
-
         }.launchIn(viewModelScope)
     }
 }

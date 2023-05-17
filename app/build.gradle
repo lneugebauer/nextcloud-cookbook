@@ -5,6 +5,7 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-kapt'
     id "org.sonarqube" version "3.4.0.2513"
+    id 'org.jlleitschuh.gradle.ktlint' version '11.3.2'
 }
 
 def keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -103,13 +104,6 @@ kotlin {
 }
 
 dependencies {
-
-    ktlint("com.pinterest:ktlint:0.47.1") {
-        attributes {
-            attribute(Bundling.BUNDLING_ATTRIBUTE, getObjects().named(Bundling, Bundling.EXTERNAL))
-        }
-    }
-
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.2.2'
 
     implementation 'androidx.core:core-ktx:1.9.0'
@@ -167,22 +161,24 @@ kapt {
     correctErrorTypes true
 }
 
-task ktlint(type: JavaExec, group: "verification") {
-    description = "Check Kotlin code style."
-    classpath = configurations.ktlint
-    mainClass.set("com.pinterest.ktlint.Main")
-    args "src/**/*.kt"
-    // to generate report in checkstyle format prepend following args:
-    // "--reporter=plain", "--reporter=checkstyle,output=${buildDir}/ktlint.xml"
-    // to add a baseline to check against prepend following args:
-    // "--baseline=ktlint-baseline.xml"
-    // see https://github.com/pinterest/ktlint#usage for more
+ktlint {
+    android.set(true)
+    outputColorName.set("RED")
 }
-check.dependsOn ktlint
 
-task ktlintFormat(type: JavaExec, group: "formatting") {
-    description = "Fix Kotlin code style deviations."
-    classpath = configurations.ktlint
-    mainClass.set("com.pinterest.ktlint.Main")
-    args "-F", "src/**/*.kt"
-}
+
+//task ktlint(type: JavaExec, group: "verification") {
+//    description = "Check Kotlin code style."
+//    classpath = configurations.ktlint
+//    mainClass.set("com.pinterest.ktlint.Main")
+//    args "src/**/*.kt"
+//    // to generate report in checkstyle format prepend following args:
+//    // "--reporter=plain", "--reporter=checkstyle,output=${buildDir}/ktlint.xml"
+//    // to add a baseline to check against prepend following args:
+//    // "--baseline=ktlint-baseline.xml"
+//    // see https://github.com/pinterest/ktlint#usage for more
+//}
+/*
+check.dependsOn ktlint
+*/
+

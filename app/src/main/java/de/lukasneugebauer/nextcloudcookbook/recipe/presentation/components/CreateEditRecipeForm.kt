@@ -440,7 +440,11 @@ private fun Instructions(
             value = instruction,
             onValueChange = { onInstructionChanged.invoke(index, it) },
             modifier = instructionModifier,
-            label = { Text(text = stringResource(id = R.string.recipe_instruction) + " ${index + 1}") },
+            label = {
+                Text(
+                    text = stringResource(id = R.string.recipe_instruction) + " ${index + 1}"
+                )
+            },
             trailingIcon = {
                 IconButton(onClick = { onInstructionDeleted.invoke(index) }) {
                     Icon(

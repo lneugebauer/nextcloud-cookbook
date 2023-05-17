@@ -51,7 +51,9 @@ class RecipeRepositoryImpl @Inject constructor(
     override suspend fun createRecipe(recipe: RecipeDto): Resource<Int> {
         return withContext(ioDispatcher) {
             val api = apiProvider.getNcCookbookApi()
-                ?: return@withContext Resource.Error(message = UiText.StringResource(R.string.error_api_not_initialized))
+                ?: return@withContext Resource.Error(
+                    message = UiText.StringResource(R.string.error_api_not_initialized)
+                )
 
             try {
                 val id = api.createRecipe(recipe = recipe)
@@ -66,7 +68,9 @@ class RecipeRepositoryImpl @Inject constructor(
     override suspend fun updateRecipe(recipe: RecipeDto): SimpleResource {
         return withContext(ioDispatcher) {
             val api = apiProvider.getNcCookbookApi()
-                ?: return@withContext Resource.Error(message = UiText.StringResource(R.string.error_api_not_initialized))
+                ?: return@withContext Resource.Error(
+                    message = UiText.StringResource(R.string.error_api_not_initialized)
+                )
 
             try {
                 api.updateRecipe(id = recipe.id, recipe = recipe)
@@ -81,7 +85,9 @@ class RecipeRepositoryImpl @Inject constructor(
     override suspend fun deleteRecipe(id: Int, categoryName: String): SimpleResource {
         return withContext(ioDispatcher) {
             val api = apiProvider.getNcCookbookApi()
-                ?: return@withContext Resource.Error(message = UiText.StringResource(R.string.error_api_not_initialized))
+                ?: return@withContext Resource.Error(
+                    message = UiText.StringResource(R.string.error_api_not_initialized)
+                )
 
             when (val response = api.deleteRecipe(id)) {
                 is NetworkResponse.Success -> {

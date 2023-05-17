@@ -5,7 +5,9 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class ClearPreferencesUseCase @Inject constructor(private val preferencesManager: PreferencesManager) {
+class ClearPreferencesUseCase @Inject constructor(
+    private val preferencesManager: PreferencesManager
+) {
 
     suspend operator fun invoke() {
         preferencesManager.clearPreferences()

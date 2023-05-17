@@ -28,7 +28,9 @@ class AccountRepositoryImpl @Inject constructor(
     override suspend fun getCapabilities(): Resource<Capabilities> {
         return withContext(ioDispatcher) {
             val api = apiProvider.getNcCookbookApi()
-                ?: return@withContext Resource.Error(message = UiText.StringResource(R.string.error_api_not_initialized))
+                ?: return@withContext Resource.Error(
+                    message = UiText.StringResource(R.string.error_api_not_initialized)
+                )
 
             when (val response = api.getCapabilities()) {
                 is NetworkResponse.Success -> {
@@ -43,7 +45,9 @@ class AccountRepositoryImpl @Inject constructor(
     override suspend fun getVersions(): Resource<CookbookVersions> {
         return withContext(ioDispatcher) {
             val api = apiProvider.getNcCookbookApi()
-                ?: return@withContext Resource.Error(message = UiText.StringResource(R.string.error_api_not_initialized))
+                ?: return@withContext Resource.Error(
+                    message = UiText.StringResource(R.string.error_api_not_initialized)
+                )
 
             when (val response = api.getVersions()) {
                 is NetworkResponse.Success -> {
