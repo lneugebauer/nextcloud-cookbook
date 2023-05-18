@@ -45,7 +45,7 @@ fun TimeTextField(
     Column {
         Text(
             text = stringResource(id = label),
-            style = MaterialTheme.typography.caption
+            style = MaterialTheme.typography.caption,
         )
         Row(
             modifier = modifier,
@@ -92,7 +92,7 @@ private fun TimeTextFieldPreview() {
             minutes = "25",
             onHoursChange = {},
             onMinutesChange = {},
-            label = R.string.recipe_cook_time
+            label = R.string.recipe_cook_time,
         )
     }
 }
