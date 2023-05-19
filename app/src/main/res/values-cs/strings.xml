@@ -56,7 +56,7 @@
     <plurals name="recipe_ingredients_servings">
         <item quantity="one">Přísady pro %1$d porci</item>
         <item quantity="few">Přísady pro %1$d porce</item>
-        <item quantity="other">Přísady pro %1$d porcí</item>
+        <item quantity="many">Přísady pro %1$d porcí</item>
     </plurals>
     <string name="recipe_instruction_add">Přidat pokyn</string>
     <string name="recipe_instruction_delete">Delete pokyn</string>

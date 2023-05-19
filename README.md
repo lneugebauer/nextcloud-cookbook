@@ -48,7 +48,7 @@ An Android client for [Nextcloud Cookbook app](https://github.com/nextcloud/cook
 ## Contributing
 
 - [Bugfix](https://github.com/lneugebauer/nextcloud-cookbook/blob/main/docs/contributing.md#bugfix)
-- [Feature](https://github.com/lneugebauer/nextcloud-cookbook/blob/main/docs/contributing.md#features_improvements)
+- [Feature](https://github.com/lneugebauer/nextcloud-cookbook/blob/main/docs/contributing.md#featuresimprovements)
 - [Translations](https://github.com/lneugebauer/nextcloud-cookbook/blob/main/docs/contributing.md#translations)
 
 ## License
