@@ -1,0 +1,20 @@
+View all your recipes stored in your Nextcloud instance.
+
+The source code can be found on GitHub at https://github.com/lneugebauer/nextcloud-cookbook/. You can report bugs, enhancement proposals and feature requests at the GitHub issue tracker.
+
+Current features:
+- List all recipes
+- List all recipes by category
+- View recipe
+- Stay awake on recipe screen
+- Settings
+- Edit recipe
+- Add recipe
+
+Missing but planned features:
+- Offline usage
+- Single Sign On through Nextcloud Files app
+- Login via QR-Code
+- Import recipe via url
+
+A publicly accessible Nextcloud server with the latest cookbook app is required to use this app.

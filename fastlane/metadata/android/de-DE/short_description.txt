@@ -1,0 +1,1 @@
+Schauen Sie sich alle in Ihrer Nextcloud-Instanz gespeicherten Rezepte an.

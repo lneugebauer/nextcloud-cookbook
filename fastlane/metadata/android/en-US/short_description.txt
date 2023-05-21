@@ -1,0 +1,1 @@
+View all your recipes stored in your Nextcloud instance.

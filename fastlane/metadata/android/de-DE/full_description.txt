@@ -1,0 +1,20 @@
+Schauen Sie sich alle in Ihrer Nextcloud-Instanz gespeicherten Rezepte an.
+
+Der Quellcode ist auf GitHub unter https://github.com/lneugebauer/nextcloud-cookbook/ zu finden. Sie können Fehler, Verbesserungsvorschläge und Funktionswünsche auf dem GitHub Issue Tracker melden.
+
+Aktuelle Funktionen:
+- Alle Rezepte auflisten
+- Alle Rezepte nach Kategorie auflisten
+- Rezept anzeigen
+- Bildschirm bleibt auf Rezeptbildschirm eingeschaltet
+- Einstellungen
+- Rezept bearbeiten
+- Rezept hinzufügen
+
+Fehlende, aber geplante Funktionen:
+- Offline-Nutzung
+- Single Sign On über die Nextcloud Files App
+- Anmeldung über QR-Code
+- Rezept über URL importieren
+
+Für die Nutzung dieser App ist ein öffentlich zugänglicher Nextcloud-Server mit der neuesten Kochbuch-App erforderlich.

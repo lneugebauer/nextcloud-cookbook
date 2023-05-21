@@ -53,7 +53,7 @@ platform :android do
     )
   end
 
-  desc "Build"
+  desc "Test and build"
   lane :build do
     clean
     ktlint
@@ -62,4 +62,23 @@ platform :android do
     assemble
   end
 
+  lane :playstore do
+    clean
+    ktlint
+    gradle(
+      task: "lint",
+      build_type: "Release"
+    )
+    gradle(
+      task: "test",
+      build_type: "Release"
+    )
+    gradle(
+      task: "bundle",
+      build_type: "Release"
+    )
+    upload_to_play_store(
+      track: "internal"
+    )
+  end
 end
