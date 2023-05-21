@@ -32,16 +32,14 @@ platform :android do
   desc "Lint"
   lane :lint do
     gradle(
-      task: "lint",
-      build_type: "Debug"
+      task: "lint"
     )
   end
 
   desc "Test"
   lane :test do
     gradle(
-      task: "test",
-      build_type: "Debug"
+      task: "test"
     )
   end
 
@@ -50,6 +48,21 @@ platform :android do
     gradle(
       task: "assemble",
       build_type: "Debug"
+    )
+  end
+
+  desc "Bundle"
+  lane :bundle do
+   gradle(
+     task: "bundle",
+     build_type: "Release"
+   )
+  end
+
+  desc "Upload"
+  lane :upload do
+    upload_to_play_store(
+      track: "internal"
     )
   end
 
@@ -62,23 +75,13 @@ platform :android do
     assemble
   end
 
+  desc "Test and release"
   lane :playstore do
     clean
     ktlint
-    gradle(
-      task: "lint",
-      build_type: "Release"
-    )
-    gradle(
-      task: "test",
-      build_type: "Release"
-    )
-    gradle(
-      task: "bundle",
-      build_type: "Release"
-    )
-    upload_to_play_store(
-      track: "internal"
-    )
+    lint
+    test
+    bundle
+    upload
   end
 end
