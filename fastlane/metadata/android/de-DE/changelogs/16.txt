@@ -1,0 +1,3 @@
+- Zeiten zum Rezept erstellen und bearbeiten Formular hinzugefügt
+- Tschechische Übersetzung hinzugefügt – Danke @ceskyDJ
+- Fehlende Übersetzung für den Login-Bildschirm hinzugefügt
