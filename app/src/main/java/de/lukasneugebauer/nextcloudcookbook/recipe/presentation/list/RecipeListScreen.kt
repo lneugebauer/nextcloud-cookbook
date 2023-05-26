@@ -2,10 +2,16 @@ package de.lukasneugebauer.nextcloudcookbook.recipe.presentation.list
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.AppBarDefaults
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Divider
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
@@ -13,19 +19,31 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.ListItem
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.primarySurface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
@@ -43,6 +61,8 @@ import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeCreateScreenDesti
 import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeDetailScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipePreview
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.RecipeListScreenState
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.SearchAppBarState
+import de.lukasneugebauer.nextcloudcookbook.recipe.util.RecipeConstants.APP_BAR_HEIGHT
 import kotlin.random.Random.Default.nextInt
 
 @Destination
@@ -54,15 +74,28 @@ fun RecipeListScreen(
     viewModel: RecipeListViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.state.collectAsState()
+    val searchAppBarState by viewModel.searchAppBarState
+    val searchQueryState by viewModel.searchQueryState.collectAsState()
 
     Scaffold(
         topBar = {
-            RecipeListTopBar(
-                categoryName = categoryName,
-                onBackClick = {
-                    navigator.popBackStack()
-                },
-            )
+            when (searchAppBarState) {
+                SearchAppBarState.OPEN -> {
+                    SearchAppBar(
+                        query = searchQueryState,
+                        onQueryChange = { viewModel.updateSearchQuery(it) },
+                        onCloseClicked = { viewModel.toggleSearchAppBarVisibility() },
+                    )
+                }
+
+                SearchAppBarState.CLOSED -> {
+                    TopAppBar(
+                        categoryName = categoryName,
+                        onBackClick = { navigator.popBackStack() },
+                        onSearchClicked = { viewModel.toggleSearchAppBarVisibility() },
+                    )
+                }
+            }
         },
         floatingActionButton = {
             FloatingActionButton(onClick = {
@@ -74,7 +107,10 @@ fun RecipeListScreen(
     ) { innerPadding ->
         val modifierWithInnerPadding = Modifier.padding(innerPadding)
         when (uiState) {
-            is RecipeListScreenState.Initial -> Loader(modifier = modifierWithInnerPadding)
+            is RecipeListScreenState.Initial -> {
+                Loader(modifier = modifierWithInnerPadding)
+            }
+
             is RecipeListScreenState.Loaded -> {
                 val recipePreviews = (uiState as RecipeListScreenState.Loaded).data
                 RecipeListScreen(
@@ -84,6 +120,7 @@ fun RecipeListScreen(
                     navigator.navigate(RecipeDetailScreenDestination(recipeId = id))
                 }
             }
+
             is RecipeListScreenState.Error -> {
                 val message = (uiState as RecipeListScreenState.Error).uiText
                 AbstractErrorScreen(uiText = message, modifier = modifierWithInnerPadding)
@@ -149,7 +186,11 @@ private fun RecipeListScreen(
 }
 
 @Composable
-fun RecipeListTopBar(categoryName: String?, onBackClick: () -> Unit) {
+private fun TopAppBar(
+    categoryName: String?,
+    onBackClick: () -> Unit,
+    onSearchClicked: () -> Unit,
+) {
     val title = categoryName ?: stringResource(id = R.string.common_recipes)
 
     TopAppBar(
@@ -166,22 +207,96 @@ fun RecipeListTopBar(categoryName: String?, onBackClick: () -> Unit) {
                 }
             }
         },
-//        actions = {
-//            IconButton(onClick = {}) {
-//                Icon(
-//                    Icons.Default.FilterList,
-//                    contentDescription = stringResource(id = R.string.common_share)
-//                )
-//            }
-//        },
+        actions = {
+            IconButton(onClick = onSearchClicked) {
+                Icon(
+                    Icons.Default.Search,
+                    contentDescription = stringResource(id = R.string.common_share),
+                )
+            }
+        },
         backgroundColor = NcBlue700,
         contentColor = Color.White,
     )
 }
 
+@Composable
+private fun SearchAppBar(
+    query: String,
+    onQueryChange: (String) -> Unit,
+    onCloseClicked: () -> Unit,
+) {
+    val focusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
+
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(APP_BAR_HEIGHT),
+        color = MaterialTheme.colors.primarySurface,
+        elevation = AppBarDefaults.TopAppBarElevation,
+    ) {
+        TextField(
+            value = query,
+            onValueChange = onQueryChange,
+            modifier = Modifier
+                .fillMaxWidth()
+                .focusRequester(focusRequester),
+            placeholder = {
+                Text(
+                    modifier = Modifier.alpha(ContentAlpha.medium),
+                    text = stringResource(R.string.common_search),
+                    color = MaterialTheme.colors.onPrimary,
+                )
+            },
+            leadingIcon = {
+                IconButton(onClick = {}, enabled = false) {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = stringResource(R.string.common_search),
+                        modifier = Modifier.alpha(ContentAlpha.medium),
+                        tint = MaterialTheme.colors.onPrimary,
+                    )
+                }
+            },
+            trailingIcon = {
+                IconButton(
+                    onClick = {
+                        if (query.isNotEmpty()) {
+                            onQueryChange("")
+                        } else {
+                            onCloseClicked()
+                        }
+                    },
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = stringResource(R.string.common_close),
+                        tint = MaterialTheme.colors.onPrimary,
+                    )
+                }
+            },
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Search,
+            ),
+            keyboardActions = KeyboardActions(
+                onSearch = {},
+            ),
+            singleLine = true,
+            colors = TextFieldDefaults.textFieldColors(
+                backgroundColor = Color.Transparent,
+                cursorColor = MaterialTheme.colors.onPrimary,
+            ),
+        )
+    }
+}
+
 @Preview
 @Composable
-fun RecipeListPreview() {
+private fun RecipeListPreview() {
     val data = List(10) { id ->
         RecipePreview(
             id = id,
@@ -196,6 +311,42 @@ fun RecipeListPreview() {
         RecipeListScreen(
             data = data,
             onClick = {},
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun TopAppBarPreview() {
+    NextcloudCookbookTheme {
+        TopAppBar(
+            categoryName = null,
+            onBackClick = {},
+            onSearchClicked = {},
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun TopAppBarWithCategoryNamePreview() {
+    NextcloudCookbookTheme {
+        TopAppBar(
+            categoryName = "Lorem ipsum",
+            onBackClick = {},
+            onSearchClicked = {},
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun SearchAppBarPreview() {
+    NextcloudCookbookTheme {
+        SearchAppBar(
+            query = "",
+            onQueryChange = {},
+            onCloseClicked = {},
         )
     }
 }

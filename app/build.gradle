@@ -79,15 +79,15 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion compose_compiler_version
     }
-    lintOptions{
-        disable 'MissingTranslation'
-    }
     packagingOptions {
         resources {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
     namespace 'de.lukasneugebauer.nextcloudcookbook'
+    lint {
+        disable 'MissingTranslation'
+    }
 }
 
 configurations {
