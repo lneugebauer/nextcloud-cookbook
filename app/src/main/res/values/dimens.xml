@@ -4,6 +4,7 @@
     <dimen name="common_item_width_s">96dp</dimen>
     <dimen name="common_item_width_m">144dp</dimen>
     <dimen name="error_icon_size">64dp</dimen>
+    <dimen name="fab_offset">72dp</dimen>
     <dimen name="launcher_logo_width">256dp</dimen>
     <dimen name="padding_xs">4dp</dimen>
     <dimen name="padding_s">8dp</dimen>

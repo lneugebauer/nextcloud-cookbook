@@ -299,7 +299,8 @@ fun RecipeDetailContent(recipe: Recipe, modifier: Modifier = Modifier) {
         if (recipe.instructions.isNotEmpty()) {
             RecipeDetailInstructions(recipe.instructions)
         }
-        Gap(size = dimensionResource(id = R.dimen.padding_m))
+        Gap(size = dimensionResource(id = R.dimen.padding_s))
+        Gap(size = dimensionResource(id = R.dimen.fab_offset))
     }
 }
 

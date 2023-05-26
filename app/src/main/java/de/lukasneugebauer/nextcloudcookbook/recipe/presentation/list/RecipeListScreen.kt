@@ -45,6 +45,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -52,6 +53,7 @@ import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultRecipient
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.AuthorizedImage
+import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Gap
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.error.AbstractErrorScreen
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.error.NotFoundScreen
@@ -62,7 +64,6 @@ import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeDetailScreenDesti
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipePreview
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.RecipeListScreenState
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.SearchAppBarState
-import de.lukasneugebauer.nextcloudcookbook.recipe.util.RecipeConstants.APP_BAR_HEIGHT
 import kotlin.random.Random.Default.nextInt
 
 @Destination
@@ -179,6 +180,8 @@ private fun RecipeListScreen(
                     Divider(
                         modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
                     )
+                } else {
+                    Gap(size = dimensionResource(id = R.dimen.fab_offset))
                 }
             }
         }
@@ -235,7 +238,7 @@ private fun SearchAppBar(
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .height(APP_BAR_HEIGHT),
+            .height(AppBarHeight),
         color = MaterialTheme.colors.primarySurface,
         elevation = AppBarDefaults.TopAppBarElevation,
     ) {
@@ -350,3 +353,5 @@ private fun SearchAppBarPreview() {
         )
     }
 }
+
+private val AppBarHeight = 56.dp
