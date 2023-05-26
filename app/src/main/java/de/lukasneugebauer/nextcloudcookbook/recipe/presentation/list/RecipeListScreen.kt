@@ -29,7 +29,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.primarySurface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -243,7 +242,7 @@ private fun SearchAppBar(
         modifier = Modifier
             .fillMaxWidth()
             .height(AppBarHeight),
-        color = MaterialTheme.colors.primarySurface,
+        color = MaterialTheme.colors.primary,
         elevation = AppBarDefaults.TopAppBarElevation,
     ) {
         TextField(
