@@ -38,7 +38,7 @@ android {
         applicationId "de.lukasneugebauer.nextcloudcookbook"
         minSdk 23
         targetSdk 33
-        versionCode 17
+        versionCode 18
         versionName "0.10.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
