@@ -30,10 +30,14 @@ class CategoryListViewModel @Inject constructor(
                 is StoreResponse.Loading -> _uiState.update { CategoryListScreenState.Initial }
                 is StoreResponse.Data -> _uiState.update {
                     CategoryListScreenState.Loaded(
-                        categoriesResponse.value.map { it.toCategory() },
+                        categoriesResponse.value
+                            .filter { it.recipeCount > 0 }
+                            .map { it.toCategory() },
                     )
                 }
+
                 is StoreResponse.NoNewData -> Unit
+
                 is StoreResponse.Error -> {
                     val message = categoriesResponse.errorMessageOrNull()
                         ?.let { UiText.DynamicString(it) }

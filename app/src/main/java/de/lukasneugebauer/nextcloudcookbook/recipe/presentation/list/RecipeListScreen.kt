@@ -91,7 +91,11 @@ fun RecipeListScreen(
 
                 SearchAppBarState.CLOSED -> {
                     TopAppBar(
-                        categoryName = categoryName,
+                        categoryName = if (categoryName == "*") {
+                            stringResource(R.string.recipe_uncategorised)
+                        } else {
+                            categoryName
+                        },
                         onBackClick = { navigator.popBackStack() },
                         onSearchClicked = { viewModel.toggleSearchAppBarVisibility() },
                     )

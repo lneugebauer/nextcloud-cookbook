@@ -77,6 +77,7 @@
     <string name="recipe_tools">Utensilien</string>
     <string name="recipe_tool">Utensil</string>
     <string name="recipe_total_time">Gesamt</string>
+    <string name="recipe_uncategorised">Nicht kategorisierte Rezepte</string>
     <string name="recipe_url">URL</string>
     <string name="recipe_yield">Portionen</string>
     <string name="settings_account">Konto</string>

@@ -57,6 +57,7 @@ fun CategoryListScreen(
                     navigator.navigate(RecipeListScreenDestination(categoryName))
                 }
             }
+
             is CategoryListScreenState.Error -> {
                 val message = (uiState as CategoryListScreenState.Error).uiText
                 AbstractErrorScreen(uiText = message)
@@ -92,7 +93,12 @@ private fun CategoryListScreen(
                         }
                     },
                     text = {
-                        Text(text = category.name)
+                        val categoryName = if (category.name == "*") {
+                            stringResource(R.string.recipe_uncategorised)
+                        } else {
+                            category.name
+                        }
+                        Text(text = categoryName)
                     },
                 )
                 if (index != data.size - 1) {
