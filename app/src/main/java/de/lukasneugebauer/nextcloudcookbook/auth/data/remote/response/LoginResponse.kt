@@ -3,6 +3,7 @@ package de.lukasneugebauer.nextcloudcookbook.auth.data.remote.response
 import com.google.gson.annotations.SerializedName
 import de.lukasneugebauer.nextcloudcookbook.auth.domain.model.LoginResult
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.NcAccount
+import timber.log.Timber
 
 data class LoginResponse(
     @SerializedName("server")
@@ -17,7 +18,12 @@ data class LoginResponse(
             name = "",
             username = loginName,
             token = appPassword,
-            url = server,
+            url = if (!server.endsWith('/')) {
+                Timber.i("#%d Slash (\"/\") appended to Nextcloud URL. New URL: %s", 1686840857, "$server/")
+                "$server/"
+            } else {
+                server
+            },
         ),
     )
 }

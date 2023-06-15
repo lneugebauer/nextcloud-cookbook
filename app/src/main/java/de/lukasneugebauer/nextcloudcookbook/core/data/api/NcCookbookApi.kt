@@ -22,7 +22,7 @@ interface NcCookbookApi {
         "OCS-APIRequest: true",
         "Content-Type: application/json;charset=utf-8",
     )
-    @GET("/ocs/v2.php/cloud/capabilities?format=json")
+    @GET("ocs/v2.php/cloud/capabilities?format=json")
     suspend fun getCapabilities(): NetworkResponse<CapabilitiesResponse, ErrorResponse>
 
     @GET("$FULL_PATH/categories")
