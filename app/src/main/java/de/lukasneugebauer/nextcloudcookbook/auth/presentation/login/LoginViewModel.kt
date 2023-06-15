@@ -121,7 +121,7 @@ class LoginViewModel @Inject constructor(
                 apiProvider.initApi()
             }
             is Resource.Error -> {
-                delay(1_000L)
+                delay(POLL_DELAY)
                 if (pollLoginServerIsActive) {
                     pollLoginServer(url, token)
                 }
@@ -169,5 +169,9 @@ class LoginViewModel @Inject constructor(
         }
 
         return true
+    }
+
+    companion object {
+        const val POLL_DELAY = 5_000L
     }
 }
