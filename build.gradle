@@ -3,10 +3,10 @@ buildscript {
     ext {
         accompanist_version = '0.30.1'
         compose_compiler_version = '1.4.7'
-        compose_destinations_version = '1.8.41-beta'
-        compose_settings_version = '0.13.0'
+        compose_destinations_version = '1.8.42-beta'
+        compose_settings_version = '0.27.0'
         compose_version = '1.4.3'
-        hilt_version = '2.46'
+        hilt_version = '2.46.1'
         kotlin_version = '1.8.21'
         retrofit_version = '2.9.0'
         store_version = '4.0.5'
