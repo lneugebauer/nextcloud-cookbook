@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.net.toUri
 import coil.compose.ImagePainter
 import coil.compose.rememberImagePainter
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
@@ -18,8 +19,13 @@ import de.lukasneugebauer.nextcloudcookbook.core.util.Constants
 fun authorizedImagePainter(imageUrl: String): Painter {
     val credentials = LocalCredentials.current
 
+    val path = credentials?.baseUrl?.toUri()?.path
+    val regex = """^$path""".toRegex()
+    val newImageUrl = imageUrl.replace(regex, "")
+    val fullImageUrl = credentials?.baseUrl + newImageUrl
+
     val painter = rememberImagePainter(
-        data = credentials?.baseUrl + imageUrl,
+        data = fullImageUrl,
         builder = {
             credentials?.basic?.let {
                 addHeader("Authorization", credentials.basic)
