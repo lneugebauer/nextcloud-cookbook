@@ -1,0 +1,3 @@
+- Kategorie zu Rezept hinzugefügt
+- Bild-URL korrigiert
+- Persistierte Daten nach Abmeldung behoben
