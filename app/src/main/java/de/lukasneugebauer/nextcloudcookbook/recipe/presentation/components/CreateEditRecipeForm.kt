@@ -55,6 +55,7 @@ fun CreateEditRecipeForm(
     onPrepTimeChanged: (time: String) -> Unit,
     onCookTimeChanged: (time: String) -> Unit,
     onTotalTimeChanged: (time: String) -> Unit,
+    onCategoryChanged: (category: String) -> Unit,
     onYieldChanged: (yield: String) -> Unit,
     onIngredientChanged: (index: Int, ingredient: String) -> Unit,
     onIngredientDeleted: (index: Int) -> Unit,
@@ -142,6 +143,12 @@ fun CreateEditRecipeForm(
                 focusManager = focusManager,
                 onTotalTimeChange = onTotalTimeChanged,
                 textFieldColors = textFieldColors,
+            )
+            Category(
+                recipe = recipe,
+                focusManager = focusManager,
+                onCategoryChange = onCategoryChanged,
+                textFieldColors = textFieldColors
             )
             Yield(
                 recipe = recipe,
@@ -419,6 +426,33 @@ private fun TotalTime(
 }
 
 @Composable
+private fun Category(
+    recipe: Recipe,
+    focusManager: FocusManager,
+    onCategoryChange: (category: String) -> Unit,
+    textFieldColors: TextFieldColors,
+) {
+    DefaultOutlinedTextField(
+        value = recipe.category,
+        onValueChange = onCategoryChange,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
+        label = { Text(text = stringResource(id = R.string.recipe_category))},
+        keyboardOptions = KeyboardOptions.Default.copy(
+            imeAction = ImeAction.Next
+        ),
+        keyboardActions = KeyboardActions(
+            onNext = {
+                focusManager.moveFocus(FocusDirection.Down)
+            },
+        ),
+        singleLine = true,
+        colors = textFieldColors,
+    )
+}
+
+@Composable
 private fun Yield(
     recipe: Recipe,
     focusManager: FocusManager,
@@ -614,7 +648,7 @@ private fun CreateEditRecipeFormPreview() {
         url = "https://www.example.com",
         imageOrigin = "https://www.example.com/image.jpg",
         imageUrl = "/apps/cookbook/recipes/1/image?size=full",
-        category = "",
+        category = "Lorem ipsum",
         keywords = emptyList(),
         yield = 2,
         prepTime = null,
@@ -645,6 +679,7 @@ private fun CreateEditRecipeFormPreview() {
             onPrepTimeChanged = {},
             onCookTimeChanged = {},
             onTotalTimeChanged = {},
+            onCategoryChanged = {},
             onYieldChanged = {},
             onIngredientChanged = { _, _ -> },
             onIngredientDeleted = {},

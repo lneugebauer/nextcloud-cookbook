@@ -80,6 +80,12 @@ abstract class RecipeCreateEditViewModel(
         }
     }
 
+    fun changeCategory(newCategory: String) {
+        _uiState.value.ifSuccess {
+            recipe = recipe.copy(recipeCategory = newCategory)
+        }
+    }
+
     fun changeYield(newYield: String) {
         _uiState.value.ifSuccess {
             recipe = recipe.copy(recipeYield = newYield.toIntOrNull() ?: DEFAULT_YIELD)

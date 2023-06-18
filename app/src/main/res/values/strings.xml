@@ -48,6 +48,7 @@
     <string name="login_example_url" translatable="false">https://cloud.example.tld</string>
     <string name="login_manual">Manual sign in</string>
     <string name="login_root_address">Nextcloud root address</string>
+    <string name="recipe_category">Category</string>
     <string name="recipe_cook_time">Cooking</string>
     <string name="recipe_description">Description</string>
     <string name="recipe_duration">%1$d min</string>

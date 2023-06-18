@@ -48,6 +48,7 @@
     <string name="login">Anmelden</string>
     <string name="login_manual">Manuell anmelden</string>
     <string name="login_root_address">Nextcloud Adresse</string>
+    <string name="recipe_category">Kategorie</string>
     <string name="recipe_cook_time">Kochen</string>
     <string name="recipe_description">Beschreibung</string>
     <string name="recipe_duration">%1$d Min.</string>

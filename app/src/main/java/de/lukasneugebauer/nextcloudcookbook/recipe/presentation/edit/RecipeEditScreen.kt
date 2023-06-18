@@ -53,6 +53,9 @@ fun RecipeEditScreen(
                 onTotalTimeChanged = { newTotalTime ->
                     viewModel.changeTotalTime(newTotalTime)
                 },
+                onCategoryChanged = {newCategory ->
+                    viewModel.changeCategory(newCategory)
+                },
                 onYieldChanged = { newYield ->
                     viewModel.changeYield(newYield)
                 },

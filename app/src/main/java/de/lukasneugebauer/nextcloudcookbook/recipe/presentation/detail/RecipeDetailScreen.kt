@@ -27,6 +27,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Timer
@@ -51,6 +52,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.flowlayout.FlowRow
 import com.ramcosta.composedestinations.annotation.Destination
@@ -61,6 +63,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Gap
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.pluralResource
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
+import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
 import de.lukasneugebauer.nextcloudcookbook.core.util.getActivity
 import de.lukasneugebauer.nextcloudcookbook.core.util.notZero
 import de.lukasneugebauer.nextcloudcookbook.core.util.openInBrowser
@@ -290,6 +293,9 @@ fun RecipeDetailContent(recipe: Recipe, modifier: Modifier = Modifier) {
         ) {
             RecipeDetailMeta(recipe.prepTime, recipe.cookTime, recipe.totalTime)
         }
+        if (recipe.category.isNotEmpty()) {
+            RecipeDetailCategory(category = recipe.category)
+        }
         if (recipe.ingredients.isNotEmpty()) {
             RecipeDetailIngredients(recipe.ingredients, recipe.yield)
         }
@@ -411,6 +417,25 @@ fun RowScope.RecipeDetailMetaBox(icon: ImageVector, duration: Long, @StringRes t
 }
 
 @Composable
+fun RecipeDetailCategory(category: String) {
+    Row(
+        modifier = Modifier
+            .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
+            .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_s)),
+    ) {
+        Icon(
+            imageVector = Icons.Default.Bookmark,
+            contentDescription = stringResource(id = R.string.recipe_category)
+        )
+        Text(
+            text = category,
+            style = MaterialTheme.typography.body1,
+        )
+    }
+}
+
+@Composable
 fun RecipeDetailIngredients(ingredients: List<String>, servings: Int) {
     Text(
         text = pluralResource(R.plurals.recipe_ingredients_servings, servings, servings),
@@ -484,5 +509,39 @@ fun RecipeDetailInstructions(instructions: List<String>) {
                 style = MaterialTheme.typography.body1,
             )
         }
+    }
+}
+
+@Preview
+@Composable
+private fun RecipeDetailContentPreview() {
+    val recipe = Recipe(
+        id = 1,
+        name = "Lorem ipsum",
+        description = "Lorem ipsum dolor sit amet",
+        url = "https://www.example.com",
+        imageOrigin = "https://www.example.com/image.jpg",
+        imageUrl = "/apps/cookbook/recipes/1/image?size=full",
+        category = "Lorem ipsum",
+        keywords = emptyList(),
+        yield = 2,
+        prepTime = null,
+        cookTime = Duration.parse("PT0H35M0S"),
+        totalTime = Duration.parse("PT1H50M0S"),
+        nutrition = null,
+        tools = List(1) {
+            "Lorem ipsum"
+        },
+        ingredients = List(2) {
+            "Lorem ipsum"
+        },
+        instructions = List(1) {
+            "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
+        },
+        createdAt = "",
+        modifiedAt = "",
+    )
+    NextcloudCookbookTheme {
+        RecipeDetailContent(recipe = recipe)
     }
 }
