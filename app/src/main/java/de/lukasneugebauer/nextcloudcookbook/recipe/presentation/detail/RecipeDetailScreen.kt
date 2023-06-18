@@ -98,7 +98,7 @@ fun RecipeDetailScreen(
 
     Scaffold(
         topBar = {
-            RecipeDetailTopBar(
+            TopBar(
                 recipe = recipe,
                 onNavIconClick = { navigator.popBackStack() },
                 onEditClick = {
@@ -163,7 +163,7 @@ fun RecipeDetailScreen(
             }
         }
         if (recipe.isNotEmpty() && state.error == null && !state.loading) {
-            RecipeDetailContent(
+            Content(
                 recipe = recipe,
                 modifier = Modifier
                     .padding(paddingValues = innerPadding)
@@ -174,7 +174,7 @@ fun RecipeDetailScreen(
 }
 
 @Composable
-fun KeepScreenOn() {
+private fun KeepScreenOn() {
     val context = LocalContext.current
     val activity = context.getActivity()
     val window = activity?.window
@@ -187,7 +187,7 @@ fun KeepScreenOn() {
 }
 
 @Composable
-fun RecipeDetailTopBar(
+private fun TopBar(
     recipe: Recipe,
     onNavIconClick: () -> Unit,
     onEditClick: () -> Unit,
@@ -240,9 +240,9 @@ fun RecipeDetailTopBar(
                     contentDescription = stringResource(id = R.string.common_more),
                 )
                 DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                    RecipeDetailScreenDropDownMenuItemOpenSource(context, recipe.url)
-                    RecipeDetailScreenDropDownMenuItemEdit(onEditClick)
-                    RecipeDetailScreenDropDownMenuItemDelete(onDeleteClick)
+                    DropDownMenuItemOpenSource(context, recipe.url)
+                    DropDownMenuItemEdit(onEditClick)
+                    DropDownMenuItemDelete(onDeleteClick)
                 }
             }
         },
@@ -252,7 +252,7 @@ fun RecipeDetailTopBar(
 }
 
 @Composable
-fun RecipeDetailScreenDropDownMenuItemOpenSource(context: Context, recipeUrl: String) {
+private fun DropDownMenuItemOpenSource(context: Context, recipeUrl: String) {
     if (recipeUrl.isNotBlank()) {
         DropdownMenuItem(onClick = { Uri.parse(recipeUrl).openInBrowser(context) }) {
             Text(text = stringResource(id = R.string.recipe_more_menu_share))
@@ -261,49 +261,49 @@ fun RecipeDetailScreenDropDownMenuItemOpenSource(context: Context, recipeUrl: St
 }
 
 @Composable
-fun RecipeDetailScreenDropDownMenuItemEdit(onClick: () -> Unit) {
+private fun DropDownMenuItemEdit(onClick: () -> Unit) {
     DropdownMenuItem(onClick) {
         Text(text = stringResource(id = R.string.recipe_more_menu_edit))
     }
 }
 
 @Composable
-fun RecipeDetailScreenDropDownMenuItemDelete(onClick: () -> Unit) {
+private fun DropDownMenuItemDelete(onClick: () -> Unit) {
     DropdownMenuItem(onClick = onClick) {
         Text(text = stringResource(id = R.string.recipe_more_menu_delete))
     }
 }
 
 @Composable
-fun RecipeDetailContent(recipe: Recipe, modifier: Modifier = Modifier) {
+private fun Content(recipe: Recipe, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier,
     ) {
-        RecipeDetailImage(recipe.imageUrl, recipe.name)
-        RecipeDetailName(recipe.name)
+        Image(recipe.imageUrl, recipe.name)
+        Name(recipe.name)
         if (recipe.keywords.isNotEmpty()) {
-            RecipeDetailKeywords(recipe.keywords)
+            Keywords(recipe.keywords)
         }
         if (recipe.description.isNotBlank()) {
-            RecipeDetailDescription(recipe.description)
+            Description(recipe.description)
         }
         if (recipe.prepTime?.notZero() == true ||
             recipe.cookTime?.notZero() == true ||
             recipe.totalTime?.notZero() == true
         ) {
-            RecipeDetailMeta(recipe.prepTime, recipe.cookTime, recipe.totalTime)
+            Meta(recipe.prepTime, recipe.cookTime, recipe.totalTime)
         }
         if (recipe.category.isNotEmpty()) {
-            RecipeDetailCategory(category = recipe.category)
+            Category(category = recipe.category)
         }
         if (recipe.ingredients.isNotEmpty()) {
-            RecipeDetailIngredients(recipe.ingredients, recipe.yield)
+            Ingredients(recipe.ingredients, recipe.yield)
         }
         if (recipe.tools.isNotEmpty()) {
-            RecipeDetailTools(recipe.tools)
+            Tools(recipe.tools)
         }
         if (recipe.instructions.isNotEmpty()) {
-            RecipeDetailInstructions(recipe.instructions)
+            Instructions(recipe.instructions)
         }
         Gap(size = dimensionResource(id = R.dimen.padding_s))
         Gap(size = dimensionResource(id = R.dimen.fab_offset))
@@ -311,7 +311,7 @@ fun RecipeDetailContent(recipe: Recipe, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun RecipeDetailImage(imageUrl: String, name: String) {
+private fun Image(imageUrl: String, name: String) {
     AuthorizedImage(
         imageUrl = imageUrl,
         contentDescription = name,
@@ -323,7 +323,7 @@ fun RecipeDetailImage(imageUrl: String, name: String) {
 }
 
 @Composable
-fun RecipeDetailName(name: String) {
+private fun Name(name: String) {
     Text(
         text = name,
         modifier = Modifier
@@ -334,7 +334,7 @@ fun RecipeDetailName(name: String) {
 }
 
 @Composable
-fun RecipeDetailKeywords(keywords: List<String>) {
+private fun Keywords(keywords: List<String>) {
     FlowRow(
         modifier = Modifier
             .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
@@ -349,7 +349,7 @@ fun RecipeDetailKeywords(keywords: List<String>) {
 }
 
 @Composable
-fun RecipeDetailDescription(description: String) {
+private fun Description(description: String) {
     Text(
         text = description,
         modifier = Modifier
@@ -361,7 +361,7 @@ fun RecipeDetailDescription(description: String) {
 }
 
 @Composable
-fun RecipeDetailMeta(prepTime: Duration?, cookTime: Duration?, totalTime: Duration?) {
+private fun Meta(prepTime: Duration?, cookTime: Duration?, totalTime: Duration?) {
     Row(
         modifier = Modifier
             .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
@@ -374,7 +374,7 @@ fun RecipeDetailMeta(prepTime: Duration?, cookTime: Duration?, totalTime: Durati
     ) {
         if (prepTime != null && prepTime != Duration.ZERO) {
             // TODO: 18.11.21 Use prep icon
-            RecipeDetailMetaBox(
+            MetaBox(
                 icon = Icons.Filled.Timer,
                 duration = prepTime.toMinutes(),
                 text = R.string.recipe_prep_time,
@@ -382,14 +382,14 @@ fun RecipeDetailMeta(prepTime: Duration?, cookTime: Duration?, totalTime: Durati
         }
         if (cookTime != null && cookTime != Duration.ZERO) {
             // TODO: 18.11.21 Use cook icon
-            RecipeDetailMetaBox(
+            MetaBox(
                 icon = Icons.Filled.Timer,
                 duration = cookTime.toMinutes(),
                 text = R.string.recipe_cook_time,
             )
         }
         if (totalTime != null && totalTime != Duration.ZERO) {
-            RecipeDetailMetaBox(
+            MetaBox(
                 icon = Icons.Filled.Timer,
                 duration = totalTime.toMinutes(),
                 text = R.string.recipe_total_time,
@@ -399,7 +399,7 @@ fun RecipeDetailMeta(prepTime: Duration?, cookTime: Duration?, totalTime: Durati
 }
 
 @Composable
-fun RowScope.RecipeDetailMetaBox(icon: ImageVector, duration: Long, @StringRes text: Int) {
+private fun RowScope.MetaBox(icon: ImageVector, duration: Long, @StringRes text: Int) {
     Box(modifier = Modifier.weight(1f)) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Icon(icon, contentDescription = "")
@@ -417,7 +417,7 @@ fun RowScope.RecipeDetailMetaBox(icon: ImageVector, duration: Long, @StringRes t
 }
 
 @Composable
-fun RecipeDetailCategory(category: String) {
+private fun Category(category: String) {
     Row(
         modifier = Modifier
             .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
@@ -426,7 +426,7 @@ fun RecipeDetailCategory(category: String) {
     ) {
         Icon(
             imageVector = Icons.Default.Bookmark,
-            contentDescription = stringResource(id = R.string.recipe_category)
+            contentDescription = stringResource(id = R.string.recipe_category),
         )
         Text(
             text = category,
@@ -436,7 +436,7 @@ fun RecipeDetailCategory(category: String) {
 }
 
 @Composable
-fun RecipeDetailIngredients(ingredients: List<String>, servings: Int) {
+private fun Ingredients(ingredients: List<String>, servings: Int) {
     Text(
         text = pluralResource(R.plurals.recipe_ingredients_servings, servings, servings),
         modifier = Modifier
@@ -465,7 +465,7 @@ fun RecipeDetailIngredients(ingredients: List<String>, servings: Int) {
 }
 
 @Composable
-fun RecipeDetailTools(tools: List<String>) {
+private fun Tools(tools: List<String>) {
     Text(
         text = stringResource(R.string.recipe_tools),
         modifier = Modifier
@@ -483,7 +483,7 @@ fun RecipeDetailTools(tools: List<String>) {
 }
 
 @Composable
-fun RecipeDetailInstructions(instructions: List<String>) {
+private fun Instructions(instructions: List<String>) {
     Text(
         text = stringResource(R.string.recipe_instructions),
         modifier = Modifier
@@ -514,7 +514,7 @@ fun RecipeDetailInstructions(instructions: List<String>) {
 
 @Preview
 @Composable
-private fun RecipeDetailContentPreview() {
+private fun ContentPreview() {
     val recipe = Recipe(
         id = 1,
         name = "Lorem ipsum",
@@ -542,6 +542,6 @@ private fun RecipeDetailContentPreview() {
         modifiedAt = "",
     )
     NextcloudCookbookTheme {
-        RecipeDetailContent(recipe = recipe)
+        Content(recipe = recipe)
     }
 }

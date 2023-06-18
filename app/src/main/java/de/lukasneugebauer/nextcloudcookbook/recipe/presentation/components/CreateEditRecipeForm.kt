@@ -148,7 +148,7 @@ fun CreateEditRecipeForm(
                 recipe = recipe,
                 focusManager = focusManager,
                 onCategoryChange = onCategoryChanged,
-                textFieldColors = textFieldColors
+                textFieldColors = textFieldColors,
             )
             Yield(
                 recipe = recipe,
@@ -438,9 +438,9 @@ private fun Category(
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
-        label = { Text(text = stringResource(id = R.string.recipe_category))},
+        label = { Text(text = stringResource(id = R.string.recipe_category)) },
         keyboardOptions = KeyboardOptions.Default.copy(
-            imeAction = ImeAction.Next
+            imeAction = ImeAction.Next,
         ),
         keyboardActions = KeyboardActions(
             onNext = {
