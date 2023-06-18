@@ -1,6 +1,7 @@
 package de.lukasneugebauer.nextcloudcookbook.recipe.presentation.components
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -16,9 +17,14 @@ import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
 
 @Composable
-fun Chip(text: String) {
+fun Chip(text: String, onClick: (() -> Unit)? = null) {
     Box(
         modifier = Modifier
+            .then(
+                onClick?.let {
+                    Modifier.clickable(onClick = it)
+                } ?: run { Modifier }
+            )
             .border(width = 2.dp, color = NcBlue700, shape = CircleShape)
             .padding(
                 horizontal = dimensionResource(id = R.dimen.padding_s),

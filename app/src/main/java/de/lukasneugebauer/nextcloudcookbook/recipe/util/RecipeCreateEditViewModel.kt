@@ -3,6 +3,9 @@ package de.lukasneugebauer.nextcloudcookbook.recipe.util
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dropbox.android.external.store4.StoreResponse
+import de.lukasneugebauer.nextcloudcookbook.category.domain.model.Category
+import de.lukasneugebauer.nextcloudcookbook.category.domain.repository.CategoryRepository
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipeDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.repository.RecipeRepository
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.RecipeCreateEditState
@@ -10,10 +13,13 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.ifSuccess
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.RecipeConstants.DEFAULT_YIELD
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 abstract class RecipeCreateEditViewModel(
+    private val categoryRepository: CategoryRepository,
     private val recipeRepository: RecipeRepository,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
@@ -21,13 +27,31 @@ abstract class RecipeCreateEditViewModel(
     protected val _uiState = MutableStateFlow<RecipeCreateEditState>(RecipeCreateEditState.Loading)
     val uiState: StateFlow<RecipeCreateEditState> = _uiState
 
+    private var categories: List<Category> = emptyList()
+        set(value) {
+            field = value
+            _uiState.update {
+                RecipeCreateEditState.Success(
+                    recipe = recipe.toRecipe(),
+                    categories = categories
+                )
+            }
+        }
+
     protected var recipe: RecipeDto = emptyRecipeDto()
         set(value) {
             field = value
-            _uiState.update { RecipeCreateEditState.Success(recipe.toRecipe()) }
+            _uiState.update {
+                RecipeCreateEditState.Success(
+                    recipe.toRecipe(),
+                    categories = categories
+                )
+            }
         }
 
     init {
+        getCategories()
+
         val recipeId: Int? = savedStateHandle["recipeId"]
         recipeId?.let {
             getRecipe(it)
@@ -162,6 +186,19 @@ abstract class RecipeCreateEditViewModel(
             instructions.add("")
             recipe = recipe.copy(recipeInstructions = instructions)
         }
+    }
+
+    private fun getCategories() {
+        categoryRepository.getCategories().onEach { categoriesResponse ->
+            when (categoriesResponse) {
+                is StoreResponse.Data -> categories = categoriesResponse.value
+                    .filter { it.recipeCount > 0 }
+                    .filter { it.name != "*" }
+                    .map { it.toCategory() }
+
+                else -> Unit
+            }
+        }.launchIn(viewModelScope)
     }
 
     private fun getRecipe(id: Int) {

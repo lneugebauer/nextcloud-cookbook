@@ -26,9 +26,11 @@ fun RecipeCreateScreen(
         is RecipeCreateEditState.Loading -> Loader()
         is RecipeCreateEditState.Success -> {
             val recipe = (uiState as RecipeCreateEditState.Success).recipe
+            val categories = (uiState as RecipeCreateEditState.Success).categories
 
             CreateEditRecipeForm(
                 recipe = recipe,
+                categories = categories,
                 title = R.string.recipe_new,
                 onNavIconClick = { navigator.popBackStack() },
                 onNameChanged = { newName ->
@@ -90,10 +92,12 @@ fun RecipeCreateScreen(
                 },
             )
         }
+
         is RecipeCreateEditState.Updated -> {
             val recipeId = (uiState as RecipeCreateEditState.Updated).recipeId
             resultNavigator.navigateBack(recipeId)
         }
+
         is RecipeCreateEditState.Error -> {
             val text = (uiState as RecipeCreateEditState.Error).error.asString()
 

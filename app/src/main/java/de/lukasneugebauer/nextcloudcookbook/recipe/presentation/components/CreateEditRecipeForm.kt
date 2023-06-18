@@ -34,7 +34,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import com.google.accompanist.flowlayout.FlowRow
 import de.lukasneugebauer.nextcloudcookbook.R
+import de.lukasneugebauer.nextcloudcookbook.category.domain.model.Category
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.DefaultButton
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.DefaultOutlinedTextField
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Gap
@@ -46,6 +48,7 @@ import java.time.Duration
 @Composable
 fun CreateEditRecipeForm(
     recipe: Recipe,
+    categories: List<Category>,
     @StringRes title: Int,
     onNavIconClick: () -> Unit,
     onNameChanged: (name: String) -> Unit,
@@ -146,6 +149,7 @@ fun CreateEditRecipeForm(
             )
             Category(
                 recipe = recipe,
+                categories = categories,
                 focusManager = focusManager,
                 onCategoryChange = onCategoryChanged,
                 textFieldColors = textFieldColors,
@@ -428,6 +432,7 @@ private fun TotalTime(
 @Composable
 private fun Category(
     recipe: Recipe,
+    categories: List<Category>,
     focusManager: FocusManager,
     onCategoryChange: (category: String) -> Unit,
     textFieldColors: TextFieldColors,
@@ -436,8 +441,7 @@ private fun Category(
         value = recipe.category,
         onValueChange = onCategoryChange,
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
+            .fillMaxWidth(),
         label = { Text(text = stringResource(id = R.string.recipe_category)) },
         keyboardOptions = KeyboardOptions.Default.copy(
             imeAction = ImeAction.Next,
@@ -450,6 +454,24 @@ private fun Category(
         singleLine = true,
         colors = textFieldColors,
     )
+
+    if (categories.isEmpty()) {
+        Gap(size = dimensionResource(id = R.dimen.padding_m))
+    } else {
+        Gap(size = dimensionResource(id = R.dimen.padding_s))
+        FlowRow(
+            modifier = Modifier
+                .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
+            mainAxisSpacing = dimensionResource(id = R.dimen.padding_s),
+            crossAxisSpacing = dimensionResource(id = R.dimen.padding_s),
+        ) {
+            categories.forEach {
+                Chip(text = it.name) {
+                    onCategoryChange.invoke(it.name)
+                }
+            }
+        }
+    }
 }
 
 @Composable
@@ -667,9 +689,14 @@ private fun CreateEditRecipeFormPreview() {
         createdAt = "",
         modifiedAt = "",
     )
+    val categories = listOf(
+        Category("Lorem", 3),
+        Category("ipsum", 2),
+    )
     NextcloudCookbookTheme {
         CreateEditRecipeForm(
             recipe = recipe,
+            categories = categories,
             title = R.string.recipe_new,
             onNavIconClick = {},
             onNameChanged = {},
