@@ -33,7 +33,7 @@ abstract class RecipeCreateEditViewModel(
             _uiState.update {
                 RecipeCreateEditState.Success(
                     recipe = recipe.toRecipe(),
-                    categories = categories
+                    categories = categories,
                 )
             }
         }
@@ -44,7 +44,7 @@ abstract class RecipeCreateEditViewModel(
             _uiState.update {
                 RecipeCreateEditState.Success(
                     recipe.toRecipe(),
-                    categories = categories
+                    categories = categories,
                 )
             }
         }
@@ -191,10 +191,11 @@ abstract class RecipeCreateEditViewModel(
     private fun getCategories() {
         categoryRepository.getCategories().onEach { categoriesResponse ->
             when (categoriesResponse) {
-                is StoreResponse.Data -> categories = categoriesResponse.value
-                    .filter { it.recipeCount > 0 }
-                    .filter { it.name != "*" }
-                    .map { it.toCategory() }
+                is StoreResponse.Data ->
+                    categories = categoriesResponse.value
+                        .filter { it.recipeCount > 0 }
+                        .filter { it.name != "*" }
+                        .map { it.toCategory() }
 
                 else -> Unit
             }

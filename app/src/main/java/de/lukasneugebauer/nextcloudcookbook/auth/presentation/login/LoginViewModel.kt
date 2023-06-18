@@ -18,6 +18,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -42,25 +43,26 @@ class LoginViewModel @Inject constructor(
             combine(
                 accountRepository.getAccount(),
                 apiProvider.ncCookbookApiFlow,
-            ) { accountResource, ncCookbookApi ->
-                Pair(accountResource, ncCookbookApi)
-            }.collect { (accountResource, ncCookbookApi) ->
-                Timber.d("accountResource: $accountResource, ncCookbookApi: $ncCookbookApi")
-                if (accountResource is Resource.Success && ncCookbookApi != null) {
-                    val capabilitiesResource = accountRepository.getCapabilities()
-                    when {
-                        capabilitiesResource is Resource.Success && capabilitiesResource.data?.userStatus?.enabled == true -> {
-                            _uiState.update { it.copy(authorized = true) }
+            ) { accountResource, ncCookbookApi -> Pair(accountResource, ncCookbookApi) }
+                .distinctUntilChanged()
+                .collect { (accountResource, ncCookbookApi) ->
+                    Timber.d("accountResource: $accountResource, ${accountResource.data} ncCookbookApi: $ncCookbookApi")
+                    if (accountResource is Resource.Success && ncCookbookApi != null) {
+                        val capabilitiesResource = accountRepository.getCapabilities()
+                        when {
+                            capabilitiesResource is Resource.Success && capabilitiesResource.data?.userStatus?.enabled == true -> {
+                                _uiState.update { it.copy(authorized = true) }
+                            }
+
+                            else -> {
+                                clearPreferencesUseCase()
+                                _uiState.update { it.copy(urlError = capabilitiesResource.message) }
+                            }
                         }
-                        else -> {
-                            clearPreferencesUseCase()
-                            _uiState.update { it.copy(urlError = capabilitiesResource.message) }
-                        }
+                    } else {
+                        _uiState.update { it.copy(authorized = false) }
                     }
-                } else {
-                    _uiState.update { it.copy(authorized = false) }
                 }
-            }
         }
     }
 
@@ -79,6 +81,7 @@ class LoginViewModel @Inject constructor(
                         _uiState.update { it.copy(urlError = UiText.StringResource(R.string.error_no_login_url)) }
                     }
                 }
+
                 is Resource.Error -> _uiState.update { it.copy(urlError = result.message) }
             }
         }
@@ -120,6 +123,7 @@ class LoginViewModel @Inject constructor(
                 preferencesManager.updateNextcloudAccount(result.data?.ncAccount!!)
                 apiProvider.initApi()
             }
+
             is Resource.Error -> {
                 delay(POLL_DELAY)
                 if (pollLoginServerIsActive) {

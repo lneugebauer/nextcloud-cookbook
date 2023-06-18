@@ -25,10 +25,13 @@ object CategoryModule {
     @Provides
     @Singleton
     fun provideCategoriesStore(apiProvider: ApiProvider): CategoriesStore {
-        val ncCookbookApi = apiProvider.getNcCookbookApi()
-            ?: throw NullPointerException("Nextcloud Cookbook API is null.")
         return StoreBuilder
-            .from(Fetcher.of { ncCookbookApi.getCategories() })
+            .from(
+                fetcher = Fetcher.of {
+                    apiProvider.getNcCookbookApi()?.getCategories()
+                        ?: throw NullPointerException("Nextcloud Cookbook API is null.")
+                },
+            )
             .build()
     }
 

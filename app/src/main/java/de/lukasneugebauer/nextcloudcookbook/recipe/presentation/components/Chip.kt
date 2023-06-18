@@ -23,7 +23,7 @@ fun Chip(text: String, onClick: (() -> Unit)? = null) {
             .then(
                 onClick?.let {
                     Modifier.clickable(onClick = it)
-                } ?: run { Modifier }
+                } ?: run { Modifier },
             )
             .border(width = 2.dp, color = NcBlue700, shape = CircleShape)
             .padding(

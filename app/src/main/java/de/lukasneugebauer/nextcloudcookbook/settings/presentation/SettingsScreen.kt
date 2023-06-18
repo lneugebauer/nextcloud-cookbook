@@ -63,12 +63,13 @@ fun SettingsScreen(
                 .fillMaxWidth()
                 .verticalScroll(rememberScrollState()),
             onLogoutClick = {
-                viewModel.logout()
-                navigator.navigate(LoginScreenDestination) {
-                    popUpTo(
-                        SplashScreenDestination.route,
-                    ) {
-                        inclusive = true
+                viewModel.logout {
+                    navigator.navigate(LoginScreenDestination) {
+                        popUpTo(
+                            SplashScreenDestination.route,
+                        ) {
+                            inclusive = true
+                        }
                     }
                 }
             },

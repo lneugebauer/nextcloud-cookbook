@@ -24,7 +24,7 @@ import javax.inject.Singleton
 
 @Singleton
 class ApiProvider @Inject constructor(
-    private val coroutineScope: CoroutineScope,
+    private val scope: CoroutineScope,
     private val httpLoggingInterceptor: HttpLoggingInterceptor,
     private val preferencesManager: PreferencesManager,
 ) {
@@ -41,7 +41,7 @@ class ApiProvider @Inject constructor(
     }
 
     fun initApi() {
-        coroutineScope.launch {
+        scope.launch {
             val ncAccount = preferencesManager.preferencesFlow
                 .map { it.ncAccount }
                 .first()

@@ -30,12 +30,11 @@ object RecipeModule {
     @Provides
     @Singleton
     fun provideRecipePreviewsByCategoryStore(apiProvider: ApiProvider): RecipePreviewsByCategoryStore {
-        val ncCookbookApi = apiProvider.getNcCookbookApi()
-            ?: throw NullPointerException("Nextcloud Cookbook API is null.")
         return StoreBuilder
             .from(
-                fetcher = Fetcher.of { categoryName: String ->
-                    ncCookbookApi.getRecipesByCategory(categoryName)
+                Fetcher.of { categoryName: String ->
+                    apiProvider.getNcCookbookApi()?.getRecipesByCategory(categoryName)
+                        ?: throw NullPointerException("Nextcloud Cookbook API is null.")
                 },
             )
             .build()
@@ -46,10 +45,13 @@ object RecipeModule {
     @Provides
     @Singleton
     fun provideRecipePreviewsStore(apiProvider: ApiProvider): RecipePreviewsStore {
-        val ncCookbookApi = apiProvider.getNcCookbookApi()
-            ?: throw NullPointerException("Nextcloud Cookbook API is null.")
         return StoreBuilder
-            .from(Fetcher.of { ncCookbookApi.getRecipes() })
+            .from(
+                Fetcher.of {
+                    apiProvider.getNcCookbookApi()?.getRecipes()
+                        ?: throw NullPointerException("Nextcloud Cookbook API is null.")
+                },
+            )
             .build()
     }
 
@@ -58,10 +60,13 @@ object RecipeModule {
     @Provides
     @Singleton
     fun provideRecipeStore(apiProvider: ApiProvider): RecipeStore {
-        val ncCookbookApi = apiProvider.getNcCookbookApi()
-            ?: throw NullPointerException("Nextcloud Cookbook API is null.")
         return StoreBuilder
-            .from(Fetcher.of { recipeId: Int -> ncCookbookApi.getRecipe(recipeId) })
+            .from(
+                Fetcher.of { recipeId: Int ->
+                    apiProvider.getNcCookbookApi()?.getRecipe(recipeId)
+                        ?: throw NullPointerException("Nextcloud Cookbook API is null.")
+                },
+            )
             .build()
     }
 
