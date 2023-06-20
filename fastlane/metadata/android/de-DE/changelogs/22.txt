@@ -1,0 +1,3 @@
+- Symbolstile vereinheitlicht
+- Optische Fehler in den Einstellungen behoben
+- Kategorie Vorschläge bei der Rezepterstellung korrigiert

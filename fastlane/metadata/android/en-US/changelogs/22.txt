@@ -1,0 +1,3 @@
+- Unify icon styles
+- Fix settings visuals
+- Fix create screen category suggestion
