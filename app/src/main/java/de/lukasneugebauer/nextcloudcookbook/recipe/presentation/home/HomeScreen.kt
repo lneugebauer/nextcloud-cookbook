@@ -15,7 +15,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -36,6 +37,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.RowCont
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.error.NotFoundScreen
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.error.UnknownErrorScreen
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
+import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
 import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeDetailScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeListScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.destinations.SettingsScreenDestination
@@ -52,7 +54,7 @@ fun HomeScreen(
     val uiState by viewModel.uiState.collectAsState()
 
     Scaffold(topBar = {
-        HomeTopBar(
+        TopBar(
             onSettingsIconClick = { navigator.navigate(SettingsScreenDestination()) },
         )
     }) { innerPadding ->
@@ -94,6 +96,7 @@ fun HomeScreen(
                                         },
                                     )
                                 }
+
                                 is HomeScreenDataResult.Single -> {
                                     Headline(
                                         text = stringResource(id = item.headline),
@@ -112,19 +115,20 @@ fun HomeScreen(
                     }
                 }
             }
+
             is HomeScreenState.Error -> UnknownErrorScreen()
         }
     }
 }
 
 @Composable
-fun HomeTopBar(onSettingsIconClick: () -> Unit) {
+private fun TopBar(onSettingsIconClick: () -> Unit) {
     TopAppBar(
         title = { Text(text = stringResource(id = R.string.app_name)) },
         actions = {
             IconButton(onClick = onSettingsIconClick) {
                 Icon(
-                    Icons.Outlined.Settings,
+                    Icons.Default.Settings,
                     contentDescription = stringResource(id = R.string.common_settings),
                 )
             }
@@ -150,5 +154,13 @@ fun SingleItem(name: String, imageUrl: String, onClick: () -> Unit) {
             )
             CommonItemBody(name = name, modifier = Modifier.fillMaxWidth(), onClick = {})
         }
+    }
+}
+
+@Preview
+@Composable
+private fun TopBarPreview() {
+    NextcloudCookbookTheme {
+        TopBar {}
     }
 }

@@ -21,7 +21,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.outlined.Save
+import androidx.compose.material.icons.filled.Save
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
@@ -203,7 +203,7 @@ private fun RecipeEditTopBar(title: String, onNavIconClick: () -> Unit, onSaveCl
         navigationIcon = {
             IconButton(onClick = onNavIconClick) {
                 Icon(
-                    Icons.Filled.ArrowBack,
+                    Icons.Default.ArrowBack,
                     contentDescription = stringResource(id = R.string.common_back),
                 )
             }
@@ -211,7 +211,7 @@ private fun RecipeEditTopBar(title: String, onNavIconClick: () -> Unit, onSaveCl
         actions = {
             IconButton(onClick = onSaveClick) {
                 Icon(
-                    Icons.Outlined.Save,
+                    Icons.Default.Save,
                     contentDescription = stringResource(R.string.common_save),
                 )
             }

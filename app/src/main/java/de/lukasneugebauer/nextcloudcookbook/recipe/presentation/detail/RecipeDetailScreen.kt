@@ -30,8 +30,8 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Timer
-import androidx.compose.material.icons.outlined.Share
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -230,7 +230,7 @@ private fun TopBar(
                 shareRecipe()
             }) {
                 Icon(
-                    Icons.Outlined.Share,
+                    Icons.Default.Share,
                     contentDescription = stringResource(id = R.string.common_share),
                 )
             }
