@@ -35,7 +35,6 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import de.lukasneugebauer.nextcloudcookbook.BuildConfig
 import de.lukasneugebauer.nextcloudcookbook.R
-import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Gap
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
 import de.lukasneugebauer.nextcloudcookbook.core.util.Constants.SHARED_PREFERENCES_KEY
 import de.lukasneugebauer.nextcloudcookbook.core.util.openInBrowser
@@ -165,11 +164,13 @@ fun SettingsGroupAbout(context: Context) {
             onClick = { Uri.parse(PRIVACY_URL).openInBrowser(context) },
         )
         SettingsMenuLink(
+            icon = {},
             title = { Text(text = stringResource(R.string.settings_license)) },
             subtitle = { Text(text = stringResource(R.string.settings_mit_license)) },
             onClick = { Uri.parse(LICENSE_URL).openInBrowser(context) },
         )
         SettingsMenuLink(
+            icon = {},
             title = { Text(text = stringResource(R.string.settings_version)) },
             subtitle = {
                 Text(
@@ -200,6 +201,7 @@ fun SettingsGroupContribution(context: Context) {
             onClick = { Uri.parse(GITHUB_URL).openInBrowser(context) },
         )
         SettingsMenuLink(
+            icon = {},
             title = { Text(text = stringResource(R.string.settings_issues)) },
             subtitle = {
                 Text(
@@ -210,7 +212,6 @@ fun SettingsGroupContribution(context: Context) {
             onClick = { Uri.parse(GITHUB_ISSUES_URL).openInBrowser(context) },
         )
     }
-    Gap(size = dimensionResource(id = R.dimen.padding_s))
 }
 
 @Preview
