@@ -56,7 +56,7 @@ abstract class RecipeCreateEditViewModel(
         recipeId?.let {
             getRecipe(it)
         } ?: run {
-            _uiState.update { RecipeCreateEditState.Success(recipe.toRecipe()) }
+            _uiState.update { RecipeCreateEditState.Success(recipe.toRecipe(), categories) }
         }
     }
 
