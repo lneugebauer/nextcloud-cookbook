@@ -143,7 +143,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp'
     implementation 'com.squareup.okhttp3:logging-interceptor'
 
-    implementation 'io.coil-kt:coil-compose:1.4.0'
+    implementation 'io.coil-kt:coil-compose:2.4.0'
 
     implementation "com.dropbox.mobile.store:store4:$store_version"
 
