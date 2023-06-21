@@ -10,6 +10,7 @@
     <string name="common_password">Heslo</string>
     <string name="common_recipes">Recepty</string>
     <string name="common_save">Uložit</string>
+    <string name="common_search">Vyhledat</string>
     <string name="common_settings">Nastavení</string>
     <string name="common_share">Sdílet</string>
     <string name="common_username">Uživatelské jméno</string>
@@ -44,6 +45,7 @@
     <string name="login">Přihlásit se</string>
     <string name="login_manual">Manuální přihlášení</string>
     <string name="login_root_address">Kořenová adresa Nextcloud serveru</string>
+    <string name="recipe_category">Kategorie</string>
     <string name="recipe_cook_time">Vaření</string>
     <string name="recipe_description">Popis</string>
     <string name="recipe_duration">%1$d min</string>
@@ -74,6 +76,7 @@
     <string name="recipe_tools">Nástroje</string>
     <string name="recipe_tool">Nástroj</string>
     <string name="recipe_total_time">Celkem</string>
+    <string name="recipe_uncategorised">Nekategorizované recepty</string>
     <string name="recipe_url">URL</string>
     <string name="recipe_yield">Počet porcí</string>
     <string name="settings_account">Účet</string>
