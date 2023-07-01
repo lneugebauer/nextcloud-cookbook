@@ -4,6 +4,7 @@ import com.dropbox.android.external.store4.get
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.RecipeOfTheDay
+import de.lukasneugebauer.nextcloudcookbook.core.util.Constants.DEFAULT_RECIPE_OF_THE_DAY_ID
 import de.lukasneugebauer.nextcloudcookbook.core.util.IoDispatcher
 import de.lukasneugebauer.nextcloudcookbook.di.CategoriesStore
 import de.lukasneugebauer.nextcloudcookbook.di.RecipePreviewsByCategoryStore
@@ -39,10 +40,12 @@ class GetHomeScreenDataUseCase @Inject constructor(
         val homeScreenData = mutableListOf<HomeScreenDataResult>()
         var recipeOfTheDay = preferencesManager.preferencesFlow.map { it.recipeOfTheDay }.first()
 
-        if (recipeOfTheDay.id == 0 || recipeOfTheDay.updatedAt.isBefore(currentDate)) {
+        if (recipeOfTheDay.id == DEFAULT_RECIPE_OF_THE_DAY_ID || recipeOfTheDay.updatedAt.isBefore(currentDate)) {
             try {
                 val newRecipeOfTheDayId =
-                    recipePreviewsStore.get(Unit).random().toRecipePreview().id
+                    recipePreviewsStore.get(Unit).randomOrNull()?.toRecipePreview()?.id
+                        ?: DEFAULT_RECIPE_OF_THE_DAY_ID
+
                 recipeOfTheDay = RecipeOfTheDay(
                     id = newRecipeOfTheDayId,
                     updatedAt = LocalDateTime.now(),

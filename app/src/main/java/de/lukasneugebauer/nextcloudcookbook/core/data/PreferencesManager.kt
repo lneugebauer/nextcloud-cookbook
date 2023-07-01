@@ -13,6 +13,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.NcAccount
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.RecipeOfTheDay
+import de.lukasneugebauer.nextcloudcookbook.core.util.Constants.DEFAULT_RECIPE_OF_THE_DAY_ID
 import de.lukasneugebauer.nextcloudcookbook.settings.util.SettingsConstants.STAY_AWAKE_DEFAULT
 import de.lukasneugebauer.nextcloudcookbook.settings.util.SettingsConstants.STAY_AWAKE_KEY
 import kotlinx.coroutines.flow.catch
@@ -56,7 +57,7 @@ class PreferencesManager @Inject constructor(
             val ncUsername = preferences[PreferencesKeys.NC_USERNAME] ?: ""
             val ncToken = preferences[PreferencesKeys.NC_TOKEN] ?: ""
             val ncUrl = preferences[PreferencesKeys.NC_URL] ?: ""
-            val recipeOfTheDayId = preferences[PreferencesKeys.RECIPE_OF_THE_DAY_ID] ?: 0
+            val recipeOfTheDayId = preferences[PreferencesKeys.RECIPE_OF_THE_DAY_ID] ?: DEFAULT_RECIPE_OF_THE_DAY_ID
             val recipeOfTheDayUpdatedAt =
                 preferences[PreferencesKeys.RECIPE_OF_THE_DAY_UPDATED_AT] ?: 0
 
