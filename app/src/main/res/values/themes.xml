@@ -1,8 +1,11 @@
 <resources>
-    <style name="Theme.NextcloudCookbook" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="android:statusBarColor" >@color/nc_blue_800</item>
+
+    <style name="Theme.NextcloudCookbook.NoActionBar" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:statusBarColor">@color/nc_blue_800</item>
         <item name="android:navigationBarColor">@color/nc_blue_800</item>
     </style>
+
+    <style name="Theme.NextcloudCookbook" parent="Theme.NextcloudCookbook.NoActionBar" />
 
     <style name="Theme.NextcloudCookbook.Splash" parent="Theme.SplashScreen">
         <item name="windowSplashScreenIconBackgroundColor">@color/nc_blue_800</item>
