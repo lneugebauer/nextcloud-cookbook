@@ -42,8 +42,7 @@ An Android client for [Nextcloud Cookbook app](https://github.com/nextcloud/cook
 ## Build the app :hammer_and_wrench:
 
 1. Open project in Android Studio
-2. Create keystore.properties file
-3. Run the app
+2. Run the app
 
 ## Contributing
 
