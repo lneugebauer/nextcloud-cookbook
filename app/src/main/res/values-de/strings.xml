@@ -18,6 +18,7 @@
     <string name="common_share">Teilen</string>
     <string name="common_username">Benutzername</string>
     <string name="error_api_not_initialized">API nicht initialisiert</string>
+    <string name="error_authentication_failed">Authentifizierung fehlgeschlagen</string>
     <string name="error_empty_password">Bitte gebe ein Passwort ein</string>
     <string name="error_empty_url">Bitte gebe eine URL ein</string>
     <string name="error_empty_username">Bitte gebe einen Benutzernamen ein</string>

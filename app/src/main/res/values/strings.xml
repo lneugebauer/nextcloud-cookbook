@@ -16,6 +16,7 @@
     <string name="common_settings">Settings</string>
     <string name="common_share">Share</string>
     <string name="common_username">Username</string>
+    <string name="error_authentication_failed">Authentication failed</string>
     <string name="error_api_not_initialized">API not initialized</string>
     <string name="error_empty_password">Please enter a password</string>
     <string name="error_empty_url">Please enter an URL</string>

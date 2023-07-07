@@ -45,23 +45,31 @@ class LoginViewModel @Inject constructor(
                 apiProvider.ncCookbookApiFlow,
             ) { accountResource, ncCookbookApi -> Pair(accountResource, ncCookbookApi) }
                 .distinctUntilChanged()
-                .collect { (accountResource, ncCookbookApi) ->
-                    Timber.d("accountResource: $accountResource, ${accountResource.data} ncCookbookApi: $ncCookbookApi")
-                    if (accountResource is Resource.Success && ncCookbookApi != null) {
-                        val capabilitiesResource = accountRepository.getCapabilities()
-                        when {
-                            capabilitiesResource is Resource.Success && capabilitiesResource.data?.userStatus?.enabled == true -> {
-                                _uiState.update { it.copy(authorized = true) }
-                            }
-
-                            else -> {
-                                clearPreferencesUseCase()
-                                _uiState.update { it.copy(urlError = capabilitiesResource.message) }
-                            }
-                        }
-                    } else {
-                        _uiState.update { it.copy(authorized = false) }
+                .collect { (account, ncCookbookApi) ->
+                    if (ncCookbookApi == null) {
+                        return@collect
                     }
+
+                    if (account is Resource.Error) {
+                        _uiState.update { it.copy(authorized = false) }
+                        return@collect
+                    }
+
+                    val capabilities = accountRepository.getCapabilities()
+                    if (capabilities is Resource.Error) {
+                        clearPreferencesUseCase()
+                        _uiState.update { it.copy(urlError = capabilities.message) }
+                        return@collect
+                    }
+
+                    val userEnabled = capabilities.data?.userStatus?.enabled
+                    if (userEnabled == true) {
+                        _uiState.update { it.copy(authorized = true) }
+                        return@collect
+                    }
+
+                    clearPreferencesUseCase()
+                    _uiState.update { it.copy(urlError = UiText.StringResource(R.string.error_authentication_failed)) }
                 }
         }
     }

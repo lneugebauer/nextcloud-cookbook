@@ -7,10 +7,10 @@ data class CapabilitiesDto(
     @SerializedName("theming")
     val theming: ThemingDto,
     @SerializedName("user_status")
-    val userStatus: UserStatusDto,
+    val userStatus: UserStatusDto?,
 ) {
     fun toCapabilities(): Capabilities = Capabilities(
         theming = theming.toTheming(),
-        userStatus = userStatus.toUserStatus(),
+        userStatus = userStatus?.toUserStatus(),
     )
 }
