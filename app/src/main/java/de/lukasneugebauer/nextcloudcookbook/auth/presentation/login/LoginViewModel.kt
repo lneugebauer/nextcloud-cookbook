@@ -43,33 +43,24 @@ class LoginViewModel @Inject constructor(
             combine(
                 accountRepository.getAccount(),
                 apiProvider.ncCookbookApiFlow,
-            ) { accountResource, ncCookbookApi -> Pair(accountResource, ncCookbookApi) }
+            ) { account, api -> Pair(account, api) }
                 .distinctUntilChanged()
-                .collect { (account, ncCookbookApi) ->
-                    if (ncCookbookApi == null) {
-                        return@collect
-                    }
+                .collect { (account, api) ->
+                    val userMetadata = accountRepository.getUserMetadata()
+                    when {
+                        api == null -> Unit
 
-                    if (account is Resource.Error) {
-                        _uiState.update { it.copy(authorized = false) }
-                        return@collect
-                    }
+                        account is Resource.Error -> _uiState.update { it.copy(authorized = false) }
 
-                    val capabilities = accountRepository.getCapabilities()
-                    if (capabilities is Resource.Error) {
-                        clearPreferencesUseCase()
-                        _uiState.update { it.copy(urlError = capabilities.message) }
-                        return@collect
-                    }
+                        userMetadata is Resource.Error -> {
+                            clearPreferencesUseCase()
+                            _uiState.update {
+                                it.copy(authorized = false, urlError = userMetadata.message)
+                            }
+                        }
 
-                    val userEnabled = capabilities.data?.userStatus?.enabled
-                    if (userEnabled == true) {
-                        _uiState.update { it.copy(authorized = true) }
-                        return@collect
+                        else -> _uiState.update { it.copy(authorized = true) }
                     }
-
-                    clearPreferencesUseCase()
-                    _uiState.update { it.copy(urlError = UiText.StringResource(R.string.error_authentication_failed)) }
                 }
         }
     }

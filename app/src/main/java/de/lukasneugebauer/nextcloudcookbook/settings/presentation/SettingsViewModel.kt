@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.lukasneugebauer.nextcloudcookbook.core.domain.usecase.ClearAllStoresUseCase
 import de.lukasneugebauer.nextcloudcookbook.core.domain.usecase.ClearPreferencesUseCase
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -17,11 +16,10 @@ class SettingsViewModel @Inject constructor(
     val sharedPreferences: SharedPreferences,
 ) : ViewModel() {
 
-    @Suppress("DeferredResultUnused")
     fun logout(callback: () -> Unit) {
         viewModelScope.launch {
-            async { clearAllStoresUseCase.invoke() }
-            async { clearPreferencesUseCase.invoke() }
+            clearAllStoresUseCase.invoke()
+            clearPreferencesUseCase.invoke()
             callback.invoke()
         }
     }
