@@ -55,6 +55,10 @@ class ApiProvider @Inject constructor(
         }
     }
 
+    fun resetApi() {
+        _ncCookbookApiFlow.value = null
+    }
+
     private fun initRetrofitApi(ncAccount: NcAccount) {
         val authInterceptor = BasicAuthInterceptor(ncAccount.username, ncAccount.token)
 

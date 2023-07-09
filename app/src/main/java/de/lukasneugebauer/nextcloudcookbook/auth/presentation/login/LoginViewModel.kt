@@ -46,20 +46,23 @@ class LoginViewModel @Inject constructor(
             ) { account, api -> Pair(account, api) }
                 .distinctUntilChanged()
                 .collect { (account, api) ->
-                    val userMetadata = accountRepository.getUserMetadata()
                     when {
                         api == null -> Unit
 
                         account is Resource.Error -> _uiState.update { it.copy(authorized = false) }
 
-                        userMetadata is Resource.Error -> {
-                            clearPreferencesUseCase()
-                            _uiState.update {
-                                it.copy(authorized = false, urlError = userMetadata.message)
+                        account is Resource.Success -> {
+                            val userMetadata = accountRepository.getUserMetadata()
+                            if (userMetadata is Resource.Error) {
+                                clearPreferencesUseCase()
+                                onHideWebView()
+                                _uiState.update {
+                                    it.copy(authorized = false, urlError = userMetadata.message)
+                                }
+                            } else {
+                                _uiState.update { it.copy(authorized = true) }
                             }
                         }
-
-                        else -> _uiState.update { it.copy(authorized = true) }
                     }
                 }
         }
@@ -105,7 +108,7 @@ class LoginViewModel @Inject constructor(
 
     fun onHideWebView() {
         pollLoginServerIsActive = false
-        _uiState.value = _uiState.value.copy(webViewUrl = null)
+        _uiState.update { it.copy(webViewUrl = null) }
     }
 
     fun clearErrors() {

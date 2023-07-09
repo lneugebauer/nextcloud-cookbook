@@ -97,8 +97,8 @@ fun LoginScreen(
     var showManualLogin: Boolean by rememberSaveable { mutableStateOf(false) }
     val uiState by viewModel.uiState.collectAsState()
 
-    // Navigate to home screen if user authorized
     LaunchedEffect(key1 = uiState) {
+        // Navigate to home screen if user authorized
         if (uiState.authorized) {
             navigator.navigate(HomeScreenDestination()) {
                 popUpTo(LoginScreenDestination.route) {
@@ -106,12 +106,15 @@ fun LoginScreen(
                 }
             }
         }
-    }
 
-    // Open modal bottom sheet as soon as an url is available
-    LaunchedEffect(key1 = uiState) {
+        // Open modal bottom sheet as soon as an url is available
         if (uiState.webViewUrl != null) {
             sheetState.show()
+        }
+
+        // Close modal bottom sheet if currently open and url is unavailable
+        if (sheetState.currentValue == ModalBottomSheetValue.Expanded && uiState.webViewUrl == null) {
+            sheetState.hide()
         }
     }
 
