@@ -4,6 +4,7 @@ import com.haroldadmin.cnradapter.NetworkResponse
 import de.lukasneugebauer.nextcloudcookbook.category.data.dto.CategoryDto
 import de.lukasneugebauer.nextcloudcookbook.core.data.remote.response.CapabilitiesResponse
 import de.lukasneugebauer.nextcloudcookbook.core.data.remote.response.ErrorResponse
+import de.lukasneugebauer.nextcloudcookbook.core.data.remote.response.UserMetadataResponse
 import de.lukasneugebauer.nextcloudcookbook.core.util.Constants.FULL_PATH
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipeDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipePreviewDto
@@ -24,6 +25,14 @@ interface NcCookbookApi {
     )
     @GET("ocs/v2.php/cloud/capabilities?format=json")
     suspend fun getCapabilities(): NetworkResponse<CapabilitiesResponse, ErrorResponse>
+
+    @Headers(
+        "Accept: application/json",
+        "OCS-APIRequest: true",
+        "Content-Type: application/json;charset=utf-8",
+    )
+    @GET("ocs/v2.php/cloud/users/{username}?format=json")
+    suspend fun getUserMetadata(@Path("username") username: String): NetworkResponse<UserMetadataResponse, ErrorResponse>
 
     @GET("$FULL_PATH/categories")
     suspend fun getCategories(): List<CategoryDto>

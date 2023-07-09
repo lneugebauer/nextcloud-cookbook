@@ -43,24 +43,26 @@ class LoginViewModel @Inject constructor(
             combine(
                 accountRepository.getAccount(),
                 apiProvider.ncCookbookApiFlow,
-            ) { accountResource, ncCookbookApi -> Pair(accountResource, ncCookbookApi) }
+            ) { account, api -> Pair(account, api) }
                 .distinctUntilChanged()
-                .collect { (accountResource, ncCookbookApi) ->
-                    Timber.d("accountResource: $accountResource, ${accountResource.data} ncCookbookApi: $ncCookbookApi")
-                    if (accountResource is Resource.Success && ncCookbookApi != null) {
-                        val capabilitiesResource = accountRepository.getCapabilities()
-                        when {
-                            capabilitiesResource is Resource.Success && capabilitiesResource.data?.userStatus?.enabled == true -> {
+                .collect { (account, api) ->
+                    when {
+                        api == null -> Unit
+
+                        account is Resource.Error -> _uiState.update { it.copy(authorized = false) }
+
+                        account is Resource.Success -> {
+                            val userMetadata = accountRepository.getUserMetadata()
+                            if (userMetadata is Resource.Error) {
+                                clearPreferencesUseCase()
+                                onHideWebView()
+                                _uiState.update {
+                                    it.copy(authorized = false, urlError = userMetadata.message)
+                                }
+                            } else {
                                 _uiState.update { it.copy(authorized = true) }
                             }
-
-                            else -> {
-                                clearPreferencesUseCase()
-                                _uiState.update { it.copy(urlError = capabilitiesResource.message) }
-                            }
                         }
-                    } else {
-                        _uiState.update { it.copy(authorized = false) }
                     }
                 }
         }
@@ -106,7 +108,7 @@ class LoginViewModel @Inject constructor(
 
     fun onHideWebView() {
         pollLoginServerIsActive = false
-        _uiState.value = _uiState.value.copy(webViewUrl = null)
+        _uiState.update { it.copy(webViewUrl = null) }
     }
 
     fun clearErrors() {
