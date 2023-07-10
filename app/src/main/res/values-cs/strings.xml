@@ -14,6 +14,7 @@
     <string name="common_settings">Nastavení</string>
     <string name="common_share">Sdílet</string>
     <string name="common_username">Uživatelské jméno</string>
+    <string name="error_authentication_failed">Nastala chyba při autentizaci</string>
     <string name="error_api_not_initialized">API není inicializováno</string>
     <string name="error_empty_password">Zadejte prosím heslo</string>
     <string name="error_empty_url">Zadejte prosím URL</string>
