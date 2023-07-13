@@ -55,6 +55,7 @@ platform :android do
   lane :bundle do
    gradle(
      task: "bundle",
+     flavor: "GooglePlay",
      build_type: "Release"
    )
   end

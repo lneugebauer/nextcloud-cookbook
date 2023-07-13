@@ -27,8 +27,14 @@ android {
             upload {
                 storeFile file(keystoreProperties['storeFile'])
                 storePassword keystoreProperties['storePassword']
-                keyAlias keystoreProperties['keyAlias']
-                keyPassword keystoreProperties['keyPassword']
+                keyAlias keystoreProperties['uploadKeyAlias']
+                keyPassword keystoreProperties['uploadKeyPassword']
+            }
+            release {
+                storeFile file(keystoreProperties['storeFile'])
+                storePassword keystoreProperties['storePassword']
+                keyAlias keystoreProperties['releaseKeyAlias']
+                keyPassword keystoreProperties['releaseKeyPassword']
             }
         }
     }
@@ -38,7 +44,7 @@ android {
         applicationId "de.lukasneugebauer.nextcloudcookbook"
         minSdk 23
         targetSdk 33
-        versionCode 24
+        versionCode 25
         versionName "0.11.3"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -57,6 +63,16 @@ android {
             shrinkResources true
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    flavorDimensions "version"
+    productFlavors {
+        full {
+            dimension "version"
+            signingConfig keystoreProperties.containsKey('storeFile') ? signingConfigs.release : signingConfigs.debug
+        }
+        googlePlay {
+            dimension "version"
             signingConfig keystoreProperties.containsKey('storeFile') ? signingConfigs.upload : signingConfigs.debug
         }
     }
