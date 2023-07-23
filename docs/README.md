@@ -14,6 +14,9 @@ footer: MIT Licensed
 [<img src="/images/get_it_on_github.png"
     alt="Get it on GitHub"
     height="80">](https://github.com/lneugebauer/nextcloud-cookbook/releases)
+[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
+    alt="Get it on F-Droid"
+    height="80">](https://f-droid.org/packages/de.lukasneugebauer.nextcloudcookbook/)
 
 ## Features :rocket:
 
