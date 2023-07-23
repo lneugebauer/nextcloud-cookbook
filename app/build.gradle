@@ -22,6 +22,7 @@ sonar {
 }
 
 android {
+    compileSdk 34
     if (keystoreProperties.containsKey('storeFile')) {
         signingConfigs {
             upload {
@@ -38,12 +39,11 @@ android {
             }
         }
     }
-    compileSdk 33
 
     defaultConfig {
         applicationId "de.lukasneugebauer.nextcloudcookbook"
         minSdk 23
-        targetSdk 33
+        targetSdk 34
         versionCode 25
         versionName "0.11.3"
 
@@ -123,7 +123,7 @@ kotlin {
 
 dependencies {
 
-    ktlint("com.pinterest:ktlint:0.49.1") {
+    ktlint('com.pinterest:ktlint:0.50.0') {
         attributes {
             attribute(Bundling.BUNDLING_ATTRIBUTE, getObjects().named(Bundling, Bundling.EXTERNAL))
         }
@@ -155,7 +155,7 @@ dependencies {
 
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
-    implementation platform('com.squareup.okhttp3:okhttp-bom:4.9.3')
+    implementation platform('com.squareup.okhttp3:okhttp-bom:4.11.0')
     implementation 'com.squareup.okhttp3:okhttp'
     implementation 'com.squareup.okhttp3:logging-interceptor'
 
@@ -179,7 +179,7 @@ dependencies {
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
 
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.11'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.12'
 }
 
 kapt {
