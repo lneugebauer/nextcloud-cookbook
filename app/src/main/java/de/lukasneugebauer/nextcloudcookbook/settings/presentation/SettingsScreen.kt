@@ -1,6 +1,7 @@
 package de.lukasneugebauer.nextcloudcookbook.settings.presentation
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
 import androidx.compose.foundation.layout.Column
@@ -16,6 +17,7 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Code
+import androidx.compose.material.icons.filled.Gavel
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.outlined.LightMode
 import androidx.compose.material.icons.outlined.Lock
@@ -31,6 +33,7 @@ import com.alorma.compose.settings.storage.preferences.rememberPreferenceBoolean
 import com.alorma.compose.settings.ui.SettingsGroup
 import com.alorma.compose.settings.ui.SettingsMenuLink
 import com.alorma.compose.settings.ui.SettingsSwitch
+import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import de.lukasneugebauer.nextcloudcookbook.BuildConfig
@@ -168,6 +171,19 @@ fun SettingsGroupAbout(context: Context) {
             title = { Text(text = stringResource(R.string.settings_license)) },
             subtitle = { Text(text = stringResource(R.string.settings_mit_license)) },
             onClick = { Uri.parse(LICENSE_URL).openInBrowser(context) },
+        )
+        SettingsMenuLink(
+            icon = {
+                Icon(
+                    imageVector = Icons.Default.Gavel,
+                    contentDescription = stringResource(id = R.string.settings_oss_licenses),
+                )
+            },
+            title = { Text(text = stringResource(id = R.string.settings_oss_licenses)) },
+            onClick = {
+                context.startActivity(Intent(context, OssLicensesMenuActivity::class.java))
+                OssLicensesMenuActivity.setActivityTitle(context.getString(R.string.settings_oss_licenses))
+            },
         )
         SettingsMenuLink(
             icon = {},

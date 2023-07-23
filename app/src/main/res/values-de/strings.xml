@@ -89,6 +89,7 @@
     <string name="settings_license">Lizenz</string>
     <string name="settings_logout">Abmelden</string>
     <string name="settings_mit_license">MIT Lizenz</string>
+    <string name="settings_oss_licenses">Open-Source-Bibliotheken</string>
     <string name="settings_privacy">Datenschutz</string>
     <string name="settings_source_code">Quellcode</string>
     <string name="settings_stay_awake_on_recipe_screen">Der Bildschirm bleibt eingeschaltet, während Sie sich auf dem Rezeptbildschirm befinden</string>
