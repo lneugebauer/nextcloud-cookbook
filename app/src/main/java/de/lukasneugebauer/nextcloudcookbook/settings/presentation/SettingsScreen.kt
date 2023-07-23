@@ -221,7 +221,7 @@ fun SettingsGroupContribution(context: Context) {
             icon = {
                 Icon(
                     imageVector = Icons.Outlined.BugReport,
-                    contentDescription = stringResource(R.string.settings_issues)
+                    contentDescription = stringResource(R.string.settings_issues),
                 )
             },
             title = { Text(text = stringResource(R.string.settings_issues)) },
