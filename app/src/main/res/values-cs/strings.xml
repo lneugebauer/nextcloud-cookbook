@@ -87,6 +87,7 @@
     <string name="settings_license">Licence</string>
     <string name="settings_logout">Odhlásit se</string>
     <string name="settings_mit_license">Licence MIT</string>
+    <string name="settings_oss_licenses">Knihovny s otevřeným zdrojovým kódem</string>
     <string name="settings_privacy">Soukromí</string>
     <string name="settings_source_code">Získat zdrojový kód</string>
     <string name="settings_stay_awake_on_recipe_screen">Když jste na obrazovce s receptem, displej zůstane zapnutý</string>
