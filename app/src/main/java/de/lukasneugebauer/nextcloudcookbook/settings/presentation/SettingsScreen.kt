@@ -19,6 +19,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.Gavel
 import androidx.compose.material.icons.filled.Logout
+import androidx.compose.material.icons.outlined.BugReport
 import androidx.compose.material.icons.outlined.LightMode
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.runtime.Composable
@@ -217,7 +218,12 @@ fun SettingsGroupContribution(context: Context) {
             onClick = { Uri.parse(GITHUB_URL).openInBrowser(context) },
         )
         SettingsMenuLink(
-            icon = {},
+            icon = {
+                Icon(
+                    imageVector = Icons.Outlined.BugReport,
+                    contentDescription = stringResource(R.string.settings_issues)
+                )
+            },
             title = { Text(text = stringResource(R.string.settings_issues)) },
             subtitle = {
                 Text(
