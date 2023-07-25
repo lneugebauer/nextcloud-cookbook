@@ -1,7 +1,9 @@
 # Nextcloud Cookbook Android client
 
 [![ci](https://github.com/lneugebauer/nextcloud-cookbook/actions/workflows/ci.yml/badge.svg)](https://github.com/lneugebauer/nextcloud-cookbook/actions/workflows/ci.yml)
-[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=lneugebauer_nextcloud-cookbook&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=lneugebauer_nextcloud-cookbook)
+[![Maintainability rating](https://sonarcloud.io/api/project_badges/measure?project=lneugebauer_nextcloud-cookbook&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=lneugebauer_nextcloud-cookbook)
+[![F-Droid release](https://img.shields.io/f-droid/v/de.lukasneugebauer.nextcloudcookbook.svg?logo=F-Droid)](https://f-droid.org/packages/de.lukasneugebauer.nextcloudcookbook/)
+[![GitHub release](https://img.shields.io/github/release/lneugebauer/nextcloud-cookbook.svg?logo=github)](https://github.com/lneugebauer/nextcloud-cookbook/releases)
 [![GitHub issues](https://img.shields.io/github/issues/lneugebauer/nextcloud-cookbook.svg)](https://github.com/lneugebauer/nextcloud-cookbook/issues)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/lneugebauer/nextcloud-cookbook/blob/main/LICENSE)
 [![ktlint](https://img.shields.io/badge/code%20style-%E2%9D%A4-FF4081.svg)](https://ktlint.github.io/)
@@ -16,6 +18,9 @@ An Android client for [Nextcloud Cookbook app](https://github.com/nextcloud/cook
 [<img src="/docs/.vuepress/public/images/get_it_on_github.png"
       alt="Get it on GitHub"
       height="80">](https://github.com/lneugebauer/nextcloud-cookbook/releases)
+[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
+      alt="Get it on F-Droid"
+      height="80">](https://f-droid.org/packages/de.lukasneugebauer.nextcloudcookbook/)
 
 ## Features :rocket:
 
