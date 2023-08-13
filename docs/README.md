@@ -11,7 +11,7 @@ footer: MIT Licensed
 [<img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png"
     alt="Get it on Play Store"
     height="80">](https://play.google.com/store/apps/details?id=de.lukasneugebauer.nextcloudcookbook)
-[<img src="/images/get_it_on_github.png"
+[<img src="/docs/.vuepress/public/images/get_it_on_github.png"
     alt="Get it on GitHub"
     height="80">](https://github.com/lneugebauer/nextcloud-cookbook/releases)
 [<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
