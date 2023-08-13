@@ -68,8 +68,8 @@ platform :android do
     set_github_release(
       repository_name: "lneugebauer/nextcloud-cookbook",
       api_token: ENV["GITHUB_TOKEN"],
-      name: "v" + version_name + version_code,
-      tag_name: "v" + version_name + version_code,
+      name: "v" + version_name + "+" + version_code,
+      tag_name: "v" + version_name + "+" + version_code,
       is_prerelease: true,
       description: (File.read("metadata/android/en-US/changelogs/" + version_code + ".txt") rescue "No changelog provided"),
       commitish: "main",
@@ -80,7 +80,8 @@ platform :android do
   desc "Deploy to GPS"
   lane :playstore do
     upload_to_play_store(
-      track: "internal"
+      track: "internal",
+      skip_upload_apk: false
     )
   end
 
