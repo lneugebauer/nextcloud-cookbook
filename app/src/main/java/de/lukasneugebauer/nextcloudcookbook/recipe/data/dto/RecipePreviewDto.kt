@@ -13,7 +13,7 @@ data class RecipePreviewDto(
     @SerializedName("dateCreated")
     val dateCreated: String,
     @SerializedName("dateModified")
-    val dateModified: String,
+    val dateModified: String?,
     @SerializedName("imageUrl")
     val imageUrl: String,
     @SerializedName("imagePlaceholderUrl")
@@ -25,6 +25,6 @@ data class RecipePreviewDto(
         keywords = keywords?.split(",") ?: emptyList(),
         imageUrl = imageUrl,
         createdAt = dateCreated,
-        modifiedAt = dateModified,
+        modifiedAt = dateModified ?: "",
     )
 }
