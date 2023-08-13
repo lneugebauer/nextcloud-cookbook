@@ -81,7 +81,7 @@ platform :android do
   lane :playstore do
     upload_to_play_store(
       track: "internal",
-      skip_upload_apk: false
+      skip_upload_apk: true
     )
   end
 
