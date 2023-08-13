@@ -70,7 +70,7 @@ platform :android do
       api_token: ENV["GITHUB_TOKEN"],
       name: "v" + version_name + version_code,
       tag_name: "v" + version_name + version_code,
-      is_prerelease: options[:prerelease],
+      is_prerelease: true,
       description: (File.read("metadata/android/en-US/changelogs/" + version_code + ".txt") rescue "No changelog provided"),
       commitish: "main",
       upload_assets: ["app/build/outputs/apk/full/release/app-full-release.apk"]
