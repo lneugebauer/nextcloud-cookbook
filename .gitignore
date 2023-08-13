@@ -22,6 +22,7 @@ out/
 build/
 
 # Local configuration file (sdk path, etc)
+.env
 local.properties
 keystore.properties
 
