@@ -1,0 +1,4 @@
+- Add open source licenses
+- Add self signed certificate support
+- Update Czech translation
+- Fix crash with old recipes

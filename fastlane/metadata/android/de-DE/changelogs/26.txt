@@ -1,0 +1,4 @@
+- Open-Source-Lizenzen hinzugefügt
+- Unterstützung für selbstsignierte Zertifikate hinzugefügt
+- Aktualisierung der tschechischen Übersetzung
+- Absturz bei alten Rezepten behoben
