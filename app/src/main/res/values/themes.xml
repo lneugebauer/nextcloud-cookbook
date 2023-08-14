@@ -11,11 +11,4 @@
         <item name="windowSplashScreenIconBackgroundColor">@color/nc_blue_800</item>
         <item name="postSplashScreenTheme">@style/Theme.NextcloudCookbook</item>
     </style>
-
-    <style name="Theme.NextcloudCookbook.DayNight.DarkActionBar" parent="Theme.AppCompat.DayNight.DarkActionBar">
-        <item name="colorPrimary">@color/nc_blue_700</item>
-        <item name="colorPrimaryDark">@color/nc_blue_800</item>
-    </style>
-
-    <style name="Theme.NextcloudCookbook.Oss" parent="Theme.NextcloudCookbook.DayNight.DarkActionBar" />
 </resources>

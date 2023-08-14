@@ -1,4 +1,4 @@
-package de.lukasneugebauer.nextcloudcookbook.settings.presentation
+package de.lukasneugebauer.nextcloudcookbook.settings.presentation.settings
 
 import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel

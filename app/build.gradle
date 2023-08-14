@@ -1,7 +1,7 @@
 plugins {
     id 'com.android.application'
-    id 'com.google.android.gms.oss-licenses-plugin'
     id 'com.google.devtools.ksp' version '1.8.21-1.0.11'
+    id 'com.mikepenz.aboutlibraries.plugin'
     id 'dagger.hilt.android.plugin'
     id 'kotlin-android'
     id 'kotlin-kapt'
@@ -154,8 +154,6 @@ dependencies {
     implementation "com.google.accompanist:accompanist-drawablepainter:$accompanist_version"
     implementation "com.google.accompanist:accompanist-flowlayout:$accompanist_version"
 
-    implementation 'com.google.android.gms:play-services-oss-licenses:17.0.1'
-
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
     implementation platform('com.squareup.okhttp3:okhttp-bom:4.11.0')
@@ -175,6 +173,9 @@ dependencies {
     ksp "io.github.raamcosta.compose-destinations:ksp:$compose_destinations_version"
 
     implementation 'com.github.haroldadmin:NetworkResponseAdapter:5.0.0'
+
+    implementation "com.mikepenz:aboutlibraries-core:$aboutlibs_version"
+    implementation "com.mikepenz:aboutlibraries-compose:$aboutlibs_version"
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'

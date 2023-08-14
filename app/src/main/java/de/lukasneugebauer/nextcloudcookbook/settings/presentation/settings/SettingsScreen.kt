@@ -1,7 +1,6 @@
-package de.lukasneugebauer.nextcloudcookbook.settings.presentation
+package de.lukasneugebauer.nextcloudcookbook.settings.presentation.settings
 
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
 import androidx.compose.foundation.layout.Column
@@ -34,7 +33,6 @@ import com.alorma.compose.settings.storage.preferences.rememberPreferenceBoolean
 import com.alorma.compose.settings.ui.SettingsGroup
 import com.alorma.compose.settings.ui.SettingsMenuLink
 import com.alorma.compose.settings.ui.SettingsSwitch
-import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import de.lukasneugebauer.nextcloudcookbook.BuildConfig
@@ -42,6 +40,7 @@ import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
 import de.lukasneugebauer.nextcloudcookbook.core.util.Constants.SHARED_PREFERENCES_KEY
 import de.lukasneugebauer.nextcloudcookbook.core.util.openInBrowser
+import de.lukasneugebauer.nextcloudcookbook.destinations.LibrariesScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.destinations.LoginScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.destinations.SplashScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.settings.util.SettingsConstants.GITHUB_ISSUES_URL
@@ -65,6 +64,7 @@ fun SettingsScreen(
                 .padding(paddingValues = innerPadding)
                 .fillMaxWidth()
                 .verticalScroll(rememberScrollState()),
+            onLibrariesClick = { navigator.navigate(LibrariesScreenDestination) },
             onLogoutClick = {
                 viewModel.logout {
                     navigator.navigate(LoginScreenDestination) {
@@ -101,6 +101,7 @@ fun SettingsTopBar(onNavIconClick: () -> Unit) {
 @Composable
 fun SettingsContent(
     modifier: Modifier,
+    onLibrariesClick: () -> Unit,
     onLogoutClick: () -> Unit,
     sharedPreferences: SharedPreferences,
 ) {
@@ -109,7 +110,7 @@ fun SettingsContent(
     Column(modifier = modifier) {
         SettingsGroupGeneral(sharedPreferences)
         SettingsGroupAccount(onLogoutClick)
-        SettingsGroupAbout(context)
+        SettingsGroupAbout(context, onLibrariesClick)
         SettingsGroupContribution(context)
     }
 }
@@ -155,7 +156,7 @@ fun SettingsGroupAccount(onLogoutClick: () -> Unit) {
 }
 
 @Composable
-fun SettingsGroupAbout(context: Context) {
+fun SettingsGroupAbout(context: Context, onLibrariesClick: () -> Unit) {
     SettingsGroup(title = { Text(text = stringResource(id = R.string.common_about)) }) {
         SettingsMenuLink(
             icon = {
@@ -181,10 +182,7 @@ fun SettingsGroupAbout(context: Context) {
                 )
             },
             title = { Text(text = stringResource(id = R.string.settings_oss_licenses)) },
-            onClick = {
-                context.startActivity(Intent(context, OssLicensesMenuActivity::class.java))
-                OssLicensesMenuActivity.setActivityTitle(context.getString(R.string.settings_oss_licenses))
-            },
+            onClick = onLibrariesClick,
         )
         SettingsMenuLink(
             icon = {},
@@ -241,5 +239,10 @@ fun SettingsGroupContribution(context: Context) {
 fun SettingsContentPreview() {
     val sharedPreferences =
         LocalContext.current.getSharedPreferences(SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
-    SettingsContent(modifier = Modifier, onLogoutClick = {}, sharedPreferences = sharedPreferences)
+    SettingsContent(
+        modifier = Modifier,
+        onLibrariesClick = {},
+        onLogoutClick = {},
+        sharedPreferences = sharedPreferences,
+    )
 }
