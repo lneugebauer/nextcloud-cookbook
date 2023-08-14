@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.view.WindowManager
 import androidx.annotation.StringRes
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,6 +17,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Chip
+import androidx.compose.material.ChipDefaults
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.FloatingActionButton
@@ -53,6 +56,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.flowlayout.FlowRow
 import com.ramcosta.composedestinations.annotation.Destination
@@ -69,7 +73,6 @@ import de.lukasneugebauer.nextcloudcookbook.core.util.notZero
 import de.lukasneugebauer.nextcloudcookbook.core.util.openInBrowser
 import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeEditScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Recipe
-import de.lukasneugebauer.nextcloudcookbook.recipe.presentation.components.Chip
 import de.lukasneugebauer.nextcloudcookbook.recipe.presentation.components.CircleChip
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.emptyRecipe
 import java.time.Duration
@@ -343,7 +346,15 @@ private fun Keywords(keywords: List<String>) {
         crossAxisSpacing = dimensionResource(id = R.dimen.padding_s),
     ) {
         keywords.forEach {
-            Chip(text = it)
+            Chip(
+                onClick = {},
+                border = BorderStroke(2.dp, NcBlue700),
+                colors = ChipDefaults.chipColors(
+                    backgroundColor = Color.Transparent,
+                ),
+            ) {
+                Text(text = it)
+            }
         }
     }
 }

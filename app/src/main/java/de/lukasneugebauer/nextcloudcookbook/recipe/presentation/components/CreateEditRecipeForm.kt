@@ -1,6 +1,7 @@
 package de.lukasneugebauer.nextcloudcookbook.recipe.presentation.components
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -9,6 +10,8 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Chip
+import androidx.compose.material.ChipDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -34,6 +37,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.google.accompanist.flowlayout.FlowRow
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.category.domain.model.Category
@@ -463,11 +467,16 @@ private fun Category(
             modifier = Modifier
                 .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
             mainAxisSpacing = dimensionResource(id = R.dimen.padding_s),
-            crossAxisSpacing = dimensionResource(id = R.dimen.padding_s),
         ) {
             categories.forEach {
-                Chip(text = it.name) {
-                    onCategoryChange.invoke(it.name)
+                Chip(
+                    onClick = { onCategoryChange.invoke(it.name) },
+                    border = BorderStroke(2.dp, NcBlue700),
+                    colors = ChipDefaults.chipColors(
+                        backgroundColor = Color.Transparent,
+                    ),
+                ) {
+                    Text(text = it.name)
                 }
             }
         }
