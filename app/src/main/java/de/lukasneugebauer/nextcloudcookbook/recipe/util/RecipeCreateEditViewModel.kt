@@ -86,21 +86,24 @@ abstract class RecipeCreateEditViewModel(
         }
     }
 
+    private fun newTimeOrNull(newTime: String): String? =
+        if (newTime == "PT0H0M0S") null else newTime
+
     fun changePrepTime(newPrepTime: String) {
         _uiState.value.ifSuccess {
-            recipe = recipe.copy(prepTime = newPrepTime)
+            recipe = recipe.copy(prepTime = newTimeOrNull(newPrepTime))
         }
     }
 
     fun changeCookTime(newCookTime: String) {
         _uiState.value.ifSuccess {
-            recipe = recipe.copy(cookTime = newCookTime)
+            recipe = recipe.copy(cookTime = newTimeOrNull(newCookTime))
         }
     }
 
     fun changeTotalTime(newTotalTime: String) {
         _uiState.value.ifSuccess {
-            recipe = recipe.copy(totalTime = newTotalTime)
+            recipe = recipe.copy(totalTime = newTimeOrNull(newTotalTime))
         }
     }
 
