@@ -19,7 +19,7 @@
     <string name="error_empty_password">Zadejte prosím heslo</string>
     <string name="error_empty_url">Zadejte prosím URL</string>
     <string name="error_empty_username">Zadejte prosím uživatelské jméno</string>
-    <string name="error_eof">Chyba při naražení na konec souboru</string>
+    <string name="error_eof">Chyba při dojití na konec souboru</string>
     <string name="error_http_400">400 Chybný požadavek</string>
     <string name="error_http_401">401 Neautorizováno</string>
     <string name="error_http_403">403 Přístup zamítnut</string>
@@ -67,7 +67,7 @@
     <string name="recipe_instruction">Pokyn</string>
     <string name="recipe_more_menu_delete">Odstranit</string>
     <string name="recipe_more_menu_edit">Upravit</string>
-    <string name="recipe_more_menu_share">Sdílet</string>
+    <string name="recipe_more_menu_share">Otevřít zdroj</string>
     <string name="recipe_name">Název</string>
     <string name="recipe_new">Nový recept</string>
     <string name="recipe_prep_time">Příprava</string>
@@ -89,7 +89,7 @@
     <string name="settings_mit_license">Licence MIT</string>
     <string name="settings_oss_licenses">Knihovny s otevřeným zdrojovým kódem</string>
     <string name="settings_privacy">Soukromí</string>
-    <string name="settings_source_code">Získat zdrojový kód</string>
+    <string name="settings_source_code">Zobrazit zdrojový kód</string>
     <string name="settings_stay_awake_on_recipe_screen">Když jste na obrazovce s receptem, displej zůstane zapnutý</string>
     <string name="settings_stay_awake">Ponechat aktivní displej</string>
     <string name="settings_version_number">verze %1$s (%2$d)</string>
