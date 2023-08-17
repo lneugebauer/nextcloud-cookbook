@@ -30,7 +30,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Share
@@ -436,7 +436,7 @@ private fun Category(category: String) {
         horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_s)),
     ) {
         Icon(
-            imageVector = Icons.Default.Bookmark,
+            imageVector = Icons.Default.Category,
             contentDescription = stringResource(id = R.string.recipe_category),
         )
         Text(

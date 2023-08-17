@@ -6,7 +6,7 @@ import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.Fastfood
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.runtime.Composable
@@ -31,7 +31,7 @@ enum class BottomBarDestination(
     @StringRes val label: Int,
 ) {
     Home(HomeScreenDestination, Icons.Default.Home, R.string.common_home),
-    Categories(CategoryListScreenDestination, Icons.Default.Bookmark, R.string.common_categories),
+    Categories(CategoryListScreenDestination, Icons.Default.Category, R.string.common_categories),
     Recipes(RecipeListScreenDestination, Icons.Default.Fastfood, R.string.common_recipes),
 }
 
