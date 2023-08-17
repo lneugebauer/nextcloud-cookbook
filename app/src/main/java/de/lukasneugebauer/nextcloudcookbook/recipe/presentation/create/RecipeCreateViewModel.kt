@@ -26,7 +26,7 @@ class RecipeCreateViewModel @Inject constructor(
         _uiState.value.ifSuccess {
             _uiState.update { RecipeCreateEditState.Loading }
             viewModelScope.launch {
-                val result = recipeRepository.createRecipe(recipe)
+                val result = recipeRepository.createRecipe(recipeDto)
                 _uiState.update {
                     if (result is Resource.Success && result.data != null) {
                         val recipeId = result.data

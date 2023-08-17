@@ -8,6 +8,7 @@ import de.lukasneugebauer.nextcloudcookbook.category.domain.model.Category
 import de.lukasneugebauer.nextcloudcookbook.category.domain.repository.CategoryRepository
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipeDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.repository.RecipeRepository
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.DurationComponents
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.RecipeCreateEditState
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.ifSuccess
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.RecipeConstants.DEFAULT_YIELD
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.time.toKotlinDuration
 
 abstract class RecipeCreateEditViewModel(
     private val categoryRepository: CategoryRepository,
@@ -27,23 +29,28 @@ abstract class RecipeCreateEditViewModel(
     protected val _uiState = MutableStateFlow<RecipeCreateEditState>(RecipeCreateEditState.Loading)
     val uiState: StateFlow<RecipeCreateEditState> = _uiState
 
+    private var prepTime: DurationComponents = DurationComponents("", "")
+
     private var categories: List<Category> = emptyList()
         set(value) {
             field = value
             _uiState.update {
                 RecipeCreateEditState.Success(
-                    recipe = recipe.toRecipe(),
+                    recipe = recipeDto.toRecipe(),
+                    prepTime = prepTime,
                     categories = categories,
                 )
             }
         }
 
-    protected var recipe: RecipeDto = emptyRecipeDto()
+    protected var recipeDto: RecipeDto = emptyRecipeDto()
         set(value) {
             field = value
+            val recipe = recipeDto.toRecipe()
             _uiState.update {
                 RecipeCreateEditState.Success(
-                    recipe.toRecipe(),
+                    recipe = recipe,
+                    prepTime = prepTime,
                     categories = categories,
                 )
             }
@@ -56,7 +63,7 @@ abstract class RecipeCreateEditViewModel(
         recipeId?.let {
             getRecipe(it)
         } ?: run {
-            _uiState.update { RecipeCreateEditState.Success(recipe.toRecipe(), categories) }
+            _uiState.update { RecipeCreateEditState.Success(recipeDto.toRecipe(), prepTime, categories) }
         }
     }
 
@@ -64,130 +71,133 @@ abstract class RecipeCreateEditViewModel(
 
     fun changeName(newName: String) {
         _uiState.value.ifSuccess {
-            recipe = recipe.copy(name = newName)
+            recipeDto = recipeDto.copy(name = newName)
         }
     }
 
     fun changeDescription(newDescription: String) {
         _uiState.value.ifSuccess {
-            recipe = recipe.copy(description = newDescription)
+            recipeDto = recipeDto.copy(description = newDescription)
         }
     }
 
     fun changeUrl(newUrl: String) {
         _uiState.value.ifSuccess {
-            recipe = recipe.copy(url = newUrl)
+            recipeDto = recipeDto.copy(url = newUrl)
         }
     }
 
     fun changeImageOrigin(newImageOrigin: String) {
         _uiState.value.ifSuccess {
-            recipe = recipe.copy(image = newImageOrigin)
+            recipeDto = recipeDto.copy(image = newImageOrigin)
         }
     }
 
     private fun newTimeOrNull(newTime: String): String? =
         if (newTime == "PT0H0M0S") null else newTime
 
-    fun changePrepTime(newPrepTime: String) {
+    fun changePrepTime(hours: String, minutes: String) {
         _uiState.value.ifSuccess {
-            recipe = recipe.copy(prepTime = newTimeOrNull(newPrepTime))
+            prepTime = DurationComponents(hours, minutes)
+            recipeDto = recipeDto.copy(
+                prepTime = "PT${hours.ifBlank { "0" }}H${minutes.ifBlank { "0" }}M0S"
+            )
         }
     }
 
     fun changeCookTime(newCookTime: String) {
         _uiState.value.ifSuccess {
-            recipe = recipe.copy(cookTime = newTimeOrNull(newCookTime))
+            recipeDto = recipeDto.copy(cookTime = newTimeOrNull(newCookTime))
         }
     }
 
     fun changeTotalTime(newTotalTime: String) {
         _uiState.value.ifSuccess {
-            recipe = recipe.copy(totalTime = newTimeOrNull(newTotalTime))
+            recipeDto = recipeDto.copy(totalTime = newTimeOrNull(newTotalTime))
         }
     }
 
     fun changeCategory(newCategory: String) {
         _uiState.value.ifSuccess {
-            recipe = recipe.copy(recipeCategory = newCategory)
+            recipeDto = recipeDto.copy(recipeCategory = newCategory)
         }
     }
 
     fun changeYield(newYield: String) {
         _uiState.value.ifSuccess {
-            recipe = recipe.copy(recipeYield = newYield.toIntOrNull() ?: DEFAULT_YIELD)
+            recipeDto = recipeDto.copy(recipeYield = newYield.toIntOrNull() ?: DEFAULT_YIELD)
         }
     }
 
     fun changeIngredient(index: Int, newIngredient: String) {
         _uiState.value.ifSuccess {
-            val ingredients = recipe.recipeIngredient.toMutableList()
+            val ingredients = recipeDto.recipeIngredient.toMutableList()
             ingredients[index] = newIngredient
-            recipe = recipe.copy(recipeIngredient = ingredients)
+            recipeDto = recipeDto.copy(recipeIngredient = ingredients)
         }
     }
 
     fun deleteIngredient(index: Int) {
         _uiState.value.ifSuccess {
-            val ingredients = recipe.recipeIngredient.toMutableList()
+            val ingredients = recipeDto.recipeIngredient.toMutableList()
             ingredients.removeAt(index)
-            recipe = recipe.copy(recipeIngredient = ingredients)
+            recipeDto = recipeDto.copy(recipeIngredient = ingredients)
         }
     }
 
     fun addIngredient() {
         _uiState.value.ifSuccess {
-            val ingredients = recipe.recipeIngredient.toMutableList()
+            val ingredients = recipeDto.recipeIngredient.toMutableList()
             ingredients.add("")
-            recipe = recipe.copy(recipeIngredient = ingredients)
+            recipeDto = recipeDto.copy(recipeIngredient = ingredients)
         }
     }
 
     fun changeTool(index: Int, newTool: String) {
         _uiState.value.ifSuccess {
-            val tools = recipe.tool.toMutableList()
+            val tools = recipeDto.tool.toMutableList()
             tools[index] = newTool
-            recipe = recipe.copy(tool = tools)
+            recipeDto = recipeDto.copy(tool = tools)
         }
     }
 
     fun deleteTool(index: Int) {
         _uiState.value.ifSuccess {
-            val tools = recipe.tool.toMutableList()
+            val tools = recipeDto.tool.toMutableList()
             tools.removeAt(index)
-            recipe = recipe.copy(tool = tools)
+            recipeDto = recipeDto.copy(tool = tools)
         }
     }
 
     fun addTool() {
         _uiState.value.ifSuccess {
-            val tools = recipe.tool.toMutableList()
+            val tools = recipeDto.tool.toMutableList()
             tools.add("")
-            recipe = recipe.copy(tool = tools)
+            recipeDto = recipeDto.copy(tool = tools)
         }
     }
 
     fun changeInstruction(index: Int, newInstruction: String) {
         _uiState.value.ifSuccess {
-            val instructions = recipe.recipeInstructions.toMutableList()
+            val instructions = recipeDto.recipeInstructions.toMutableList()
             instructions[index] = newInstruction
-            recipe = recipe.copy(recipeInstructions = instructions)
+            recipeDto = recipeDto.copy(recipeInstructions = instructions)
         }
     }
 
     fun deleteInstruction(index: Int) {
         _uiState.value.ifSuccess {
-            val instructions = recipe.recipeInstructions.toMutableList()
+            val instructions = recipeDto.recipeInstructions.toMutableList()
             instructions.removeAt(index)
-            recipe = recipe.copy(recipeInstructions = instructions)
+            recipeDto = recipeDto.copy(recipeInstructions = instructions)
         }
     }
 
     fun addInstruction() {
         _uiState.value.ifSuccess {
-            val instructions = recipe.recipeInstructions.toMutableList()
+            val instructions = recipeDto.recipeInstructions.toMutableList()
             instructions.add("")
-            recipe = recipe.copy(recipeInstructions = instructions)
+            recipeDto = recipeDto.copy(recipeInstructions = instructions)
         }
     }
 
@@ -207,7 +217,14 @@ abstract class RecipeCreateEditViewModel(
 
     private fun getRecipe(id: Int) {
         viewModelScope.launch {
-            recipe = recipeRepository.getRecipe(id)
+            recipeDto = recipeRepository.getRecipe(id).also { dto ->
+                dto.toRecipe().also {
+                    it.prepTime?.toKotlinDuration()?.toComponents { hours, minutes, _, _ ->
+                        prepTime = DurationComponents(hours.toString(), minutes.toString())
+                    }
+                    // TODO: Add cook time and total time too
+                }
+            }
         }
     }
 }

@@ -47,11 +47,13 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Gap
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Recipe
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.DurationComponents
 import java.time.Duration
 
 @Composable
 fun CreateEditRecipeForm(
     recipe: Recipe,
+    prepTime: DurationComponents,
     categories: List<Category>,
     @StringRes title: Int,
     onNavIconClick: () -> Unit,
@@ -59,7 +61,7 @@ fun CreateEditRecipeForm(
     onDescriptionChanged: (description: String) -> Unit,
     onUrlChanged: (url: String) -> Unit,
     onImageOriginChanged: (imageUrl: String) -> Unit,
-    onPrepTimeChanged: (time: String) -> Unit,
+    onPrepTimeChanged: (hours: String, minutes: String) -> Unit,
     onCookTimeChanged: (time: String) -> Unit,
     onTotalTimeChanged: (time: String) -> Unit,
     onCategoryChanged: (category: String) -> Unit,
@@ -134,9 +136,9 @@ fun CreateEditRecipeForm(
                 textFieldColors = textFieldColors,
             )
             PrepTime(
-                recipe = recipe,
                 focusManager = focusManager,
                 onPrepTimeChange = onPrepTimeChanged,
+                prepTime = prepTime,
                 textFieldColors = textFieldColors,
             )
             CookTime(
@@ -321,23 +323,19 @@ private fun ImageOrigin(
 
 @Composable
 private fun PrepTime(
-    recipe: Recipe,
     focusManager: FocusManager,
-    onPrepTimeChange: (time: String) -> Unit,
+    onPrepTimeChange: (hours: String, minutes: String) -> Unit,
+    prepTime: DurationComponents,
     textFieldColors: TextFieldColors,
 ) {
     TimeTextField(
-        hours = recipe.prepTime?.toHoursPart()?.toString() ?: "",
-        minutes = recipe.prepTime?.toMinutesPart()?.toString() ?: "",
+        hours = prepTime.first,
+        minutes = prepTime.second,
         onHoursChange = {
-            val hours = it.ifBlank { "0" }
-            val minutes = recipe.prepTime?.toMinutesPart() ?: 0
-            onPrepTimeChange.invoke("PT${hours}H${minutes}M0S")
+            onPrepTimeChange.invoke(it, prepTime.second)
         },
         onMinutesChange = {
-            val hours = recipe.prepTime?.toHoursPart()?.toString() ?: 0
-            val minutes = it.ifBlank { "0" }
-            onPrepTimeChange.invoke("PT${hours}H${minutes}M0S")
+            onPrepTimeChange.invoke(prepTime.first, it)
         },
         label = R.string.recipe_prep_time,
         modifier = Modifier
@@ -705,6 +703,7 @@ private fun CreateEditRecipeFormPreview() {
     NextcloudCookbookTheme {
         CreateEditRecipeForm(
             recipe = recipe,
+            prepTime = DurationComponents("1", "50"),
             categories = categories,
             title = R.string.recipe_new,
             onNavIconClick = {},
@@ -712,7 +711,7 @@ private fun CreateEditRecipeFormPreview() {
             onDescriptionChanged = {},
             onUrlChanged = {},
             onImageOriginChanged = {},
-            onPrepTimeChanged = {},
+            onPrepTimeChanged = {_, _ -> },
             onCookTimeChanged = {},
             onTotalTimeChanged = {},
             onCategoryChanged = {},

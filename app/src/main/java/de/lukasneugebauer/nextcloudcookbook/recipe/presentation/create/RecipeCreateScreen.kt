@@ -26,10 +26,12 @@ fun RecipeCreateScreen(
         is RecipeCreateEditState.Loading -> Loader()
         is RecipeCreateEditState.Success -> {
             val recipe = (uiState as RecipeCreateEditState.Success).recipe
+            val prepTime = (uiState as RecipeCreateEditState.Success).prepTime
             val categories = (uiState as RecipeCreateEditState.Success).categories
 
             CreateEditRecipeForm(
                 recipe = recipe,
+                prepTime = prepTime,
                 categories = categories,
                 title = R.string.recipe_new,
                 onNavIconClick = { navigator.popBackStack() },
@@ -45,8 +47,8 @@ fun RecipeCreateScreen(
                 onImageOriginChanged = { newImageUrl ->
                     viewModel.changeImageOrigin(newImageUrl)
                 },
-                onPrepTimeChanged = { newPrepTime ->
-                    viewModel.changePrepTime(newPrepTime)
+                onPrepTimeChanged = { hours, minutes ->
+                    viewModel.changePrepTime(hours, minutes)
                 },
                 onCookTimeChanged = { newCookTime ->
                     viewModel.changeCookTime(newCookTime)

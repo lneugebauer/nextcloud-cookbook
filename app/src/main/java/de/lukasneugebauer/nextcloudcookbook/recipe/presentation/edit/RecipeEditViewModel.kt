@@ -26,11 +26,11 @@ class RecipeEditViewModel @Inject constructor(
             _uiState.update { RecipeCreateEditState.Loading }
             viewModelScope.launch {
                 _uiState.update {
-                    when (val result = recipeRepository.updateRecipe(recipe)) {
+                    when (val result = recipeRepository.updateRecipe(recipeDto)) {
                         is Resource.Error -> RecipeCreateEditState.Error(
                             result.message ?: UiText.StringResource(R.string.error_unknown),
                         )
-                        is Resource.Success -> RecipeCreateEditState.Updated(recipe.id)
+                        is Resource.Success -> RecipeCreateEditState.Updated(recipeDto.id)
                     }
                 }
             }
