@@ -10,21 +10,24 @@ data class RecipePreviewDto(
     val name: String,
     @SerializedName("keywords")
     val keywords: String?,
+    @SerializedName("category")
+    val category: String?,
     @SerializedName("dateCreated")
-    val dateCreated: String,
+    val dateCreated: String?,
     @SerializedName("dateModified")
     val dateModified: String?,
     @SerializedName("imageUrl")
-    val imageUrl: String,
+    val imageUrl: String?,
     @SerializedName("imagePlaceholderUrl")
-    val imagePlaceholderUrl: String,
+    val imagePlaceholderUrl: String?,
 ) {
     fun toRecipePreview() = RecipePreview(
         id = recipeId.toInt(),
         name = name,
         keywords = keywords?.split(",") ?: emptyList(),
-        imageUrl = imageUrl,
-        createdAt = dateCreated,
+        category = category ?: "",
+        imageUrl = imageUrl ?: "",
+        createdAt = dateCreated ?: "",
         modifiedAt = dateModified ?: "",
     )
 }

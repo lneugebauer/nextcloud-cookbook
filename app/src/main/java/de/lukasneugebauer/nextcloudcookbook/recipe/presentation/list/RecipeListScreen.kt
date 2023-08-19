@@ -308,6 +308,7 @@ private fun RecipeListPreview() {
             id = id,
             name = "Recipe $id",
             keywords = List(nextInt(0, 5)) { "Keyword $it" },
+            category = "",
             imageUrl = "",
             createdAt = "",
             modifiedAt = "",

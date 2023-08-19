@@ -76,7 +76,7 @@ abstract class RecipeCreateEditViewModel(
                     prepTime,
                     cookTime,
                     totalTime,
-                    categories
+                    categories,
                 )
             }
         }

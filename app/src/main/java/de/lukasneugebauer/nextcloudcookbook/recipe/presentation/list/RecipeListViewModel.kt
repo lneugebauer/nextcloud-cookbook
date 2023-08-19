@@ -12,6 +12,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.repository.RecipeRepository
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.RecipeListScreenState
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.SearchAppBarState
+import de.lukasneugebauer.nextcloudcookbook.recipe.util.RecipeConstants.UNCATEGORIZED_RECIPE
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
@@ -54,7 +55,8 @@ class RecipeListViewModel @Inject constructor(
     }
 
     private fun getRecipePreviews() {
-        val recipePreviewsFlow = if (categoryName == null) {
+        // Fetch all recipes to list uncategorized recipes.
+        val recipePreviewsFlow = if (categoryName == null || categoryName == UNCATEGORIZED_RECIPE) {
             recipeRepository.getRecipePreviews()
         } else {
             recipeRepository.getRecipePreviewsByCategory(categoryName)
@@ -73,6 +75,9 @@ class RecipeListViewModel @Inject constructor(
                         RecipeListScreenState.Loaded(
                             data = recipePreviewsResponse.value
                                 .filter {
+                                    // Custom filter for uncategorized recipes as they can not be directly fetch via API
+                                    if (categoryName == UNCATEGORIZED_RECIPE && it.category != null) return@filter false
+
                                     if (query.isBlank()) return@filter true
 
                                     it.name.lowercase().contains(query.lowercase())
