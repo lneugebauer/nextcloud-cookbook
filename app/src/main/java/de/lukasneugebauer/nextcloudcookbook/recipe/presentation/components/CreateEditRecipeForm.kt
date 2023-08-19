@@ -46,14 +46,16 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Default
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Gap
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.DurationComponents
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Recipe
-import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.DurationComponents
 import java.time.Duration
 
 @Composable
 fun CreateEditRecipeForm(
     recipe: Recipe,
     prepTime: DurationComponents,
+    cookTime: DurationComponents,
+    totalTime: DurationComponents,
     categories: List<Category>,
     @StringRes title: Int,
     onNavIconClick: () -> Unit,
@@ -61,9 +63,9 @@ fun CreateEditRecipeForm(
     onDescriptionChanged: (description: String) -> Unit,
     onUrlChanged: (url: String) -> Unit,
     onImageOriginChanged: (imageUrl: String) -> Unit,
-    onPrepTimeChanged: (hours: String, minutes: String) -> Unit,
-    onCookTimeChanged: (time: String) -> Unit,
-    onTotalTimeChanged: (time: String) -> Unit,
+    onPrepTimeChanged: (time: DurationComponents) -> Unit,
+    onCookTimeChanged: (time: DurationComponents) -> Unit,
+    onTotalTimeChanged: (time: DurationComponents) -> Unit,
     onCategoryChanged: (category: String) -> Unit,
     onYieldChanged: (yield: String) -> Unit,
     onIngredientChanged: (index: Int, ingredient: String) -> Unit,
@@ -136,19 +138,19 @@ fun CreateEditRecipeForm(
                 textFieldColors = textFieldColors,
             )
             PrepTime(
+                prepTime = prepTime,
                 focusManager = focusManager,
                 onPrepTimeChange = onPrepTimeChanged,
-                prepTime = prepTime,
                 textFieldColors = textFieldColors,
             )
             CookTime(
-                recipe = recipe,
+                cookTime = cookTime,
                 focusManager = focusManager,
                 onCookTimeChange = onCookTimeChanged,
                 textFieldColors = textFieldColors,
             )
             TotalTime(
-                recipe = recipe,
+                totalTime = totalTime,
                 focusManager = focusManager,
                 onTotalTimeChange = onTotalTimeChanged,
                 textFieldColors = textFieldColors,
@@ -323,20 +325,14 @@ private fun ImageOrigin(
 
 @Composable
 private fun PrepTime(
-    focusManager: FocusManager,
-    onPrepTimeChange: (hours: String, minutes: String) -> Unit,
     prepTime: DurationComponents,
+    focusManager: FocusManager,
+    onPrepTimeChange: (time: DurationComponents) -> Unit,
     textFieldColors: TextFieldColors,
 ) {
     TimeTextField(
-        hours = prepTime.first,
-        minutes = prepTime.second,
-        onHoursChange = {
-            onPrepTimeChange.invoke(it, prepTime.second)
-        },
-        onMinutesChange = {
-            onPrepTimeChange.invoke(prepTime.first, it)
-        },
+        time = prepTime,
+        onTimeChange = onPrepTimeChange,
         label = R.string.recipe_prep_time,
         modifier = Modifier
             .fillMaxWidth()
@@ -357,24 +353,14 @@ private fun PrepTime(
 
 @Composable
 private fun CookTime(
-    recipe: Recipe,
+    cookTime: DurationComponents,
     focusManager: FocusManager,
-    onCookTimeChange: (time: String) -> Unit,
+    onCookTimeChange: (time: DurationComponents) -> Unit,
     textFieldColors: TextFieldColors,
 ) {
     TimeTextField(
-        hours = recipe.cookTime?.toHoursPart()?.toString() ?: "",
-        minutes = recipe.cookTime?.toMinutesPart()?.toString() ?: "",
-        onHoursChange = {
-            val hours = it.ifBlank { "0" }
-            val minutes = recipe.cookTime?.toMinutesPart() ?: 0
-            onCookTimeChange.invoke("PT${hours}H${minutes}M0S")
-        },
-        onMinutesChange = {
-            val hours = recipe.cookTime?.toHoursPart() ?: 0
-            val minutes = it.ifBlank { "0" }
-            onCookTimeChange.invoke("PT${hours}H${minutes}M0S")
-        },
+        time = cookTime,
+        onTimeChange = onCookTimeChange,
         label = R.string.recipe_cook_time,
         modifier = Modifier
             .fillMaxWidth()
@@ -395,24 +381,14 @@ private fun CookTime(
 
 @Composable
 private fun TotalTime(
-    recipe: Recipe,
+    totalTime: DurationComponents,
     focusManager: FocusManager,
-    onTotalTimeChange: (time: String) -> Unit,
+    onTotalTimeChange: (time: DurationComponents) -> Unit,
     textFieldColors: TextFieldColors,
 ) {
     TimeTextField(
-        hours = recipe.totalTime?.toHoursPart()?.toString() ?: "",
-        minutes = recipe.totalTime?.toMinutesPart()?.toString() ?: "",
-        onHoursChange = {
-            val hours = it.ifBlank { "0" }
-            val minutes = recipe.totalTime?.toMinutesPart() ?: 0
-            onTotalTimeChange.invoke("PT${hours}H${minutes}M0S")
-        },
-        onMinutesChange = {
-            val hours = recipe.totalTime?.toHoursPart() ?: 0
-            val minutes = it.ifBlank { "0" }
-            onTotalTimeChange.invoke("PT${hours}H${minutes}M0S")
-        },
+        time = totalTime,
+        onTimeChange = onTotalTimeChange,
         label = R.string.recipe_total_time,
         modifier = Modifier
             .fillMaxWidth()
@@ -703,7 +679,9 @@ private fun CreateEditRecipeFormPreview() {
     NextcloudCookbookTheme {
         CreateEditRecipeForm(
             recipe = recipe,
-            prepTime = DurationComponents("1", "50"),
+            prepTime = DurationComponents("0", "25"),
+            cookTime = DurationComponents("1", "50"),
+            totalTime = DurationComponents("2", "15"),
             categories = categories,
             title = R.string.recipe_new,
             onNavIconClick = {},
@@ -711,7 +689,7 @@ private fun CreateEditRecipeFormPreview() {
             onDescriptionChanged = {},
             onUrlChanged = {},
             onImageOriginChanged = {},
-            onPrepTimeChanged = {_, _ -> },
+            onPrepTimeChanged = {},
             onCookTimeChanged = {},
             onTotalTimeChanged = {},
             onCategoryChanged = {},

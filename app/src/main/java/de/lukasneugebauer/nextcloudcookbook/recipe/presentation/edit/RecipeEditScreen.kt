@@ -28,11 +28,15 @@ fun RecipeEditScreen(
         is RecipeCreateEditState.Success -> {
             val recipe = (uiState as RecipeCreateEditState.Success).recipe
             val prepTime = (uiState as RecipeCreateEditState.Success).prepTime
+            val cookTime = (uiState as RecipeCreateEditState.Success).cookTime
+            val totalTime = (uiState as RecipeCreateEditState.Success).totalTime
             val categories = (uiState as RecipeCreateEditState.Success).categories
 
             CreateEditRecipeForm(
                 recipe = recipe,
                 prepTime = prepTime,
+                cookTime = cookTime,
+                totalTime = totalTime,
                 categories = categories,
                 title = R.string.recipe_edit,
                 onNavIconClick = { navigator.popBackStack() },
@@ -48,8 +52,8 @@ fun RecipeEditScreen(
                 onImageOriginChanged = { newImageUrl ->
                     viewModel.changeImageOrigin(newImageUrl)
                 },
-                onPrepTimeChanged = { hours, minutes ->
-                    viewModel.changePrepTime(hours, minutes)
+                onPrepTimeChanged = { newPrepTime ->
+                    viewModel.changePrepTime(newPrepTime)
                 },
                 onCookTimeChanged = { newCookTime ->
                     viewModel.changeCookTime(newCookTime)
@@ -95,6 +99,7 @@ fun RecipeEditScreen(
                 },
             )
         }
+
         is RecipeCreateEditState.Updated -> resultNavigator.navigateBack(true)
         is RecipeCreateEditState.Error -> {
             val text = (uiState as RecipeCreateEditState.Error).error.asString()

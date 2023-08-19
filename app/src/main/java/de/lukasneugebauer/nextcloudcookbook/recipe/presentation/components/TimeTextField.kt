@@ -22,13 +22,12 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.DurationComponents
 
 @Composable
 fun TimeTextField(
-    hours: String,
-    minutes: String,
-    onHoursChange: (hours: String) -> Unit,
-    onMinutesChange: (minutes: String) -> Unit,
+    time: DurationComponents,
+    onTimeChange: (time: DurationComponents) -> Unit,
     @StringRes label: Int,
     modifier: Modifier = Modifier,
     colors: TextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
@@ -53,8 +52,8 @@ fun TimeTextField(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             OutlinedTextField(
-                value = hours,
-                onValueChange = onHoursChange,
+                value = time.hours,
+                onValueChange = { onTimeChange(DurationComponents(it, time.minutes)) },
                 modifier = Modifier.weight(1f),
                 label = { Text(text = stringResource(id = R.string.common_hours)) },
                 keyboardOptions = KeyboardOptions.Default.copy(
@@ -67,8 +66,8 @@ fun TimeTextField(
             )
             Text(text = ":")
             OutlinedTextField(
-                value = minutes,
-                onValueChange = onMinutesChange,
+                value = time.minutes,
+                onValueChange = { onTimeChange(DurationComponents(time.hours, it)) },
                 modifier = Modifier.weight(1f),
                 label = { Text(text = stringResource(id = R.string.common_minutes)) },
                 keyboardOptions = KeyboardOptions.Default.copy(
@@ -88,10 +87,8 @@ fun TimeTextField(
 private fun TimeTextFieldPreview() {
     NextcloudCookbookTheme {
         TimeTextField(
-            hours = "1",
-            minutes = "25",
-            onHoursChange = {},
-            onMinutesChange = {},
+            time = DurationComponents("1", "25"),
+            onTimeChange = {},
             label = R.string.recipe_cook_time,
         )
     }

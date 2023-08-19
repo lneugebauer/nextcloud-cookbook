@@ -7,8 +7,8 @@ import com.dropbox.android.external.store4.StoreResponse
 import de.lukasneugebauer.nextcloudcookbook.category.domain.model.Category
 import de.lukasneugebauer.nextcloudcookbook.category.domain.repository.CategoryRepository
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipeDto
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.DurationComponents
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.repository.RecipeRepository
-import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.DurationComponents
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.RecipeCreateEditState
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.ifSuccess
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.RecipeConstants.DEFAULT_YIELD
@@ -18,7 +18,6 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.time.toKotlinDuration
 
 abstract class RecipeCreateEditViewModel(
     private val categoryRepository: CategoryRepository,
@@ -29,7 +28,11 @@ abstract class RecipeCreateEditViewModel(
     protected val _uiState = MutableStateFlow<RecipeCreateEditState>(RecipeCreateEditState.Loading)
     val uiState: StateFlow<RecipeCreateEditState> = _uiState
 
-    private var prepTime: DurationComponents = DurationComponents("", "")
+    private var prepTime: DurationComponents = DurationComponents()
+
+    private var cookTime: DurationComponents = DurationComponents()
+
+    private var totalTime: DurationComponents = DurationComponents()
 
     private var categories: List<Category> = emptyList()
         set(value) {
@@ -38,6 +41,8 @@ abstract class RecipeCreateEditViewModel(
                 RecipeCreateEditState.Success(
                     recipe = recipeDto.toRecipe(),
                     prepTime = prepTime,
+                    cookTime = cookTime,
+                    totalTime = totalTime,
                     categories = categories,
                 )
             }
@@ -51,6 +56,8 @@ abstract class RecipeCreateEditViewModel(
                 RecipeCreateEditState.Success(
                     recipe = recipe,
                     prepTime = prepTime,
+                    cookTime = cookTime,
+                    totalTime = totalTime,
                     categories = categories,
                 )
             }
@@ -63,7 +70,15 @@ abstract class RecipeCreateEditViewModel(
         recipeId?.let {
             getRecipe(it)
         } ?: run {
-            _uiState.update { RecipeCreateEditState.Success(recipeDto.toRecipe(), prepTime, categories) }
+            _uiState.update {
+                RecipeCreateEditState.Success(
+                    recipeDto.toRecipe(),
+                    prepTime,
+                    cookTime,
+                    totalTime,
+                    categories
+                )
+            }
         }
     }
 
@@ -93,27 +108,24 @@ abstract class RecipeCreateEditViewModel(
         }
     }
 
-    private fun newTimeOrNull(newTime: String): String? =
-        if (newTime == "PT0H0M0S") null else newTime
-
-    fun changePrepTime(hours: String, minutes: String) {
+    fun changePrepTime(newPrepTime: DurationComponents) {
         _uiState.value.ifSuccess {
-            prepTime = DurationComponents(hours, minutes)
-            recipeDto = recipeDto.copy(
-                prepTime = "PT${hours.ifBlank { "0" }}H${minutes.ifBlank { "0" }}M0S"
-            )
+            prepTime = newPrepTime
+            recipeDto = recipeDto.copy(prepTime = newPrepTime.toIsoStringOrNull())
         }
     }
 
-    fun changeCookTime(newCookTime: String) {
+    fun changeCookTime(newCookTime: DurationComponents) {
         _uiState.value.ifSuccess {
-            recipeDto = recipeDto.copy(cookTime = newTimeOrNull(newCookTime))
+            cookTime = newCookTime
+            recipeDto = recipeDto.copy(cookTime = newCookTime.toIsoStringOrNull())
         }
     }
 
-    fun changeTotalTime(newTotalTime: String) {
+    fun changeTotalTime(newTotalTime: DurationComponents) {
         _uiState.value.ifSuccess {
-            recipeDto = recipeDto.copy(totalTime = newTimeOrNull(newTotalTime))
+            totalTime = newTotalTime
+            recipeDto = recipeDto.copy(totalTime = newTotalTime.toIsoStringOrNull())
         }
     }
 
@@ -219,10 +231,9 @@ abstract class RecipeCreateEditViewModel(
         viewModelScope.launch {
             recipeDto = recipeRepository.getRecipe(id).also { dto ->
                 dto.toRecipe().also {
-                    it.prepTime?.toKotlinDuration()?.toComponents { hours, minutes, _, _ ->
-                        prepTime = DurationComponents(hours.toString(), minutes.toString())
-                    }
-                    // TODO: Add cook time and total time too
+                    it.prepTime?.toDurationComponents()?.run { prepTime = this }
+                    it.cookTime?.toDurationComponents()?.run { cookTime = this }
+                    it.totalTime?.toDurationComponents()?.run { totalTime = this }
                 }
             }
         }
