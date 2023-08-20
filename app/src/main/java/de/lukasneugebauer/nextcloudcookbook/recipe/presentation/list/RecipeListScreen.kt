@@ -1,18 +1,22 @@
 package de.lukasneugebauer.nextcloudcookbook.recipe.presentation.list
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.AppBarDefaults
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Divider
+import androidx.compose.material.FilterChip
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -63,6 +67,7 @@ import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeDetailScreenDesti
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipePreview
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.RecipeListScreenState
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.SearchAppBarState
+import kotlin.random.Random.Default.nextBoolean
 import kotlin.random.Random.Default.nextInt
 
 @Destination
@@ -76,6 +81,7 @@ fun RecipeListScreen(
     val uiState by viewModel.state.collectAsState()
     val searchAppBarState by viewModel.searchAppBarState
     val searchQueryState by viewModel.searchQueryState.collectAsState()
+    val selectedKeywordsState by viewModel.selectedKeywordsState.collectAsState()
 
     Scaffold(
         topBar = {
@@ -116,13 +122,18 @@ fun RecipeListScreen(
             }
 
             is RecipeListScreenState.Loaded -> {
-                val recipePreviews = (uiState as RecipeListScreenState.Loaded).data
+                val recipePreviews = (uiState as RecipeListScreenState.Loaded).recipePreviews
+                val keywords = (uiState as RecipeListScreenState.Loaded).keywords
                 RecipeListScreen(
-                    data = recipePreviews,
+                    recipePreviews = recipePreviews,
+                    keywords = keywords,
+                    isKeywordSelected = { keyword -> selectedKeywordsState.contains(keyword) },
                     modifier = modifierWithInnerPadding,
-                ) { id ->
-                    navigator.navigate(RecipeDetailScreenDestination(recipeId = id))
-                }
+                    onClick = { id ->
+                        navigator.navigate(RecipeDetailScreenDestination(recipeId = id))
+                    },
+                    onKeywordClick = { keyword -> viewModel.toggleKeyword(keyword) },
+                )
             }
 
             is RecipeListScreenState.Error -> {
@@ -145,46 +156,67 @@ fun RecipeListScreen(
 
 @Composable
 private fun RecipeListScreen(
-    data: List<RecipePreview>,
+    recipePreviews: List<RecipePreview>,
+    keywords: Set<String>,
+    isKeywordSelected: (keyword: String) -> Boolean,
     modifier: Modifier = Modifier,
     onClick: (Int) -> Unit,
+    onKeywordClick: (keyword: String) -> Unit,
 ) {
-    if (data.isEmpty()) {
+    if (recipePreviews.isEmpty()) {
         NotFoundScreen()
     } else {
-        LazyColumn(
-            modifier = modifier.fillMaxSize(),
-        ) {
-            itemsIndexed(data) { index, recipePreview ->
-                ListItem(
-                    modifier = Modifier.clickable(
-                        onClick = {
-                            onClick.invoke(recipePreview.id)
+        Column(modifier = modifier) {
+            if (keywords.isNotEmpty()) {
+                LazyRow(
+                    contentPadding = PaddingValues(horizontal = dimensionResource(id = R.dimen.padding_m)),
+                    horizontalArrangement = Arrangement.spacedBy(space = dimensionResource(id = R.dimen.padding_s)),
+                ) {
+                    keywords.forEach {
+                        item {
+                            FilterChip(
+                                selected = isKeywordSelected.invoke(it),
+                                onClick = { onKeywordClick.invoke(it) },
+                            ) {
+                                Text(text = it)
+                            }
+                        }
+                    }
+                }
+                Divider()
+            }
+            LazyColumn {
+                itemsIndexed(recipePreviews) { index, recipePreview ->
+                    ListItem(
+                        modifier = Modifier.clickable(
+                            onClick = {
+                                onClick.invoke(recipePreview.id)
+                            },
+                        ),
+                        icon = {
+                            AuthorizedImage(
+                                imageUrl = recipePreview.imageUrl,
+                                contentDescription = recipePreview.name,
+                                modifier = Modifier
+                                    .size(dimensionResource(id = R.dimen.common_item_width_s))
+                                    .clip(MaterialTheme.shapes.medium),
+                            )
                         },
-                    ),
-                    icon = {
-                        AuthorizedImage(
-                            imageUrl = recipePreview.imageUrl,
-                            contentDescription = recipePreview.name,
-                            modifier = Modifier
-                                .size(dimensionResource(id = R.dimen.common_item_width_s))
-                                .clip(MaterialTheme.shapes.medium),
-                        )
-                    },
-                    secondaryText = {
-                        Text(text = recipePreview.keywords.joinToString(separator = ", "))
-                    },
-                    singleLineSecondaryText = false,
-                    text = {
-                        Text(text = recipePreview.name)
-                    },
-                )
-                if (index != data.size - 1) {
-                    Divider(
-                        modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
+                        secondaryText = {
+                            Text(text = recipePreview.keywords.joinToString(separator = ", "))
+                        },
+                        singleLineSecondaryText = false,
+                        text = {
+                            Text(text = recipePreview.name)
+                        },
                     )
-                } else {
-                    Gap(size = dimensionResource(id = R.dimen.fab_offset))
+                    if (index != recipePreviews.size - 1) {
+                        Divider(
+                            modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
+                        )
+                    } else {
+                        Gap(size = dimensionResource(id = R.dimen.fab_offset))
+                    }
                 }
             }
         }
@@ -303,7 +335,7 @@ private fun SearchAppBar(
 @Preview
 @Composable
 private fun RecipeListPreview() {
-    val data = List(10) { id ->
+    val recipePreviews = List(10) { id ->
         RecipePreview(
             id = id,
             name = "Recipe $id",
@@ -314,10 +346,14 @@ private fun RecipeListPreview() {
             modifiedAt = "",
         )
     }
+    val allKeywords = setOf("Keyword 1", "Keyword 2", "Keyword 3")
     NextcloudCookbookTheme {
         RecipeListScreen(
-            data = data,
+            recipePreviews = recipePreviews,
+            keywords = allKeywords,
+            isKeywordSelected = { nextBoolean() },
             onClick = {},
+            onKeywordClick = {},
         )
     }
 }

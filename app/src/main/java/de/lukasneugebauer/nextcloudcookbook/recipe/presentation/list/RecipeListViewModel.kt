@@ -36,6 +36,9 @@ class RecipeListViewModel @Inject constructor(
     private val _searchQueryState = MutableStateFlow("")
     val searchQueryState = _searchQueryState.asStateFlow()
 
+    private val _selectedKeywordsState = MutableStateFlow(emptyList<String>())
+    val selectedKeywordsState = _selectedKeywordsState.asStateFlow()
+
     private val categoryName: String?
 
     init {
@@ -54,6 +57,20 @@ class RecipeListViewModel @Inject constructor(
         _searchQueryState.value = query
     }
 
+    fun toggleKeyword(keyword: String) {
+        _selectedKeywordsState.update {
+            val keywords = it.toMutableList()
+
+            if (it.contains(keyword)) {
+                keywords.remove(keyword)
+            } else {
+                keywords.add(keyword)
+            }
+
+            keywords
+        }
+    }
+
     private fun getRecipePreviews() {
         // Fetch all recipes to list uncategorized recipes.
         val recipePreviewsFlow = if (categoryName == null || categoryName == UNCATEGORIZED_RECIPE) {
@@ -65,24 +82,36 @@ class RecipeListViewModel @Inject constructor(
         combine(
             recipePreviewsFlow,
             _searchQueryState,
-        ) { recipePreviewsResponse, query ->
-            Pair(recipePreviewsResponse, query)
+            _selectedKeywordsState,
+        ) { recipePreviewsResponse, query, selectedKeywords ->
+            Triple(recipePreviewsResponse, query, selectedKeywords)
         }
-            .onEach { (recipePreviewsResponse, query) ->
+            .onEach { (recipePreviewsResponse, query, selectedKeywords) ->
                 when (recipePreviewsResponse) {
                     is StoreResponse.Loading -> _uiState.update { RecipeListScreenState.Initial }
                     is StoreResponse.Data -> _uiState.update {
+                        val recipePreviews = recipePreviewsResponse.value
+                            .filter {
+                                // Custom filter for uncategorized recipes as they can not be directly fetch via API
+                                if (categoryName == UNCATEGORIZED_RECIPE && it.category != null) return@filter false
+
+                                val inFilter =
+                                    selectedKeywords.isEmpty() || selectedKeywords.any { keyword ->
+                                        it.keywords?.contains(keyword) ?: false
+                                    }
+                                val inQuery = query.isBlank() || it.name.lowercase()
+                                    .contains(query.lowercase())
+
+                                inFilter && inQuery
+                            }
+                            .map { it.toRecipePreview() }
+
+                        val keywords = recipePreviewsResponse.value.map { it.toRecipePreview() }
+                            .flatMap { it.keywords }.toSortedSet()
+
                         RecipeListScreenState.Loaded(
-                            data = recipePreviewsResponse.value
-                                .filter {
-                                    // Custom filter for uncategorized recipes as they can not be directly fetch via API
-                                    if (categoryName == UNCATEGORIZED_RECIPE && it.category != null) return@filter false
-
-                                    if (query.isBlank()) return@filter true
-
-                                    it.name.lowercase().contains(query.lowercase())
-                                }
-                                .map { it.toRecipePreview() },
+                            recipePreviews = recipePreviews,
+                            keywords = keywords,
                         )
                     }
 
