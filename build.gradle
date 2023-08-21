@@ -38,6 +38,7 @@ allprojects {
         kotlinOptions {
             freeCompilerArgs += [
                     "-opt-in=androidx.compose.animation.ExperimentalAnimationApi",
+                    "-opt-in=androidx.compose.material.ExperimentalLayoutApi",
                     "-opt-in=androidx.compose.material.ExperimentalMaterialApi",
             ]
         }

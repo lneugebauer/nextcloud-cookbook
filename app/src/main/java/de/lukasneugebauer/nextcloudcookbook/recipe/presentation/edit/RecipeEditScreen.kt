@@ -31,6 +31,7 @@ fun RecipeEditScreen(
             val cookTime = (uiState as RecipeCreateEditState.Success).cookTime
             val totalTime = (uiState as RecipeCreateEditState.Success).totalTime
             val categories = (uiState as RecipeCreateEditState.Success).categories
+            val keywords = (uiState as RecipeCreateEditState.Success).keywords
 
             CreateEditRecipeForm(
                 recipe = recipe,
@@ -38,6 +39,7 @@ fun RecipeEditScreen(
                 cookTime = cookTime,
                 totalTime = totalTime,
                 categories = categories,
+                keywords = keywords,
                 title = R.string.recipe_edit,
                 onNavIconClick = { navigator.popBackStack() },
                 onNameChanged = { newName ->

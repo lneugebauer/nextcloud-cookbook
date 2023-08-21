@@ -2,7 +2,10 @@ package de.lukasneugebauer.nextcloudcookbook.recipe.presentation.components
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -38,7 +41,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.flowlayout.FlowRow
+import com.dokar.chiptextfield.Chip
+import com.dokar.chiptextfield.OutlinedChipTextField
+import com.dokar.chiptextfield.rememberChipTextFieldState
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.category.domain.model.Category
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.DefaultButton
@@ -57,6 +62,7 @@ fun CreateEditRecipeForm(
     cookTime: DurationComponents,
     totalTime: DurationComponents,
     categories: List<Category>,
+    keywords: Set<String>,
     @StringRes title: Int,
     onNavIconClick: () -> Unit,
     onNameChanged: (name: String) -> Unit,
@@ -160,6 +166,11 @@ fun CreateEditRecipeForm(
                 categories = categories,
                 focusManager = focusManager,
                 onCategoryChange = onCategoryChanged,
+                textFieldColors = textFieldColors,
+            )
+            Keywords(
+                recipe = recipe,
+                keywords = keywords,
                 textFieldColors = textFieldColors,
             )
             Yield(
@@ -407,6 +418,7 @@ private fun TotalTime(
     )
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun Category(
     recipe: Recipe,
@@ -436,11 +448,9 @@ private fun Category(
     if (categories.isEmpty()) {
         Gap(size = dimensionResource(id = R.dimen.padding_m))
     } else {
-        Gap(size = dimensionResource(id = R.dimen.padding_s))
         FlowRow(
-            modifier = Modifier
-                .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
-            mainAxisSpacing = dimensionResource(id = R.dimen.padding_s),
+            modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.padding_m)),
+            horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_s)),
         ) {
             categories.forEach {
                 Chip(
@@ -455,6 +465,25 @@ private fun Category(
             }
         }
     }
+}
+
+@Composable
+private fun Keywords(
+    recipe: Recipe,
+    keywords: Set<String>,
+    textFieldColors: TextFieldColors,
+) {
+    val state = rememberChipTextFieldState(
+        chips = recipe.keywords.map { Chip(text = it) },
+    )
+
+    OutlinedChipTextField(
+        state = state,
+        onSubmit = ::Chip,
+        label = { Text(text = "Keywords") },
+        colors = textFieldColors,
+    )
+    // TODO: Add autofill popup
 }
 
 @Composable
@@ -643,46 +672,49 @@ private fun Instructions(
     }
 }
 
+private val MockedRecipe = Recipe(
+    id = 1,
+    name = "Lorem ipsum",
+    description = "Lorem ipsum dolor sit amet",
+    url = "https://www.example.com",
+    imageOrigin = "https://www.example.com/image.jpg",
+    imageUrl = "/apps/cookbook/recipes/1/image?size=full",
+    category = "Lorem ipsum",
+    keywords = emptyList(),
+    yield = 2,
+    prepTime = null,
+    cookTime = Duration.parse("PT0H35M0S"),
+    totalTime = Duration.parse("PT1H50M0S"),
+    nutrition = null,
+    tools = List(1) {
+        "Lorem ipsum"
+    },
+    ingredients = List(2) {
+        "Lorem ipsum"
+    },
+    instructions = List(1) {
+        "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
+    },
+    createdAt = "",
+    modifiedAt = "",
+)
+
+private val MockedCategories = listOf(
+    Category("Lorem", 3),
+    Category("ipsum", 2),
+)
+
 @Preview
 @Composable
 private fun CreateEditRecipeFormPreview() {
-    val recipe = Recipe(
-        id = 1,
-        name = "Lorem ipsum",
-        description = "Lorem ipsum dolor sit amet",
-        url = "https://www.example.com",
-        imageOrigin = "https://www.example.com/image.jpg",
-        imageUrl = "/apps/cookbook/recipes/1/image?size=full",
-        category = "Lorem ipsum",
-        keywords = emptyList(),
-        yield = 2,
-        prepTime = null,
-        cookTime = Duration.parse("PT0H35M0S"),
-        totalTime = Duration.parse("PT1H50M0S"),
-        nutrition = null,
-        tools = List(1) {
-            "Lorem ipsum"
-        },
-        ingredients = List(2) {
-            "Lorem ipsum"
-        },
-        instructions = List(1) {
-            "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
-        },
-        createdAt = "",
-        modifiedAt = "",
-    )
-    val categories = listOf(
-        Category("Lorem", 3),
-        Category("ipsum", 2),
-    )
     NextcloudCookbookTheme {
         CreateEditRecipeForm(
-            recipe = recipe,
+            recipe = MockedRecipe,
             prepTime = DurationComponents("0", "25"),
             cookTime = DurationComponents("1", "50"),
             totalTime = DurationComponents("2", "15"),
-            categories = categories,
+            categories = MockedCategories,
+            keywords = emptySet(),
             title = R.string.recipe_new,
             onNavIconClick = {},
             onNameChanged = {},
@@ -705,5 +737,66 @@ private fun CreateEditRecipeFormPreview() {
             onAddInstruction = {},
             onSaveClick = {},
         )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun CategoryPreview() {
+    NextcloudCookbookTheme {
+        Column {
+            Category(
+                recipe = MockedRecipe,
+                categories = MockedCategories,
+                focusManager = LocalFocusManager.current,
+                onCategoryChange = {},
+                textFieldColors = TextFieldDefaults.outlinedTextFieldColors(),
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun KeywordsPreview() {
+    NextcloudCookbookTheme {
+        Column {
+            Keywords(
+                recipe = MockedRecipe,
+                keywords = setOf("Lorem Ipsum", "Lorem", "Ipsum"),
+                textFieldColors = TextFieldDefaults.outlinedTextFieldColors(),
+            )
+        }
+    }
+}
+
+@Preview(widthDp = 375, showBackground = true)
+@Composable
+private fun YieldPreview() {
+    NextcloudCookbookTheme {
+        Yield(
+            recipe = MockedRecipe,
+            focusManager = LocalFocusManager.current,
+            onYieldChanged = {},
+            textFieldColors = TextFieldDefaults.outlinedTextFieldColors(),
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun IngredientsPreview() {
+    NextcloudCookbookTheme {
+        Column {
+            Ingredients(
+                recipe = MockedRecipe,
+                modifier = Modifier,
+                focusManager = LocalFocusManager.current,
+                onIngredientChanged = { _, _ -> },
+                onIngredientDeleted = {},
+                onAddIngredient = {},
+                textFieldColors = TextFieldDefaults.outlinedTextFieldColors(),
+            )
+        }
     }
 }
