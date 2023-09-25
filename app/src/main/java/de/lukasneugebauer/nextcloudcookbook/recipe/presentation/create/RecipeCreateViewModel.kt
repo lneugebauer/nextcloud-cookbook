@@ -10,6 +10,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.repository.RecipeRepository
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.RecipeCreateEditState
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.ifSuccess
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.usecase.GetAllKeywordsUseCase
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.RecipeCreateEditViewModel
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -18,9 +19,15 @@ import javax.inject.Inject
 @HiltViewModel
 class RecipeCreateViewModel @Inject constructor(
     categoryRepository: CategoryRepository,
+    getAllKeywordsUseCase: GetAllKeywordsUseCase,
     private val recipeRepository: RecipeRepository,
     savedStateHandle: SavedStateHandle,
-) : RecipeCreateEditViewModel(categoryRepository, recipeRepository, savedStateHandle) {
+) : RecipeCreateEditViewModel(
+    categoryRepository,
+    getAllKeywordsUseCase,
+    recipeRepository,
+    savedStateHandle,
+) {
 
     override fun save() {
         _uiState.value.ifSuccess {

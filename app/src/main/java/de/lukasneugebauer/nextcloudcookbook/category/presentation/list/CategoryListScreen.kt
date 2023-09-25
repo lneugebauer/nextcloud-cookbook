@@ -44,17 +44,26 @@ fun CategoryListScreen(
     val uiState by viewModel.uiState.collectAsState()
 
     Scaffold(
-        topBar = { CategoryListTopBar() },
+        topBar = { TopAppBar() },
     ) { innerPadding ->
         when (uiState) {
             is CategoryListScreenState.Initial -> Loader()
             is CategoryListScreenState.Loaded -> {
                 val categories = (uiState as CategoryListScreenState.Loaded).data
-                CategoryListScreen(
-                    data = categories,
-                    modifier = Modifier.padding(innerPadding),
-                ) { categoryName ->
-                    navigator.navigate(RecipeListScreenDestination(categoryName))
+                if (categories.isEmpty()) {
+                    AbstractErrorScreen(uiText = UiText.StringResource(R.string.error_no_categories_found))
+                } else {
+                    CategoryListScreen(
+                        data = categories,
+                        modifier = Modifier.padding(innerPadding),
+                    ) { categoryName ->
+                        navigator.navigate(
+                            RecipeListScreenDestination(
+                                categoryName = categoryName,
+                                keyword = null,
+                            ),
+                        )
+                    }
                 }
             }
 
@@ -72,47 +81,43 @@ private fun CategoryListScreen(
     modifier: Modifier,
     onClick: (String) -> Unit,
 ) {
-    if (data.isEmpty()) {
-        AbstractErrorScreen(uiText = UiText.StringResource(R.string.error_no_categories_found))
-    } else {
-        val listState = rememberLazyListState()
-        LazyColumn(
-            modifier = modifier.fillMaxSize(),
-            state = listState,
-        ) {
-            itemsIndexed(data) { index, category ->
-                ListItem(
-                    modifier = Modifier.clickable(
-                        onClick = {
-                            onClick.invoke(category.name)
-                        },
-                    ),
-                    trailing = {
-                        Badge(backgroundColor = MaterialTheme.colors.primary) {
-                            Text(text = category.recipeCount.toString())
-                        }
+    val listState = rememberLazyListState()
+    LazyColumn(
+        modifier = modifier.fillMaxSize(),
+        state = listState,
+    ) {
+        itemsIndexed(data) { index, category ->
+            ListItem(
+                modifier = Modifier.clickable(
+                    onClick = {
+                        onClick.invoke(category.name)
                     },
-                    text = {
-                        val categoryName = if (category.name == "*") {
-                            stringResource(R.string.recipe_uncategorised)
-                        } else {
-                            category.name
-                        }
-                        Text(text = categoryName)
-                    },
+                ),
+                trailing = {
+                    Badge(backgroundColor = MaterialTheme.colors.primary) {
+                        Text(text = category.recipeCount.toString())
+                    }
+                },
+                text = {
+                    val categoryName = if (category.name == "*") {
+                        stringResource(R.string.recipe_uncategorised)
+                    } else {
+                        category.name
+                    }
+                    Text(text = categoryName)
+                },
+            )
+            if (index != data.size - 1) {
+                Divider(
+                    modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
                 )
-                if (index != data.size - 1) {
-                    Divider(
-                        modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
-                    )
-                }
             }
         }
     }
 }
 
 @Composable
-fun CategoryListTopBar() {
+private fun TopAppBar() {
     TopAppBar(
         title = { Text(text = stringResource(R.string.common_categories)) },
         backgroundColor = NcBlue700,
@@ -122,7 +127,7 @@ fun CategoryListTopBar() {
 
 @Preview
 @Composable
-private fun CategoryListScreen() {
+private fun CategoryListScreenPreview() {
     val categories = MutableList(10) {
         Category(name = "Category $it", nextInt(0, 20))
     }

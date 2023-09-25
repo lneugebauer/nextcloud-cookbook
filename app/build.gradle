@@ -179,6 +179,8 @@ dependencies {
     implementation "com.mikepenz:aboutlibraries-core:$aboutlibs_version"
     implementation "com.mikepenz:aboutlibraries-compose:$aboutlibs_version"
 
+    implementation 'io.github.dokar3:chiptextfield:0.4.9'
+
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'

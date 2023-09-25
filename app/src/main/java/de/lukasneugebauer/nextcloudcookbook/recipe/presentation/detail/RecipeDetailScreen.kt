@@ -72,6 +72,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.util.getActivity
 import de.lukasneugebauer.nextcloudcookbook.core.util.notZero
 import de.lukasneugebauer.nextcloudcookbook.core.util.openInBrowser
 import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeEditScreenDestination
+import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeListScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Recipe
 import de.lukasneugebauer.nextcloudcookbook.recipe.presentation.components.CircleChip
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.emptyRecipe
@@ -171,6 +172,14 @@ fun RecipeDetailScreen(
                 modifier = Modifier
                     .padding(paddingValues = innerPadding)
                     .verticalScroll(rememberScrollState()),
+                onKeywordClick = {
+                    navigator.navigate(
+                        RecipeListScreenDestination(
+                            categoryName = null,
+                            keyword = it,
+                        ),
+                    )
+                },
             )
         }
     }
@@ -278,14 +287,18 @@ private fun DropDownMenuItemDelete(onClick: () -> Unit) {
 }
 
 @Composable
-private fun Content(recipe: Recipe, modifier: Modifier = Modifier) {
+private fun Content(
+    recipe: Recipe,
+    modifier: Modifier = Modifier,
+    onKeywordClick: (keyword: String) -> Unit,
+) {
     Column(
         modifier = modifier,
     ) {
         Image(recipe.imageUrl, recipe.name)
         Name(recipe.name)
         if (recipe.keywords.isNotEmpty()) {
-            Keywords(recipe.keywords)
+            Keywords(keywords = recipe.keywords, onClick = onKeywordClick)
         }
         if (recipe.description.isNotBlank()) {
             Description(recipe.description)
@@ -337,7 +350,7 @@ private fun Name(name: String) {
 }
 
 @Composable
-private fun Keywords(keywords: List<String>) {
+private fun Keywords(keywords: List<String>, onClick: (keyword: String) -> Unit) {
     FlowRow(
         modifier = Modifier
             .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
@@ -347,7 +360,7 @@ private fun Keywords(keywords: List<String>) {
     ) {
         keywords.forEach {
             Chip(
-                onClick = {},
+                onClick = { onClick.invoke(it) },
                 border = BorderStroke(2.dp, NcBlue700),
                 colors = ChipDefaults.chipColors(
                     backgroundColor = Color.Transparent,
@@ -553,6 +566,6 @@ private fun ContentPreview() {
         modifiedAt = "",
     )
     NextcloudCookbookTheme {
-        Content(recipe = recipe)
+        Content(recipe = recipe, onKeywordClick = {})
     }
 }

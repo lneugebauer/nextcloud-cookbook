@@ -13,6 +13,7 @@ sealed interface RecipeCreateEditState {
         val cookTime: DurationComponents,
         val totalTime: DurationComponents,
         val categories: List<Category> = emptyList(),
+        val keywords: Set<String> = emptySet(),
     ) : RecipeCreateEditState
     data class Updated(val recipeId: Int) : RecipeCreateEditState
     data class Error(val error: UiText) : RecipeCreateEditState

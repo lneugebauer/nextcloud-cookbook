@@ -9,7 +9,8 @@ export default defineUserConfig({
   description: 'An Android client for Nextcloud Cookbook app.',
   head: [
     ['meta', { name: 'google-site-verification', content: 'aSKiI82xCweR2wlBpOe7lJnKVLLBUVU5ZIRCeRcd0xo' }],
-    ['link', { rel: 'icon', href: '/nextcloud-cookbook/images/logo.png' }]
+    ['link', { rel: 'icon', href: '/nextcloud-cookbook/images/logo.png' }],
+    ['script', { async: '', src: 'https://umami.lukneu.de/script.js', 'data-website-id': '7242c1c7-b33a-4caa-ad52-3c1f461d4e34' }]
   ],
   theme: defaultTheme({
     navbar: [

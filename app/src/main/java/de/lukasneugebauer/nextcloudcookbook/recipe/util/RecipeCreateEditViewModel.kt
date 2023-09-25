@@ -11,6 +11,7 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.DurationComponen
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.repository.RecipeRepository
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.RecipeCreateEditState
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.ifSuccess
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.usecase.GetAllKeywordsUseCase
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.RecipeConstants.DEFAULT_YIELD
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,6 +22,7 @@ import kotlinx.coroutines.launch
 
 abstract class RecipeCreateEditViewModel(
     private val categoryRepository: CategoryRepository,
+    private val getAllKeywordsUseCase: GetAllKeywordsUseCase,
     private val recipeRepository: RecipeRepository,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
@@ -44,6 +46,22 @@ abstract class RecipeCreateEditViewModel(
                     cookTime = cookTime,
                     totalTime = totalTime,
                     categories = categories,
+                    keywords = keywords,
+                )
+            }
+        }
+
+    protected var keywords: Set<String> = emptySet()
+        set(value) {
+            field = value
+            _uiState.update {
+                RecipeCreateEditState.Success(
+                    recipe = recipeDto.toRecipe(),
+                    prepTime = prepTime,
+                    cookTime = cookTime,
+                    totalTime = totalTime,
+                    categories = categories,
+                    keywords = keywords,
                 )
             }
         }
@@ -59,12 +77,14 @@ abstract class RecipeCreateEditViewModel(
                     cookTime = cookTime,
                     totalTime = totalTime,
                     categories = categories,
+                    keywords = keywords,
                 )
             }
         }
 
     init {
         getCategories()
+        getKeywords()
 
         val recipeId: Int? = savedStateHandle["recipeId"]
         recipeId?.let {
@@ -132,6 +152,12 @@ abstract class RecipeCreateEditViewModel(
     fun changeCategory(newCategory: String) {
         _uiState.value.ifSuccess {
             recipeDto = recipeDto.copy(recipeCategory = newCategory)
+        }
+    }
+
+    fun changeKeywords(newKeywords: Set<String>) {
+        _uiState.value.ifSuccess {
+            recipeDto = recipeDto.copy(keywords = newKeywords.joinToString())
         }
     }
 
@@ -225,6 +251,10 @@ abstract class RecipeCreateEditViewModel(
                 else -> Unit
             }
         }.launchIn(viewModelScope)
+    }
+
+    private fun getKeywords() {
+        getAllKeywordsUseCase.invoke().onEach { keywords = it }.launchIn(viewModelScope)
     }
 
     private fun getRecipe(id: Int) {

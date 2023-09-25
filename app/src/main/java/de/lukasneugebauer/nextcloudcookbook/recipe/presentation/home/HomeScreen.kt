@@ -82,7 +82,12 @@ fun HomeScreen(
                                         text = item.headline,
                                         clickable = item.recipes.size > MORE_BUTTON_THRESHOLD,
                                     ) {
-                                        navigator.navigate(RecipeListScreenDestination(categoryName = item.headline))
+                                        navigator.navigate(
+                                            RecipeListScreenDestination(
+                                                categoryName = item.headline,
+                                                keyword = null,
+                                            ),
+                                        )
                                     }
                                     RowContainer(
                                         data = item.recipes.map {
