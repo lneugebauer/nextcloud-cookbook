@@ -41,13 +41,12 @@ fun TimeTextField(
 ) {
     // TODO: Change to TimeInput once Material 3 is implemented.
     //  https://m3.material.io/components/time-pickers/overview
-    Column {
+    Column(modifier = modifier) {
         Text(
             text = stringResource(id = label),
             style = MaterialTheme.typography.caption,
         )
         Row(
-            modifier = modifier,
             horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_s)),
             verticalAlignment = Alignment.CenterVertically,
         ) {

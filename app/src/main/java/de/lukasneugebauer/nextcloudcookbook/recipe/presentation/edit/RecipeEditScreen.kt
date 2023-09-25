@@ -66,6 +66,9 @@ fun RecipeEditScreen(
                 onCategoryChanged = { newCategory ->
                     viewModel.changeCategory(newCategory)
                 },
+                onKeywordsChanged = { newKeywords ->
+                    viewModel.changeKeywords(newKeywords)
+                },
                 onYieldChanged = { newYield ->
                     viewModel.changeYield(newYield)
                 },

@@ -155,6 +155,12 @@ abstract class RecipeCreateEditViewModel(
         }
     }
 
+    fun changeKeywords(newKeywords: Set<String>) {
+        _uiState.value.ifSuccess {
+            recipeDto = recipeDto.copy(keywords = newKeywords.joinToString())
+        }
+    }
+
     fun changeYield(newYield: String) {
         _uiState.value.ifSuccess {
             recipeDto = recipeDto.copy(recipeYield = newYield.toIntOrNull() ?: DEFAULT_YIELD)
