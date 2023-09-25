@@ -43,6 +43,10 @@ class RecipeListViewModel @Inject constructor(
 
     init {
         categoryName = savedStateHandle["categoryName"]
+        val keyword: String? = savedStateHandle["keyword"]
+        if (!keyword.isNullOrBlank()) {
+            _selectedKeywordsState.update { listOf(keyword) }
+        }
         getRecipePreviews()
     }
 

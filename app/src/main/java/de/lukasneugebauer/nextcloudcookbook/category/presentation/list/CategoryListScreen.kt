@@ -57,7 +57,12 @@ fun CategoryListScreen(
                         data = categories,
                         modifier = Modifier.padding(innerPadding),
                     ) { categoryName ->
-                        navigator.navigate(RecipeListScreenDestination(categoryName))
+                        navigator.navigate(
+                            RecipeListScreenDestination(
+                                categoryName = categoryName,
+                                keyword = null,
+                            ),
+                        )
                     }
                 }
             }

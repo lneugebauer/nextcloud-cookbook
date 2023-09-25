@@ -75,6 +75,7 @@ import kotlin.random.Random.Default.nextInt
 fun RecipeListScreen(
     navigator: DestinationsNavigator,
     categoryName: String?,
+    @Suppress("UNUSED_PARAMETER") keyword: String?,
     resultRecipient: ResultRecipient<RecipeCreateScreenDestination, Int>,
     viewModel: RecipeListViewModel = hiltViewModel(),
 ) {
