@@ -1,0 +1,5 @@
+- Tschechische Übersetzung verbessert
+- Verhalten der Zeitfelder verbessert
+- Kategorie-Symbol geändert
+- Liste der nicht kategorisierten Rezepte korrigiert
+- Unterstützung von Schlüsselwörtern hinzugefügt
