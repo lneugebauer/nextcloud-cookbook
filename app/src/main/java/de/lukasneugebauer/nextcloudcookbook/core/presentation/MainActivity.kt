@@ -16,7 +16,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.manualcomposablecalls.composable
@@ -25,13 +24,12 @@ import de.lukasneugebauer.nextcloudcookbook.NavGraphs
 import de.lukasneugebauer.nextcloudcookbook.auth.presentation.splash.SplashScreen
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.Credentials
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.LocalCredentials
+import de.lukasneugebauer.nextcloudcookbook.core.domain.state.AppState
 import de.lukasneugebauer.nextcloudcookbook.core.domain.state.AuthState
+import de.lukasneugebauer.nextcloudcookbook.core.domain.state.LocalAppState
 import de.lukasneugebauer.nextcloudcookbook.core.domain.state.SplashState
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.BottomBar
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
-import de.lukasneugebauer.nextcloudcookbook.destinations.LoginScreenDestination
-import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeCreateScreenDestination
-import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeEditScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.destinations.SplashScreenDestination
 
 @AndroidEntryPoint
@@ -45,6 +43,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
+            val appState = AppState()
             val authState by viewModel.authState.collectAsState()
             val splashState by viewModel.splashState.collectAsState()
             val credentials: Credentials? by remember {
@@ -68,7 +67,10 @@ class MainActivity : ComponentActivity() {
                 splashScreen.setKeepOnScreenCondition { keepOnScreen }
             }
 
-            CompositionLocalProvider(LocalCredentials provides credentials) {
+            CompositionLocalProvider(
+                LocalAppState provides appState,
+                LocalCredentials provides credentials,
+            ) {
                 NextcloudCookbookApp()
             }
         }
@@ -79,20 +81,14 @@ class MainActivity : ComponentActivity() {
 fun NextcloudCookbookApp() {
     NextcloudCookbookTheme {
         val navController = rememberNavController()
-        val navBackStackEntry by navController.currentBackStackEntryAsState()
-        val currentDestination = navBackStackEntry?.destination
         val viewModelStoreOwner = checkNotNull(LocalViewModelStoreOwner.current) {
             "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
         }
 
         Scaffold(
             bottomBar = {
-                // TODO: Create app state to hide bottom navigation
-                if (currentDestination?.route != SplashScreenDestination.route &&
-                    currentDestination?.route != LoginScreenDestination.route &&
-                    currentDestination?.route != RecipeCreateScreenDestination.route &&
-                    currentDestination?.route != RecipeEditScreenDestination.route
-                ) {
+                val appState = LocalAppState.current
+                if (appState.isBottomBarVisible) {
                     BottomBar(navController = navController)
                 }
             },

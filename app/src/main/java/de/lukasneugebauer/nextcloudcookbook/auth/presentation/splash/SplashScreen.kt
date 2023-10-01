@@ -11,6 +11,7 @@ import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import de.lukasneugebauer.nextcloudcookbook.auth.domain.state.SplashScreenState
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.MainViewModel
+import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.HideBottomNavigation
 import de.lukasneugebauer.nextcloudcookbook.destinations.HomeScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.destinations.LoginScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.destinations.SplashScreenDestination
@@ -24,6 +25,8 @@ fun SplashScreen(
     viewModel: SplashViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
+
+    HideBottomNavigation()
 
     LaunchedEffect(key1 = uiState) {
         when (uiState) {
