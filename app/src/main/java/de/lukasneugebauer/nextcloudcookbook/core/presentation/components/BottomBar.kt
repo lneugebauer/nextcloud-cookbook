@@ -36,27 +36,29 @@ enum class BottomBarDestination(
 }
 
 @Composable
-fun BottomBar(navController: NavController) {
+fun BottomBar(visible: Boolean, navController: NavController) {
     var selected by rememberSaveable { mutableStateOf(BottomBarDestination.Home) }
-    BottomNavigation(backgroundColor = NcBlue700) {
-        BottomBarDestination.values().forEach { destination ->
-            BottomNavigationItem(
-                selected = selected == destination,
-                onClick = {
-                    selected = destination
-                    navController.navigate(destination.direction.route) {
-                        launchSingleTop = true
-                    }
-                },
-                icon = {
-                    Icon(
-                        destination.icon,
-                        contentDescription = stringResource(destination.label),
-                    )
-                },
-                label = { Text(stringResource(destination.label)) },
-                selectedContentColor = Color.White,
-            )
+    if (visible) {
+        BottomNavigation(backgroundColor = NcBlue700) {
+            BottomBarDestination.values().forEach { destination ->
+                BottomNavigationItem(
+                    selected = selected == destination,
+                    onClick = {
+                        selected = destination
+                        navController.navigate(destination.direction.route) {
+                            launchSingleTop = true
+                        }
+                    },
+                    icon = {
+                        Icon(
+                            destination.icon,
+                            contentDescription = stringResource(destination.label),
+                        )
+                    },
+                    label = { Text(stringResource(destination.label)) },
+                    selectedContentColor = Color.White,
+                )
+            }
         }
     }
 }
