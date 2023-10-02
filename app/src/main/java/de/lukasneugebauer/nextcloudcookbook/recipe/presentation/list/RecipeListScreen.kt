@@ -57,7 +57,9 @@ import com.ramcosta.composedestinations.result.ResultRecipient
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.AuthorizedImage
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Gap
+import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.HideBottomNavigation
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
+import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.keyboardAsState
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.error.AbstractErrorScreen
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.error.NotFoundScreen
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
@@ -266,6 +268,11 @@ private fun SearchAppBar(
     onCloseClicked: () -> Unit,
 ) {
     val focusRequester = remember { FocusRequester() }
+    val isKeyboardOpen by keyboardAsState()
+
+    if (isKeyboardOpen) {
+        HideBottomNavigation()
+    }
 
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
