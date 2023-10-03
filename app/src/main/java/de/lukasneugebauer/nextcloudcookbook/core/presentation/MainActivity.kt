@@ -86,10 +86,7 @@ fun NextcloudCookbookApp() {
         }
 
         Scaffold(
-            bottomBar = {
-                val appState = LocalAppState.current
-                BottomBar(visible = appState.isBottomBarVisible, navController = navController)
-            },
+            bottomBar = { BottomBar(navController = navController) },
         ) { innerPadding ->
             DestinationsNavHost(
                 navGraph = NavGraphs.root,

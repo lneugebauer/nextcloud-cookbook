@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import de.lukasneugebauer.nextcloudcookbook.R
+import de.lukasneugebauer.nextcloudcookbook.core.domain.state.LocalAppState
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
 import de.lukasneugebauer.nextcloudcookbook.destinations.CategoryListScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.destinations.Destination
@@ -36,9 +37,10 @@ enum class BottomBarDestination(
 }
 
 @Composable
-fun BottomBar(visible: Boolean, navController: NavController) {
+fun BottomBar(navController: NavController) {
+    val appState = LocalAppState.current
     var selected by rememberSaveable { mutableStateOf(BottomBarDestination.Home) }
-    if (visible) {
+    if (appState.isBottomBarVisible) {
         BottomNavigation(backgroundColor = NcBlue700) {
             BottomBarDestination.values().forEach { destination ->
                 BottomNavigationItem(
