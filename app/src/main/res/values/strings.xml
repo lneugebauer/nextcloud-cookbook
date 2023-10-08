@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Cookbook</string>
     <string name="common_about">About</string>
@@ -32,7 +33,7 @@
     <string name="error_http_unknown">Unknown HTTP error</string>
     <string name="error_invalid_protocol">Invalid protocol; URL must start with https://</string>
     <string name="error_invalid_url">Invalid URL</string>
-    <string name="error_malformed_json">Malformed JSON error</string>
+    <string name="error_malformed_json">Malformed JSON</string>
     <string name="error_recipe_id_missing">Recipe ID missing</string>
     <string name="error_no_account_data">Account data not found</string>
     <string name="error_no_categories_found">No categories found</string>
@@ -40,7 +41,7 @@
     <string name="error_no_recipes_found">No recipes found</string>
     <string name="error_ssl_handshake">Certificate error</string>
     <string name="error_timeout">Timeout error</string>
-    <string name="error_unknown_host">Unknown host error</string>
+    <string name="error_unknown_host">Unknown host</string>
     <string name="error_unknown">An unknown error occurred</string>
     <string name="error_unsupported_app_version">Unsupported version. Please update to Cookbook app to version 0.9.15 or higher in your Nextcloud instance.</string>
     <string name="home_category">Category: %1s</string>
@@ -88,7 +89,7 @@
     <string name="settings_hosted_on_github">This project is hosted on GitHub</string>
     <string name="settings_issues" translatable="false">Issues</string>
     <string name="settings_license">License</string>
-    <string name="settings_logout">Logout</string>
+    <string name="settings_logout">Log out</string>
     <string name="settings_mit_license">MIT License</string>
     <string name="settings_oss_licenses">Open source libraries</string>
     <string name="settings_privacy">Privacy</string>
