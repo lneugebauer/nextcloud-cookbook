@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Kuchařka</string>
     <string name="common_about">O aplikaci</string>
@@ -38,7 +39,7 @@
     <string name="error_no_recipes_found">Nenalezeny žádné recepty</string>
     <string name="error_ssl_handshake">Chyba certifikátu</string>
     <string name="error_timeout">Chyba překročení časového limitu</string>
-    <string name="error_unknown_host">Chyba neznámého hostitele</string>
+    <string name="error_unknown_host">Neznámý hostitel</string>
     <string name="error_unknown">Nastala neznámá chyba</string>
     <string name="error_unsupported_app_version">Nepodporovaná verze. Aktualizujte prosím aplikaci Kuchařka ve vašem Nextcloud serveru na verzi 0.9.15 nebo vyšší.</string>
     <string name="home_category">Kategorie: %1s</string>
@@ -59,7 +60,7 @@
     <plurals name="recipe_ingredients_servings">
         <item quantity="one">Přísady pro %1$d porci</item>
         <item quantity="few">Přísady pro %1$d porce</item>
-        <item quantity="many">Přísady pro %1$d porcí</item>
+        <item quantity="other">Přísady pro %1$d porcí</item>
     </plurals>
     <string name="recipe_instruction_add">Přidat pokyn</string>
     <string name="recipe_instruction_delete">Delete pokyn</string>
@@ -94,5 +95,7 @@
     <string name="settings_stay_awake">Ponechat aktivní displej</string>
     <string name="settings_version_number">verze %1$s (%2$d)</string>
     <string name="settings_version">Aplikace Nextcloud Cookbook</string>
-    <string name="settings_where_to_report_issues">Nahlašovat chyby, nabízet vylepšení a žádat o nové funkce můžete prostřednictvím Github issue trackeru.</string>
+    <string name="settings_where_to_report_issues">Nahlašovat chyby, nabízet vylepšení a žádat o nové funkce můžete prostřednictvím Github issue trackeru</string>
+    <string name="common_minutes">Minuty</string>
+    <string name="common_hours">Hodiny</string>
 </resources>
