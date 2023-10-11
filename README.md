@@ -57,7 +57,7 @@ An Android client for [Nextcloud Cookbook app](https://github.com/nextcloud/cook
 - [Feature](https://github.com/lneugebauer/nextcloud-cookbook/blob/main/docs/contributing.md#featuresimprovements)
 - [Translations](https://github.com/lneugebauer/nextcloud-cookbook/blob/main/docs/contributing.md#translations)
 
-### Translations :triangular_flag_on_post:
+### Translations :earth_africa:
 
 [![Translation status](https://hosted.weblate.org/widget/nextcloud-cookbook/287x66-grey.png)](https://hosted.weblate.org/engage/nextcloud-cookbook/)
 
