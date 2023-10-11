@@ -5,6 +5,7 @@ buildscript {
     ext {
         aboutlibs_version = '10.9.1'
         accompanist_version = '0.30.1'
+        acra_version = '5.11.2'
         compose_compiler_version = '1.5.3'
         compose_destinations_version = '1.9.53'
         compose_settings_version = '1.0.2'
