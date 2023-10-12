@@ -1,0 +1,4 @@
+- Add crash reporting
+- Add Norwegian translation
+- Enhance Czech translation
+- Enhance bottom bar behaviour

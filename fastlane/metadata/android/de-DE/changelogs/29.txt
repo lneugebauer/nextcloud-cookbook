@@ -1,0 +1,4 @@
+- Absturzberichte hinzugefügt
+- Norwegische Übersetzung hinzugefügt
+- Verbesserung der tschechischen Übersetzung
+- Verbessertes Verhalten der Navigations-Leiste
