@@ -7,6 +7,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.data.api.NcCookbookApi
 import de.lukasneugebauer.nextcloudcookbook.core.data.remote.BasicAuthInterceptor
 import de.lukasneugebauer.nextcloudcookbook.core.data.remote.NetworkInterceptor
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.NcAccount
+import de.lukasneugebauer.nextcloudcookbook.core.util.addSuffix
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.NutritionDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.remote.deserializer.NutritionDeserializer
 import kotlinx.coroutines.CoroutineScope
@@ -69,7 +70,7 @@ class ApiProvider @Inject constructor(
             .build()
 
         val retrofit = Retrofit.Builder()
-            .baseUrl(ncAccount.url)
+            .baseUrl(ncAccount.url.addSuffix("/"))
             .client(client)
             .addConverterFactory(GsonConverterFactory.create(gson))
             .addCallAdapterFactory(NetworkResponseAdapterFactory())
