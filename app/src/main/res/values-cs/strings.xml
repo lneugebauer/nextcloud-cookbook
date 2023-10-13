@@ -98,4 +98,7 @@
     <string name="settings_where_to_report_issues">Nahlašovat chyby, nabízet vylepšení a žádat o nové funkce můžete prostřednictvím Github issue trackeru</string>
     <string name="common_minutes">Minuty</string>
     <string name="common_hours">Hodiny</string>
+    <string name="dialog_crash_report_text">Ups, aplikace Nextcloud Cookbook se zhroutila. Přejete si odeslat vývojářům chybové hlášení\?</string>
+    <string name="common_no">Ne</string>
+    <string name="common_yes">Ano</string>
 </resources>
