@@ -35,13 +35,13 @@ data class RecipeDto(
     @SerializedName("recipeInstructions")
     val recipeInstructions: List<String>,
     @SerializedName("dateCreated")
-    val dateCreated: String,
+    val dateCreated: String?,
     @SerializedName("dateModified")
-    val dateModified: String,
+    val dateModified: String?,
     @SerializedName("printImage")
-    val printImage: Boolean,
+    val printImage: Boolean?,
     @SerializedName("imageUrl")
-    val imageUrl: String,
+    val imageUrl: String?,
     @SerializedName("nutrition")
     val nutrition: NutritionDto?,
 ) {
@@ -51,7 +51,7 @@ data class RecipeDto(
         description = description,
         url = url,
         imageOrigin = image,
-        imageUrl = imageUrl,
+        imageUrl = imageUrl ?: "",
         category = recipeCategory,
         keywords = if (keywords.isNullOrEmpty()) emptyList() else keywords.split(","),
         yield = recipeYield,
@@ -62,7 +62,7 @@ data class RecipeDto(
         tools = tool,
         ingredients = recipeIngredient,
         instructions = recipeInstructions,
-        createdAt = dateCreated,
-        modifiedAt = dateModified,
+        createdAt = dateCreated ?: "",
+        modifiedAt = dateModified ?: "",
     )
 }
