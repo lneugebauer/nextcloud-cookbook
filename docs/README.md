@@ -37,7 +37,12 @@ footer: MIT Licensed
 
 ## Donate
 
-[![Donate using Liberapay](https://liberapay.com/assets/widgets/donate.svg)](https://liberapay.com/lneugebauer/donate)
+[<img src="https://liberapay.com/assets/widgets/donate.svg"
+    alt="Donate using Liberapay"
+    height="30">](https://liberapay.com/lneugebauer/donate)
+[<img src="/images/donate_with_paypal.svg"
+    alt="Donate using PayPal"
+    height="30">](https://www.paypal.com/donate/?hosted_button_id=ECDNN8PS3SSMQ)
 
 ## Translations :earth_africa:
 
