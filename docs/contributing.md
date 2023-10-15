@@ -41,3 +41,7 @@ into the appropriate language.
 In Android Studio, you can use
 the [translations editor](https://developer.android.com/studio/write/translations-editor), but you
 are free to use any text editor you like.
+
+### Translation status
+
+[![Translation status](https://hosted.weblate.org/widget/nextcloud-cookbook/multi-auto.svg)](https://hosted.weblate.org/engage/nextcloud-cookbook/)

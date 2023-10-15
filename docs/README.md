@@ -35,7 +35,11 @@ footer: MIT Licensed
 - Login via QR-Code
 - Import recipe via url
 
-## Translations :triangular_flag_on_post:
+## Donate
+
+[![Donate using Liberapay](https://liberapay.com/assets/widgets/donate.svg)](https://liberapay.com/lneugebauer/donate)
+
+## Translations :earth_africa:
 
 [![Translation status](https://hosted.weblate.org/widget/nextcloud-cookbook/287x66-grey.png)](https://hosted.weblate.org/engage/nextcloud-cookbook/)
 
