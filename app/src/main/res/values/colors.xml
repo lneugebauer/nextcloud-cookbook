@@ -1,17 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="nc_blue_900">#FF005293</color>
     <color name="nc_blue_800">#FF0072B5</color>
     <color name="nc_blue_700">#FF0082C9</color>
-    <color name="nc_blue_600">#FF0195DD</color>
-    <color name="nc_blue_500">#FF02A3EB</color>
-    <color name="nc_blue_400">#FF28B1EF</color>
-    <color name="nc_blue_300">#FF4EBEF1</color>
-    <color name="nc_blue_200">#FF7FD1F6</color>
-    <color name="nc_blue_100">#FFB2E3F9</color>
-    <color name="nc_blue_50">#FFE1F4FD</color>
     <color name="nc_blue_gradient_start">@color/nc_blue_700</color>
     <color name="nc_blue_gradient_end">#FF1CAFFF</color>
 </resources>

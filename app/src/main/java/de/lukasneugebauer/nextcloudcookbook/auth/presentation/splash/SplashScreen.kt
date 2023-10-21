@@ -32,7 +32,6 @@ fun SplashScreen(
         when (uiState) {
             SplashScreenState.Initial -> viewModel.initialize()
             SplashScreenState.Authorized -> {
-                // TODO: 04.10.21 Load (and cache) recipes initially
                 mainViewModel.finishSplash()
                 navigator.navigate(HomeScreenDestination) {
                     popUpTo(SplashScreenDestination.route) {

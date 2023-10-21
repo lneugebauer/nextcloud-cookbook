@@ -8,7 +8,6 @@
     <string name="settings_account">Konto</string>
     <string name="common_settings">Innstillinger</string>
     <string name="common_recipes">Oppskrifter</string>
-    <string name="error_unsupported_app_version">Ustøttet versjon. Oppgrader kokeboksprogrammet til versjon 0.9.15 eller høyere i din Nextcloud-instans.</string>
     <string name="recipe_tools">Verktøy</string>
     <string name="error_http_unknown">Ukjent HTTP-feil</string>
     <string name="common_close">Lukk</string>
@@ -46,7 +45,6 @@
     <string name="settings_oss_licenses">Frie bibliotek</string>
     <string name="common_search">Søk</string>
     <string name="recipe_tool_delete">Slett verktøy</string>
-    <string name="home_category">Kategori: %1s</string>
     <string name="error_http_403">403 forbudt</string>
     <string name="recipe_ingredient">Ingrediens</string>
     <string name="recipe_more_menu_delete">Slett</string>

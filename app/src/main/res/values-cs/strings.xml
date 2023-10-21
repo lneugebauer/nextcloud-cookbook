@@ -41,8 +41,6 @@
     <string name="error_timeout">Chyba překročení časového limitu</string>
     <string name="error_unknown_host">Neznámý hostitel</string>
     <string name="error_unknown">Nastala neznámá chyba</string>
-    <string name="error_unsupported_app_version">Nepodporovaná verze. Aktualizujte prosím aplikaci Kuchařka ve vašem Nextcloud serveru na verzi 0.9.15 nebo vyšší.</string>
-    <string name="home_category">Kategorie: %1s</string>
     <string name="home_recommendation">Doporučení</string>
     <string name="login">Přihlásit se</string>
     <string name="login_manual">Manuální přihlášení</string>

@@ -46,8 +46,6 @@
     <string name="error_timeout">Zeitüberschreitung</string>
     <string name="error_unknown_host">Unbekannter Host</string>
     <string name="error_unknown">Ein unbekannter Fehler ist aufgetreten</string>
-    <string name="error_unsupported_app_version">Inkompatible Version. Bitte aktualisiere die Kochbuch App in Nextcloud auf Version 0.9.15 oder höher.</string>
-    <string name="home_category">Kategorie: %1s</string>
     <string name="home_recommendation">Vorschlag</string>
     <string name="login">Anmelden</string>
     <string name="login_manual">Manuell anmelden</string>

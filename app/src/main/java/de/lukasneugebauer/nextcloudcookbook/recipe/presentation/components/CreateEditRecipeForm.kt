@@ -91,8 +91,6 @@ fun CreateEditRecipeForm(
     val focusManager = LocalFocusManager.current
     val scrollState = rememberScrollState()
 
-    // TODO: Hide bottom navigation
-
     Scaffold(
         topBar = {
             RecipeEditTopBar(

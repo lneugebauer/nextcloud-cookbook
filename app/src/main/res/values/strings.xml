@@ -46,8 +46,6 @@
     <string name="error_timeout">Timeout error</string>
     <string name="error_unknown_host">Unknown host</string>
     <string name="error_unknown">An unknown error occurred</string>
-    <string name="error_unsupported_app_version">Unsupported version. Please update to Cookbook app to version 0.9.15 or higher in your Nextcloud instance.</string>
-    <string name="home_category">Category: %1s</string>
     <string name="home_recommendation">Recommendation</string>
     <string name="login">Sign in</string>
     <string name="login_example_url" translatable="false">https://cloud.example.tld</string>

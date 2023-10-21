@@ -46,8 +46,6 @@
     <string name="error_timeout">Przekroczono limit czasu</string>
     <string name="error_unknown_host">Nieznany host</string>
     <string name="error_unknown">Wystąpił nieznany błąd</string>
-    <string name="error_unsupported_app_version">Niewspierana wersja. Zaktualizuj aplikację Cookbook na serwerze Nextcloud do wersji 0.9.15 lub wyższej</string>
-    <string name="home_category">Kategorie: %1s</string>
     <string name="home_recommendation">Polecane</string>
     <string name="login">Zaloguj</string>
     <string name="login_manual">Ręczne logowanie</string>
