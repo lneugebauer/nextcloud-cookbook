@@ -1,0 +1,2 @@
+- Polnische Übersetzung hinzugefügt
+- Absturz in einigen Sprachen behoben
