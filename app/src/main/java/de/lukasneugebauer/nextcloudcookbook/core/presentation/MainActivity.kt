@@ -31,6 +31,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.domain.state.SplashState
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.BottomBar
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
 import de.lukasneugebauer.nextcloudcookbook.destinations.SplashScreenDestination
+import org.acra.ACRA
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -83,6 +84,12 @@ fun NextcloudCookbookApp() {
         val navController = rememberNavController()
         val viewModelStoreOwner = checkNotNull(LocalViewModelStoreOwner.current) {
             "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
+        }
+
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            destination.route?.let {
+                ACRA.errorReporter.putCustomData("Event at ${System.currentTimeMillis()}", it)
+            }
         }
 
         Scaffold(

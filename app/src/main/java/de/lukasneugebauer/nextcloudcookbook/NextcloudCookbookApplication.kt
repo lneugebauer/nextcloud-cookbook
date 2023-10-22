@@ -3,6 +3,7 @@ package de.lukasneugebauer.nextcloudcookbook
 import android.app.Application
 import android.content.Context
 import dagger.hilt.android.HiltAndroidApp
+import org.acra.ACRA
 import org.acra.config.dialog
 import org.acra.config.mailSender
 import org.acra.data.StringFormat
@@ -15,8 +16,12 @@ class NextcloudCookbookApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-
         initializeTimber()
+    }
+
+    override fun attachBaseContext(base: Context?) {
+        super.attachBaseContext(base)
+        initAcra()
     }
 
     private fun initializeTimber() {
@@ -25,9 +30,7 @@ class NextcloudCookbookApplication : Application() {
         }
     }
 
-    override fun attachBaseContext(base: Context?) {
-        super.attachBaseContext(base)
-
+    private fun initAcra() {
         if (!BuildConfig.DEBUG) {
             initAcra {
                 buildConfigClass = BuildConfig::class.java
@@ -48,6 +51,8 @@ class NextcloudCookbookApplication : Application() {
                     subject = "Nextcloud Cookbook crash report"
                 }
             }
+
+            ACRA.errorReporter.putCustomData("productFlavor", BuildConfig.FLAVOR)
         }
     }
 }
