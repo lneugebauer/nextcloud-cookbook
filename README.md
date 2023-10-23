@@ -15,14 +15,24 @@ An Android client for [Nextcloud Cookbook app](https://github.com/nextcloud/cook
 ## Download
 
 [<img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png"
-      alt="Get it on Play Store"
-      height="80">](https://play.google.com/store/apps/details?id=de.lukasneugebauer.nextcloudcookbook)
+    alt="Get it on Play Store"
+    height="80">](https://play.google.com/store/apps/details?id=de.lukasneugebauer.nextcloudcookbook)
 [<img src="/docs/.vuepress/public/images/get_it_on_github.png"
-      alt="Get it on GitHub"
-      height="80">](https://github.com/lneugebauer/nextcloud-cookbook/releases)
+    alt="Get it on GitHub"
+    height="80">](https://github.com/lneugebauer/nextcloud-cookbook/releases)
 [<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
-      alt="Get it on F-Droid"
-      height="80">](https://f-droid.org/packages/de.lukasneugebauer.nextcloudcookbook/)
+    alt="Get it on F-Droid"
+    height="80">](https://f-droid.org/packages/de.lukasneugebauer.nextcloudcookbook/)
+
+## Screenshots
+<table>
+    <tr>
+        <td>![Phone screenshot 1](fastlane/metadata/android/en-US/images/phoneScreenshots/1_en-US.png)</td>
+        <td>![Phone screenshot 2](fastlane/metadata/android/en-US/images/phoneScreenshots/2_en-US.png)</td>
+        <td>![Phone screenshot 3](fastlane/metadata/android/en-US/images/phoneScreenshots/3_en-US.png)</td>
+        <td>![Phone screenshot 4](fastlane/metadata/android/en-US/images/phoneScreenshots/4_en-US.png)</td>
+    </tr>
+</table>
 
 ## Features :rocket:
 
