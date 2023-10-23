@@ -72,7 +72,7 @@ class LoginViewModel @Inject constructor(
         if (!isValidUrl(url)) return
 
         viewModelScope.launch {
-            when (val result = authRepository.getLoginEndpoint(url.removeSuffix("/"))) {
+            when (val result = authRepository.getLoginEndpoint(url)) {
                 is Resource.Success -> {
                     result.data?.loginUrl?.let { webViewUrl ->
                         Timber.v("Open web view with url $webViewUrl")

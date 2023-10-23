@@ -6,10 +6,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 
 interface AuthRepository {
 
-    suspend fun getLoginEndpoint(
-        baseUrl: String,
-        retryCount: Int = 0,
-    ): Resource<LoginEndpointResult>
+    suspend fun getLoginEndpoint(baseUrl: String): Resource<LoginEndpointResult>
 
     suspend fun tryLogin(url: String, token: String): Resource<LoginResult>
 }

@@ -16,24 +16,23 @@ class AuthRepositoryImpl(
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : AuthRepository, BaseRepository() {
 
-    override suspend fun getLoginEndpoint(
-        baseUrl: String,
-        retryCount: Int,
-    ): Resource<LoginEndpointResult> {
+    override suspend fun getLoginEndpoint(baseUrl: String): Resource<LoginEndpointResult> {
         return withContext(ioDispatcher) {
-            when (val response = api.getLoginEndpoint("$baseUrl/login/v2")) {
+            val url = buildString {
+                append(baseUrl.removeSuffix("/"))
+                if (!baseUrl.contains("index.php")) {
+                    append("/index.php")
+                }
+                append("/login/v2")
+            }
+
+            when (val response = api.getLoginEndpoint(url)) {
                 is NetworkResponse.Success -> {
                     val result = response.body.toLoginEndpointResult()
                     Resource.Success(result)
                 }
-                is NetworkResponse.Error -> {
-                    if (!baseUrl.contains("index.php") && retryCount < 2) {
-                        return@withContext getLoginEndpoint(
-                            baseUrl = "$baseUrl/index.php",
-                            retryCount = retryCount + 1,
-                        )
-                    }
 
+                is NetworkResponse.Error -> {
                     handleResponseError(response.error)
                 }
             }
@@ -47,6 +46,7 @@ class AuthRepositoryImpl(
                     val result = response.body.toLoginResult()
                     Resource.Success(data = result)
                 }
+
                 is NetworkResponse.Error -> handleResponseError(response.error)
             }
         }
