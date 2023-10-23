@@ -27,10 +27,10 @@ An Android client for [Nextcloud Cookbook app](https://github.com/nextcloud/cook
 ## Screenshots
 <table>
     <tr>
-        <td>![Phone screenshot 1](fastlane/metadata/android/en-US/images/phoneScreenshots/1_en-US.png)</td>
-        <td>![Phone screenshot 2](fastlane/metadata/android/en-US/images/phoneScreenshots/2_en-US.png)</td>
-        <td>![Phone screenshot 3](fastlane/metadata/android/en-US/images/phoneScreenshots/3_en-US.png)</td>
-        <td>![Phone screenshot 4](fastlane/metadata/android/en-US/images/phoneScreenshots/4_en-US.png)</td>
+        <td><img src="fastlane/metadata/android/en-US/images/phoneScreenshots/1_en-US.png" alt="Phone screenshot 1"></td>
+        <td><img src="fastlane/metadata/android/en-US/images/phoneScreenshots/2_en-US.png" alt="Phone screenshot 2"></td>
+        <td><img src="fastlane/metadata/android/en-US/images/phoneScreenshots/3_en-US.png" alt="Phone screenshot 3"></td>
+        <td><img src="fastlane/metadata/android/en-US/images/phoneScreenshots/4_en-US.png" alt="Phone screenshot 4"></td>
     </tr>
 </table>
 
