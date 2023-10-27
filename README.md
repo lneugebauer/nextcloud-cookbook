@@ -9,6 +9,7 @@
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/lneugebauer/nextcloud-cookbook/blob/main/LICENSE)
 [![ktlint](https://img.shields.io/badge/code%20style-%E2%9D%A4-FF4081.svg)](https://ktlint.github.io/)
 [![Translation status](https://hosted.weblate.org/widget/nextcloud-cookbook/svg-badge.svg)](https://hosted.weblate.org/engage/nextcloud-cookbook/)
+[![Liberapay patrons](https://img.shields.io/liberapay/patrons/lneugebauer.svg?logo=liberapay)](https://liberapay.com/lneugebauer/)
 
 An Android client for [Nextcloud Cookbook app](https://github.com/nextcloud/cookbook).
 
@@ -61,7 +62,7 @@ An Android client for [Nextcloud Cookbook app](https://github.com/nextcloud/cook
 1. Open project in Android Studio
 2. Run the app
 
-## Contributing
+## Contributing :office_worker:
 
 - [Bugfix](https://github.com/lneugebauer/nextcloud-cookbook/blob/main/docs/contributing.md#bugfix)
 - [Feature](https://github.com/lneugebauer/nextcloud-cookbook/blob/main/docs/contributing.md#featuresimprovements)
