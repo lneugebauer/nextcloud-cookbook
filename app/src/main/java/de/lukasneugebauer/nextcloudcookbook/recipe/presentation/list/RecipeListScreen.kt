@@ -37,17 +37,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
@@ -92,7 +98,7 @@ fun RecipeListScreen(
                 SearchAppBarState.OPEN -> {
                     SearchAppBar(
                         query = searchQueryState,
-                        onQueryChange = { viewModel.updateSearchQuery(it) },
+                        onQueryChange = { viewModel.updateSearchQuery(it.text) },
                         onCloseClicked = { viewModel.toggleSearchAppBarVisibility() },
                     )
                 }
@@ -264,18 +270,17 @@ private fun TopAppBar(
 @Composable
 private fun SearchAppBar(
     query: String,
-    onQueryChange: (String) -> Unit,
+    onQueryChange: (TextFieldValue) -> Unit,
     onCloseClicked: () -> Unit,
 ) {
     val focusRequester = remember { FocusRequester() }
-    val isKeyboardOpen by keyboardAsState()
-
-    if (isKeyboardOpen) {
-        HideBottomNavigation()
-    }
-
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
+    }
+
+    val isKeyboardOpen by keyboardAsState()
+    if (isKeyboardOpen) {
+        HideBottomNavigation()
     }
 
     Surface(
@@ -285,9 +290,21 @@ private fun SearchAppBar(
         color = MaterialTheme.colors.primary,
         elevation = AppBarDefaults.TopAppBarElevation,
     ) {
+        val layoutDirection = LocalLayoutDirection.current
+        var textFieldValue by remember {
+            mutableStateOf(
+                TextFieldValue(
+                    text = query,
+                    selection = if (layoutDirection == LayoutDirection.Ltr) TextRange(query.length) else TextRange.Zero
+                )
+            )
+        }
         TextField(
-            value = query,
-            onValueChange = onQueryChange,
+            value = textFieldValue,
+            onValueChange = {
+                textFieldValue = it
+                onQueryChange.invoke(it)
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .focusRequester(focusRequester),
@@ -312,7 +329,8 @@ private fun SearchAppBar(
                 IconButton(
                     onClick = {
                         if (query.isNotEmpty()) {
-                            onQueryChange("")
+                            textFieldValue = TextFieldValue("")
+                            onQueryChange(TextFieldValue(""))
                         } else {
                             onCloseClicked()
                         }
