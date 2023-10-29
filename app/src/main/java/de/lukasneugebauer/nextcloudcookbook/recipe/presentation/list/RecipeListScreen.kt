@@ -295,8 +295,8 @@ private fun SearchAppBar(
             mutableStateOf(
                 TextFieldValue(
                     text = query,
-                    selection = if (layoutDirection == LayoutDirection.Ltr) TextRange(query.length) else TextRange.Zero
-                )
+                    selection = if (layoutDirection == LayoutDirection.Ltr) TextRange(query.length) else TextRange.Zero,
+                ),
             )
         }
         TextField(

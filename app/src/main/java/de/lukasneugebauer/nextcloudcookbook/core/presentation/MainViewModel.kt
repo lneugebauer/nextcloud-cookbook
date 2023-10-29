@@ -31,7 +31,7 @@ class MainViewModel @Inject constructor(
     }
 
     fun finishSplash() {
-        _splashState.value = SplashState.Loaded
+        _splashState.update { SplashState.Loaded }
     }
 
     private fun getLoginCredentials() {
@@ -55,6 +55,7 @@ class MainViewModel @Inject constructor(
                         _authState.update { AuthState.Unauthorized }
                     }
                 }
+                finishSplash()
             }
         }
     }
