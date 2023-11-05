@@ -132,6 +132,7 @@ fun LoginScreen(
             )
         },
         sheetState = sheetState,
+        sheetGesturesEnabled = false,
     ) {
         LoginScreen(
             showManualLogin = showManualLogin,
