@@ -1,0 +1,20 @@
+Vis alle oppskrifter du har lagret i din Nextcloud.
+
+Kildekoden er å finne på GitHub at https://github.com/lneugebauer/nextcloud-cookbook/. Du kan rapportere feil og forespørre funksjoner i feilsporeren.
+
+Nåværende:
+- List opp alle oppskrifter
+- List opp alle oppskrifter etter kategori
+- Vis oppskrift
+- Behold skjerm påslått ved visning av oppskrift
+- Innstillinger
+- Redigering av oppskrift
+- Legg til oppskrift
+
+Planlagt:
+- Frakoblet bruk
+- Samlet pålogging gjennom Nextcloud Files-programmet
+- Innlogging via QR-kode
+- Importering av oppskrift via URL
+
+En offentlig tilgjengelig Nextcloud-tjener med siste versjon av kokeboksprogrammet kreves for bruk.
