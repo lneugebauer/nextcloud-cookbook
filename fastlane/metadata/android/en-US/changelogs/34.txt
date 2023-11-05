@@ -1,0 +1,5 @@
+- Add Russian translation
+- Update Norwegian translation
+- Fix search focus behaviour
+- Fix splash screen dismiss behaviour
+- Fix scrolling issues on login
