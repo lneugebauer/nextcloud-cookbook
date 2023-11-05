@@ -9,6 +9,8 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.aspectRatio
@@ -58,7 +60,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.google.accompanist.flowlayout.FlowRow
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import de.lukasneugebauer.nextcloudcookbook.R
@@ -349,14 +350,14 @@ private fun Name(name: String) {
     )
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun Keywords(keywords: List<String>, onClick: (keyword: String) -> Unit) {
     FlowRow(
         modifier = Modifier
             .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
             .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
-        mainAxisSpacing = dimensionResource(id = R.dimen.padding_s),
-        crossAxisSpacing = dimensionResource(id = R.dimen.padding_s),
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_s)),
     ) {
         keywords.forEach {
             Chip(
