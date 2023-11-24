@@ -162,7 +162,7 @@ class LoginViewModel @Inject constructor(
             return false
         }
 
-        if (!url.startsWith("https://")) {
+        if (!url.startsWith("https://").toLowerCase()) {
             _uiState.value =
                 _uiState.value.copy(urlError = UiText.StringResource(R.string.error_invalid_protocol))
             return false
