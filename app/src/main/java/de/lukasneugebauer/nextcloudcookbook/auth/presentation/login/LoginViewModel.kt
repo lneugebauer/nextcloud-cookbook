@@ -72,7 +72,9 @@ class LoginViewModel @Inject constructor(
         if (!isValidUrl(url)) return
 
         viewModelScope.launch {
-            when (val result = authRepository.getLoginEndpoint(url)) {
+            val urlLowerCase = url.toLowerCase()
+            
+            when (val result = authRepository.getLoginEndpoint(urlLowerCase)) {
                 is Resource.Success -> {
                     result.data?.loginUrl?.let { webViewUrl ->
                         Timber.v("Open web view with url $webViewUrl")
@@ -98,7 +100,7 @@ class LoginViewModel @Inject constructor(
             name = "",
             username = username,
             token = password,
-            url = url.removeSuffix("/"),
+            url = url.removeSuffix("/").toLowerCase(),
         )
         viewModelScope.launch {
             preferencesManager.updateNextcloudAccount(ncAccount)
@@ -129,7 +131,7 @@ class LoginViewModel @Inject constructor(
             is Resource.Error -> {
                 delay(POLL_DELAY)
                 if (pollLoginServerIsActive) {
-                    pollLoginServer(url, token)
+                    pollLoginServer(url.toLowerCase(), token)
                 }
             }
         }
