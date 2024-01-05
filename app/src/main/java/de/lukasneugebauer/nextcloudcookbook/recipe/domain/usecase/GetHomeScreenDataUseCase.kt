@@ -16,7 +16,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import retrofit2.HttpException
 import timber.log.Timber
 import java.time.LocalDateTime
 import javax.inject.Inject
@@ -51,7 +50,7 @@ class GetHomeScreenDataUseCase @Inject constructor(
                     updatedAt = LocalDateTime.now(),
                 )
                 preferencesManager.updateRecipeOfTheDay(recipeOfTheDay)
-            } catch (e: HttpException) {
+            } catch (e: Exception) {
                 Timber.e(e.stackTraceToString())
             }
         }
