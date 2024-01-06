@@ -39,6 +39,10 @@ class MainViewModel @Inject constructor(
             accountRepository.getAccount().collect { accountResource ->
                 when {
                     accountResource is Resource.Success && accountResource.data != null -> {
+                        // Get capabilities and cookbook version to enrich crash report data with
+                        // Nextcloud, Cookbook app and Cookbook API version metadata.
+                        accountRepository.getCapabilities()
+                        accountRepository.getCookbookVersion()
                         _authState.update {
                             AuthState.Authorized(
                                 credentials = Credentials(
@@ -51,6 +55,7 @@ class MainViewModel @Inject constructor(
                             )
                         }
                     }
+
                     else -> {
                         _authState.update { AuthState.Unauthorized }
                     }

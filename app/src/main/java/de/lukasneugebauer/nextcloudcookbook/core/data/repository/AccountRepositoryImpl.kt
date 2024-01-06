@@ -4,6 +4,7 @@ import com.haroldadmin.cnradapter.NetworkResponse
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.Capabilities
+import de.lukasneugebauer.nextcloudcookbook.core.domain.model.CookbookVersion
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.NcAccount
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.UserMetadata
 import de.lukasneugebauer.nextcloudcookbook.core.domain.repository.AccountRepository
@@ -18,6 +19,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import org.acra.ACRA
 import javax.inject.Inject
 
 class AccountRepositoryImpl @Inject constructor(
@@ -34,6 +36,8 @@ class AccountRepositoryImpl @Inject constructor(
             when (val response = api.getCapabilities()) {
                 is NetworkResponse.Success -> {
                     val result = response.body.ocs.data.capabilities.toCapabilities()
+                    val nextcloudVersion = response.body.ocs.data.version.toNextcloudVersion()
+                    ACRA.errorReporter.putCustomData("Nextcloud version", nextcloudVersion)
                     Resource.Success(data = result)
                 }
 
@@ -78,5 +82,25 @@ class AccountRepositoryImpl @Inject constructor(
 
                 Resource.Success(data = account)
             }
+    }
+
+    override suspend fun getCookbookVersion(): Resource<CookbookVersion> {
+        return withContext(ioDispatcher) {
+            val api = apiProvider.getNcCookbookApi()
+                ?: return@withContext Resource.Error(message = UiText.StringResource(R.string.error_api_not_initialized))
+
+            when (val response = api.getCookbookVersion()) {
+                is NetworkResponse.Success -> {
+                    val result = response.body.toCookbookVersion()
+                    ACRA.errorReporter.putCustomData("Cookbook version", result.cookbookVersion)
+                    ACRA.errorReporter.putCustomData("Cookbook API version", result.apiVersion)
+                    Resource.Success(data = result)
+                }
+
+                is NetworkResponse.Error -> {
+                    handleResponseError(response.error)
+                }
+            }
+        }
     }
 }

@@ -3,7 +3,7 @@ package de.lukasneugebauer.nextcloudcookbook.core.util
 import de.lukasneugebauer.nextcloudcookbook.BuildConfig
 
 object Constants {
-    private const val API_ENDPOINT: String = "index.php/apps/cookbook/api"
+    const val API_ENDPOINT: String = "index.php/apps/cookbook/api"
     private const val API_VERSION: String = "/v1"
     const val DEFAULT_RECIPE_OF_THE_DAY_ID: Int = 0
     const val FULL_PATH: String = API_ENDPOINT + API_VERSION
