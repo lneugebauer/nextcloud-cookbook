@@ -50,7 +50,7 @@
     <string name="recipe_more_menu_delete">Удалить</string>
     <string name="recipe_more_menu_edit">Редактировать</string>
     <string name="recipe_more_menu_share">Свободное ПО</string>
-    <string name="error_no_login_url">Не удалось загрузить URL входа</string>
+    <string name="error_no_login_url">Не удалось загрузить страницу входа</string>
     <string name="error_malformed_json">Некорректный JSON</string>
     <string name="settings_version">Приложение Книга рецептов Nextcloud</string>
     <plurals name="recipe_ingredients_servings">
@@ -62,7 +62,7 @@
     <string name="recipe_image_url">Ссылка на изображение</string>
     <string name="dialog_crash_report_text">Упс.. Похоже, Книга рецептов Nextcloud вылетела. Хотите отправить отчёт об этом вылете разработчикам\?</string>
     <string name="error_authentication_failed">Аутентификация не удалась</string>
-    <string name="recipe_url">URL-адрес</string>
+    <string name="recipe_url">Ссылка</string>
     <string name="common_minutes">минут</string>
     <string name="common_share">Поделиться</string>
     <string name="settings_mit_license">Лицензия MIT</string>
@@ -76,7 +76,7 @@
     <string name="error_api_not_initialized">API не инициализирован</string>
     <string name="error_eof">Ошибка конца файла</string>
     <string name="login">Войти</string>
-    <string name="error_unknown_host">Неизвестный сервер</string>
+    <string name="error_unknown_host">Неизвестное имя хоста</string>
     <string name="error_ssl_handshake">Ошибка сертификата</string>
     <string name="recipe_prep_time">Подготовка</string>
     <string name="error_recipe_id_missing">Отсутствует ID рецепта</string>
@@ -88,7 +88,7 @@
     <string name="error_invalid_url">Неправильный URL-адрес</string>
     <string name="recipe_instruction_delete">Удалить инструкцию</string>
     <string name="error_http_405">405 Метод не разрешён</string>
-    <string name="settings_stay_awake">Не отключать экран</string>
+    <string name="settings_stay_awake">Не выключать экран</string>
     <string name="recipe_ingredient_delete">Удалить ингредиент</string>
     <string name="recipe_name">Название</string>
     <string name="common_save">Сохранить</string>
@@ -99,4 +99,5 @@
     <string name="recipe_instruction">Инструкция</string>
     <string name="common_yes">Да</string>
     <string name="recipe_cook_time">Готовка</string>
+    <string name="recipe_yield">Результат</string>
 </resources>
