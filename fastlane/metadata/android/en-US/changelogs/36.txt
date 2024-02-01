@@ -1,0 +1,3 @@
+- Update Russian translation
+- Fix home screen crash
+- Improve login handling
