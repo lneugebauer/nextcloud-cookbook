@@ -29,18 +29,36 @@ data class NutritionDto(
     @SerializedName("unsaturatedFatContent")
     val unsaturatedFatContent: String?,
 ) {
-    fun toNutrition() = Nutrition(
-        calories = calories,
-        carbohydrateContent = carbohydrateContent,
-        cholesterolContent = cholesterolContent,
-        fatContent = fatContent,
-        fiberContent = fiberContent,
-        proteinContent = proteinContent,
-        saturatedFatContent = saturatedFatContent,
-        servingSize = servingSize,
-        sodiumContent = sodiumContent,
-        sugarContent = sugarContent,
-        transFatContent = transFatContent,
-        unsaturatedFatContent = unsaturatedFatContent,
-    )
+    fun toNutrition(): Nutrition? {
+        if (calories == null &&
+            carbohydrateContent == null &&
+            cholesterolContent == null &&
+            fatContent == null &&
+            fiberContent == null &&
+            proteinContent == null &&
+            saturatedFatContent == null &&
+            servingSize == null &&
+            sodiumContent == null &&
+            sugarContent == null &&
+            transFatContent == null &&
+            unsaturatedFatContent == null
+        ) {
+            return null
+        }
+
+        return Nutrition(
+            calories = calories,
+            carbohydrateContent = carbohydrateContent,
+            cholesterolContent = cholesterolContent,
+            fatContent = fatContent,
+            fiberContent = fiberContent,
+            proteinContent = proteinContent,
+            saturatedFatContent = saturatedFatContent,
+            servingSize = servingSize,
+            sodiumContent = sodiumContent,
+            sugarContent = sugarContent,
+            transFatContent = transFatContent,
+            unsaturatedFatContent = unsaturatedFatContent,
+        )
+    }
 }

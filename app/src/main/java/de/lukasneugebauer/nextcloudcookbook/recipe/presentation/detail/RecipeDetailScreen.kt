@@ -13,10 +13,12 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Chip
@@ -53,10 +55,13 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -74,6 +79,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.util.notZero
 import de.lukasneugebauer.nextcloudcookbook.core.util.openInBrowser
 import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeEditScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeListScreenDestination
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Nutrition
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Recipe
 import de.lukasneugebauer.nextcloudcookbook.recipe.presentation.components.CircleChip
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.emptyRecipe
@@ -316,6 +322,9 @@ private fun Content(
         if (recipe.ingredients.isNotEmpty()) {
             Ingredients(recipe.ingredients, recipe.yield)
         }
+        if (recipe.nutrition != null) {
+            Nutrition(recipe.nutrition)
+        }
         if (recipe.tools.isNotEmpty()) {
             Tools(recipe.tools)
         }
@@ -487,6 +496,89 @@ private fun Ingredients(ingredients: List<String>, servings: Int) {
             style = MaterialTheme.typography.body1,
         )
     }
+}
+
+@Composable
+private fun NutritionItem(@StringRes label: Int, value: String?) {
+    if (value != null) {
+        Text(
+            buildAnnotatedString {
+                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                    append("${stringResource(label)} ")
+                }
+                append(value)
+            },
+            modifier = Modifier
+                .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
+                .padding(
+                    top = dimensionResource(id = R.dimen.padding_xs),
+                    bottom = dimensionResource(id = R.dimen.padding_xs),
+                ),
+            style = MaterialTheme.typography.body1,
+        )
+    }
+}
+
+@Composable
+private fun Nutrition(nutrition: Nutrition) {
+    Text(
+        text = stringResource(R.string.recipe_nutrition),
+        modifier = Modifier
+            .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
+            .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
+        style = MaterialTheme.typography.h6,
+    )
+    NutritionItem(
+        label = R.string.recipe_nutrition_energy,
+        value = nutrition.calories,
+    )
+    NutritionItem(
+        label = R.string.recipe_nutrition_carbohydrate,
+        value = nutrition.carbohydrateContent,
+    )
+    NutritionItem(
+        label = R.string.recipe_nutrition_cholesterol,
+        value = nutrition.cholesterolContent,
+    )
+    NutritionItem(
+        label = R.string.recipe_nutrition_fat_total,
+        value = nutrition.fatContent,
+    )
+    NutritionItem(
+        label = R.string.recipe_nutrition_fiber,
+        value = nutrition.fiberContent,
+    )
+    NutritionItem(
+        label = R.string.recipe_nutrition_protein,
+        value = nutrition.proteinContent,
+    )
+    NutritionItem(
+        label = R.string.recipe_nutrition_saturated_fat,
+        value = nutrition.saturatedFatContent,
+    )
+    NutritionItem(
+        label = R.string.recipe_nutrition_serving_size,
+        value = nutrition.servingSize,
+    )
+    NutritionItem(
+        label = R.string.recipe_nutrition_sodium,
+        value = nutrition.sodiumContent,
+    )
+    NutritionItem(
+        label = R.string.recipe_nutrition_sugar,
+        value = nutrition.sugarContent,
+    )
+    NutritionItem(
+        label = R.string.recipe_nutrition_trans_fat,
+        value = nutrition.transFatContent,
+    )
+    NutritionItem(
+        label = R.string.recipe_nutrition_unsaturated_fat,
+        value = nutrition.unsaturatedFatContent,
+    )
+    val spacingBottom =
+        dimensionResource(id = R.dimen.padding_l) - dimensionResource(id = R.dimen.padding_xs)
+    Spacer(modifier = Modifier.size(spacingBottom))
 }
 
 @Composable
