@@ -5,29 +5,29 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Nutrition
 
 data class NutritionDto(
     @SerializedName("calories")
-    val calories: String?,
+    val calories: String? = null,
     @SerializedName("carbohydrateContent")
-    val carbohydrateContent: String?,
+    val carbohydrateContent: String? = null,
     @SerializedName("cholesterolContent")
-    val cholesterolContent: String?,
+    val cholesterolContent: String? = null,
     @SerializedName("fatContent")
-    val fatContent: String?,
+    val fatContent: String? = null,
     @SerializedName("fiberContent")
-    val fiberContent: String?,
+    val fiberContent: String? = null,
     @SerializedName("proteinContent")
-    val proteinContent: String?,
+    val proteinContent: String? = null,
     @SerializedName("saturatedFatContent")
-    val saturatedFatContent: String?,
+    val saturatedFatContent: String? = null,
     @SerializedName("servingSize")
-    val servingSize: String?,
+    val servingSize: String? = null,
     @SerializedName("sodiumContent")
-    val sodiumContent: String?,
+    val sodiumContent: String? = null,
     @SerializedName("sugarContent")
-    val sugarContent: String?,
+    val sugarContent: String? = null,
     @SerializedName("transFatContent")
-    val transFatContent: String?,
+    val transFatContent: String? = null,
     @SerializedName("unsaturatedFatContent")
-    val unsaturatedFatContent: String?,
+    val unsaturatedFatContent: String? = null,
 ) {
     fun toNutrition(): Nutrition? {
         if (calories == null &&

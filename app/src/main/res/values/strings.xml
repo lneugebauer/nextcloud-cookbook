@@ -77,7 +77,7 @@
     <string name="recipe_nutrition">Nutrition information</string>
     <string name="recipe_nutrition_carbohydrate">Carbohydrate</string>
     <string name="recipe_nutrition_cholesterol">Cholesterol</string>
-    <string name="recipe_nutrition_energy">Energy</string>
+    <string name="recipe_nutrition_calories">Energy</string>
     <string name="recipe_nutrition_fat_total">Fat total</string>
     <string name="recipe_nutrition_fiber">Fiber</string>
     <string name="recipe_nutrition_protein">Protein</string>

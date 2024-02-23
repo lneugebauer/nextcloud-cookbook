@@ -529,7 +529,7 @@ private fun Nutrition(nutrition: Nutrition) {
         style = MaterialTheme.typography.h6,
     )
     NutritionItem(
-        label = R.string.recipe_nutrition_energy,
+        label = R.string.recipe_nutrition_calories,
         value = nutrition.calories,
     )
     NutritionItem(
