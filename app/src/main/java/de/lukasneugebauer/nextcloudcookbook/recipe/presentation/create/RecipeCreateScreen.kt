@@ -83,6 +83,42 @@ fun RecipeCreateScreen(
                 onAddIngredient = {
                     viewModel.addIngredient()
                 },
+                onCaloriesChanged = { newCalories ->
+                    viewModel.changeCalories(newCalories)
+                },
+                onCarbohydrateContentChanged = { newCarbohydrateContent ->
+                    viewModel.changeCarbohydrateContent(newCarbohydrateContent)
+                },
+                onCholesterolContentChanged = { newCholesterolContent ->
+                    viewModel.changeCholesterolContent(newCholesterolContent)
+                },
+                onFatContentChanged = { newFatContent ->
+                    viewModel.changeFatContent(newFatContent)
+                },
+                onFiberContentChanged = { newFiberContent ->
+                    viewModel.changeFiberContent(newFiberContent)
+                },
+                onProteinContentChanged = { newProteinContent ->
+                    viewModel.changeProteinContent(newProteinContent)
+                },
+                onSaturatedFatContentChanged = { newSaturatedFatContent ->
+                    viewModel.changeSaturatedFatContent(newSaturatedFatContent)
+                },
+                onServingSizeChanged = { newServingSize ->
+                    viewModel.changeServingSize(newServingSize)
+                },
+                onSodiumContentChanged = { newSodiumContent ->
+                    viewModel.changeSodiumContent(newSodiumContent)
+                },
+                onSugarContentChanged = { newSugarContent ->
+                    viewModel.changeSugarContent(newSugarContent)
+                },
+                onTransFatContentChanged = { newTransFatContent ->
+                    viewModel.changeTransFatContent(newTransFatContent)
+                },
+                onUnsaturatedFatContentChanged = { newUnsaturatedFatContent ->
+                    viewModel.changeUnsaturatedFatContent(newUnsaturatedFatContent)
+                },
                 onToolChanged = { index, newTool ->
                     viewModel.changeTool(index, newTool)
                 },

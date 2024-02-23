@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.dropbox.android.external.store4.StoreResponse
 import de.lukasneugebauer.nextcloudcookbook.category.domain.model.Category
 import de.lukasneugebauer.nextcloudcookbook.category.domain.repository.CategoryRepository
+import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.NutritionDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipeDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.DurationComponents
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.repository.RecipeRepository
@@ -191,6 +192,79 @@ abstract class RecipeCreateEditViewModel(
         }
     }
 
+    fun changeCalories(newCalories: String) {
+        val newNutrition = recipeDto.nutrition?.copy(calories = newCalories)
+            ?: NutritionDto(calories = newCalories)
+        changeNutrition(newNutrition)
+    }
+
+    fun changeCarbohydrateContent(newCarbohydrateContent: String) {
+        val newNutrition = recipeDto.nutrition?.copy(carbohydrateContent = newCarbohydrateContent)
+            ?: NutritionDto(carbohydrateContent = newCarbohydrateContent)
+        changeNutrition(newNutrition)
+    }
+
+    fun changeCholesterolContent(newCholesterolContent: String) {
+        val newNutrition = recipeDto.nutrition?.copy(cholesterolContent = newCholesterolContent)
+            ?: NutritionDto(cholesterolContent = newCholesterolContent)
+        changeNutrition(newNutrition)
+    }
+
+    fun changeFatContent(newFatContent: String) {
+        val newNutrition = recipeDto.nutrition?.copy(fatContent = newFatContent)
+            ?: NutritionDto(fatContent = newFatContent)
+        changeNutrition(newNutrition)
+    }
+
+    fun changeFiberContent(newFiberContent: String) {
+        val newNutrition = recipeDto.nutrition?.copy(fiberContent = newFiberContent)
+            ?: NutritionDto(fiberContent = newFiberContent)
+        changeNutrition(newNutrition)
+    }
+
+    fun changeProteinContent(newProteinContent: String) {
+        val newNutrition = recipeDto.nutrition?.copy(proteinContent = newProteinContent)
+            ?: NutritionDto(proteinContent = newProteinContent)
+        changeNutrition(newNutrition)
+    }
+
+    fun changeSaturatedFatContent(newSaturatedFatContent: String) {
+        val newNutrition = recipeDto.nutrition?.copy(saturatedFatContent = newSaturatedFatContent)
+            ?: NutritionDto(saturatedFatContent = newSaturatedFatContent)
+        changeNutrition(newNutrition)
+    }
+
+    fun changeServingSize(newServingSize: String) {
+        val newNutrition = recipeDto.nutrition?.copy(servingSize = newServingSize)
+            ?: NutritionDto(servingSize = newServingSize)
+        changeNutrition(newNutrition)
+    }
+
+    fun changeSodiumContent(newSodiumContent: String) {
+        val newNutrition = recipeDto.nutrition?.copy(sodiumContent = newSodiumContent)
+            ?: NutritionDto(sodiumContent = newSodiumContent)
+        changeNutrition(newNutrition)
+    }
+
+    fun changeSugarContent(newSugarContent: String) {
+        val newNutrition = recipeDto.nutrition?.copy(sugarContent = newSugarContent)
+            ?: NutritionDto(sugarContent = newSugarContent)
+        changeNutrition(newNutrition)
+    }
+
+    fun changeTransFatContent(newTransFatContent: String) {
+        val newNutrition = recipeDto.nutrition?.copy(transFatContent = newTransFatContent)
+            ?: NutritionDto(transFatContent = newTransFatContent)
+        changeNutrition(newNutrition)
+    }
+
+    fun changeUnsaturatedFatContent(newUnsaturatedFatContent: String) {
+        val newNutrition =
+            recipeDto.nutrition?.copy(unsaturatedFatContent = newUnsaturatedFatContent)
+                ?: NutritionDto(unsaturatedFatContent = newUnsaturatedFatContent)
+        changeNutrition(newNutrition)
+    }
+
     fun changeTool(index: Int, newTool: String) {
         _uiState.value.ifSuccess {
             val tools = recipeDto.tool.toMutableList()
@@ -255,6 +329,12 @@ abstract class RecipeCreateEditViewModel(
 
     private fun getKeywords() {
         getAllKeywordsUseCase.invoke().onEach { keywords = it }.launchIn(viewModelScope)
+    }
+
+    private fun changeNutrition(newNutrition: NutritionDto) {
+        _uiState.value.ifSuccess {
+            recipeDto = recipeDto.copy(nutrition = newNutrition)
+        }
     }
 
     private fun getRecipe(id: Int) {
