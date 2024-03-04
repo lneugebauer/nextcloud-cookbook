@@ -100,4 +100,17 @@
     <string name="settings_version_number">wersja %1$s (%2$d)</string>
     <string name="settings_version">Aplikacja Nextcloud Cookbook</string>
     <string name="settings_where_to_report_issues">Możesz zgłosić błędy oraz propozycje nowych funkcji na GitHub</string>
+    <string name="recipe_nutrition">Informacje o wartości odżywczej</string>
+    <string name="recipe_nutrition_cholesterol">Cholesterol</string>
+    <string name="recipe_nutrition_unsaturated_fat">Tłuszcze nienasycone</string>
+    <string name="recipe_nutrition_carbohydrate">Węglowodany</string>
+    <string name="recipe_nutrition_calories">Kalorie</string>
+    <string name="recipe_nutrition_fat_total">Tłuszcze</string>
+    <string name="recipe_nutrition_fiber">Błonnik</string>
+    <string name="recipe_nutrition_protein">Białko</string>
+    <string name="recipe_nutrition_saturated_fat">Tłuszcze nasycone</string>
+    <string name="recipe_nutrition_serving_size">Wielkość porcji</string>
+    <string name="recipe_nutrition_sodium">Sód</string>
+    <string name="recipe_nutrition_sugar">Cukier</string>
+    <string name="recipe_nutrition_trans_fat">Tłuszcze trans</string>
 </resources>
