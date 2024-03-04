@@ -1,0 +1,20 @@
+Wyświetl wszystkie swoje przepisy zapisane w instancji Nextcloud.
+
+Kod źródłowy można znaleźć na GitHubie pod adresem https://github.com/lneugebauer/nextcloud-cookbook/. Zgłaszaj tam błędy, propozycje ulepszeń i prośby o nowe funkcje.
+
+Funkcje:
+- Lista wszystkich przepisów
+- Sortowanie według kategorii
+- Widok przepisu
+- Pozostawienie włączonego ekranu podczas wyświetlania przepisu
+- Ustawienia
+- Edycja przepisu
+- Dodawanie przepisów
+
+Zaplanowany:
+- Korzystanie w trybie offline
+- Pojedyncze logowanie za pośrednictwem aplikacji Nextcloud Files
+- Logowanie się za pomocą kodu QR
+- Importowanie przepisów poprzez adres URL
+
+Do korzystania z tej aplikacji wymagany jest publicznie dostępny serwer Nextcloud z najnowszą aplikacją Książki Kucharskiej.

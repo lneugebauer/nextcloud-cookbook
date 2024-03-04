@@ -1,0 +1,1 @@
+Wyświetl wszystkie swoje przepisy zapisane na instancji Nextcloud.
