@@ -100,4 +100,17 @@
     <string name="common_yes">Да</string>
     <string name="recipe_cook_time">Готовка</string>
     <string name="recipe_yield">Результат</string>
+    <string name="recipe_nutrition_fat_total">Общие жиры</string>
+    <string name="recipe_nutrition_sugar">Сахар</string>
+    <string name="recipe_nutrition_fiber">Пищевые волокна</string>
+    <string name="recipe_nutrition_protein">Протеин</string>
+    <string name="recipe_nutrition_serving_size">Размер порции</string>
+    <string name="recipe_nutrition_trans_fat">Трансжиры</string>
+    <string name="recipe_nutrition_unsaturated_fat">Ненасыщенные жиры</string>
+    <string name="recipe_nutrition">Пищевая ценность</string>
+    <string name="recipe_nutrition_carbohydrate">Углеводы</string>
+    <string name="recipe_nutrition_cholesterol">Холестерин</string>
+    <string name="recipe_nutrition_calories">Энергетическая ценность</string>
+    <string name="recipe_nutrition_saturated_fat">Насыщенные жиры</string>
+    <string name="recipe_nutrition_sodium">Натрий</string>
 </resources>
