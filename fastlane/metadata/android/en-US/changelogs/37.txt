@@ -1,0 +1,4 @@
+- Add nutrition information
+- Update Czech translation
+- Update Polish translation
+- Update Russian translation
