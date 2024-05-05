@@ -1,0 +1,20 @@
+{
+  "$schema": "https://raw.githubusercontent.com/jetpack-io/devbox/0.10.1/.schema/devbox.schema.json",
+  "packages": [
+    "ruby@latest",
+    "jdk@17"
+  ],
+  "shell": {
+    "scripts": {
+      "app:init": [
+        "bundler install"
+      ],
+      "app:ktlint": [
+        "bundler exec fastlane ktlint"
+      ],
+      "app:deploy": [
+        "bundler exec fastlane deploy"
+      ]
+    }
+  }
+}
