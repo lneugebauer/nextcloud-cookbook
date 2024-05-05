@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/jetpack-io/devbox/0.10.1/.schema/devbox.schema.json",
   "packages": [
     "ruby@latest",
-    "jdk@17"
+    "jdk@17",
+    "nodejs@latest"
   ],
   "shell": {
     "scripts": {
@@ -14,6 +15,12 @@
       ],
       "app:deploy": [
         "bundler exec fastlane deploy"
+      ],
+      "docs:init": [
+        "npm install"
+      ],
+      "docs:dev": [
+        "npm run docs:dev"
       ]
     }
   }
