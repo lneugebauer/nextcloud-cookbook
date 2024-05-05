@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -81,7 +80,6 @@ import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeEditScreenDestina
 import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeListScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Nutrition
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Recipe
-import de.lukasneugebauer.nextcloudcookbook.recipe.presentation.components.CircleChip
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.emptyRecipe
 import java.time.Duration
 
@@ -610,26 +608,65 @@ private fun Instructions(instructions: List<String>) {
     )
     instructions.forEachIndexed { index, instruction ->
         Row(
-            modifier = Modifier.padding(
-                horizontal = dimensionResource(id = R.dimen.padding_m),
-                vertical = dimensionResource(id = R.dimen.padding_s),
-            ),
+            modifier = Modifier
+                .padding(
+                    start = dimensionResource(id = R.dimen.padding_s),
+                    end = dimensionResource(id = R.dimen.padding_m),
+                    bottom = dimensionResource(id = R.dimen.padding_xs),
+                ),
         ) {
-            CircleChip(text = "${index + 1}", modifier = Modifier.weight(1f))
-            Gap(size = dimensionResource(id = R.dimen.padding_s))
+            Chip(
+                onClick = { /*TODO: Add check functionality */ },
+                modifier = Modifier
+                    .padding(end = dimensionResource(id = R.dimen.padding_xs)),
+                enabled = false,
+                border = BorderStroke(2.dp, NcBlue700),
+                colors = ChipDefaults.chipColors(
+                    backgroundColor = Color.Transparent,
+                ),
+            ) {
+                Text(text = "${index + 1}", color = MaterialTheme.colors.onSurface)
+            }
             Text(
                 text = instruction,
                 modifier = Modifier
-                    .align(Alignment.Top)
-                    .fillMaxHeight()
-                    .weight(11f),
+                    .padding(bottom = dimensionResource(id = R.dimen.padding_s))
+                    .fillMaxWidth(),
                 style = MaterialTheme.typography.body1,
             )
         }
     }
 }
 
-@Preview
+@Preview(showBackground = true)
+@Composable
+private fun KeywordsPreview() {
+    val keywords = List(5) {
+        "Keyword ${it + 1}"
+    }
+    NextcloudCookbookTheme {
+        Keywords(keywords = keywords, onClick = {})
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun InstructionsPreview() {
+    val instructions = List(5) {
+        val loremIpsum =
+            "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
+        val loremIpsumList = loremIpsum.split(" ")
+        val stringArray = loremIpsumList.take((it + 1) * (it + 1))
+        stringArray.joinToString(" ")
+    }
+    NextcloudCookbookTheme {
+        Column {
+            Instructions(instructions = instructions)
+        }
+    }
+}
+
+@Preview(showBackground = true)
 @Composable
 private fun ContentPreview() {
     val recipe = Recipe(
