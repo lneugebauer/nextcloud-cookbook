@@ -2,8 +2,8 @@ name: sonarcloud
 
 on:
   push:
-    branches:
-      - main
+    paths-ignore:
+      - 'docs/**'
   pull_request:
     types: [opened, synchronize, reopened]
 
