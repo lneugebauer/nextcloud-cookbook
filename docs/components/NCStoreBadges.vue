@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import {defineProps} from 'vue'
 import type {NCBadge} from "./types";
 import NCBadgeComponent from "./NCBadge.vue"
 

@@ -6,7 +6,7 @@ hero:
   text: A native Android client
   tagline: Browse your recipes with ease.
   image:
-    src: ./assets/images/logo.png
+    src: /images/logo.png
   actions:
     - theme: brand
       text: Help translating
@@ -20,6 +20,9 @@ hero:
 import NCDonationBadges from './components/NCDonationBadges.vue';
 import NCStoreBadges from './components/NCStoreBadges.vue';
 
+import gitHubBadge from './assets/images/get_it_on_github.png';
+import payPalBadge from './assets/images/donate_with_paypal.svg';
+
 const storeBadges = [
     {
         alt: 'Get it on Play Store',
@@ -28,7 +31,7 @@ const storeBadges = [
     }, {
         alt: 'Get it on GitHub',
         link: 'https://github.com/lneugebauer/nextcloud-cookbook/releases',
-        src: './assets/images/get_it_on_github.png'
+        src: gitHubBadge
     }, {
         alt: 'Get it on F-Droid',
         link: 'https://f-droid.org/packages/de.lukasneugebauer.nextcloudcookbook/',
@@ -44,7 +47,7 @@ const donationBadges = [
     }, {
         alt: 'Donate using PayPal',
         link: 'https://www.paypal.com/donate/?hosted_button_id=ECDNN8PS3SSMQ',
-        src: './assets/images/donate_with_paypal.svg'
+        src: payPalBadge
     }
 ];
 </script>

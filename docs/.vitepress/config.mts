@@ -22,7 +22,7 @@ export default defineConfig({
             {text: 'Home', link: '/'},
             {text: 'Contributing', link: '/contributing'}
         ],
-        logo: './assets/images/logo.png',
+        logo: '/images/logo.png',
         socialLinks: [
             {icon: 'github', link: 'https://github.com/lneugebauer/nextcloud-cookbook'}
         ],
