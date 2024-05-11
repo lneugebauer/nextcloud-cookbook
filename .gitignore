@@ -153,8 +153,8 @@ lint/tmp/
 ehthumbs.db
 Thumbs.db
 
-# VuePress
-.cache/
-.temp/
-dist/
+# VitePress
+docs/**/cache/
+docs/**/dist/
+docs/.idea
 node_modules/
