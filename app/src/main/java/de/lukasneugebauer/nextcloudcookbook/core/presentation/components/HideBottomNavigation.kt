@@ -8,9 +8,9 @@ import de.lukasneugebauer.nextcloudcookbook.core.domain.state.LocalAppState
 fun HideBottomNavigation() {
     val appState = LocalAppState.current
     DisposableEffect(Unit) {
-        appState.isBottomBarVisible = !appState.isBottomBarVisible
+        appState.isBottomBarVisible = true
         onDispose {
-            appState.isBottomBarVisible = !appState.isBottomBarVisible
+            appState.isBottomBarVisible = false
         }
     }
 }
