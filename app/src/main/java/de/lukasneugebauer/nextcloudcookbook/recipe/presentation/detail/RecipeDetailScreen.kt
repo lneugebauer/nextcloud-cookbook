@@ -64,6 +64,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.colintheshots.twain.MarkdownText
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import de.lukasneugebauer.nextcloudcookbook.R
@@ -382,13 +383,12 @@ private fun Keywords(keywords: List<String>, onClick: (keyword: String) -> Unit)
 
 @Composable
 private fun Description(description: String) {
-    Text(
-        text = description,
+    MarkdownText(
+        markdown = description,
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
             .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
-        style = MaterialTheme.typography.body1,
     )
 }
 
@@ -483,15 +483,14 @@ private fun Ingredients(ingredients: List<String>, servings: Int) {
             } else {
                 dimensionResource(id = R.dimen.padding_xs)
             }
-        Text(
-            text = ingredient,
+        MarkdownText(
+            markdown = ingredient,
             modifier = Modifier
                 .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
                 .padding(
                     top = dimensionResource(id = R.dimen.padding_xs),
                     bottom = paddingBottom,
                 ),
-            style = MaterialTheme.typography.body1,
         )
     }
 }
@@ -588,12 +587,11 @@ private fun Tools(tools: List<String>) {
             .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
         style = MaterialTheme.typography.h6,
     )
-    Text(
-        text = tools.joinToString(separator = ", "),
+    MarkdownText(
+        markdown = tools.joinToString(separator = ", "),
         modifier = Modifier
             .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
             .padding(bottom = dimensionResource(id = R.dimen.padding_l)),
-        style = MaterialTheme.typography.body1,
     )
 }
 
@@ -627,12 +625,11 @@ private fun Instructions(instructions: List<String>) {
             ) {
                 Text(text = "${index + 1}", color = MaterialTheme.colors.onSurface)
             }
-            Text(
-                text = instruction,
+            MarkdownText(
+                markdown = instruction,
                 modifier = Modifier
                     .padding(bottom = dimensionResource(id = R.dimen.padding_s))
                     .fillMaxWidth(),
-                style = MaterialTheme.typography.body1,
             )
         }
     }
