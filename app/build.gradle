@@ -87,6 +87,7 @@ android {
     }
     buildFeatures {
         compose true
+        buildConfig true
     }
     bundle {
         storeArchive {
