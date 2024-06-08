@@ -10,6 +10,9 @@
       "app:init": [
         "bundler install"
       ],
+      "app:lint": [
+        "bundler exec fastlane lint"
+      ],
       "app:ktlint": [
         "bundler exec fastlane ktlint"
       ],
