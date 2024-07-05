@@ -108,6 +108,7 @@
     <string name="settings_source_code">Quellcode</string>
     <string name="settings_stay_awake_on_recipe_screen">Der Bildschirm bleibt eingeschaltet, während Sie sich auf dem Rezeptbildschirm befinden</string>
     <string name="settings_stay_awake">Aktiv lassen</string>
+    <string name="settings_translate">Hilf beim Übersetzen</string>
     <string name="settings_version_number">Version %1$s (%2$d)</string>
     <string name="settings_version">Nextcloud Cookbook App</string>
     <string name="settings_where_to_report_issues">Sie können Fehler, Verbesserungsvorschläge oder Wünsche für neue Funktionen als Issue auf GitHub erfassen</string>

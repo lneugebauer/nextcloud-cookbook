@@ -9,4 +9,5 @@ object SettingsConstants {
     const val GITHUB_URL: String = "https://github.com/lneugebauer/nextcloud-cookbook"
     const val LICENSE_URL: String = "https://github.com/lneugebauer/nextcloud-cookbook/blob/main/LICENSE"
     const val PRIVACY_URL: String = "https://github.com/lneugebauer/nextcloud-cookbook/blob/main/PRIVACY.md"
+    const val WEBLATE_URL: String = "https://hosted.weblate.org/engage/nextcloud-cookbook"
 }

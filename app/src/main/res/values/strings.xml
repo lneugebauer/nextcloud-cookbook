@@ -110,6 +110,7 @@
     <string name="settings_source_code">Get source code</string>
     <string name="settings_stay_awake_on_recipe_screen">Screen stays on while you are on the recipe screen</string>
     <string name="settings_stay_awake">Stay awake</string>
+    <string name="settings_translate">Help translating</string>
     <string name="settings_version_number">version %1$s (%2$d)</string>
     <string name="settings_version">Nextcloud Cookbook app</string>
     <string name="settings_where_to_report_issues">You can report bugs, enhancement proposals and feature requests at the GitHub issue tracker</string>

@@ -21,6 +21,7 @@ import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.outlined.BugReport
 import androidx.compose.material.icons.outlined.LightMode
 import androidx.compose.material.icons.outlined.Lock
+import androidx.compose.material.icons.outlined.Translate
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -49,6 +50,7 @@ import de.lukasneugebauer.nextcloudcookbook.settings.util.SettingsConstants.LICE
 import de.lukasneugebauer.nextcloudcookbook.settings.util.SettingsConstants.PRIVACY_URL
 import de.lukasneugebauer.nextcloudcookbook.settings.util.SettingsConstants.STAY_AWAKE_DEFAULT
 import de.lukasneugebauer.nextcloudcookbook.settings.util.SettingsConstants.STAY_AWAKE_KEY
+import de.lukasneugebauer.nextcloudcookbook.settings.util.SettingsConstants.WEBLATE_URL
 
 @Destination
 @Composable
@@ -214,6 +216,16 @@ fun SettingsGroupContribution(context: Context) {
             title = { Text(text = stringResource(R.string.settings_source_code)) },
             subtitle = { Text(text = stringResource(R.string.settings_hosted_on_github)) },
             onClick = { Uri.parse(GITHUB_URL).openInBrowser(context) },
+        )
+        SettingsMenuLink(
+            icon = {
+                Icon(
+                    imageVector = Icons.Outlined.Translate,
+                    contentDescription = stringResource(id = R.string.settings_translate),
+                )
+            },
+            title = { Text(text = stringResource(id = R.string.settings_translate)) },
+            onClick = { Uri.parse(WEBLATE_URL).openInBrowser(context) },
         )
         SettingsMenuLink(
             icon = {
