@@ -1,0 +1,1 @@
+Zobrazte si všechny recepty z vaší Nextcloud instance.

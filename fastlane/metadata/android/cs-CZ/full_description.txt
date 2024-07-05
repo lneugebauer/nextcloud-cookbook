@@ -1,0 +1,20 @@
+Zobrazte si všechny recepty z vaší Nextcloud instance.
+
+Zdrojový kód můžete najít na GitHubu na https://github.com/lneugebauer/nextcloud-cookbook/. Případné chyby, nápady na vylepšení a nové funkce zasílejte tam.
+
+Aktuální funkce:
+- Zobrazení všech receptů
+- Zobrazení všech receptů podle kategorie
+- Zobrazení receptu
+- Zachování zapnuté obrazovky s receptem
+- Nastavení
+- Úprava receptu
+- Přidání receptu
+
+Plánované funkce:
+- Použití offline
+- Jednotné přihlášení prostřednictvím aplikace Nextcloud
+- Přihlášení QR kódem
+- Import receptu z URL
+
+Pro použití této aplikace potřebujete veřejně přístupný Nextcloud server s aktuální aplikací recepty.

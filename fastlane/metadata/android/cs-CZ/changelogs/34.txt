@@ -1,0 +1,5 @@
+- Přidání ruštiny
+- Aktualizace norštiny
+- Oprava chování automatického zaktivnění vyhledávání
+- Oprava chování zavření úvodní obrazovky
+- Oprava problémů se skrolováním při přihlašování
