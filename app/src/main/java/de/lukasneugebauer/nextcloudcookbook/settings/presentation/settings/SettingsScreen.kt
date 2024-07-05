@@ -14,10 +14,10 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.Gavel
-import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.outlined.BugReport
 import androidx.compose.material.icons.outlined.LightMode
 import androidx.compose.material.icons.outlined.Lock
@@ -90,7 +90,7 @@ fun SettingsTopBar(onNavIconClick: () -> Unit) {
         navigationIcon = {
             IconButton(onClick = onNavIconClick) {
                 Icon(
-                    Icons.Default.ArrowBack,
+                    Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = stringResource(id = R.string.common_back),
                 )
             }
@@ -147,7 +147,7 @@ fun SettingsGroupAccount(onLogoutClick: () -> Unit) {
         SettingsMenuLink(
             icon = {
                 Icon(
-                    imageVector = Icons.Default.Logout,
+                    imageVector = Icons.AutoMirrored.Filled.Logout,
                     contentDescription = stringResource(id = R.string.settings_logout),
                 )
             },
