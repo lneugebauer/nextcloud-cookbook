@@ -24,7 +24,7 @@ It helps to have a discussion about a new feature before opening a pull request.
 ## Translations
 
 Thank you for your interest in translating Nextcloud Cookbook Android client!
-I appreciate your help in making our app accessible to a wider audience.
+I appreciate your help in making it accessible to a wider audience.
 
 ### Weblate
 
@@ -36,9 +36,9 @@ You can then start translating the app directly on the platform.
 
 There are two components: [App](https://hosted.weblate.org/projects/nextcloud-cookbook/app/) and [Fastlane](https://hosted.weblate.org/projects/nextcloud-cookbook/fastlane/).
 
-Fastlane is a collection of app store metadata that is used to submit the app to F-Droid and Play Store.
-
 App contains all strings used in the app.
+
+Fastlane is a collection of app store metadata that is used to submit the app to F-Droid and Play Store.
 
 ### XML
 
