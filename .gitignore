@@ -51,6 +51,7 @@ captures/
 .idea/**/deploymentTargetDropDown.xml
 .idea/**/deploymentTargetSelector.xml
 .idea/**/misc.xml
+.idea/**/other.xml
 
 # AWS User-specific
 .idea/**/aws.xml
