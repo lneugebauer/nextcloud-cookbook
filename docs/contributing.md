@@ -5,26 +5,42 @@ title: Contributing
 
 # Contributing
 
-Thanks for wanting to contribute source code to Nextcloud Cookbook Android client. That's great!
+Thanks for wanting to contribute source code to Nextcloud Cookbook Android client.
+That's great!
 
-Please always create an [issue](https://github.com/lneugebauer/nextcloud-cookbook/issues) before
-starting a change. This is very helpful to understand what kind of issue the pull request will solve
-and if your change will be accepted.
+Please always create an [issue](https://github.com/lneugebauer/nextcloud-cookbook/issues) before starting a change.
+This is very helpful to understand what kind of issue the pull request will solve and if your change will be accepted.
 
 ## Bugfix
 
-Please describe the type of bug you want to fix and provide feedback on how to reproduce the
-problem. I'll only accept bug fixes if I can reproduce the problem.
+Please describe the type of bug you want to fix and provide feedback on how to reproduce the problem.
+I'll only accept bug fixes if I can reproduce the problem.
 
 ## Features/Improvements
 
-Not every feature is relevant to the majority of the users. It helps to have a discussion about a
-new feature before opening a pull request.
+Not every feature is relevant to the majority of the users.
+It helps to have a discussion about a new feature before opening a pull request.
 
 ## Translations
 
-If you want to help translating the Nextcloud Cookbook Android client, I'm happy to accept pull
-requests!
+Thank you for your interest in translating Nextcloud Cookbook Android client!
+I appreciate your help in making our app accessible to a wider audience.
+
+### Weblate
+
+I have chosen to use Weblate as a platform for translations.
+Weblate provides an easy-to-use web-based interface that allows translators to collaborate and work on translations.
+
+To get started with translating the app on Weblate, simply [visit the translation page](https://hosted.weblate.org/engage/nextcloud-cookbook/) and select your preferred language.
+You can then start translating the app directly on the platform.
+
+There are two components: [App](https://hosted.weblate.org/projects/nextcloud-cookbook/app/) and [Fastlane](https://hosted.weblate.org/projects/nextcloud-cookbook/fastlane/).
+
+Fastlane is a collection of app store metadata that is used to submit the app to F-Droid and Play Store.
+
+App contains all strings used in the app.
+
+### XML
 
 Please fork the repository, make your changes to the XML files and submit a pull request. Remember
 to include information about what language it is.
