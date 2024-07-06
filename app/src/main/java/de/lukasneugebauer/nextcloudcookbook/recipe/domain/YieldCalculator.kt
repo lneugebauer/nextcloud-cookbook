@@ -6,6 +6,6 @@ interface YieldCalculator {
     fun recalculateIngredients(
         ingredients: List<String>,
         currentYield: Int,
-        originalYield: Int
+        originalYield: Int,
     ): List<String>
 }

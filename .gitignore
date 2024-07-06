@@ -80,6 +80,7 @@ captures/
 .idea/compiler.xml
 .idea/jarRepositories.xml
 .idea/modules.xml
+.idea/androidTestResultsUserPreferences.xml
 .idea/*.iml
 .idea/modules
 *.iml

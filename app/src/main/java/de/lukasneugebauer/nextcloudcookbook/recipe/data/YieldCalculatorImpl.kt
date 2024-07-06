@@ -5,7 +5,6 @@ import java.text.NumberFormat
 import java.util.Locale
 
 class YieldCalculatorImpl(customLocale: Locale? = null) : YieldCalculator {
-    // Set locale so that unit test always has the same
     private val numberFormat = if (customLocale != null) {
         NumberFormat.getNumberInstance(customLocale)
     } else {
@@ -26,7 +25,7 @@ class YieldCalculatorImpl(customLocale: Locale? = null) : YieldCalculator {
     override fun recalculateIngredients(
         ingredients: List<String>,
         currentYield: Int,
-        originalYield: Int
+        originalYield: Int,
     ): List<String> {
         return ingredients.map { ingredient ->
             if (ingredient.startsWith(DOUBLE_HASH_PREFIX)) return@map ingredient
