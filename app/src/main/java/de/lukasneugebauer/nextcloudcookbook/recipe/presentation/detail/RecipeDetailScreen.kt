@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Button
 import androidx.compose.material.Chip
 import androidx.compose.material.ChipDefaults
 import androidx.compose.material.DropdownMenu
@@ -32,12 +33,15 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Timer
+import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.Autorenew
+import androidx.compose.material.icons.outlined.Remove
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -178,6 +182,14 @@ fun RecipeDetailScreen(
                 modifier = Modifier
                     .padding(paddingValues = innerPadding)
                     .verticalScroll(rememberScrollState()),
+                calculatedIngredients = state.calculatedIngredients,
+                currentYield = state.currentYield,
+                onDecreaseYield = {
+                    viewModel.decreaseYield()
+                },
+                onIncreaseYield = {
+                    viewModel.increaseYield()
+                },
                 onKeywordClick = {
                     navigator.navigate(
                         RecipeListScreenDestination(
@@ -185,6 +197,9 @@ fun RecipeDetailScreen(
                             keyword = it,
                         ),
                     )
+                },
+                onResetYield = {
+                    viewModel.resetYield()
                 },
             )
         }
@@ -238,7 +253,7 @@ private fun TopBar(
         navigationIcon = {
             IconButton(onClick = onNavIconClick) {
                 Icon(
-                    Icons.Filled.ArrowBack,
+                    Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = stringResource(id = R.string.common_back),
                 )
             }
@@ -296,7 +311,12 @@ private fun DropDownMenuItemDelete(onClick: () -> Unit) {
 private fun Content(
     recipe: Recipe,
     modifier: Modifier = Modifier,
+    calculatedIngredients: List<String>,
+    currentYield: Int,
+    onDecreaseYield: () -> Unit,
+    onIncreaseYield: () -> Unit,
     onKeywordClick: (keyword: String) -> Unit,
+    onResetYield: () -> Unit,
 ) {
     Column(
         modifier = modifier,
@@ -319,7 +339,13 @@ private fun Content(
             Category(category = recipe.category)
         }
         if (recipe.ingredients.isNotEmpty()) {
-            Ingredients(recipe.ingredients, recipe.yield)
+            Ingredients(
+                calculatedIngredients.ifEmpty { recipe.ingredients },
+                onDecreaseYield,
+                onIncreaseYield,
+                onResetYield,
+                currentYield,
+            )
         }
         if (recipe.nutrition != null) {
             Nutrition(recipe.nutrition)
@@ -468,7 +494,13 @@ private fun Category(category: String) {
 }
 
 @Composable
-private fun Ingredients(ingredients: List<String>, servings: Int) {
+private fun Ingredients(
+    ingredients: List<String>,
+    onDecreaseYield: () -> Unit,
+    onIncreaseYield: () -> Unit,
+    onResetYield: () -> Unit,
+    servings: Int,
+) {
     Text(
         text = pluralResource(R.plurals.recipe_ingredients_servings, servings, servings),
         modifier = Modifier
@@ -476,6 +508,24 @@ private fun Ingredients(ingredients: List<String>, servings: Int) {
             .padding(bottom = dimensionResource(id = R.dimen.padding_s)),
         style = MaterialTheme.typography.h6,
     )
+    Row(
+        modifier = Modifier
+            .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
+            .padding(bottom = dimensionResource(id = R.dimen.padding_s)),
+    ) {
+        Button(onClick = onDecreaseYield) {
+            Icon(imageVector = Icons.Outlined.Remove, contentDescription = "")
+        }
+        Button(
+            onClick = onResetYield,
+            modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_s)),
+        ) {
+            Icon(imageVector = Icons.Outlined.Autorenew, contentDescription = "")
+        }
+        Button(onClick = onIncreaseYield) {
+            Icon(imageVector = Icons.Outlined.Add, contentDescription = "")
+        }
+    }
     ingredients.forEachIndexed { index, ingredient ->
         val paddingBottom =
             if (ingredients.size == index + 1) {
@@ -693,6 +743,14 @@ private fun ContentPreview() {
         modifiedAt = "",
     )
     NextcloudCookbookTheme {
-        Content(recipe = recipe, onKeywordClick = {})
+        Content(
+            recipe = recipe,
+            calculatedIngredients = emptyList(),
+            currentYield = 2,
+            onDecreaseYield = {},
+            onIncreaseYield = {},
+            onKeywordClick = {},
+            onResetYield = {},
+        )
     }
 }
