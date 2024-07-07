@@ -87,6 +87,10 @@
     <string name="recipe_nutrition_trans_fat">Transfette</string>
     <string name="recipe_nutrition_unsaturated_fat">Ungesättigte Fettsäuren</string>
     <string name="recipe_prep_time">Vorbereitung</string>
+    <plurals name="recipe_servings">
+        <item quantity="one">%1$d Portion</item>
+        <item quantity="other">%1$d Portionen</item>
+    </plurals>
     <string name="recipe_source">Quelle</string>
     <string name="recipe_tool_add">Utensil hinzufügen</string>
     <string name="recipe_tool_delete">Utensil löschen</string>

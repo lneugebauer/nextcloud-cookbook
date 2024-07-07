@@ -40,7 +40,7 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.icons.outlined.Autorenew
+import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.outlined.Remove
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -345,6 +345,7 @@ private fun Content(
                 onIncreaseYield,
                 onResetYield,
                 currentYield,
+                recipe.yield != currentYield,
             )
         }
         if (recipe.nutrition != null) {
@@ -499,10 +500,11 @@ private fun Ingredients(
     onDecreaseYield: () -> Unit,
     onIncreaseYield: () -> Unit,
     onResetYield: () -> Unit,
-    servings: Int,
+    currentYield: Int,
+    showResetButton: Boolean,
 ) {
     Text(
-        text = pluralResource(R.plurals.recipe_ingredients_servings, servings, servings),
+        text = stringResource(id = R.string.recipe_ingredients),
         modifier = Modifier
             .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
             .padding(bottom = dimensionResource(id = R.dimen.padding_s)),
@@ -512,18 +514,27 @@ private fun Ingredients(
         modifier = Modifier
             .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
             .padding(bottom = dimensionResource(id = R.dimen.padding_s)),
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_s)),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        Button(onClick = onDecreaseYield) {
+        Button(
+            onClick = onDecreaseYield,
+            enabled = currentYield > 1,
+        ) {
             Icon(imageVector = Icons.Outlined.Remove, contentDescription = "")
         }
-        Button(
-            onClick = onResetYield,
-            modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_s)),
-        ) {
-            Icon(imageVector = Icons.Outlined.Autorenew, contentDescription = "")
-        }
+        Text(
+            text = pluralResource(resId = R.plurals.recipe_servings, currentYield, currentYield),
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.body1,
+        )
         Button(onClick = onIncreaseYield) {
             Icon(imageVector = Icons.Outlined.Add, contentDescription = "")
+        }
+        if (showResetButton) {
+            Button(onClick = onResetYield) {
+                Icon(imageVector = Icons.Outlined.Refresh, contentDescription = "")
+            }
         }
     }
     ingredients.forEachIndexed { index, ingredient ->
