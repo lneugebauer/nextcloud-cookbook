@@ -112,4 +112,13 @@
     <string name="recipe_tools">Utensilios</string>
     <string name="recipe_tool_add">Agregar utensilio</string>
     <string name="recipe_tool_delete">Eliminar utensilio</string>
+    <string name="settings_translate">Ayuda a la traducción</string>
+    <string name="recipe_servings_decrease">Eliminar parte</string>
+    <string name="recipe_servings_increase">Añadir parte</string>
+    <plurals name="recipe_servings">
+        <item quantity="one">Sirviendo %1$d</item>
+        <item quantity="many">Sirviendo %1$d</item>
+        <item quantity="other">Sirviendo %1$d</item>
+    </plurals>
+    <string name="recipe_servings_reset">Restablecer parte</string>
 </resources>
