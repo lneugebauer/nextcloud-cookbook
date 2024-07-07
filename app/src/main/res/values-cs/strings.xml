@@ -113,4 +113,12 @@
     <string name="common_no">Ne</string>
     <string name="common_yes">Ano</string>
     <string name="settings_translate">Pomožte s překládáním</string>
+    <plurals name="recipe_servings">
+        <item quantity="one">%1$d porce</item>
+        <item quantity="few">%1$d porce</item>
+        <item quantity="other">%1$d porcí</item>
+    </plurals>
+    <string name="recipe_servings_decrease">Odebrat porci</string>
+    <string name="recipe_servings_increase">Přidat porci</string>
+    <string name="recipe_servings_reset">Resetovat porce</string>
 </resources>
