@@ -2,6 +2,7 @@ package de.lukasneugebauer.nextcloudcookbook
 
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.YieldCalculatorImpl
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.util.Locale
@@ -12,12 +13,28 @@ class YieldCalculatorRecalculateIngredientsUnitTest {
         val yieldCalculator = YieldCalculatorImpl()
         val ingredients = listOf(
             "1 cup flour",
+            "3tbsp oil",
             "1/2 cup sugar",
             "1 1/2 kg butter",
             "3 1/4 tsp salt",
+            "5 bell pepper",
+            "1.5 potatoes",
+            "1,6 carrots",
         )
         ingredients.forEach {
             assertTrue(yieldCalculator.isValidIngredientSyntax(it))
+        }
+    }
+
+    @Test
+    fun yieldCalculator_IsValidIngredientSyntax_ReturnsFalse() {
+        val yieldCalculator = YieldCalculatorImpl()
+        val ingredients = listOf(
+            "pepper",
+            "some oregano",
+        )
+        ingredients.forEach {
+            assertFalse(yieldCalculator.isValidIngredientSyntax(it))
         }
     }
 
