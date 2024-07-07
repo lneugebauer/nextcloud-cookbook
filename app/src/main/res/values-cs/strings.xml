@@ -112,4 +112,5 @@
     <string name="dialog_crash_report_text">Ups, aplikace Nextcloud Cookbook se zhroutila. Přejete si odeslat vývojářům chybové hlášení\?</string>
     <string name="common_no">Ne</string>
     <string name="common_yes">Ano</string>
+    <string name="settings_translate">Pomožte s překládáním</string>
 </resources>
