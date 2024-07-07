@@ -9,8 +9,9 @@ data class UserMetadataDto(
     @SerializedName("displayname")
     val displayname: String,
 ) {
-    fun toUserMetadata(): UserMetadata = UserMetadata(
-        id = id,
-        name = displayname,
-    )
+    fun toUserMetadata(): UserMetadata =
+        UserMetadata(
+            id = id,
+            name = displayname,
+        )
 }

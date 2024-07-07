@@ -15,25 +15,26 @@ import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
-class SplashViewModel @Inject constructor(
-    private val accountRepository: AccountRepository,
-) : ViewModel() {
+class SplashViewModel
+    @Inject
+    constructor(
+        private val accountRepository: AccountRepository,
+    ) : ViewModel() {
+        private val _uiState = MutableStateFlow<SplashScreenState>(SplashScreenState.Initial)
+        val uiState: StateFlow<SplashScreenState> = _uiState
 
-    private val _uiState = MutableStateFlow<SplashScreenState>(SplashScreenState.Initial)
-    val uiState: StateFlow<SplashScreenState> = _uiState
+        fun initialize() {
+            accountRepository.getAccount()
+                .distinctUntilChanged()
+                .onEach { account ->
+                    val userMetadata = accountRepository.getUserMetadata()
 
-    fun initialize() {
-        accountRepository.getAccount()
-            .distinctUntilChanged()
-            .onEach { account ->
-                val userMetadata = accountRepository.getUserMetadata()
-
-                if (account is Resource.Success && userMetadata is Resource.Success) {
-                    _uiState.update { SplashScreenState.Authorized }
-                } else {
-                    _uiState.update { SplashScreenState.Unauthorized }
+                    if (account is Resource.Success && userMetadata is Resource.Success) {
+                        _uiState.update { SplashScreenState.Authorized }
+                    } else {
+                        _uiState.update { SplashScreenState.Unauthorized }
+                    }
                 }
-            }
-            .launchIn(viewModelScope)
+                .launchIn(viewModelScope)
+        }
     }
-}

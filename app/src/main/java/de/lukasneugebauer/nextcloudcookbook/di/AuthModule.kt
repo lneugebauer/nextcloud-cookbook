@@ -22,18 +22,18 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AuthModule {
-
     @Provides
     @Singleton
     fun provideAuthApi(
         httpLoggingInterceptor: HttpLoggingInterceptor,
         userAgentInterceptor: UserAgentInterceptor,
     ): AuthApi {
-        val client = OkHttpClient.Builder()
-            .addInterceptor(httpLoggingInterceptor)
-            .addInterceptor(userAgentInterceptor)
-            .addNetworkInterceptor(NetworkInterceptor())
-            .build()
+        val client =
+            OkHttpClient.Builder()
+                .addInterceptor(httpLoggingInterceptor)
+                .addInterceptor(userAgentInterceptor)
+                .addNetworkInterceptor(NetworkInterceptor())
+                .build()
 
         val gson = GsonBuilder().create()
 

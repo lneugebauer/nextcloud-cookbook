@@ -16,32 +16,34 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class RecipeEditViewModel @Inject constructor(
-    categoryRepository: CategoryRepository,
-    getAllKeywordsUseCase: GetAllKeywordsUseCase,
-    private val recipeRepository: RecipeRepository,
-    savedStateHandle: SavedStateHandle,
-) : RecipeCreateEditViewModel(
-    categoryRepository,
-    getAllKeywordsUseCase,
-    recipeRepository,
-    savedStateHandle,
-) {
+class RecipeEditViewModel
+    @Inject
+    constructor(
+        categoryRepository: CategoryRepository,
+        getAllKeywordsUseCase: GetAllKeywordsUseCase,
+        private val recipeRepository: RecipeRepository,
+        savedStateHandle: SavedStateHandle,
+    ) : RecipeCreateEditViewModel(
+            categoryRepository,
+            getAllKeywordsUseCase,
+            recipeRepository,
+            savedStateHandle,
+        ) {
+        override fun save() {
+            if (_uiState.value is RecipeCreateEditState.Success) {
+                _uiState.update { RecipeCreateEditState.Loading }
+                viewModelScope.launch {
+                    _uiState.update {
+                        when (val result = recipeRepository.updateRecipe(recipeDto)) {
+                            is Resource.Error ->
+                                RecipeCreateEditState.Error(
+                                    result.message ?: UiText.StringResource(R.string.error_unknown),
+                                )
 
-    override fun save() {
-        if (_uiState.value is RecipeCreateEditState.Success) {
-            _uiState.update { RecipeCreateEditState.Loading }
-            viewModelScope.launch {
-                _uiState.update {
-                    when (val result = recipeRepository.updateRecipe(recipeDto)) {
-                        is Resource.Error -> RecipeCreateEditState.Error(
-                            result.message ?: UiText.StringResource(R.string.error_unknown),
-                        )
-
-                        is Resource.Success -> RecipeCreateEditState.Updated(recipeDto.id)
+                            is Resource.Success -> RecipeCreateEditState.Updated(recipeDto.id)
+                        }
                     }
                 }
             }
         }
     }
-}

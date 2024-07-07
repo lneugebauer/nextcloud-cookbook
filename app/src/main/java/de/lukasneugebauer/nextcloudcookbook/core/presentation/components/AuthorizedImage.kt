@@ -30,11 +30,12 @@ fun AuthorizedImage(
     val fullImageUrl = credentials?.baseUrl + newImageUrl
 
     SubcomposeAsyncImage(
-        model = ImageRequest.Builder(context)
-            .data(fullImageUrl)
-            .addHeader("Authorization", credentials?.basic ?: "")
-            .crossfade(true)
-            .build(),
+        model =
+            ImageRequest.Builder(context)
+                .data(fullImageUrl)
+                .addHeader("Authorization", credentials?.basic ?: "")
+                .crossfade(true)
+                .build(),
         contentDescription = contentDescription,
         contentScale = ContentScale.Crop,
         modifier = modifier,
@@ -42,12 +43,14 @@ fun AuthorizedImage(
         when (painter.state) {
             is AsyncImagePainter.State.Error -> {
                 Image(
-                    painter = rememberDrawablePainter(
-                        drawable = AppCompatResources.getDrawable(
-                            context,
-                            R.drawable.common_image_placeholder,
+                    painter =
+                        rememberDrawablePainter(
+                            drawable =
+                                AppCompatResources.getDrawable(
+                                    context,
+                                    R.drawable.common_image_placeholder,
+                                ),
                         ),
-                    ),
                     contentDescription = contentDescription,
                     modifier = modifier,
                     contentScale = ContentScale.Crop,

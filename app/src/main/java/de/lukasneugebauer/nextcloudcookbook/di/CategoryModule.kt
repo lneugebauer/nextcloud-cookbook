@@ -19,7 +19,6 @@ typealias CategoriesStore = Store<Any, List<CategoryDto>>
 @Module
 @InstallIn(SingletonComponent::class)
 object CategoryModule {
-
     @ExperimentalCoroutinesApi
     @FlowPreview
     @Provides
@@ -27,17 +26,16 @@ object CategoryModule {
     fun provideCategoriesStore(apiProvider: ApiProvider): CategoriesStore {
         return StoreBuilder
             .from(
-                fetcher = Fetcher.of {
-                    apiProvider.getNcCookbookApi()?.getCategories()
-                        ?: throw NullPointerException("Nextcloud Cookbook API is null.")
-                },
+                fetcher =
+                    Fetcher.of {
+                        apiProvider.getNcCookbookApi()?.getCategories()
+                            ?: throw NullPointerException("Nextcloud Cookbook API is null.")
+                    },
             )
             .build()
     }
 
     @Provides
     @Singleton
-    fun provideCategoryRepository(
-        categoriesStore: CategoriesStore,
-    ): CategoryRepository = CategoryRepositoryImpl(categoriesStore)
+    fun provideCategoryRepository(categoriesStore: CategoriesStore): CategoryRepository = CategoryRepositoryImpl(categoriesStore)
 }

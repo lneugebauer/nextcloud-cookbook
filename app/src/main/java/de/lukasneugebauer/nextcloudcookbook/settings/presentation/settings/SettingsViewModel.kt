@@ -11,19 +11,20 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SettingsViewModel @Inject constructor(
-    private val apiProvider: ApiProvider,
-    private val clearAllStoresUseCase: ClearAllStoresUseCase,
-    private val clearPreferencesUseCase: ClearPreferencesUseCase,
-    val sharedPreferences: SharedPreferences,
-) : ViewModel() {
-
-    fun logout(callback: () -> Unit) {
-        viewModelScope.launch {
-            apiProvider.resetApi()
-            clearAllStoresUseCase.invoke()
-            clearPreferencesUseCase.invoke()
-            callback.invoke()
+class SettingsViewModel
+    @Inject
+    constructor(
+        private val apiProvider: ApiProvider,
+        private val clearAllStoresUseCase: ClearAllStoresUseCase,
+        private val clearPreferencesUseCase: ClearPreferencesUseCase,
+        val sharedPreferences: SharedPreferences,
+    ) : ViewModel() {
+        fun logout(callback: () -> Unit) {
+            viewModelScope.launch {
+                apiProvider.resetApi()
+                clearAllStoresUseCase.invoke()
+                clearPreferencesUseCase.invoke()
+                callback.invoke()
+            }
         }
     }
-}

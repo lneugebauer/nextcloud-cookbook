@@ -105,11 +105,12 @@ fun RecipeListScreen(
 
                 SearchAppBarState.CLOSED -> {
                     TopAppBar(
-                        categoryName = if (categoryName == "*") {
-                            stringResource(R.string.recipe_uncategorised)
-                        } else {
-                            categoryName
-                        },
+                        categoryName =
+                            if (categoryName == "*") {
+                                stringResource(R.string.recipe_uncategorised)
+                            } else {
+                                categoryName
+                            },
                         onBackClick = { navigator.popBackStack() },
                         onSearchClicked = { viewModel.toggleSearchAppBarVisibility() },
                     )
@@ -197,18 +198,20 @@ private fun RecipeListScreen(
             LazyColumn {
                 itemsIndexed(recipePreviews) { index, recipePreview ->
                     ListItem(
-                        modifier = Modifier.clickable(
-                            onClick = {
-                                onClick.invoke(recipePreview.id)
-                            },
-                        ),
+                        modifier =
+                            Modifier.clickable(
+                                onClick = {
+                                    onClick.invoke(recipePreview.id)
+                                },
+                            ),
                         icon = {
                             AuthorizedImage(
                                 imageUrl = recipePreview.imageUrl,
                                 contentDescription = recipePreview.name,
-                                modifier = Modifier
-                                    .size(dimensionResource(id = R.dimen.common_item_width_s))
-                                    .clip(MaterialTheme.shapes.medium),
+                                modifier =
+                                    Modifier
+                                        .size(dimensionResource(id = R.dimen.common_item_width_s))
+                                        .clip(MaterialTheme.shapes.medium),
                             )
                         },
                         secondaryText = {
@@ -242,18 +245,19 @@ private fun TopAppBar(
 
     TopAppBar(
         title = { Text(text = title) },
-        navigationIcon = if (categoryName == null) {
-            null
-        } else {
-            {
-                IconButton(onClick = onBackClick) {
-                    Icon(
-                        Icons.Filled.ArrowBack,
-                        contentDescription = stringResource(id = R.string.common_back),
-                    )
+        navigationIcon =
+            if (categoryName == null) {
+                null
+            } else {
+                {
+                    IconButton(onClick = onBackClick) {
+                        Icon(
+                            Icons.Filled.ArrowBack,
+                            contentDescription = stringResource(id = R.string.common_back),
+                        )
+                    }
                 }
-            }
-        },
+            },
         actions = {
             IconButton(onClick = onSearchClicked) {
                 Icon(
@@ -284,9 +288,10 @@ private fun SearchAppBar(
     }
 
     Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(AppBarHeight),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .height(AppBarHeight),
         color = MaterialTheme.colors.primary,
         elevation = AppBarDefaults.TopAppBarElevation,
     ) {
@@ -305,9 +310,10 @@ private fun SearchAppBar(
                 textFieldValue = it
                 onQueryChange.invoke(it)
             },
-            modifier = Modifier
-                .fillMaxWidth()
-                .focusRequester(focusRequester),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .focusRequester(focusRequester),
             placeholder = {
                 Text(
                     modifier = Modifier.alpha(ContentAlpha.medium),
@@ -343,17 +349,20 @@ private fun SearchAppBar(
                     )
                 }
             },
-            keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Search,
-            ),
-            keyboardActions = KeyboardActions(
-                onSearch = {},
-            ),
+            keyboardOptions =
+                KeyboardOptions(
+                    imeAction = ImeAction.Search,
+                ),
+            keyboardActions =
+                KeyboardActions(
+                    onSearch = {},
+                ),
             singleLine = true,
-            colors = TextFieldDefaults.textFieldColors(
-                backgroundColor = Color.Transparent,
-                cursorColor = MaterialTheme.colors.onPrimary,
-            ),
+            colors =
+                TextFieldDefaults.textFieldColors(
+                    backgroundColor = Color.Transparent,
+                    cursorColor = MaterialTheme.colors.onPrimary,
+                ),
         )
     }
 }
@@ -361,17 +370,18 @@ private fun SearchAppBar(
 @Preview
 @Composable
 private fun RecipeListPreview() {
-    val recipePreviews = List(10) { id ->
-        RecipePreview(
-            id = id,
-            name = "Recipe $id",
-            keywords = List(nextInt(0, 5)) { "Keyword $it" },
-            category = "",
-            imageUrl = "",
-            createdAt = "",
-            modifiedAt = "",
-        )
-    }
+    val recipePreviews =
+        List(10) { id ->
+            RecipePreview(
+                id = id,
+                name = "Recipe $id",
+                keywords = List(nextInt(0, 5)) { "Keyword $it" },
+                category = "",
+                imageUrl = "",
+                createdAt = "",
+                modifiedAt = "",
+            )
+        }
     val allKeywords = setOf("Keyword 1", "Keyword 2", "Keyword 3")
     NextcloudCookbookTheme {
         RecipeListScreen(

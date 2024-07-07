@@ -27,7 +27,11 @@ fun RowContainer(data: List<RowContent>) {
 }
 
 @Composable
-fun RowItem(name: String, imageUrl: String, onClick: () -> Unit) {
+fun RowItem(
+    name: String,
+    imageUrl: String,
+    onClick: () -> Unit,
+) {
     CommonItem(
         name = name,
         imageUrl = imageUrl,

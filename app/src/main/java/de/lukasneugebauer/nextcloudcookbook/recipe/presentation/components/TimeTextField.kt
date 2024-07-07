@@ -30,12 +30,13 @@ fun TimeTextField(
     onTimeChange: (time: DurationComponents) -> Unit,
     @StringRes label: Int,
     modifier: Modifier = Modifier,
-    colors: TextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
-        textColor = Color.White,
-        cursorColor = Color.White,
-        focusedBorderColor = Color.White,
-        unfocusedBorderColor = Color.White,
-    ),
+    colors: TextFieldColors =
+        TextFieldDefaults.outlinedTextFieldColors(
+            textColor = Color.White,
+            cursorColor = Color.White,
+            focusedBorderColor = Color.White,
+            unfocusedBorderColor = Color.White,
+        ),
     hoursKeyboardActions: KeyboardActions = KeyboardActions.Default,
     minutesKeyboardActions: KeyboardActions = KeyboardActions.Default,
 ) {
@@ -55,10 +56,11 @@ fun TimeTextField(
                 onValueChange = { onTimeChange(DurationComponents(it, time.minutes)) },
                 modifier = Modifier.weight(1f),
                 label = { Text(text = stringResource(id = R.string.common_hours)) },
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    keyboardType = KeyboardType.Number,
-                    imeAction = ImeAction.Next,
-                ),
+                keyboardOptions =
+                    KeyboardOptions.Default.copy(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Next,
+                    ),
                 keyboardActions = hoursKeyboardActions,
                 singleLine = true,
                 colors = colors,
@@ -69,10 +71,11 @@ fun TimeTextField(
                 onValueChange = { onTimeChange(DurationComponents(time.hours, it)) },
                 modifier = Modifier.weight(1f),
                 label = { Text(text = stringResource(id = R.string.common_minutes)) },
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    keyboardType = KeyboardType.Number,
-                    imeAction = ImeAction.Next,
-                ),
+                keyboardOptions =
+                    KeyboardOptions.Default.copy(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Next,
+                    ),
                 keyboardActions = minutesKeyboardActions,
                 singleLine = true,
                 colors = colors,

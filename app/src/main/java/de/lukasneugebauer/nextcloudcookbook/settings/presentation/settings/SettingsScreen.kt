@@ -62,10 +62,11 @@ fun SettingsScreen(
         topBar = { SettingsTopBar(onNavIconClick = { navigator.popBackStack() }) },
     ) { innerPadding ->
         SettingsContent(
-            modifier = Modifier
-                .padding(paddingValues = innerPadding)
-                .fillMaxWidth()
-                .verticalScroll(rememberScrollState()),
+            modifier =
+                Modifier
+                    .padding(paddingValues = innerPadding)
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState()),
             onLibrariesClick = { navigator.navigate(LibrariesScreenDestination) },
             onLogoutClick = {
                 viewModel.logout {
@@ -119,11 +120,12 @@ fun SettingsContent(
 
 @Composable
 fun SettingsGroupGeneral(sharedPreferences: SharedPreferences) {
-    val stayAwakeState = rememberPreferenceBooleanSettingState(
-        key = STAY_AWAKE_KEY,
-        defaultValue = STAY_AWAKE_DEFAULT,
-        preferences = sharedPreferences,
-    )
+    val stayAwakeState =
+        rememberPreferenceBooleanSettingState(
+            key = STAY_AWAKE_KEY,
+            defaultValue = STAY_AWAKE_DEFAULT,
+            preferences = sharedPreferences,
+        )
 
     SettingsGroup(title = { Text(text = stringResource(R.string.settings_general)) }) {
         SettingsSwitch(
@@ -158,7 +160,10 @@ fun SettingsGroupAccount(onLogoutClick: () -> Unit) {
 }
 
 @Composable
-fun SettingsGroupAbout(context: Context, onLibrariesClick: () -> Unit) {
+fun SettingsGroupAbout(
+    context: Context,
+    onLibrariesClick: () -> Unit,
+) {
     SettingsGroup(title = { Text(text = stringResource(id = R.string.common_about)) }) {
         SettingsMenuLink(
             icon = {
@@ -191,11 +196,12 @@ fun SettingsGroupAbout(context: Context, onLibrariesClick: () -> Unit) {
             title = { Text(text = stringResource(R.string.settings_version)) },
             subtitle = {
                 Text(
-                    text = stringResource(
-                        R.string.settings_version_number,
-                        BuildConfig.VERSION_NAME,
-                        BuildConfig.VERSION_CODE,
-                    ),
+                    text =
+                        stringResource(
+                            R.string.settings_version_number,
+                            BuildConfig.VERSION_NAME,
+                            BuildConfig.VERSION_CODE,
+                        ),
                 )
             },
             onClick = {},

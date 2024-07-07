@@ -9,8 +9,9 @@ data class CategoryDto(
     @SerializedName("recipe_count")
     val recipeCount: Int,
 ) {
-    fun toCategory() = Category(
-        name = name,
-        recipeCount = recipeCount,
-    )
+    fun toCategory() =
+        Category(
+            name = name,
+            recipeCount = recipeCount,
+        )
 }

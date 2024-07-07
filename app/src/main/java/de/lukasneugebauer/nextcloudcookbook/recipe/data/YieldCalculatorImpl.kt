@@ -5,14 +5,15 @@ import java.text.NumberFormat
 import java.util.Locale
 
 class YieldCalculatorImpl(customLocale: Locale? = null) : YieldCalculator {
-    private val numberFormat = if (customLocale != null) {
-        NumberFormat.getNumberInstance(customLocale)
-    } else {
-        NumberFormat.getNumberInstance()
-    }.apply {
-        minimumFractionDigits = 0
-        maximumFractionDigits = 2
-    }
+    private val numberFormat =
+        if (customLocale != null) {
+            NumberFormat.getNumberInstance(customLocale)
+        } else {
+            NumberFormat.getNumberInstance()
+        }.apply {
+            minimumFractionDigits = 0
+            maximumFractionDigits = 2
+        }
 
     override fun isValidIngredientSyntax(ingredient: String): Boolean {
         val startsWithDoubleHash = ingredient.startsWith(DOUBLE_HASH_PREFIX)
@@ -47,17 +48,20 @@ class YieldCalculatorImpl(customLocale: Locale? = null) : YieldCalculator {
             }
 
             if (isValidIngredientSyntax(ingredient)) {
-                val possibleUnit = ingredient.split(" ")
-                    .firstOrNull()
-                    ?.filter { it.isLetter() } ?: ""
-                val amount = ingredient.split(" ")
-                    .firstOrNull()
-                    ?.filter { it.isDigit() || it == ',' || it == '.' }
-                    ?.replace(",", ".")
-                    ?.toDoubleOrNull() ?: 0.0
-                val unitAndIngredient = ingredient.split(" ")
-                    .drop(1)
-                    .joinToString(" ")
+                val possibleUnit =
+                    ingredient.split(" ")
+                        .firstOrNull()
+                        ?.filter { it.isLetter() } ?: ""
+                val amount =
+                    ingredient.split(" ")
+                        .firstOrNull()
+                        ?.filter { it.isDigit() || it == ',' || it == '.' }
+                        ?.replace(",", ".")
+                        ?.toDoubleOrNull() ?: 0.0
+                val unitAndIngredient =
+                    ingredient.split(" ")
+                        .drop(1)
+                        .joinToString(" ")
 
                 val newAmount = numberFormat.format((amount / originalYield) * currentYield)
                 return@map "$newAmount$possibleUnit $unitAndIngredient"

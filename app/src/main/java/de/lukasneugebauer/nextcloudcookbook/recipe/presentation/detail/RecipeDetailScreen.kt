@@ -128,31 +128,33 @@ fun RecipeDetailScreen(
                         )
                     }
                 },
-                shareText = viewModel.getShareText(
-                    sourceTitle = stringResource(id = R.string.recipe_source),
-                    prepTime = { duration ->
-                        context.getString(R.string.recipe_prep_time)
-                            .plus(": ")
-                            .plus(context.getString(R.string.recipe_duration, duration))
-                    },
-                    cookTime = { duration ->
-                        context.getString(R.string.recipe_cook_time)
-                            .plus(": ")
-                            .plus(context.getString(R.string.recipe_duration, duration))
-                    },
-                    totalTime = { duration ->
-                        context.getString(R.string.recipe_total_time)
-                            .plus(": ")
-                            .plus(context.getString(R.string.recipe_duration, duration))
-                    },
-                    ingredientsTitle = pluralResource(
-                        R.plurals.recipe_ingredients_servings,
-                        recipe.yield,
-                        recipe.yield,
+                shareText =
+                    viewModel.getShareText(
+                        sourceTitle = stringResource(id = R.string.recipe_source),
+                        prepTime = { duration ->
+                            context.getString(R.string.recipe_prep_time)
+                                .plus(": ")
+                                .plus(context.getString(R.string.recipe_duration, duration))
+                        },
+                        cookTime = { duration ->
+                            context.getString(R.string.recipe_cook_time)
+                                .plus(": ")
+                                .plus(context.getString(R.string.recipe_duration, duration))
+                        },
+                        totalTime = { duration ->
+                            context.getString(R.string.recipe_total_time)
+                                .plus(": ")
+                                .plus(context.getString(R.string.recipe_duration, duration))
+                        },
+                        ingredientsTitle =
+                            pluralResource(
+                                R.plurals.recipe_ingredients_servings,
+                                recipe.yield,
+                                recipe.yield,
+                            ),
+                        toolsTitle = stringResource(id = R.string.recipe_tools),
+                        instructionsTitle = stringResource(id = R.string.recipe_instructions),
                     ),
-                    toolsTitle = stringResource(id = R.string.recipe_tools),
-                    instructionsTitle = stringResource(id = R.string.recipe_instructions),
-                ),
             )
         },
         floatingActionButton = {
@@ -179,9 +181,10 @@ fun RecipeDetailScreen(
         if (recipe.isNotEmpty() && state.error == null && !state.loading) {
             Content(
                 recipe = recipe,
-                modifier = Modifier
-                    .padding(paddingValues = innerPadding)
-                    .verticalScroll(rememberScrollState()),
+                modifier =
+                    Modifier
+                        .padding(paddingValues = innerPadding)
+                        .verticalScroll(rememberScrollState()),
                 calculatedIngredients = state.calculatedIngredients,
                 currentYield = state.currentYield,
                 onDecreaseYield = {
@@ -231,12 +234,13 @@ private fun TopBar(
     var expanded by remember { mutableStateOf(false) }
 
     fun shareRecipe() {
-        val sendIntent: Intent = Intent().apply {
-            action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_TEXT, shareText)
-            putExtra(Intent.EXTRA_TITLE, recipe.name)
-            type = "text/plain"
-        }
+        val sendIntent: Intent =
+            Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, shareText)
+                putExtra(Intent.EXTRA_TITLE, recipe.name)
+                type = "text/plain"
+            }
 
         val shareIntent = Intent.createChooser(sendIntent, null)
         context.startActivity(shareIntent)
@@ -285,7 +289,10 @@ private fun TopBar(
 }
 
 @Composable
-private fun DropDownMenuItemOpenSource(context: Context, recipeUrl: String) {
+private fun DropDownMenuItemOpenSource(
+    context: Context,
+    recipeUrl: String,
+) {
     if (recipeUrl.isNotBlank()) {
         DropdownMenuItem(onClick = { Uri.parse(recipeUrl).openInBrowser(context) }) {
             Text(text = stringResource(id = R.string.recipe_more_menu_share))
@@ -363,14 +370,18 @@ private fun Content(
 }
 
 @Composable
-private fun Image(imageUrl: String, name: String) {
+private fun Image(
+    imageUrl: String,
+    name: String,
+) {
     AuthorizedImage(
         imageUrl = imageUrl,
         contentDescription = name,
-        modifier = Modifier
-            .aspectRatio(4f / 3f)
-            .fillMaxWidth()
-            .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
+        modifier =
+            Modifier
+                .aspectRatio(4f / 3f)
+                .fillMaxWidth()
+                .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
     )
 }
 
@@ -378,29 +389,35 @@ private fun Image(imageUrl: String, name: String) {
 private fun Name(name: String) {
     Text(
         text = name,
-        modifier = Modifier
-            .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
-            .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
+        modifier =
+            Modifier
+                .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
+                .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
         style = MaterialTheme.typography.h5,
     )
 }
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun Keywords(keywords: List<String>, onClick: (keyword: String) -> Unit) {
+private fun Keywords(
+    keywords: List<String>,
+    onClick: (keyword: String) -> Unit,
+) {
     FlowRow(
-        modifier = Modifier
-            .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
-            .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
+        modifier =
+            Modifier
+                .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
+                .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
         horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_s)),
     ) {
         keywords.forEach {
             Chip(
                 onClick = { onClick.invoke(it) },
                 border = BorderStroke(2.dp, NcBlue700),
-                colors = ChipDefaults.chipColors(
-                    backgroundColor = Color.Transparent,
-                ),
+                colors =
+                    ChipDefaults.chipColors(
+                        backgroundColor = Color.Transparent,
+                    ),
             ) {
                 Text(text = it)
             }
@@ -412,23 +429,29 @@ private fun Keywords(keywords: List<String>, onClick: (keyword: String) -> Unit)
 private fun Description(description: String) {
     MarkdownText(
         markdown = description,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
-            .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
+                .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
     )
 }
 
 @Composable
-private fun Meta(prepTime: Duration?, cookTime: Duration?, totalTime: Duration?) {
+private fun Meta(
+    prepTime: Duration?,
+    cookTime: Duration?,
+    totalTime: Duration?,
+) {
     Row(
-        modifier = Modifier
-            .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
-            .padding(
-                top = dimensionResource(id = R.dimen.padding_m),
-                bottom = dimensionResource(id = R.dimen.padding_l),
-            )
-            .fillMaxWidth(),
+        modifier =
+            Modifier
+                .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
+                .padding(
+                    top = dimensionResource(id = R.dimen.padding_m),
+                    bottom = dimensionResource(id = R.dimen.padding_l),
+                )
+                .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
         if (prepTime != null && prepTime != Duration.ZERO) {
@@ -458,7 +481,11 @@ private fun Meta(prepTime: Duration?, cookTime: Duration?, totalTime: Duration?)
 }
 
 @Composable
-private fun RowScope.MetaBox(icon: ImageVector, duration: Long, @StringRes text: Int) {
+private fun RowScope.MetaBox(
+    icon: ImageVector,
+    duration: Long,
+    @StringRes text: Int,
+) {
     Box(modifier = Modifier.weight(1f)) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Icon(icon, contentDescription = "")
@@ -478,9 +505,10 @@ private fun RowScope.MetaBox(icon: ImageVector, duration: Long, @StringRes text:
 @Composable
 private fun Category(category: String) {
     Row(
-        modifier = Modifier
-            .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
-            .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
+        modifier =
+            Modifier
+                .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
+                .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
         horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_s)),
     ) {
         Icon(
@@ -505,15 +533,17 @@ private fun Ingredients(
 ) {
     Text(
         text = stringResource(id = R.string.recipe_ingredients),
-        modifier = Modifier
-            .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
-            .padding(bottom = dimensionResource(id = R.dimen.padding_s)),
+        modifier =
+            Modifier
+                .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
+                .padding(bottom = dimensionResource(id = R.dimen.padding_s)),
         style = MaterialTheme.typography.h6,
     )
     Row(
-        modifier = Modifier
-            .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
-            .padding(bottom = dimensionResource(id = R.dimen.padding_s)),
+        modifier =
+            Modifier
+                .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
+                .padding(bottom = dimensionResource(id = R.dimen.padding_s)),
         horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_s)),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -546,18 +576,22 @@ private fun Ingredients(
             }
         MarkdownText(
             markdown = ingredient,
-            modifier = Modifier
-                .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
-                .padding(
-                    top = dimensionResource(id = R.dimen.padding_xs),
-                    bottom = paddingBottom,
-                ),
+            modifier =
+                Modifier
+                    .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
+                    .padding(
+                        top = dimensionResource(id = R.dimen.padding_xs),
+                        bottom = paddingBottom,
+                    ),
         )
     }
 }
 
 @Composable
-private fun NutritionItem(@StringRes label: Int, value: String?) {
+private fun NutritionItem(
+    @StringRes label: Int,
+    value: String?,
+) {
     if (value != null) {
         Text(
             buildAnnotatedString {
@@ -566,12 +600,13 @@ private fun NutritionItem(@StringRes label: Int, value: String?) {
                 }
                 append(value)
             },
-            modifier = Modifier
-                .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
-                .padding(
-                    top = dimensionResource(id = R.dimen.padding_xs),
-                    bottom = dimensionResource(id = R.dimen.padding_xs),
-                ),
+            modifier =
+                Modifier
+                    .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
+                    .padding(
+                        top = dimensionResource(id = R.dimen.padding_xs),
+                        bottom = dimensionResource(id = R.dimen.padding_xs),
+                    ),
             style = MaterialTheme.typography.body1,
         )
     }
@@ -581,9 +616,10 @@ private fun NutritionItem(@StringRes label: Int, value: String?) {
 private fun Nutrition(nutrition: Nutrition) {
     Text(
         text = stringResource(R.string.recipe_nutrition),
-        modifier = Modifier
-            .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
-            .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
+        modifier =
+            Modifier
+                .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
+                .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
         style = MaterialTheme.typography.h6,
     )
     NutritionItem(
@@ -643,16 +679,18 @@ private fun Nutrition(nutrition: Nutrition) {
 private fun Tools(tools: List<String>) {
     Text(
         text = stringResource(R.string.recipe_tools),
-        modifier = Modifier
-            .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
-            .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
+        modifier =
+            Modifier
+                .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
+                .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
         style = MaterialTheme.typography.h6,
     )
     MarkdownText(
         markdown = tools.joinToString(separator = ", "),
-        modifier = Modifier
-            .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
-            .padding(bottom = dimensionResource(id = R.dimen.padding_l)),
+        modifier =
+            Modifier
+                .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
+                .padding(bottom = dimensionResource(id = R.dimen.padding_l)),
     )
 }
 
@@ -660,37 +698,42 @@ private fun Tools(tools: List<String>) {
 private fun Instructions(instructions: List<String>) {
     Text(
         text = stringResource(R.string.recipe_instructions),
-        modifier = Modifier
-            .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
-            .padding(bottom = dimensionResource(id = R.dimen.padding_s)),
+        modifier =
+            Modifier
+                .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
+                .padding(bottom = dimensionResource(id = R.dimen.padding_s)),
         style = MaterialTheme.typography.h6,
     )
     instructions.forEachIndexed { index, instruction ->
         Row(
-            modifier = Modifier
-                .padding(
-                    start = dimensionResource(id = R.dimen.padding_s),
-                    end = dimensionResource(id = R.dimen.padding_m),
-                    bottom = dimensionResource(id = R.dimen.padding_xs),
-                ),
+            modifier =
+                Modifier
+                    .padding(
+                        start = dimensionResource(id = R.dimen.padding_s),
+                        end = dimensionResource(id = R.dimen.padding_m),
+                        bottom = dimensionResource(id = R.dimen.padding_xs),
+                    ),
         ) {
             Chip(
                 onClick = { /*TODO: Add check functionality */ },
-                modifier = Modifier
-                    .padding(end = dimensionResource(id = R.dimen.padding_xs)),
+                modifier =
+                    Modifier
+                        .padding(end = dimensionResource(id = R.dimen.padding_xs)),
                 enabled = false,
                 border = BorderStroke(2.dp, NcBlue700),
-                colors = ChipDefaults.chipColors(
-                    backgroundColor = Color.Transparent,
-                ),
+                colors =
+                    ChipDefaults.chipColors(
+                        backgroundColor = Color.Transparent,
+                    ),
             ) {
                 Text(text = "${index + 1}", color = MaterialTheme.colors.onSurface)
             }
             MarkdownText(
                 markdown = instruction,
-                modifier = Modifier
-                    .padding(bottom = dimensionResource(id = R.dimen.padding_s))
-                    .fillMaxWidth(),
+                modifier =
+                    Modifier
+                        .padding(bottom = dimensionResource(id = R.dimen.padding_s))
+                        .fillMaxWidth(),
             )
         }
     }
@@ -699,9 +742,10 @@ private fun Instructions(instructions: List<String>) {
 @Preview(showBackground = true)
 @Composable
 private fun KeywordsPreview() {
-    val keywords = List(5) {
-        "Keyword ${it + 1}"
-    }
+    val keywords =
+        List(5) {
+            "Keyword ${it + 1}"
+        }
     NextcloudCookbookTheme {
         Keywords(keywords = keywords, onClick = {})
     }
@@ -710,13 +754,22 @@ private fun KeywordsPreview() {
 @Preview(showBackground = true)
 @Composable
 private fun InstructionsPreview() {
-    val instructions = List(5) {
-        val loremIpsum =
-            "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
-        val loremIpsumList = loremIpsum.split(" ")
-        val stringArray = loremIpsumList.take((it + 1) * (it + 1))
-        stringArray.joinToString(" ")
-    }
+    val instructions =
+        List(5) {
+            val loremIpsum =
+                """Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
+                |nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam
+                |voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd
+                |gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum
+                |dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt
+                |ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam
+                |et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata
+                |sanctus est Lorem ipsum dolor sit amet.
+                """.trimMargin()
+            val loremIpsumList = loremIpsum.split(" ")
+            val stringArray = loremIpsumList.take((it + 1) * (it + 1))
+            stringArray.joinToString(" ")
+        }
     NextcloudCookbookTheme {
         Column {
             Instructions(instructions = instructions)
@@ -727,32 +780,41 @@ private fun InstructionsPreview() {
 @Preview(showBackground = true)
 @Composable
 private fun ContentPreview() {
-    val recipe = Recipe(
-        id = 1,
-        name = "Lorem ipsum",
-        description = "Lorem ipsum dolor sit amet",
-        url = "https://www.example.com",
-        imageOrigin = "https://www.example.com/image.jpg",
-        imageUrl = "/apps/cookbook/recipes/1/image?size=full",
-        category = "Lorem ipsum",
-        keywords = emptyList(),
-        yield = 2,
-        prepTime = null,
-        cookTime = Duration.parse("PT0H35M0S"),
-        totalTime = Duration.parse("PT1H50M0S"),
-        nutrition = null,
-        tools = List(1) {
-            "Lorem ipsum"
-        },
-        ingredients = List(2) {
-            "Lorem ipsum"
-        },
-        instructions = List(1) {
-            "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
-        },
-        createdAt = "",
-        modifiedAt = "",
-    )
+    val recipe =
+        Recipe(
+            id = 1,
+            name = "Lorem ipsum",
+            description = "Lorem ipsum dolor sit amet",
+            url = "https://www.example.com",
+            imageOrigin = "https://www.example.com/image.jpg",
+            imageUrl = "/apps/cookbook/recipes/1/image?size=full",
+            category = "Lorem ipsum",
+            keywords = emptyList(),
+            yield = 2,
+            prepTime = null,
+            cookTime = Duration.parse("PT0H35M0S"),
+            totalTime = Duration.parse("PT1H50M0S"),
+            nutrition = null,
+            tools =
+                List(1) {
+                    "Lorem ipsum"
+                },
+            ingredients =
+                List(2) {
+                    "Lorem ipsum"
+                },
+            instructions =
+                List(1) {
+                    """Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy
+                        |eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam
+                        |voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet
+                        |clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit
+                        |amet.
+                    """.trimMargin()
+                },
+            createdAt = "",
+            modifiedAt = "",
+        )
     NextcloudCookbookTheme {
         Content(
             recipe = recipe,

@@ -1,7 +1,6 @@
 package de.lukasneugebauer.nextcloudcookbook.settings.util
 
 object SettingsConstants {
-
     const val STAY_AWAKE_KEY: String = "stay_awake"
     const val STAY_AWAKE_DEFAULT: Boolean = false
 

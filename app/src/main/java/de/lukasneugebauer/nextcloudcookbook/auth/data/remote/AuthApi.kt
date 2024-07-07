@@ -8,10 +8,14 @@ import retrofit2.http.Query
 import retrofit2.http.Url
 
 interface AuthApi {
+    @POST
+    suspend fun getLoginEndpoint(
+        @Url url: String,
+    ): NetworkResponse<LoginEndpointResponse, Any>
 
     @POST
-    suspend fun getLoginEndpoint(@Url url: String): NetworkResponse<LoginEndpointResponse, Any>
-
-    @POST
-    suspend fun tryLogin(@Url url: String, @Query("token") token: String): NetworkResponse<LoginResponse, Any>
+    suspend fun tryLogin(
+        @Url url: String,
+        @Query("token") token: String,
+    ): NetworkResponse<LoginResponse, Any>
 }

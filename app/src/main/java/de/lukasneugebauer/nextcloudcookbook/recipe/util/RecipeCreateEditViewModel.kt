@@ -27,7 +27,7 @@ abstract class RecipeCreateEditViewModel(
     private val recipeRepository: RecipeRepository,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
-
+    @Suppress("PropertyName")
     protected val _uiState = MutableStateFlow<RecipeCreateEditState>(RecipeCreateEditState.Loading)
     val uiState: StateFlow<RecipeCreateEditState> = _uiState
 
@@ -168,7 +168,10 @@ abstract class RecipeCreateEditViewModel(
         }
     }
 
-    fun changeIngredient(index: Int, newIngredient: String) {
+    fun changeIngredient(
+        index: Int,
+        newIngredient: String,
+    ) {
         _uiState.value.ifSuccess {
             val ingredients = recipeDto.recipeIngredient.toMutableList()
             ingredients[index] = newIngredient
@@ -193,68 +196,79 @@ abstract class RecipeCreateEditViewModel(
     }
 
     fun changeCalories(newCalories: String) {
-        val newNutrition = recipeDto.nutrition?.copy(calories = newCalories)
-            ?: NutritionDto(calories = newCalories)
+        val newNutrition =
+            recipeDto.nutrition?.copy(calories = newCalories)
+                ?: NutritionDto(calories = newCalories)
         changeNutrition(newNutrition)
     }
 
     fun changeCarbohydrateContent(newCarbohydrateContent: String) {
-        val newNutrition = recipeDto.nutrition?.copy(carbohydrateContent = newCarbohydrateContent)
-            ?: NutritionDto(carbohydrateContent = newCarbohydrateContent)
+        val newNutrition =
+            recipeDto.nutrition?.copy(carbohydrateContent = newCarbohydrateContent)
+                ?: NutritionDto(carbohydrateContent = newCarbohydrateContent)
         changeNutrition(newNutrition)
     }
 
     fun changeCholesterolContent(newCholesterolContent: String) {
-        val newNutrition = recipeDto.nutrition?.copy(cholesterolContent = newCholesterolContent)
-            ?: NutritionDto(cholesterolContent = newCholesterolContent)
+        val newNutrition =
+            recipeDto.nutrition?.copy(cholesterolContent = newCholesterolContent)
+                ?: NutritionDto(cholesterolContent = newCholesterolContent)
         changeNutrition(newNutrition)
     }
 
     fun changeFatContent(newFatContent: String) {
-        val newNutrition = recipeDto.nutrition?.copy(fatContent = newFatContent)
-            ?: NutritionDto(fatContent = newFatContent)
+        val newNutrition =
+            recipeDto.nutrition?.copy(fatContent = newFatContent)
+                ?: NutritionDto(fatContent = newFatContent)
         changeNutrition(newNutrition)
     }
 
     fun changeFiberContent(newFiberContent: String) {
-        val newNutrition = recipeDto.nutrition?.copy(fiberContent = newFiberContent)
-            ?: NutritionDto(fiberContent = newFiberContent)
+        val newNutrition =
+            recipeDto.nutrition?.copy(fiberContent = newFiberContent)
+                ?: NutritionDto(fiberContent = newFiberContent)
         changeNutrition(newNutrition)
     }
 
     fun changeProteinContent(newProteinContent: String) {
-        val newNutrition = recipeDto.nutrition?.copy(proteinContent = newProteinContent)
-            ?: NutritionDto(proteinContent = newProteinContent)
+        val newNutrition =
+            recipeDto.nutrition?.copy(proteinContent = newProteinContent)
+                ?: NutritionDto(proteinContent = newProteinContent)
         changeNutrition(newNutrition)
     }
 
     fun changeSaturatedFatContent(newSaturatedFatContent: String) {
-        val newNutrition = recipeDto.nutrition?.copy(saturatedFatContent = newSaturatedFatContent)
-            ?: NutritionDto(saturatedFatContent = newSaturatedFatContent)
+        val newNutrition =
+            recipeDto.nutrition?.copy(saturatedFatContent = newSaturatedFatContent)
+                ?: NutritionDto(saturatedFatContent = newSaturatedFatContent)
         changeNutrition(newNutrition)
     }
 
     fun changeServingSize(newServingSize: String) {
-        val newNutrition = recipeDto.nutrition?.copy(servingSize = newServingSize)
-            ?: NutritionDto(servingSize = newServingSize)
+        val newNutrition =
+            recipeDto.nutrition?.copy(servingSize = newServingSize)
+                ?: NutritionDto(servingSize = newServingSize)
         changeNutrition(newNutrition)
     }
 
     fun changeSodiumContent(newSodiumContent: String) {
-        val newNutrition = recipeDto.nutrition?.copy(sodiumContent = newSodiumContent)
-            ?: NutritionDto(sodiumContent = newSodiumContent)
+        val newNutrition =
+            recipeDto.nutrition?.copy(sodiumContent = newSodiumContent)
+                ?: NutritionDto(sodiumContent = newSodiumContent)
         changeNutrition(newNutrition)
     }
 
     fun changeSugarContent(newSugarContent: String) {
-        val newNutrition = recipeDto.nutrition?.copy(sugarContent = newSugarContent)
-            ?: NutritionDto(sugarContent = newSugarContent)
+        val newNutrition =
+            recipeDto.nutrition?.copy(sugarContent = newSugarContent)
+                ?: NutritionDto(sugarContent = newSugarContent)
         changeNutrition(newNutrition)
     }
 
     fun changeTransFatContent(newTransFatContent: String) {
-        val newNutrition = recipeDto.nutrition?.copy(transFatContent = newTransFatContent)
-            ?: NutritionDto(transFatContent = newTransFatContent)
+        val newNutrition =
+            recipeDto.nutrition?.copy(transFatContent = newTransFatContent)
+                ?: NutritionDto(transFatContent = newTransFatContent)
         changeNutrition(newNutrition)
     }
 
@@ -265,7 +279,10 @@ abstract class RecipeCreateEditViewModel(
         changeNutrition(newNutrition)
     }
 
-    fun changeTool(index: Int, newTool: String) {
+    fun changeTool(
+        index: Int,
+        newTool: String,
+    ) {
         _uiState.value.ifSuccess {
             val tools = recipeDto.tool.toMutableList()
             tools[index] = newTool
@@ -289,7 +306,10 @@ abstract class RecipeCreateEditViewModel(
         }
     }
 
-    fun changeInstruction(index: Int, newInstruction: String) {
+    fun changeInstruction(
+        index: Int,
+        newInstruction: String,
+    ) {
         _uiState.value.ifSuccess {
             val instructions = recipeDto.recipeInstructions.toMutableList()
             instructions[index] = newInstruction
@@ -317,10 +337,11 @@ abstract class RecipeCreateEditViewModel(
         categoryRepository.getCategories().onEach { categoriesResponse ->
             when (categoriesResponse) {
                 is StoreResponse.Data ->
-                    categories = categoriesResponse.value
-                        .filter { it.recipeCount > 0 }
-                        .filter { it.name != "*" }
-                        .map { it.toCategory() }
+                    categories =
+                        categoriesResponse.value
+                            .filter { it.recipeCount > 0 }
+                            .filter { it.name != "*" }
+                            .map { it.toCategory() }
 
                 else -> Unit
             }
@@ -339,13 +360,14 @@ abstract class RecipeCreateEditViewModel(
 
     private fun getRecipe(id: Int) {
         viewModelScope.launch {
-            recipeDto = recipeRepository.getRecipe(id).also { dto ->
-                dto.toRecipe().also {
-                    it.prepTime?.toDurationComponents()?.run { prepTime = this }
-                    it.cookTime?.toDurationComponents()?.run { cookTime = this }
-                    it.totalTime?.toDurationComponents()?.run { totalTime = this }
+            recipeDto =
+                recipeRepository.getRecipe(id).also { dto ->
+                    dto.toRecipe().also {
+                        it.prepTime?.toDurationComponents()?.run { prepTime = this }
+                        it.cookTime?.toDurationComponents()?.run { cookTime = this }
+                        it.totalTime?.toDurationComponents()?.run { totalTime = this }
+                    }
                 }
-            }
         }
     }
 }

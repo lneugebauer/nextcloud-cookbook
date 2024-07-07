@@ -5,6 +5,5 @@ import de.lukasneugebauer.nextcloudcookbook.category.data.dto.CategoryDto
 import kotlinx.coroutines.flow.Flow
 
 interface CategoryRepository {
-
     fun getCategories(): Flow<StoreResponse<List<CategoryDto>>>
 }

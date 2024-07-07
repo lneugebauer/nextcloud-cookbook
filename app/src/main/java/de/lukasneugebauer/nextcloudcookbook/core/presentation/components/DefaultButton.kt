@@ -15,10 +15,11 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
 fun DefaultButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    colors: ButtonColors = ButtonDefaults.buttonColors(
-        backgroundColor = Color.White,
-        contentColor = NcBlue700,
-    ),
+    colors: ButtonColors =
+        ButtonDefaults.buttonColors(
+            backgroundColor = Color.White,
+            contentColor = NcBlue700,
+        ),
     content: @Composable RowScope.() -> Unit,
 ) {
     Button(

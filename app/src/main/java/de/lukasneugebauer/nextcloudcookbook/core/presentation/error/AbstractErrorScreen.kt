@@ -28,18 +28,20 @@ fun AbstractErrorScreen(
     iconContentDescription: UiText? = null,
 ) {
     Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
+        modifier =
+            modifier
+                .fillMaxSize()
+                .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.Start,
     ) {
         Icon(
             imageVector = icon,
             contentDescription = iconContentDescription?.asString(),
-            modifier = Modifier
-                .size(dimensionResource(id = R.dimen.error_icon_size))
-                .padding(bottom = dimensionResource(id = R.dimen.padding_s)),
+            modifier =
+                Modifier
+                    .size(dimensionResource(id = R.dimen.error_icon_size))
+                    .padding(bottom = dimensionResource(id = R.dimen.padding_s)),
             tint = MaterialTheme.colors.onBackground,
         )
         Text(text = uiText.asString())

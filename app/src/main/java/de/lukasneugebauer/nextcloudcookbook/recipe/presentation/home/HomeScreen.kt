@@ -66,13 +66,15 @@ fun HomeScreen(
                     NotFoundScreen()
                 } else {
                     LazyColumn(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(innerPadding),
-                        contentPadding = PaddingValues(
-                            top = dimensionResource(id = R.dimen.padding_s),
-                            bottom = dimensionResource(id = R.dimen.padding_m),
-                        ),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(innerPadding),
+                        contentPadding =
+                            PaddingValues(
+                                top = dimensionResource(id = R.dimen.padding_s),
+                                bottom = dimensionResource(id = R.dimen.padding_m),
+                            ),
                         verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_s)),
                     ) {
                         items(homeScreenData) { item ->
@@ -90,15 +92,16 @@ fun HomeScreen(
                                         )
                                     }
                                     RowContainer(
-                                        data = item.recipes.map {
-                                            RowContent(it.name, it.imageUrl) {
-                                                navigator.navigate(
-                                                    RecipeDetailScreenDestination(
-                                                        recipeId = it.id,
-                                                    ),
-                                                )
-                                            }
-                                        },
+                                        data =
+                                            item.recipes.map {
+                                                RowContent(it.name, it.imageUrl) {
+                                                    navigator.navigate(
+                                                        RecipeDetailScreenDestination(
+                                                            recipeId = it.id,
+                                                        ),
+                                                    )
+                                                }
+                                            },
                                     )
                                 }
 
@@ -144,7 +147,11 @@ private fun TopBar(onSettingsIconClick: () -> Unit) {
 }
 
 @Composable
-fun SingleItem(name: String, imageUrl: String, onClick: () -> Unit) {
+fun SingleItem(
+    name: String,
+    imageUrl: String,
+    onClick: () -> Unit,
+) {
     Card(
         modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
         onClick = onClick,
@@ -153,9 +160,10 @@ fun SingleItem(name: String, imageUrl: String, onClick: () -> Unit) {
             AuthorizedImage(
                 imageUrl = imageUrl,
                 contentDescription = name,
-                modifier = Modifier
-                    .aspectRatio(16f / 9f)
-                    .fillMaxWidth(),
+                modifier =
+                    Modifier
+                        .aspectRatio(16f / 9f)
+                        .fillMaxWidth(),
             )
             CommonItemBody(name = name, modifier = Modifier.fillMaxWidth(), onClick = {})
         }

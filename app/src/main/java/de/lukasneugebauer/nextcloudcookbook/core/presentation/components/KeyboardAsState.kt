@@ -19,12 +19,14 @@ fun keyboardAsState(): State<Boolean> {
     val view = LocalView.current
     val viewTreeObserver = view.viewTreeObserver
     DisposableEffect(viewTreeObserver) {
-        val listener = ViewTreeObserver.OnGlobalLayoutListener {
-            val isKeyboardOpen = ViewCompat.getRootWindowInsets(view)
-                ?.isVisible(WindowInsetsCompat.Type.ime()) ?: true
-            // ... do anything you want here with `isKeyboardOpen`
-            keyboardState.value = isKeyboardOpen
-        }
+        val listener =
+            ViewTreeObserver.OnGlobalLayoutListener {
+                val isKeyboardOpen =
+                    ViewCompat.getRootWindowInsets(view)
+                        ?.isVisible(WindowInsetsCompat.Type.ime()) ?: true
+                // ... do anything you want here with `isKeyboardOpen`
+                keyboardState.value = isKeyboardOpen
+            }
 
         viewTreeObserver.addOnGlobalLayoutListener(listener)
         onDispose {

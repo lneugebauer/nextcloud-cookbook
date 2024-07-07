@@ -17,34 +17,35 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class RecipeCreateViewModel @Inject constructor(
-    categoryRepository: CategoryRepository,
-    getAllKeywordsUseCase: GetAllKeywordsUseCase,
-    private val recipeRepository: RecipeRepository,
-    savedStateHandle: SavedStateHandle,
-) : RecipeCreateEditViewModel(
-    categoryRepository,
-    getAllKeywordsUseCase,
-    recipeRepository,
-    savedStateHandle,
-) {
-
-    override fun save() {
-        _uiState.value.ifSuccess {
-            _uiState.update { RecipeCreateEditState.Loading }
-            viewModelScope.launch {
-                val result = recipeRepository.createRecipe(recipeDto)
-                _uiState.update {
-                    if (result is Resource.Success && result.data != null) {
-                        val recipeId = result.data
-                        RecipeCreateEditState.Updated(recipeId)
-                    } else {
-                        RecipeCreateEditState.Error(
-                            result.message ?: UiText.StringResource(R.string.error_unknown),
-                        )
+class RecipeCreateViewModel
+    @Inject
+    constructor(
+        categoryRepository: CategoryRepository,
+        getAllKeywordsUseCase: GetAllKeywordsUseCase,
+        private val recipeRepository: RecipeRepository,
+        savedStateHandle: SavedStateHandle,
+    ) : RecipeCreateEditViewModel(
+            categoryRepository,
+            getAllKeywordsUseCase,
+            recipeRepository,
+            savedStateHandle,
+        ) {
+        override fun save() {
+            _uiState.value.ifSuccess {
+                _uiState.update { RecipeCreateEditState.Loading }
+                viewModelScope.launch {
+                    val result = recipeRepository.createRecipe(recipeDto)
+                    _uiState.update {
+                        if (result is Resource.Success && result.data != null) {
+                            val recipeId = result.data
+                            RecipeCreateEditState.Updated(recipeId)
+                        } else {
+                            RecipeCreateEditState.Error(
+                                result.message ?: UiText.StringResource(R.string.error_unknown),
+                            )
+                        }
                     }
                 }
             }
         }
     }
-}

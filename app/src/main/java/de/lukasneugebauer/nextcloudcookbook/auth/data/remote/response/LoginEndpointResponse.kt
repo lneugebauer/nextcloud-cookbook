@@ -11,9 +11,10 @@ data class LoginEndpointResponse(
     @SerializedName("login")
     val login: String,
 ) {
-    fun toLoginEndpointResult() = LoginEndpointResult(
-        token = poll.token,
-        pollUrl = poll.endpoint,
-        loginUrl = login.toUri(),
-    )
+    fun toLoginEndpointResult() =
+        LoginEndpointResult(
+            token = poll.token,
+            pollUrl = poll.endpoint,
+            loginUrl = login.toUri(),
+        )
 }

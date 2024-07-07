@@ -19,15 +19,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import de.lukasneugebauer.nextcloudcookbook.R
 
 @Composable
-fun Headline(text: String, clickable: Boolean, onClick: () -> Unit) {
+fun Headline(
+    text: String,
+    clickable: Boolean,
+    onClick: () -> Unit,
+) {
     Row(
-        modifier = Modifier
-            .clickable(enabled = clickable, onClick = onClick)
-            .fillMaxWidth()
-            .padding(
-                horizontal = dimensionResource(id = R.dimen.padding_m),
-                vertical = dimensionResource(id = R.dimen.padding_s),
-            ),
+        modifier =
+            Modifier
+                .clickable(enabled = clickable, onClick = onClick)
+                .fillMaxWidth()
+                .padding(
+                    horizontal = dimensionResource(id = R.dimen.padding_m),
+                    vertical = dimensionResource(id = R.dimen.padding_s),
+                ),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(

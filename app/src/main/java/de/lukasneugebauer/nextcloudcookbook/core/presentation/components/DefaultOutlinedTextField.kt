@@ -34,12 +34,13 @@ fun DefaultOutlinedTextField(
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     singleLine: Boolean = false,
-    colors: TextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
-        textColor = Color.White,
-        cursorColor = Color.White,
-        focusedBorderColor = Color.White,
-        unfocusedBorderColor = Color.White,
-    ),
+    colors: TextFieldColors =
+        TextFieldDefaults.outlinedTextFieldColors(
+            textColor = Color.White,
+            cursorColor = Color.White,
+            focusedBorderColor = Color.White,
+            unfocusedBorderColor = Color.White,
+        ),
 ) {
     val isError = errorText?.isNotBlank() == true
 
@@ -50,17 +51,18 @@ fun DefaultOutlinedTextField(
             modifier = modifier,
             label = label,
             placeholder = placeholder,
-            trailingIcon = if (isError) {
-                {
-                    Icon(
-                        imageVector = Icons.Default.Error,
-                        contentDescription = "Error",
-                        tint = MaterialTheme.colors.error,
-                    )
-                }
-            } else {
-                trailingIcon
-            },
+            trailingIcon =
+                if (isError) {
+                    {
+                        Icon(
+                            imageVector = Icons.Default.Error,
+                            contentDescription = "Error",
+                            tint = MaterialTheme.colors.error,
+                        )
+                    }
+                } else {
+                    trailingIcon
+                },
             isError = isError,
             visualTransformation = visualTransformation,
             keyboardOptions = keyboardOptions,
@@ -73,8 +75,9 @@ fun DefaultOutlinedTextField(
                 text = errorText!!,
                 color = MaterialTheme.colors.error,
                 style = MaterialTheme.typography.caption,
-                modifier = Modifier
-                    .padding(horizontal = dimensionResource(id = R.dimen.padding_l)),
+                modifier =
+                    Modifier
+                        .padding(horizontal = dimensionResource(id = R.dimen.padding_l)),
             )
         }
     }

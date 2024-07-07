@@ -83,18 +83,19 @@ fun LoginScreen(
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val scope = rememberCoroutineScope()
-    val sheetState = rememberModalBottomSheetState(
-        initialValue = ModalBottomSheetValue.Hidden,
-        animationSpec = SwipeableDefaults.AnimationSpec,
-        confirmValueChange = {
-            when (it) {
-                ModalBottomSheetValue.Hidden -> true
-                ModalBottomSheetValue.Expanded -> true
-                ModalBottomSheetValue.HalfExpanded -> false
-            }
-        },
-        skipHalfExpanded = true,
-    )
+    val sheetState =
+        rememberModalBottomSheetState(
+            initialValue = ModalBottomSheetValue.Hidden,
+            animationSpec = SwipeableDefaults.AnimationSpec,
+            confirmValueChange = {
+                when (it) {
+                    ModalBottomSheetValue.Hidden -> true
+                    ModalBottomSheetValue.Expanded -> true
+                    ModalBottomSheetValue.HalfExpanded -> false
+                }
+            },
+            skipHalfExpanded = true,
+        )
     var showManualLogin: Boolean by rememberSaveable { mutableStateOf(false) }
     val uiState by viewModel.uiState.collectAsState()
 
@@ -166,10 +167,11 @@ private fun LoginScreen(
 ) {
     var url: String by rememberSaveable { mutableStateOf("") }
     Column(
-        modifier = Modifier
-            .background(NcBlueGradient)
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
+        modifier =
+            Modifier
+                .background(NcBlueGradient)
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -191,9 +193,10 @@ private fun LoginScreen(
                 url = it
                 onClearError.invoke()
             },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
             label = {
                 Text(
                     text = stringResource(R.string.login_root_address),
@@ -207,20 +210,23 @@ private fun LoginScreen(
                 )
             },
             errorText = urlError?.asString(),
-            keyboardOptions = KeyboardOptions.Default.copy(
-                imeAction = ImeAction.Done,
-            ),
-            keyboardActions = KeyboardActions(
-                onDone = { onLoginClick.invoke(url) },
-            ),
+            keyboardOptions =
+                KeyboardOptions.Default.copy(
+                    imeAction = ImeAction.Done,
+                ),
+            keyboardActions =
+                KeyboardActions(
+                    onDone = { onLoginClick.invoke(url) },
+                ),
             singleLine = true,
         )
         Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_s)))
         DefaultButton(
             onClick = { onLoginClick.invoke(url) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
         ) {
             Text(text = stringResource(R.string.login))
         }
@@ -259,9 +265,10 @@ private fun ManualLoginForm(
             username = it
             onClearError.invoke()
         },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
         label = {
             Text(
                 text = stringResource(R.string.common_username),
@@ -269,14 +276,16 @@ private fun ManualLoginForm(
             )
         },
         errorText = usernameError?.asString(),
-        keyboardOptions = KeyboardOptions.Default.copy(
-            imeAction = ImeAction.Next,
-        ),
-        keyboardActions = KeyboardActions(
-            onNext = {
-                focusManager.moveFocus(FocusDirection.Down)
-            },
-        ),
+        keyboardOptions =
+            KeyboardOptions.Default.copy(
+                imeAction = ImeAction.Next,
+            ),
+        keyboardActions =
+            KeyboardActions(
+                onNext = {
+                    focusManager.moveFocus(FocusDirection.Down)
+                },
+            ),
         singleLine = true,
     )
     Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_s)))
@@ -286,9 +295,10 @@ private fun ManualLoginForm(
             password = it
             onClearError.invoke()
         },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
         label = {
             Text(
                 text = stringResource(R.string.common_password),
@@ -297,26 +307,29 @@ private fun ManualLoginForm(
         },
         visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
         trailingIcon = {
-            val image = if (passwordVisibility) {
-                Icons.Filled.Visibility
-            } else {
-                Icons.Filled.VisibilityOff
-            }
+            val image =
+                if (passwordVisibility) {
+                    Icons.Filled.Visibility
+                } else {
+                    Icons.Filled.VisibilityOff
+                }
 
             IconButton(onClick = { passwordVisibility = !passwordVisibility }) {
                 Icon(imageVector = image, "Show/hide password", tint = Color.White)
             }
         },
         errorText = passwordError?.asString(),
-        keyboardOptions = KeyboardOptions.Default.copy(
-            keyboardType = KeyboardType.Password,
-            imeAction = ImeAction.Next,
-        ),
-        keyboardActions = KeyboardActions(
-            onNext = {
-                focusManager.moveFocus(FocusDirection.Down)
-            },
-        ),
+        keyboardOptions =
+            KeyboardOptions.Default.copy(
+                keyboardType = KeyboardType.Password,
+                imeAction = ImeAction.Next,
+            ),
+        keyboardActions =
+            KeyboardActions(
+                onNext = {
+                    focusManager.moveFocus(FocusDirection.Down)
+                },
+            ),
         singleLine = true,
     )
     Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_s)))
@@ -326,9 +339,10 @@ private fun ManualLoginForm(
             url = it
             onClearError.invoke()
         },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
         label = {
             Text(
                 text = stringResource(R.string.login_root_address),
@@ -342,22 +356,25 @@ private fun ManualLoginForm(
             )
         },
         errorText = urlError?.asString(),
-        keyboardOptions = KeyboardOptions.Default.copy(
-            imeAction = ImeAction.Done,
-        ),
-        keyboardActions = KeyboardActions(
-            onDone = {
-                onManualLoginClick(username, password, url)
-            },
-        ),
+        keyboardOptions =
+            KeyboardOptions.Default.copy(
+                imeAction = ImeAction.Done,
+            ),
+        keyboardActions =
+            KeyboardActions(
+                onDone = {
+                    onManualLoginClick(username, password, url)
+                },
+            ),
         singleLine = true,
     )
     Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_s)))
     DefaultButton(
         onClick = { onManualLoginClick(username, password, url) },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
     ) {
         Text(text = stringResource(R.string.login_manual))
     }
@@ -365,7 +382,10 @@ private fun ManualLoginForm(
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
-fun LoginWebView(url: Uri?, onCloseClick: () -> Unit) {
+fun LoginWebView(
+    url: Uri?,
+    onCloseClick: () -> Unit,
+) {
     BackHandler(onBack = onCloseClick)
     Scaffold(
         topBar = {
@@ -392,19 +412,21 @@ fun LoginWebView(url: Uri?, onCloseClick: () -> Unit) {
                     WebView(it).apply {
                         settings.javaScriptEnabled = true
                         loadUrl(url.toString())
-                        webViewClient = object : WebViewClient() {
-                            override fun shouldOverrideUrlLoading(
-                                view: WebView?,
-                                request: WebResourceRequest?,
-                            ): Boolean {
-                                return false
+                        webViewClient =
+                            object : WebViewClient() {
+                                override fun shouldOverrideUrlLoading(
+                                    view: WebView?,
+                                    request: WebResourceRequest?,
+                                ): Boolean {
+                                    return false
+                                }
                             }
-                        }
                     }
                 },
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding),
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding),
             )
         } else {
             Loader()

@@ -45,24 +45,25 @@ data class RecipeDto(
     @SerializedName("nutrition")
     val nutrition: NutritionDto?,
 ) {
-    fun toRecipe() = Recipe(
-        id = id,
-        name = name,
-        description = description,
-        url = url,
-        imageOrigin = image,
-        imageUrl = imageUrl ?: "",
-        category = recipeCategory,
-        keywords = if (keywords.isNullOrEmpty()) emptyList() else keywords.split(","),
-        yield = recipeYield,
-        prepTime = prepTime.parseAsDuration(),
-        cookTime = cookTime.parseAsDuration(),
-        totalTime = totalTime.parseAsDuration(),
-        nutrition = nutrition?.toNutrition(),
-        tools = tool,
-        ingredients = recipeIngredient,
-        instructions = recipeInstructions,
-        createdAt = dateCreated ?: "",
-        modifiedAt = dateModified ?: "",
-    )
+    fun toRecipe() =
+        Recipe(
+            id = id,
+            name = name,
+            description = description,
+            url = url,
+            imageOrigin = image,
+            imageUrl = imageUrl ?: "",
+            category = recipeCategory,
+            keywords = if (keywords.isNullOrEmpty()) emptyList() else keywords.split(","),
+            yield = recipeYield,
+            prepTime = prepTime.parseAsDuration(),
+            cookTime = cookTime.parseAsDuration(),
+            totalTime = totalTime.parseAsDuration(),
+            nutrition = nutrition?.toNutrition(),
+            tools = tool,
+            ingredients = recipeIngredient,
+            instructions = recipeInstructions,
+            createdAt = dateCreated ?: "",
+            modifiedAt = dateModified ?: "",
+        )
 }

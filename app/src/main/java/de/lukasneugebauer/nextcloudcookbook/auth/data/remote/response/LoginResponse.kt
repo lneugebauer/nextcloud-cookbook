@@ -13,17 +13,20 @@ data class LoginResponse(
     @SerializedName("appPassword")
     val appPassword: String,
 ) {
-    fun toLoginResult(): LoginResult = LoginResult(
-        ncAccount = NcAccount(
-            name = "",
-            username = loginName,
-            token = appPassword,
-            url = if (!server.endsWith('/')) {
-                Timber.i("#%d Slash (\"/\") appended to Nextcloud URL. New URL: %s", 1686840857, "$server/")
-                "$server/"
-            } else {
-                server
-            },
-        ),
-    )
+    fun toLoginResult(): LoginResult =
+        LoginResult(
+            ncAccount =
+                NcAccount(
+                    name = "",
+                    username = loginName,
+                    token = appPassword,
+                    url =
+                        if (!server.endsWith('/')) {
+                            Timber.i("#%d Slash (\"/\") appended to Nextcloud URL. New URL: %s", 1686840857, "$server/")
+                            "$server/"
+                        } else {
+                            server
+                        },
+                ),
+        )
 }

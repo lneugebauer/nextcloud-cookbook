@@ -18,9 +18,10 @@ fun DefaultTextButton(
     TextButton(
         onClick = onClick,
         modifier = modifier,
-        colors = ButtonDefaults.textButtonColors(
-            contentColor = Color.White,
-        ),
+        colors =
+            ButtonDefaults.textButtonColors(
+                contentColor = Color.White,
+            ),
         content = content,
     )
 }

@@ -7,7 +7,8 @@ data class CapabilitiesDto(
     @SerializedName("theming")
     val theming: ThemingDto,
 ) {
-    fun toCapabilities(): Capabilities = Capabilities(
-        theming = theming.toTheming(),
-    )
+    fun toCapabilities(): Capabilities =
+        Capabilities(
+            theming = theming.toTheming(),
+        )
 }

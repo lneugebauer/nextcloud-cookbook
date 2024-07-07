@@ -10,7 +10,6 @@ import java.io.StringReader
 import java.lang.reflect.Type
 
 class NutritionDeserializer : JsonDeserializer<NutritionDto?> {
-
     override fun deserialize(
         json: JsonElement?,
         typeOfT: Type?,

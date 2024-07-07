@@ -5,6 +5,8 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.HomeScreenDataRe
 
 sealed interface HomeScreenState {
     object Initial : HomeScreenState
+
     data class Loaded(val data: List<HomeScreenDataResult>) : HomeScreenState
+
     data class Error(val uiText: UiText) : HomeScreenState
 }

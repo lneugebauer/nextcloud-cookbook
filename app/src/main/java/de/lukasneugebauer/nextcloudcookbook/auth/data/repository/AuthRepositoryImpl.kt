@@ -15,16 +15,16 @@ class AuthRepositoryImpl(
     private val api: AuthApi,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : AuthRepository, BaseRepository() {
-
     override suspend fun getLoginEndpoint(baseUrl: String): Resource<LoginEndpointResult> {
         return withContext(ioDispatcher) {
-            val url = buildString {
-                append(baseUrl.removeSuffix("/"))
-                if (!baseUrl.contains("index.php")) {
-                    append("/index.php")
+            val url =
+                buildString {
+                    append(baseUrl.removeSuffix("/"))
+                    if (!baseUrl.contains("index.php")) {
+                        append("/index.php")
+                    }
+                    append("/login/v2")
                 }
-                append("/login/v2")
-            }
 
             when (val response = api.getLoginEndpoint(url)) {
                 is NetworkResponse.Success -> {
@@ -39,7 +39,10 @@ class AuthRepositoryImpl(
         }
     }
 
-    override suspend fun tryLogin(url: String, token: String): Resource<LoginResult> {
+    override suspend fun tryLogin(
+        url: String,
+        token: String,
+    ): Resource<LoginResult> {
         return withContext(ioDispatcher) {
             return@withContext when (val response = api.tryLogin(url = url, token = token)) {
                 is NetworkResponse.Success -> {

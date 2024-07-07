@@ -51,26 +51,32 @@ fun CommonItem(
 }
 
 @Composable
-fun CommonItemBody(name: String, modifier: Modifier, onClick: () -> Unit) {
+fun CommonItemBody(
+    name: String,
+    modifier: Modifier,
+    onClick: () -> Unit,
+) {
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
             text = name,
-            modifier = Modifier
-                .padding(dimensionResource(id = R.dimen.padding_s))
-                .weight(2f)
-                .wrapContentWidth(Alignment.Start),
+            modifier =
+                Modifier
+                    .padding(dimensionResource(id = R.dimen.padding_s))
+                    .weight(2f)
+                    .wrapContentWidth(Alignment.Start),
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,
             style = MaterialTheme.typography.body1,
         )
         IconButton(
             onClick = onClick,
-            modifier = Modifier
-                .weight(1f)
-                .wrapContentWidth(Alignment.End),
+            modifier =
+                Modifier
+                    .weight(1f)
+                    .wrapContentWidth(Alignment.End),
         ) {
             Icon(
                 Icons.Filled.MoreVert,

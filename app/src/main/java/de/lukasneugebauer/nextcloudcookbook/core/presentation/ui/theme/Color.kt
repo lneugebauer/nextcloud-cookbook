@@ -14,11 +14,12 @@ val NcBlue300 = Color(0xFF4EBEF1)
 val NcBlue200 = Color(0xFF7FD1F6)
 val NcBlue100 = Color(0xFFB2E3F9)
 val NcBlue50 = Color(0xFFE1F4FD)
-val NcBlueGradient = Brush.linearGradient(
-    listOf(
-        NcBlue700,
-        Color(0xFF1CAFFF),
-    ),
-    start = Offset(0f, Float.POSITIVE_INFINITY),
-    end = Offset(Float.POSITIVE_INFINITY, 0f),
-)
+val NcBlueGradient =
+    Brush.linearGradient(
+        listOf(
+            NcBlue700,
+            Color(0xFF1CAFFF),
+        ),
+        start = Offset(0f, Float.POSITIVE_INFINITY),
+        end = Offset(Float.POSITIVE_INFINITY, 0f),
+    )

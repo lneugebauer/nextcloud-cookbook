@@ -6,6 +6,7 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-kapt'
     id "org.sonarqube" version "3.5.0.2730"
+    id "org.jlleitschuh.gradle.ktlint" version "12.1.1"
 }
 
 def keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -108,10 +109,6 @@ android {
     }
 }
 
-configurations {
-    ktlint
-}
-
 kotlin {
     sourceSets {
         debug {
@@ -124,12 +121,6 @@ kotlin {
 }
 
 dependencies {
-
-    ktlint('com.pinterest:ktlint:0.50.0') {
-        attributes {
-            attribute(Bundling.BUNDLING_ATTRIBUTE, getObjects().named(Bundling, Bundling.EXTERNAL))
-        }
-    }
 
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
 
@@ -197,27 +188,4 @@ dependencies {
 
 kapt {
     correctErrorTypes true
-}
-
-tasks.register("ktlintCheck", JavaExec) {
-    group = "verification"
-    description = "Check Kotlin code style."
-    classpath = configurations.ktlint
-    mainClass = "com.pinterest.ktlint.Main"
-    // see https://pinterest.github.io/ktlint/install/cli/#command-line-usage for more information
-    args "src/**/*.kt", "**.kts", "!**/build/**"
-}
-
-tasks.named("check") {
-    dependsOn tasks.named("ktlintCheck")
-}
-
-tasks.register("ktlintFormat", JavaExec) {
-    group = "formatting"
-    description = "Fix Kotlin code style deviations."
-    classpath = configurations.ktlint
-    mainClass = "com.pinterest.ktlint.Main"
-    jvmArgs "--add-opens=java.base/java.lang=ALL-UNNAMED"
-    // see https://pinterest.github.io/ktlint/install/cli/#command-line-usage for more information
-    args "-F", "src/**/*.kt", "**.kts", "!**/build/**"
 }

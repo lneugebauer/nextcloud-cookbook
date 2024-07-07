@@ -9,38 +9,41 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 @SuppressLint("ConflictingOnColor")
-private val DarkColorPalette = darkColors(
-    primary = NcBlue700,
-    primaryVariant = NcBlue800,
-    secondary = NcBlue700,
-    secondaryVariant = NcBlue800,
-    background = Color.Black,
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onBackground = Color.White,
-)
+private val DarkColorPalette =
+    darkColors(
+        primary = NcBlue700,
+        primaryVariant = NcBlue800,
+        secondary = NcBlue700,
+        secondaryVariant = NcBlue800,
+        background = Color.Black,
+        onPrimary = Color.White,
+        onSecondary = Color.White,
+        onBackground = Color.White,
+    )
 
-private val LightColorPalette = lightColors(
-    primary = NcBlue700,
-    primaryVariant = NcBlue800,
-    secondary = NcBlue700,
-    secondaryVariant = NcBlue800,
-    background = Color.White,
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onBackground = Color.Black,
-)
+private val LightColorPalette =
+    lightColors(
+        primary = NcBlue700,
+        primaryVariant = NcBlue800,
+        secondary = NcBlue700,
+        secondaryVariant = NcBlue800,
+        background = Color.White,
+        onPrimary = Color.White,
+        onSecondary = Color.White,
+        onBackground = Color.Black,
+    )
 
 @Composable
 fun NextcloudCookbookTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit,
 ) {
-    val colors = if (darkTheme) {
-        DarkColorPalette
-    } else {
-        LightColorPalette
-    }
+    val colors =
+        if (darkTheme) {
+            DarkColorPalette
+        } else {
+            LightColorPalette
+        }
 
     MaterialTheme(
         colors = colors,

@@ -8,11 +8,12 @@ import de.lukasneugebauer.nextcloudcookbook.di.CategoriesStore
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class CategoryRepositoryImpl @Inject constructor(
-    private val categoriesStore: CategoriesStore,
-) : CategoryRepository {
-
-    override fun getCategories(): Flow<StoreResponse<List<CategoryDto>>> {
-        return categoriesStore.stream(StoreRequest.cached(key = Unit, refresh = false))
+class CategoryRepositoryImpl
+    @Inject
+    constructor(
+        private val categoriesStore: CategoriesStore,
+    ) : CategoryRepository {
+        override fun getCategories(): Flow<StoreResponse<List<CategoryDto>>> {
+            return categoriesStore.stream(StoreRequest.cached(key = Unit, refresh = false))
+        }
     }
-}

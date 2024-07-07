@@ -22,75 +22,81 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class GetHomeScreenDataUseCase @Inject constructor(
-    private val categoriesStore: CategoriesStore,
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
-    private val preferencesManager: PreferencesManager,
-    private val recipePreviewsByCategoryStore: RecipePreviewsByCategoryStore,
-    private val recipePreviewsStore: RecipePreviewsStore,
-    private val recipeStore: RecipeStore,
-) {
+class GetHomeScreenDataUseCase
+    @Inject
+    constructor(
+        private val categoriesStore: CategoriesStore,
+        @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
+        private val preferencesManager: PreferencesManager,
+        private val recipePreviewsByCategoryStore: RecipePreviewsByCategoryStore,
+        private val recipePreviewsStore: RecipePreviewsStore,
+        private val recipeStore: RecipeStore,
+    ) {
+        suspend operator fun invoke(): List<HomeScreenDataResult> {
+            val currentDate =
+                LocalDateTime.now()
+                    .withHour(0)
+                    .withMinute(0)
+                    .withSecond(0)
+            val homeScreenData = mutableListOf<HomeScreenDataResult>()
+            var recipeOfTheDay = preferencesManager.preferencesFlow.map { it.recipeOfTheDay }.first()
 
-    suspend operator fun invoke(): List<HomeScreenDataResult> {
-        val currentDate = LocalDateTime.now()
-            .withHour(0)
-            .withMinute(0)
-            .withSecond(0)
-        val homeScreenData = mutableListOf<HomeScreenDataResult>()
-        var recipeOfTheDay = preferencesManager.preferencesFlow.map { it.recipeOfTheDay }.first()
+            if (recipeOfTheDay.id == DEFAULT_RECIPE_OF_THE_DAY_ID || recipeOfTheDay.updatedAt.isBefore(currentDate)) {
+                try {
+                    val newRecipeOfTheDayId =
+                        recipePreviewsStore.get(Unit).randomOrNull()?.toRecipePreview()?.id
+                            ?: DEFAULT_RECIPE_OF_THE_DAY_ID
 
-        if (recipeOfTheDay.id == DEFAULT_RECIPE_OF_THE_DAY_ID || recipeOfTheDay.updatedAt.isBefore(currentDate)) {
-            try {
-                val newRecipeOfTheDayId =
-                    recipePreviewsStore.get(Unit).randomOrNull()?.toRecipePreview()?.id
-                        ?: DEFAULT_RECIPE_OF_THE_DAY_ID
-
-                recipeOfTheDay = RecipeOfTheDay(
-                    id = newRecipeOfTheDayId,
-                    updatedAt = LocalDateTime.now(),
-                )
-                preferencesManager.updateRecipeOfTheDay(recipeOfTheDay)
-            } catch (e: Exception) {
-                Timber.e(e.stackTraceToString())
+                    recipeOfTheDay =
+                        RecipeOfTheDay(
+                            id = newRecipeOfTheDayId,
+                            updatedAt = LocalDateTime.now(),
+                        )
+                    preferencesManager.updateRecipeOfTheDay(recipeOfTheDay)
+                } catch (e: Exception) {
+                    Timber.e(e.stackTraceToString())
+                }
             }
-        }
 
-        // FIXME: 25.12.21 Get different recipe of the day if api returns 404 error.
-        //  E.g. after deleting recipe of the day.
-        withContext(ioDispatcher) {
-            try {
-                val result = HomeScreenDataResult.Single(
-                    R.string.home_recommendation,
-                    recipeStore.get(recipeOfTheDay.id).toRecipe(),
-                )
-                homeScreenData.add(result)
-            } catch (e: Exception) {
-                Timber.e(e.stackTraceToString())
+            // FIXME: 25.12.21 Get different recipe of the day if api returns 404 error.
+            //  E.g. after deleting recipe of the day.
+            withContext(ioDispatcher) {
+                try {
+                    val result =
+                        HomeScreenDataResult.Single(
+                            R.string.home_recommendation,
+                            recipeStore.get(recipeOfTheDay.id).toRecipe(),
+                        )
+                    homeScreenData.add(result)
+                } catch (e: Exception) {
+                    Timber.e(e.stackTraceToString())
+                }
             }
-        }
 
-        withContext(ioDispatcher) {
-            try {
-                categoriesStore.get(Unit)
-                    .sortedByDescending { it.recipeCount }
-                    .take(RecipeConstants.HOME_SCREEN_CATEGORIES)
-                    .forEach { categoryDto ->
-                        val recipePreviews = recipePreviewsByCategoryStore
-                            .get(categoryDto.name)
-                            .map { it.toRecipePreview() }
-                        if (recipePreviews.isNotEmpty()) {
-                            val result = HomeScreenDataResult.Row(
-                                categoryDto.name,
-                                recipePreviews,
-                            )
-                            homeScreenData.add(result)
+            withContext(ioDispatcher) {
+                try {
+                    categoriesStore.get(Unit)
+                        .sortedByDescending { it.recipeCount }
+                        .take(RecipeConstants.HOME_SCREEN_CATEGORIES)
+                        .forEach { categoryDto ->
+                            val recipePreviews =
+                                recipePreviewsByCategoryStore
+                                    .get(categoryDto.name)
+                                    .map { it.toRecipePreview() }
+                            if (recipePreviews.isNotEmpty()) {
+                                val result =
+                                    HomeScreenDataResult.Row(
+                                        categoryDto.name,
+                                        recipePreviews,
+                                    )
+                                homeScreenData.add(result)
+                            }
                         }
-                    }
-            } catch (e: Exception) {
-                Timber.e(e.stackTraceToString())
+                } catch (e: Exception) {
+                    Timber.e(e.stackTraceToString())
+                }
             }
-        }
 
-        return homeScreenData.toList()
+            return homeScreenData.toList()
+        }
     }
-}

@@ -12,16 +12,17 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(
-    getHomeScreenDataUseCase: GetHomeScreenDataUseCase,
-) : ViewModel() {
+class HomeViewModel
+    @Inject
+    constructor(
+        getHomeScreenDataUseCase: GetHomeScreenDataUseCase,
+    ) : ViewModel() {
+        private val _uiState = MutableStateFlow<HomeScreenState>(HomeScreenState.Initial)
+        val uiState = _uiState.asStateFlow()
 
-    private val _uiState = MutableStateFlow<HomeScreenState>(HomeScreenState.Initial)
-    val uiState = _uiState.asStateFlow()
-
-    init {
-        viewModelScope.launch {
-            _uiState.update { HomeScreenState.Loaded(getHomeScreenDataUseCase()) }
+        init {
+            viewModelScope.launch {
+                _uiState.update { HomeScreenState.Loaded(getHomeScreenDataUseCase()) }
+            }
         }
     }
-}

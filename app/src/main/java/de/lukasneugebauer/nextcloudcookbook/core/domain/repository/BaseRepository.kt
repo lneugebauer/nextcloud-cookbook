@@ -12,31 +12,33 @@ import java.net.UnknownHostException
 import javax.net.ssl.SSLHandshakeException
 
 open class BaseRepository {
-
     fun <T> handleResponseError(t: Throwable?): Resource.Error<T> {
         Timber.e(t?.stackTraceToString())
-        val message = when (t) {
-            is HttpException -> when (t.code()) {
-                400 -> UiText.StringResource(R.string.error_http_400)
-                401 -> UiText.StringResource(R.string.error_http_401)
-                403 -> UiText.StringResource(R.string.error_http_403)
-                404 -> UiText.StringResource(R.string.error_http_404)
-                405 -> UiText.StringResource(R.string.error_http_405)
-                500 -> UiText.StringResource(R.string.error_http_500)
-                503 -> UiText.StringResource(R.string.error_http_503)
+        val message =
+            when (t) {
+                is HttpException ->
+                    when (t.code()) {
+                        400 -> UiText.StringResource(R.string.error_http_400)
+                        401 -> UiText.StringResource(R.string.error_http_401)
+                        403 -> UiText.StringResource(R.string.error_http_403)
+                        404 -> UiText.StringResource(R.string.error_http_404)
+                        405 -> UiText.StringResource(R.string.error_http_405)
+                        500 -> UiText.StringResource(R.string.error_http_500)
+                        503 -> UiText.StringResource(R.string.error_http_503)
+                        else -> unknownErrorUiText(t)
+                    }
+                is SocketTimeoutException -> UiText.StringResource(R.string.error_timeout)
+                is UnknownHostException -> UiText.StringResource(R.string.error_unknown_host)
+                is MalformedJsonException -> UiText.StringResource(R.string.error_malformed_json)
+                is SSLHandshakeException -> UiText.StringResource(R.string.error_ssl_handshake)
+                is EOFException -> UiText.StringResource(R.string.error_eof)
                 else -> unknownErrorUiText(t)
             }
-            is SocketTimeoutException -> UiText.StringResource(R.string.error_timeout)
-            is UnknownHostException -> UiText.StringResource(R.string.error_unknown_host)
-            is MalformedJsonException -> UiText.StringResource(R.string.error_malformed_json)
-            is SSLHandshakeException -> UiText.StringResource(R.string.error_ssl_handshake)
-            is EOFException -> UiText.StringResource(R.string.error_eof)
-            else -> unknownErrorUiText(t)
-        }
         return Resource.Error(message)
     }
 
-    private fun unknownErrorUiText(t: Throwable?): UiText = t?.localizedMessage
-        ?.let { UiText.DynamicString(it) }
-        ?: run { UiText.StringResource(R.string.error_unknown) }
+    private fun unknownErrorUiText(t: Throwable?): UiText =
+        t?.localizedMessage
+            ?.let { UiText.DynamicString(it) }
+            ?: run { UiText.StringResource(R.string.error_unknown) }
 }

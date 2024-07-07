@@ -24,60 +24,65 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class ApiProvider @Inject constructor(
-    private val scope: CoroutineScope,
-    private val httpLoggingInterceptor: HttpLoggingInterceptor,
-    private val preferencesManager: PreferencesManager,
-) {
+class ApiProvider
+    @Inject
+    constructor(
+        private val scope: CoroutineScope,
+        private val httpLoggingInterceptor: HttpLoggingInterceptor,
+        private val preferencesManager: PreferencesManager,
+    ) {
+        private val gson =
+            GsonBuilder()
+                .registerTypeAdapter(NutritionDto::class.java, NutritionDeserializer())
+                .create()
 
-    private val gson = GsonBuilder()
-        .registerTypeAdapter(NutritionDto::class.java, NutritionDeserializer())
-        .create()
+        private val _ncCookbookApiFlow = MutableStateFlow<NcCookbookApi?>(null)
+        val ncCookbookApiFlow: StateFlow<NcCookbookApi?> = _ncCookbookApiFlow
 
-    private val _ncCookbookApiFlow = MutableStateFlow<NcCookbookApi?>(null)
-    val ncCookbookApiFlow: StateFlow<NcCookbookApi?> = _ncCookbookApiFlow
+        init {
+            initApi()
+        }
 
-    init {
-        initApi()
-    }
+        fun initApi() {
+            scope.launch {
+                val ncAccount =
+                    preferencesManager.preferencesFlow
+                        .map { it.ncAccount }
+                        .first()
 
-    fun initApi() {
-        scope.launch {
-            val ncAccount = preferencesManager.preferencesFlow
-                .map { it.ncAccount }
-                .first()
-
-            if (ncAccount.username.isNotBlank() &&
-                ncAccount.token.isNotBlank() &&
-                ncAccount.url.isNotBlank()
-            ) {
-                initRetrofitApi(ncAccount)
+                if (ncAccount.username.isNotBlank() &&
+                    ncAccount.token.isNotBlank() &&
+                    ncAccount.url.isNotBlank()
+                ) {
+                    initRetrofitApi(ncAccount)
+                }
             }
         }
+
+        fun resetApi() {
+            _ncCookbookApiFlow.value = null
+        }
+
+        private fun initRetrofitApi(ncAccount: NcAccount) {
+            val authInterceptor = BasicAuthInterceptor(ncAccount.username, ncAccount.token)
+
+            val client =
+                OkHttpClient.Builder()
+                    .addInterceptor(httpLoggingInterceptor)
+                    .addInterceptor(authInterceptor)
+                    .addNetworkInterceptor(NetworkInterceptor())
+                    .build()
+
+            val retrofit =
+                Retrofit.Builder()
+                    .baseUrl(ncAccount.url.addSuffix("/"))
+                    .client(client)
+                    .addConverterFactory(GsonConverterFactory.create(gson))
+                    .addCallAdapterFactory(NetworkResponseAdapterFactory())
+                    .build()
+
+            _ncCookbookApiFlow.value = retrofit.create(NcCookbookApi::class.java)
+        }
+
+        fun getNcCookbookApi(): NcCookbookApi? = _ncCookbookApiFlow.value
     }
-
-    fun resetApi() {
-        _ncCookbookApiFlow.value = null
-    }
-
-    private fun initRetrofitApi(ncAccount: NcAccount) {
-        val authInterceptor = BasicAuthInterceptor(ncAccount.username, ncAccount.token)
-
-        val client = OkHttpClient.Builder()
-            .addInterceptor(httpLoggingInterceptor)
-            .addInterceptor(authInterceptor)
-            .addNetworkInterceptor(NetworkInterceptor())
-            .build()
-
-        val retrofit = Retrofit.Builder()
-            .baseUrl(ncAccount.url.addSuffix("/"))
-            .client(client)
-            .addConverterFactory(GsonConverterFactory.create(gson))
-            .addCallAdapterFactory(NetworkResponseAdapterFactory())
-            .build()
-
-        _ncCookbookApiFlow.value = retrofit.create(NcCookbookApi::class.java)
-    }
-
-    fun getNcCookbookApi(): NcCookbookApi? = _ncCookbookApiFlow.value
-}

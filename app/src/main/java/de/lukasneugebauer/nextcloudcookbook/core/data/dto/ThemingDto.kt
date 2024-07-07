@@ -33,9 +33,10 @@ data class ThemingDto(
     @SerializedName("favicon")
     val favicon: String,
 ) {
-    fun toTheming() = Theming(
-        color = color,
-        colorText = colorText,
-        colorBackground = background,
-    )
+    fun toTheming() =
+        Theming(
+            color = color,
+            colorText = colorText,
+            colorBackground = background,
+        )
 }

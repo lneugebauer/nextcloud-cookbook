@@ -19,7 +19,6 @@ import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface NcCookbookApi {
-
     @Headers(
         "Accept: application/json",
         "OCS-APIRequest: true",
@@ -34,28 +33,41 @@ interface NcCookbookApi {
         "Content-Type: application/json;charset=utf-8",
     )
     @GET("ocs/v2.php/cloud/users/{username}?format=json")
-    suspend fun getUserMetadata(@Path("username") username: String): NetworkResponse<UserMetadataResponse, ErrorResponse>
+    suspend fun getUserMetadata(
+        @Path("username") username: String,
+    ): NetworkResponse<UserMetadataResponse, ErrorResponse>
 
     @GET("$FULL_PATH/categories")
     suspend fun getCategories(): List<CategoryDto>
 
     @GET("$FULL_PATH/category/{categoryName}")
-    suspend fun getRecipesByCategory(@Path("categoryName") categoryName: String): List<RecipePreviewDto>
+    suspend fun getRecipesByCategory(
+        @Path("categoryName") categoryName: String,
+    ): List<RecipePreviewDto>
 
     @GET("$FULL_PATH/recipes")
     suspend fun getRecipes(): List<RecipePreviewDto>
 
     @GET("$FULL_PATH/recipes/{id}")
-    suspend fun getRecipe(@Path("id") id: Int): RecipeDto
+    suspend fun getRecipe(
+        @Path("id") id: Int,
+    ): RecipeDto
 
     @POST("$FULL_PATH/recipes")
-    suspend fun createRecipe(@Body recipe: RecipeDto): Int
+    suspend fun createRecipe(
+        @Body recipe: RecipeDto,
+    ): Int
 
     @PUT("$FULL_PATH/recipes/{id}")
-    suspend fun updateRecipe(@Path("id") id: Int, @Body recipe: RecipeDto): Int
+    suspend fun updateRecipe(
+        @Path("id") id: Int,
+        @Body recipe: RecipeDto,
+    ): Int
 
     @DELETE("$FULL_PATH/recipes/{id}")
-    suspend fun deleteRecipe(@Path("id") id: Int): NetworkResponse<String, ErrorResponse>
+    suspend fun deleteRecipe(
+        @Path("id") id: Int,
+    ): NetworkResponse<String, ErrorResponse>
 
     @GET("$API_ENDPOINT/version")
     suspend fun getCookbookVersion(): NetworkResponse<CookbookVersionDto, ErrorResponse>

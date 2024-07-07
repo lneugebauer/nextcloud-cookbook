@@ -9,9 +9,14 @@ data class CookbookVersionDto(
     @SerializedName("api_version")
     val apiVersion: ApiVersionDto,
 ) {
-
-    fun toCookbookVersion(): CookbookVersion = CookbookVersion(
-        cookbookVersion = if (cookbookVersion.size >= 3) "${cookbookVersion[0]}.${cookbookVersion[1]}.${cookbookVersion[2]}" else "Unknown",
-        apiVersion = "${apiVersion.epoch}.${apiVersion.major}.${apiVersion.minor}",
-    )
+    fun toCookbookVersion(): CookbookVersion =
+        CookbookVersion(
+            cookbookVersion =
+                if (cookbookVersion.size >= 3) {
+                    "${cookbookVersion[0]}.${cookbookVersion[1]}.${cookbookVersion[2]}"
+                } else {
+                    "Unknown"
+                },
+            apiVersion = "${apiVersion.epoch}.${apiVersion.major}.${apiVersion.minor}",
+        )
 }

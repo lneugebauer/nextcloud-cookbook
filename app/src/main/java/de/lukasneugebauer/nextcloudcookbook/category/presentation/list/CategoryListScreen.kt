@@ -88,22 +88,24 @@ private fun CategoryListScreen(
     ) {
         itemsIndexed(data) { index, category ->
             ListItem(
-                modifier = Modifier.clickable(
-                    onClick = {
-                        onClick.invoke(category.name)
-                    },
-                ),
+                modifier =
+                    Modifier.clickable(
+                        onClick = {
+                            onClick.invoke(category.name)
+                        },
+                    ),
                 trailing = {
                     Badge(backgroundColor = MaterialTheme.colors.primary) {
                         Text(text = category.recipeCount.toString())
                     }
                 },
                 text = {
-                    val categoryName = if (category.name == "*") {
-                        stringResource(R.string.recipe_uncategorised)
-                    } else {
-                        category.name
-                    }
+                    val categoryName =
+                        if (category.name == "*") {
+                            stringResource(R.string.recipe_uncategorised)
+                        } else {
+                            category.name
+                        }
                     Text(text = categoryName)
                 },
             )
@@ -128,9 +130,10 @@ private fun TopAppBar() {
 @Preview
 @Composable
 private fun CategoryListScreenPreview() {
-    val categories = MutableList(10) {
-        Category(name = "Category $it", nextInt(0, 20))
-    }
+    val categories =
+        MutableList(10) {
+            Category(name = "Category $it", nextInt(0, 20))
+        }
     NextcloudCookbookTheme {
         CategoryListScreen(data = categories, modifier = Modifier, onClick = {})
     }

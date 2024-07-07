@@ -16,35 +16,38 @@ import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
-class CategoryListViewModel @Inject constructor(
-    categoryRepository: CategoryRepository,
-) : ViewModel() {
+class CategoryListViewModel
+    @Inject
+    constructor(
+        categoryRepository: CategoryRepository,
+    ) : ViewModel() {
+        private val _uiState =
+            MutableStateFlow<CategoryListScreenState>(CategoryListScreenState.Initial)
+        val uiState = _uiState.asStateFlow()
 
-    private val _uiState =
-        MutableStateFlow<CategoryListScreenState>(CategoryListScreenState.Initial)
-    val uiState = _uiState.asStateFlow()
+        init {
+            categoryRepository.getCategories().onEach { categoriesResponse ->
+                when (categoriesResponse) {
+                    is StoreResponse.Loading -> _uiState.update { CategoryListScreenState.Initial }
+                    is StoreResponse.Data ->
+                        _uiState.update {
+                            CategoryListScreenState.Loaded(
+                                categoriesResponse.value
+                                    .filter { it.recipeCount > 0 }
+                                    .map { it.toCategory() },
+                            )
+                        }
 
-    init {
-        categoryRepository.getCategories().onEach { categoriesResponse ->
-            when (categoriesResponse) {
-                is StoreResponse.Loading -> _uiState.update { CategoryListScreenState.Initial }
-                is StoreResponse.Data -> _uiState.update {
-                    CategoryListScreenState.Loaded(
-                        categoriesResponse.value
-                            .filter { it.recipeCount > 0 }
-                            .map { it.toCategory() },
-                    )
+                    is StoreResponse.NoNewData -> Unit
+
+                    is StoreResponse.Error -> {
+                        val message =
+                            categoriesResponse.errorMessageOrNull()
+                                ?.let { UiText.DynamicString(it) }
+                                ?: run { UiText.StringResource(R.string.error_unknown) }
+                        _uiState.update { CategoryListScreenState.Error(message) }
+                    }
                 }
-
-                is StoreResponse.NoNewData -> Unit
-
-                is StoreResponse.Error -> {
-                    val message = categoriesResponse.errorMessageOrNull()
-                        ?.let { UiText.DynamicString(it) }
-                        ?: run { UiText.StringResource(R.string.error_unknown) }
-                    _uiState.update { CategoryListScreenState.Error(message) }
-                }
-            }
-        }.launchIn(viewModelScope)
+            }.launchIn(viewModelScope)
+        }
     }
-}

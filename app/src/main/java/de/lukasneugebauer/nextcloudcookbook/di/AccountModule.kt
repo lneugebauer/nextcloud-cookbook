@@ -14,7 +14,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AccountModule {
-
     @Provides
     @Singleton
     fun provideAccountRepository(

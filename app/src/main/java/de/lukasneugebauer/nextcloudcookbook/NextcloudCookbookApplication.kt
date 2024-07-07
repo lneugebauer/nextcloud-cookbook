@@ -13,7 +13,6 @@ import java.time.LocalDate
 
 @HiltAndroidApp
 class NextcloudCookbookApplication : Application() {
-
     override fun onCreate() {
         super.onCreate()
         initializeTimber()

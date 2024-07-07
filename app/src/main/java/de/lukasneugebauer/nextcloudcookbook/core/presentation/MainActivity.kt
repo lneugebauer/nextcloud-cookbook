@@ -35,7 +35,6 @@ import org.acra.ACRA
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
     private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -82,9 +81,10 @@ class MainActivity : ComponentActivity() {
 fun NextcloudCookbookApp() {
     NextcloudCookbookTheme {
         val navController = rememberNavController()
-        val viewModelStoreOwner = checkNotNull(LocalViewModelStoreOwner.current) {
-            "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
-        }
+        val viewModelStoreOwner =
+            checkNotNull(LocalViewModelStoreOwner.current) {
+                "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
+            }
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             destination.route?.let {

@@ -24,7 +24,6 @@ typealias RecipeStore = Store<Int, RecipeDto>
 @Module
 @InstallIn(SingletonComponent::class)
 object RecipeModule {
-
     @ExperimentalCoroutinesApi
     @FlowPreview
     @Provides

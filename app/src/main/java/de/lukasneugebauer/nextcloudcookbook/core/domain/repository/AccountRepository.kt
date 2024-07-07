@@ -8,7 +8,6 @@ import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import kotlinx.coroutines.flow.Flow
 
 interface AccountRepository {
-
     suspend fun getCapabilities(): Resource<Capabilities>
 
     suspend fun getUserMetadata(): Resource<UserMetadata>
