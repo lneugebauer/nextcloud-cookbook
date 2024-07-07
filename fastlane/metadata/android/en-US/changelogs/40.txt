@@ -1,0 +1,4 @@
+- Add contribute translations button
+- Add Galician translation
+- Add servings calculator
+- Update Czech translation

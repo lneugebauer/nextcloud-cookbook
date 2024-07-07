@@ -1,0 +1,4 @@
+- Button zum Beitragen von Überstetzungen hinzugefügt
+- Galicische Übersetzung hinzugefügt
+- Portionen-Rechner hinzufügen
+- Tschechische Übersetzung aktualisiert
