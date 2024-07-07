@@ -1,0 +1,3 @@
+- Actualización de la traducción al ruso
+- Corregir el fallo de la pantalla de inicio
+- Mejorar la gestión de inicio de sesión
