@@ -521,7 +521,7 @@ private fun Ingredients(
             onClick = onDecreaseYield,
             enabled = currentYield > 1,
         ) {
-            Icon(imageVector = Icons.Outlined.Remove, contentDescription = "")
+            Icon(imageVector = Icons.Outlined.Remove, contentDescription = stringResource(id = R.string.recipe_servings_decrease))
         }
         Text(
             text = pluralResource(resId = R.plurals.recipe_servings, currentYield, currentYield),
@@ -529,11 +529,11 @@ private fun Ingredients(
             style = MaterialTheme.typography.body1,
         )
         Button(onClick = onIncreaseYield) {
-            Icon(imageVector = Icons.Outlined.Add, contentDescription = "")
+            Icon(imageVector = Icons.Outlined.Add, contentDescription = stringResource(id = R.string.recipe_servings_increase))
         }
         if (showResetButton) {
             Button(onClick = onResetYield) {
-                Icon(imageVector = Icons.Outlined.Refresh, contentDescription = "")
+                Icon(imageVector = Icons.Outlined.Refresh, contentDescription = stringResource(id = R.string.recipe_servings_reset))
             }
         }
     }

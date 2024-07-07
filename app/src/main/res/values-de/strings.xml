@@ -91,6 +91,9 @@
         <item quantity="one">%1$d Portion</item>
         <item quantity="other">%1$d Portionen</item>
     </plurals>
+    <string name="recipe_servings_decrease">Portion reduzieren</string>
+    <string name="recipe_servings_increase">Portion erhöhen</string>
+    <string name="recipe_servings_reset">Portions zurücksetzen</string>
     <string name="recipe_source">Quelle</string>
     <string name="recipe_tool_add">Utensil hinzufügen</string>
     <string name="recipe_tool_delete">Utensil löschen</string>
