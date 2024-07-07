@@ -1,0 +1,20 @@
+Vea todas sus recetas almacenadas en su instancia de Nextcloud.
+
+El código fuente se puede encontrar en GitHub en https://github.com/lneugebauer/nextcloud-cookbook/. Informe allí de errores, propuestas de mejora y solicitudes de funciones.
+
+Actual:
+- Listar todas las recetas
+- Listar todas las recetas por categoría
+- Ver receta
+- Permanecer despierto en la pantalla de recetas
+- Ajustes
+- Editar receta
+- Añadir receta
+
+Planificada:
+- Uso sin conexión
+- Inicio de sesión único a través de la aplicación Nextcloud Files
+- Inicio de sesión mediante código QR
+- Importar receta mediante URL
+
+Se requiere un servidor Nextcloud de acceso público con la última aplicación de libro de recetas para utilizar esta aplicación.

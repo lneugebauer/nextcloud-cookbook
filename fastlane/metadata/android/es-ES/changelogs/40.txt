@@ -1,0 +1,4 @@
+- Añadir botón de contribuir traducciones
+- Añadir traducción al gallego
+- Añadir calculadora de raciones
+- Actualizar la traducción al checo
