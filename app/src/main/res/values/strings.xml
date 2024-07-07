@@ -88,6 +88,13 @@
     <string name="recipe_nutrition_trans_fat">Trans fat</string>
     <string name="recipe_nutrition_unsaturated_fat">Unsaturated fat</string>
     <string name="recipe_prep_time">Preparation</string>
+    <plurals name="recipe_servings">
+        <item quantity="one">%1$d Serving</item>
+        <item quantity="other">%1$d Servings</item>
+    </plurals>
+    <string name="recipe_servings_decrease">Remove portion</string>
+    <string name="recipe_servings_increase">Add portion</string>
+    <string name="recipe_servings_reset">Reset portions</string>
     <string name="recipe_source">Source</string>
     <string name="recipe_tool_add">Add tool</string>
     <string name="recipe_tool_delete">Delete tool</string>
