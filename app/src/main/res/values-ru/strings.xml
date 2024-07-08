@@ -113,4 +113,14 @@
     <string name="recipe_nutrition_calories">Энергетическая ценность</string>
     <string name="recipe_nutrition_saturated_fat">Насыщенные жиры</string>
     <string name="recipe_nutrition_sodium">Натрий</string>
+    <plurals name="recipe_servings">
+        <item quantity="one">%1$d порция</item>
+        <item quantity="few">%1$d порции</item>
+        <item quantity="many">%1$d порций</item>
+        <item quantity="other">%1$d порций</item>
+    </plurals>
+    <string name="recipe_servings_decrease">Удалить порцию</string>
+    <string name="recipe_servings_increase">Добавить порцию</string>
+    <string name="recipe_servings_reset">Сбросить порции</string>
+    <string name="settings_translate">Помочь с переводом</string>
 </resources>
