@@ -66,6 +66,8 @@ platform :android do
     version_name = get_version_name(app_project_dir: '**/app')
     version_code = get_version_code(app_project_dir: '**/app')
     sh("cd ../app/build/outputs/apk/full/release/ && shasum -a 1 app-full-release.apk > app-full-release.sha1")
+    sh("cd ../app/build/outputs/apk/full/release/ && shasum -a 256 app-full-release.apk > app-full-release.sha256")
+    sh("cd ../app/build/outputs/apk/full/release/ && shasum -a 512 app-full-release.apk > app-full-release.sha512")
     set_github_release(
       repository_name: "lneugebauer/nextcloud-cookbook",
       api_token: ENV["GITHUB_TOKEN"],
@@ -74,7 +76,7 @@ platform :android do
       is_prerelease: true,
       description: (File.read("metadata/android/en-US/changelogs/" + version_code + ".txt") rescue "No changelog provided"),
       commitish: "main",
-      upload_assets: ["app/build/outputs/apk/full/release/app-full-release.apk", "app/build/outputs/apk/full/release/app-full-release.sha1"]
+      upload_assets: ["app/build/outputs/apk/full/release/app-full-release.apk", "app/build/outputs/apk/full/release/app-full-release.sha1", "app/build/outputs/apk/full/release/app-full-release.sha256", "app/build/outputs/apk/full/release/app-full-release.sha512"]
     )
   end
 
