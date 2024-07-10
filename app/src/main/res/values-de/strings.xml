@@ -59,6 +59,8 @@
     <string name="recipe_ingredient_add">Zutat hinzufügen</string>
     <string name="recipe_ingredient_delete">Zutat löschen</string>
     <string name="recipe_ingredients">Zutaten</string>
+    <string name="recipe_ingredients_copied">Zutaten kopiert</string>
+    <string name="recipe_ingredients_copy">Zutaten in Zwischenablage kopieren</string>
     <string name="recipe_ingredient">Zutat</string>
     <plurals name="recipe_ingredients_servings">
         <item quantity="one">Zutaten für %1$d Portion</item>

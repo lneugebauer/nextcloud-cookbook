@@ -3,7 +3,9 @@ package de.lukasneugebauer.nextcloudcookbook.recipe.presentation.detail
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
@@ -40,6 +42,7 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.outlined.Remove
 import androidx.compose.runtime.Composable
@@ -55,6 +58,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -531,14 +535,39 @@ private fun Ingredients(
     currentYield: Int,
     showResetButton: Boolean,
 ) {
-    Text(
-        text = stringResource(id = R.string.recipe_ingredients),
-        modifier =
-            Modifier
-                .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
-                .padding(bottom = dimensionResource(id = R.dimen.padding_s)),
-        style = MaterialTheme.typography.h6,
-    )
+    val clipboardManager = LocalClipboardManager.current
+    val context = LocalContext.current
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = stringResource(id = R.string.recipe_ingredients),
+            modifier =
+                Modifier
+                    .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
+                    .padding(bottom = dimensionResource(id = R.dimen.padding_s))
+                    .weight(1f),
+            style = MaterialTheme.typography.h6,
+        )
+        IconButton(onClick = {
+            clipboardManager.setText(
+                buildAnnotatedString {
+                    ingredients.joinTo(this, separator = "\n- ", prefix = "- ")
+                    toAnnotatedString()
+                },
+            )
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.recipe_ingredients_copied),
+                    Toast.LENGTH_SHORT,
+                ).show()
+            }
+        }) {
+            Icon(imageVector = Icons.Outlined.ContentCopy, contentDescription = stringResource(R.string.recipe_ingredients_copy))
+        }
+    }
     Row(
         modifier =
             Modifier
