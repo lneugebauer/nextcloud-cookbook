@@ -5,7 +5,7 @@
     <string name="common_more">Máis</string>
     <string name="common_no">Non</string>
     <string name="common_password">Contrasinal</string>
-    <string name="error_api_not_initialized">API non inicializada</string>
+    <string name="error_api_not_initialized">API non iniciada</string>
     <string name="error_empty_password">Escribe un contasinal</string>
     <string name="error_empty_url">Escribe un URL</string>
     <string name="error_eof">Erro de Fin do ficheiro</string>
@@ -33,9 +33,9 @@
     <string name="recipe_edit">Editar receita</string>
     <string name="recipe_image_url">URL da imaxe</string>
     <string name="recipe_ingredient_add">Engadir ingrediente</string>
-    <string name="recipe_instruction_add">Engadir instrucción</string>
-    <string name="recipe_instructions">Preparación</string>
-    <string name="recipe_instruction">Instrucción</string>
+    <string name="recipe_instruction_add">Engadir instrución</string>
+    <string name="recipe_instructions">Indicacións</string>
+    <string name="recipe_instruction">Instrución</string>
     <string name="recipe_more_menu_delete">Eliminar</string>
     <plurals name="recipe_ingredients_servings">
         <item quantity="one">Ingredientes para %1$d ración</item>
@@ -90,10 +90,10 @@
     <string name="error_empty_username">Escribe un nome de usuaria</string>
     <string name="recipe_url">URL</string>
     <string name="error_invalid_url">URL non válido</string>
-    <string name="error_malformed_json">JSON mal formado</string>
+    <string name="error_malformed_json">JSON con formato incorrecto</string>
     <string name="login_manual">Acceso manual</string>
     <string name="recipe_ingredients">Ingredientes</string>
-    <string name="recipe_instruction_delete">Eliminar instrucción</string>
+    <string name="recipe_instruction_delete">Eliminar instrución</string>
     <string name="recipe_name">Nome</string>
     <string name="recipe_nutrition">Información nutricional</string>
     <string name="recipe_nutrition_serving_size">Tamaño da ración</string>
@@ -106,9 +106,18 @@
     <string name="recipe_nutrition_sugar">Azucre</string>
     <string name="recipe_ingredient">Ingrediente</string>
     <string name="recipe_more_menu_edit">Editar</string>
-    <string name="recipe_more_menu_share">Código aberto</string>
+    <string name="recipe_more_menu_share">Abrir a orixe</string>
     <string name="recipe_nutrition_fiber">Fibra</string>
     <string name="recipe_prep_time">Preparación</string>
     <string name="settings_account">Conta</string>
     <string name="settings_translate">Axuda a traducir</string>
+    <string name="recipe_servings_reset">Restablecer porcións</string>
+    <string name="recipe_servings_increase">Engadir unha porción</string>
+    <string name="recipe_ingredients_copy">Copiar os ingredientes ao portapapeis</string>
+    <plurals name="recipe_servings">
+        <item quantity="one">%1$d ración</item>
+        <item quantity="other">%1$d racións</item>
+    </plurals>
+    <string name="recipe_servings_decrease">Quitar unha porción</string>
+    <string name="recipe_ingredients_copied">Copiaronse os ingredientes</string>
 </resources>
