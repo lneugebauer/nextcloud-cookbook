@@ -8,9 +8,11 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import de.lukasneugebauer.nextcloudcookbook.core.util.IoDispatcher
+import de.lukasneugebauer.nextcloudcookbook.recipe.data.YieldCalculatorImpl
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipeDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipePreviewDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.repository.RecipeRepositoryImpl
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.YieldCalculator
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.repository.RecipeRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -85,4 +87,8 @@ object RecipeModule {
             recipePreviewsStore,
             recipeStore,
         )
+
+    @Provides
+    @Singleton
+    fun provideYieldCalculator(): YieldCalculator = YieldCalculatorImpl()
 }

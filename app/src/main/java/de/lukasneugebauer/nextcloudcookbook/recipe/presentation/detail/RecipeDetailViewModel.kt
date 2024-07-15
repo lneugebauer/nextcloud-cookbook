@@ -11,7 +11,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
 import de.lukasneugebauer.nextcloudcookbook.core.util.asUiText
 import de.lukasneugebauer.nextcloudcookbook.core.util.notZero
-import de.lukasneugebauer.nextcloudcookbook.recipe.data.YieldCalculatorImpl
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.YieldCalculator
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.repository.RecipeRepository
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.RecipeDetailState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,6 +27,7 @@ class RecipeDetailViewModel
         private val preferencesManager: PreferencesManager,
         private val recipeRepository: RecipeRepository,
         savedStateHandle: SavedStateHandle,
+        private val yieldCalculator: YieldCalculator,
     ) : ViewModel() {
         private val _state = MutableStateFlow(RecipeDetailState())
         val state: StateFlow<RecipeDetailState> = _state
@@ -53,6 +54,12 @@ class RecipeDetailViewModel
                             val recipe = recipeResponse.value.toRecipe()
                             _state.value =
                                 _state.value.copy(
+                                    calculatedIngredients =
+                                        yieldCalculator.recalculateIngredients(
+                                            recipe.ingredients,
+                                            recipe.yield,
+                                            recipe.yield,
+                                        ),
                                     currentYield = recipe.yield,
                                     data = recipe,
                                     loading = false,
@@ -96,7 +103,6 @@ class RecipeDetailViewModel
 
         private fun recalculateYield(currentYield: Int) {
             val recipe = _state.value.data ?: return
-            val yieldCalculator = YieldCalculatorImpl()
             _state.value =
                 _state.value.copy(
                     calculatedIngredients =
