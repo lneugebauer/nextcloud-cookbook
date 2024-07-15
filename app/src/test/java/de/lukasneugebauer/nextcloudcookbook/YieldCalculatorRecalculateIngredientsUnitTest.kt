@@ -34,6 +34,8 @@ class YieldCalculatorRecalculateIngredientsUnitTest {
             listOf(
                 "pepper",
                 "some oregano",
+                "1.500,5 g mushrooms",
+                "1,250.50 g beans",
             )
         ingredients.forEach {
             assertFalse(yieldCalculator.isValidIngredientSyntax(it))
@@ -55,6 +57,9 @@ class YieldCalculatorRecalculateIngredientsUnitTest {
                 "some oregano",
                 "1.5 potatoes",
                 "1,6 carrots",
+                "1 - 2 onions",
+                "2-3 bananas",
+                "1 150 g apples",
             )
         val expectedIngredients =
             listOf(
@@ -68,6 +73,9 @@ class YieldCalculatorRecalculateIngredientsUnitTest {
                 "some oregano",
                 "3 potatoes",
                 "3.2 carrots",
+                "2 - 2 onions",
+                "4 bananas",
+                "2 150 g apples",
             )
 
         assertEquals(

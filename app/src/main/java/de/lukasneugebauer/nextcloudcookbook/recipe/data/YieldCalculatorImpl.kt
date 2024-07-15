@@ -51,10 +51,12 @@ class YieldCalculatorImpl(customLocale: Locale? = null) : YieldCalculator {
                 val possibleUnit =
                     ingredient.split(" ")
                         .firstOrNull()
-                        ?.filter { it.isLetter() } ?: ""
+                        ?.replace(Regex("""[^a-zA-Z]"""), "") ?: ""
                 val amount =
                     ingredient.split(" ")
                         .firstOrNull()
+                        ?.split("-")
+                        ?.firstOrNull()
                         ?.filter { it.isDigit() || it == ',' || it == '.' }
                         ?.replace(",", ".")
                         ?.toDoubleOrNull() ?: 0.0
