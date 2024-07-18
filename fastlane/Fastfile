@@ -29,6 +29,13 @@ platform :android do
     )
   end
 
+  desc "Ktlint Format"
+  lane :ktlintFormat do
+    gradle(
+      task: "ktlintFormat"
+    )
+  end
+
   desc "Lint"
   lane :lint do
     gradle(
