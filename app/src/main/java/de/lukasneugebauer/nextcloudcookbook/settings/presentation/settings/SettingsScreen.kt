@@ -59,7 +59,7 @@ fun SettingsScreen(
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     Scaffold(
-        topBar = { SettingsTopBar(onNavIconClick = { navigator.popBackStack() }) },
+        topBar = { SettingsTopBar(onNavIconClick = { navigator.navigateUp() }) },
     ) { innerPadding ->
         SettingsContent(
             modifier =

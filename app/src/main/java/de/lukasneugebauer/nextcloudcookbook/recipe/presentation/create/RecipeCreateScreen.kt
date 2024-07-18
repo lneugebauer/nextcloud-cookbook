@@ -43,7 +43,7 @@ fun RecipeCreateScreen(
                 categories = categories,
                 keywords = keywords,
                 title = R.string.recipe_edit,
-                onNavIconClick = { navigator.popBackStack() },
+                onNavIconClick = { navigator.navigateUp() },
                 onNameChanged = { newName ->
                     viewModel.changeName(newName)
                 },

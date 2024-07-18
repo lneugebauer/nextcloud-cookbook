@@ -111,7 +111,7 @@ fun RecipeListScreen(
                             } else {
                                 categoryName
                             },
-                        onBackClick = { navigator.popBackStack() },
+                        onBackClick = { navigator.navigateUp() },
                         onSearchClicked = { viewModel.toggleSearchAppBarVisibility() },
                     )
                 }

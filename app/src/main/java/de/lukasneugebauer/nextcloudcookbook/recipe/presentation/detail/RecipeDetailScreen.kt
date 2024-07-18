@@ -118,7 +118,7 @@ fun RecipeDetailScreen(
         topBar = {
             TopBar(
                 recipe = recipe,
-                onNavIconClick = { navigator.popBackStack() },
+                onNavIconClick = { navigator.navigateUp() },
                 onEditClick = {
                     if (recipe.isNotEmpty()) {
                         navigator.navigate(RecipeEditScreenDestination(recipe.id))

@@ -28,7 +28,7 @@ fun LibrariesScreen(navigator: DestinationsNavigator) {
             TopAppBar(
                 title = { Text(text = stringResource(id = R.string.settings_oss_licenses)) },
                 navigationIcon = {
-                    IconButton(onClick = { navigator.popBackStack() }) {
+                    IconButton(onClick = { navigator.navigateUp() }) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = stringResource(id = R.string.common_back),
