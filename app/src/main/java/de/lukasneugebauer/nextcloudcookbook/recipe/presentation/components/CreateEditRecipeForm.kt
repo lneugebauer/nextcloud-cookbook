@@ -24,6 +24,7 @@ import androidx.compose.material.TextFieldColors
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
@@ -243,7 +244,7 @@ private fun RecipeEditTopBar(
         navigationIcon = {
             IconButton(onClick = onNavIconClick) {
                 Icon(
-                    Icons.Default.ArrowBack,
+                    Icons.AutoMirrored.Default.ArrowBack,
                     contentDescription = stringResource(id = R.string.common_back),
                 )
             }
