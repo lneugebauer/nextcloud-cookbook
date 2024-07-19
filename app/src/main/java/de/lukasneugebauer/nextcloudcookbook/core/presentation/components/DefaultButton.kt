@@ -32,7 +32,7 @@ fun DefaultButton(
 
 @Preview
 @Composable
-fun DefaultButtonPreview() {
+private fun DefaultButtonPreview() {
     DefaultButton(onClick = { }) {
         Text("Button")
     }

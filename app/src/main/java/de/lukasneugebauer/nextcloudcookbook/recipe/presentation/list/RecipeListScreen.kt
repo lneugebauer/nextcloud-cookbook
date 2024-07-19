@@ -31,10 +31,8 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.CloudDownload
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -73,6 +71,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.error.AbstractErro
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.error.NotFoundScreen
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
+import de.lukasneugebauer.nextcloudcookbook.destinations.DownloadRecipeScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeCreateScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeDetailScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipePreview
@@ -115,7 +114,7 @@ fun RecipeListScreen(
                                 categoryName
                             },
                         onBackClick = { navigator.navigateUp() },
-                        onImportClick = { TODO("add action") },
+                        onImportClick = { navigator.navigate(DownloadRecipeScreenDestination) },
                         onSearchClick = { viewModel.toggleSearchAppBarVisibility() },
                     )
                 }

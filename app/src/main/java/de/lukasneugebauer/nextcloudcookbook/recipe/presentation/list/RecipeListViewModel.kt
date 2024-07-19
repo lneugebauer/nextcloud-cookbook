@@ -41,10 +41,9 @@ class RecipeListViewModel
         private val _selectedKeywordsState = MutableStateFlow(emptyList<String>())
         val selectedKeywordsState = _selectedKeywordsState.asStateFlow()
 
-        private val categoryName: String?
+        private val categoryName: String? = savedStateHandle["categoryName"]
 
         init {
-            categoryName = savedStateHandle["categoryName"]
             val keyword: String? = savedStateHandle["keyword"]
             if (!keyword.isNullOrBlank()) {
                 _selectedKeywordsState.update { listOf(keyword) }
