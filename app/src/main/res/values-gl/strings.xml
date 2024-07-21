@@ -120,4 +120,5 @@
     </plurals>
     <string name="recipe_servings_decrease">Quitar unha porción</string>
     <string name="recipe_ingredients_copied">Copiaronse os ingredientes</string>
+    <string name="recipe_yield">Cantidade</string>
 </resources>
