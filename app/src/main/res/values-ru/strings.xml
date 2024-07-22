@@ -123,4 +123,6 @@
     <string name="recipe_servings_increase">Добавить порцию</string>
     <string name="recipe_servings_reset">Сбросить порции</string>
     <string name="settings_translate">Помочь с переводом</string>
+    <string name="recipe_ingredients_copied">Ингредиенты скопированы</string>
+    <string name="recipe_ingredients_copy">Копировать ингредиенты в буфер обмена</string>
 </resources>
