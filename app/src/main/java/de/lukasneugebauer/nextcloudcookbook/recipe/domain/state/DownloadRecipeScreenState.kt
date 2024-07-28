@@ -5,4 +5,5 @@ import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
 data class DownloadRecipeScreenState(
     val url: String = "",
     val error: UiText? = null,
+    val recipeId: Int? = null,
 )

@@ -16,6 +16,7 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -32,6 +33,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Default
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.HideBottomNavigation
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
+import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeDetailScreenDestination
 
 @Destination
 @Composable
@@ -42,6 +44,12 @@ fun DownloadRecipeScreen(
     val uiState by viewModel.uiState.collectAsState()
     HideBottomNavigation()
 
+    uiState.recipeId?.let { id ->
+        LaunchedEffect(id) {
+            navigator.navigate(RecipeDetailScreenDestination(id))
+        }
+    }
+
     Scaffold(
         topBar = {
             RecipeDownloadTopBar {
@@ -51,6 +59,7 @@ fun DownloadRecipeScreen(
     ) { innerPadding ->
         DownloadRecipeScreen(
             url = uiState.url,
+            onDownloadClick = { viewModel.importRecipe() },
             onUrlChange = { viewModel.updateUrl(it) },
             modifier =
                 Modifier
@@ -64,6 +73,7 @@ fun DownloadRecipeScreen(
 @Composable
 private fun DownloadRecipeScreen(
     url: String,
+    onDownloadClick: () -> Unit,
     onUrlChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     error: UiText? = null,
@@ -99,11 +109,12 @@ private fun DownloadRecipeScreen(
                 ),
         )
         Button(
-            onClick = { /*TODO*/ },
+            onClick = onDownloadClick,
             modifier =
                 Modifier
                     .fillMaxWidth()
                     .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
+            enabled = url.isNotEmpty(),
         ) {
             Text(text = "Download")
         }
@@ -139,6 +150,7 @@ private fun DownloadRecipeScreenPreview(modifier: Modifier = Modifier) {
     NextcloudCookbookTheme {
         DownloadRecipeScreen(
             url = "https://example.com/recipe",
+            onDownloadClick = {},
             onUrlChange = {},
         )
     }

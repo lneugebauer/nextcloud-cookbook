@@ -3,6 +3,7 @@ package de.lukasneugebauer.nextcloudcookbook.recipe.domain.repository
 import com.dropbox.android.external.store4.StoreResponse
 import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import de.lukasneugebauer.nextcloudcookbook.core.util.SimpleResource
+import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.ImportUrlDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipeDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipePreviewDto
 import kotlinx.coroutines.flow.Flow
@@ -24,4 +25,6 @@ interface RecipeRepository {
         id: Int,
         categoryName: String,
     ): SimpleResource
+
+    suspend fun importRecipe(url: ImportUrlDto): Resource<RecipeDto>
 }

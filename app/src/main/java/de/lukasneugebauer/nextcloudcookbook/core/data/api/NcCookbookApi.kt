@@ -8,6 +8,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.data.remote.response.ErrorRespo
 import de.lukasneugebauer.nextcloudcookbook.core.data.remote.response.UserMetadataResponse
 import de.lukasneugebauer.nextcloudcookbook.core.util.Constants.API_ENDPOINT
 import de.lukasneugebauer.nextcloudcookbook.core.util.Constants.FULL_PATH
+import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.ImportUrlDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipeDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipePreviewDto
 import retrofit2.http.Body
@@ -68,6 +69,11 @@ interface NcCookbookApi {
     suspend fun deleteRecipe(
         @Path("id") id: Int,
     ): NetworkResponse<String, ErrorResponse>
+
+    @POST("$FULL_PATH/import")
+    suspend fun importRecipe(
+        @Body url: ImportUrlDto,
+    ): NetworkResponse<RecipeDto, ErrorResponse>
 
     @GET("$API_ENDPOINT/version")
     suspend fun getCookbookVersion(): NetworkResponse<CookbookVersionDto, ErrorResponse>
