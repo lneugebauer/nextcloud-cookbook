@@ -1,3 +1,0 @@
-- Añadir traducción al español
-- Añadir traducción al ucraniano
-- Corregir los números de las instrucciones

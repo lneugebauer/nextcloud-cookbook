@@ -1,3 +1,0 @@
-- Aktualizace ruštiny
-- Oprava pádu hlavní obrazovky
-- Oprava přihlašování

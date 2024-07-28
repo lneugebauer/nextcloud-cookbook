@@ -1,4 +1,0 @@
-- Añadir información nutricional
-- Actualizar la traducción al checo
-- Actualizar la traducción al polaco
-- Actualizar la traducción al ruso
