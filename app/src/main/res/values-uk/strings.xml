@@ -113,4 +113,16 @@
     <string name="settings_license">Ліцензія</string>
     <string name="settings_logout">Вихід</string>
     <string name="settings_oss_licenses">Бібліотеки відкритого вихідного коду</string>
+    <string name="recipe_ingredients_copied">Скопійовані інгредієнти</string>
+    <string name="recipe_ingredients_copy">Скопіюйте інгредієнти в буфер обміну</string>
+    <string name="recipe_servings_decrease">Вилучити частину</string>
+    <string name="recipe_servings_increase">Додати порцію</string>
+    <string name="recipe_servings_reset">Скинути порції</string>
+    <string name="settings_translate">Допомогти з перекладом</string>
+    <plurals name="recipe_servings">
+        <item quantity="one">%1$d Подача</item>
+        <item quantity="few">%1$d Подач</item>
+        <item quantity="many">%1$d Подач</item>
+        <item quantity="other">%1$d Подач</item>
+    </plurals>
 </resources>
