@@ -1,3 +1,0 @@
-- Přidání španělštiny
-- Přidání ukrajinštiny
-- Oprava číslování instrukcí

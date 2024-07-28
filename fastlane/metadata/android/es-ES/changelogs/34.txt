@@ -1,5 +1,0 @@
-- Añadir traducción al ruso
-- Actualización de la traducción al noruego
-- Corregir el enfoque de búsqueda
-- Corregir el comportamiento de la pantalla de inicio
-- Corregir problemas de desplazamiento en el inicio de sesión

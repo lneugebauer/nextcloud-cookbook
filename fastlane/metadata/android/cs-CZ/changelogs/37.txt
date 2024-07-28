@@ -1,4 +1,0 @@
-- Přidání nutričních informací
-- Aktualizace češtiny
-- Aktualizace polštiny
-- Aktualizace ruštiny
