@@ -1,0 +1,9 @@
+- Button zum Kopieren von Zutaten hinzugefügt
+- Türkische Übersetzung hinzugefügt
+- Verbessern der Zurück-Navigation
+- Tschechische Übersetzung aktualisiert
+- Russische Übersetzung aktualisiert
+- Spanische Übersetzung aktualisiert
+- Ukrainische Übersetzung aktualisiert
+- Galicische Übersetzung aktualisiert
+- Korrektur der Portionsberechnung für durch Bindestrich getrennte Mengen

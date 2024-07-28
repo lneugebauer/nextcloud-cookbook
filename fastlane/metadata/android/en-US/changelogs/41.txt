@@ -1,0 +1,9 @@
+- Add copy button for ingredients
+- Add Turkish translation
+- Improve back navigation
+- Update Czech translation
+- Update Russian translation
+- Update Spanish translation
+- Update Ukrainian translation
+- Update Galician translation
+- Fix servings calculation for amounts separated by dash
