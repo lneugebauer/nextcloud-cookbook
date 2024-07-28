@@ -12,8 +12,14 @@ import java.net.UnknownHostException
 import javax.net.ssl.SSLHandshakeException
 
 open class BaseRepository {
-    fun <T> handleResponseError(t: Throwable?): Resource.Error<T> {
+    fun <T> handleResponseError(
+        t: Throwable?,
+        serverMessage: String? = null,
+    ): Resource.Error<T> {
         Timber.e(t?.stackTraceToString())
+
+        if (!serverMessage.isNullOrBlank()) return Resource.Error(UiText.DynamicString(serverMessage))
+
         val message =
             when (t) {
                 is HttpException ->

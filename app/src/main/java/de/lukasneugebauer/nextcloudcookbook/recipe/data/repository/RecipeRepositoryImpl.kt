@@ -15,6 +15,7 @@ import de.lukasneugebauer.nextcloudcookbook.di.ApiProvider
 import de.lukasneugebauer.nextcloudcookbook.di.RecipePreviewsByCategoryStore
 import de.lukasneugebauer.nextcloudcookbook.di.RecipePreviewsStore
 import de.lukasneugebauer.nextcloudcookbook.di.RecipeStore
+import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.ImportUrlDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipeDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipePreviewDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.repository.RecipeRepository
@@ -97,7 +98,23 @@ class RecipeRepositoryImpl
                         refreshCaches(id = id, categoryName = categoryName, deleted = true)
                         Resource.Success(Unit)
                     }
-                    is NetworkResponse.Error -> handleResponseError(response.error)
+                    is NetworkResponse.Error -> handleResponseError(response.error, response.body?.msg)
+                }
+            }
+        }
+
+        override suspend fun importRecipe(url: ImportUrlDto): Resource<RecipeDto> {
+            return withContext(ioDispatcher) {
+                val api =
+                    apiProvider.getNcCookbookApi()
+                        ?: return@withContext Resource.Error(message = UiText.StringResource(R.string.error_api_not_initialized))
+
+                when (val response = api.importRecipe(url = url)) {
+                    is NetworkResponse.Success -> {
+                        // TODO: Refresh caches
+                        Resource.Success(response.body)
+                    }
+                    is NetworkResponse.Error -> handleResponseError(response.error, response.body?.msg)
                 }
             }
         }
