@@ -1,7 +1,6 @@
 # Nextcloud Cookbook Android client
 
 [![ci](https://github.com/lneugebauer/nextcloud-cookbook/actions/workflows/ci.yml/badge.svg)](https://github.com/lneugebauer/nextcloud-cookbook/actions/workflows/ci.yml)
-[![Maintainability rating](https://sonarcloud.io/api/project_badges/measure?project=lneugebauer_nextcloud-cookbook&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=lneugebauer_nextcloud-cookbook)
 [![F-Droid release](https://img.shields.io/f-droid/v/de.lukasneugebauer.nextcloudcookbook.svg?logo=F-Droid)](https://f-droid.org/packages/de.lukasneugebauer.nextcloudcookbook/)
 [![GitHub release](https://img.shields.io/github/release/lneugebauer/nextcloud-cookbook.svg?logo=github)](https://github.com/lneugebauer/nextcloud-cookbook/releases)
 ![GitHub all downloads](https://img.shields.io/github/downloads/lneugebauer/nextcloud-cookbook/total?logo=github)
