@@ -10,11 +10,11 @@ Current:
 - Settings
 - Edit recipe
 - Add recipe
+- Import recipe via URL
 
 Planned:
 - Offline usage
 - Single sign-on through the Nextcloud Files app
 - Login via QR-code
-- Import recipe via URL
 
 A publicly accessible Nextcloud server with the latest cookbook app is required to use this app.
