@@ -34,6 +34,8 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.HideBot
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
 import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeDetailScreenDestination
+import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeListScreenDestination
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.DownloadRecipeScreenState
 
 @Destination
 @Composable
@@ -42,13 +44,8 @@ fun DownloadRecipeScreen(
     viewModel: DownloadRecipeViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    HideBottomNavigation()
 
-    uiState.recipeId?.let { id ->
-        LaunchedEffect(id) {
-            navigator.navigate(RecipeDetailScreenDestination(id))
-        }
-    }
+    HideBottomNavigation()
 
     Scaffold(
         topBar = {
@@ -57,16 +54,41 @@ fun DownloadRecipeScreen(
             }
         },
     ) { innerPadding ->
-        DownloadRecipeScreen(
-            url = uiState.url,
-            onDownloadClick = { viewModel.importRecipe() },
-            onUrlChange = { viewModel.updateUrl(it) },
-            modifier =
-                Modifier
-                    .padding(innerPadding)
-                    .padding(top = dimensionResource(id = R.dimen.padding_m)),
-            error = uiState.error,
-        )
+        when (uiState) {
+            is DownloadRecipeScreenState.Initial -> {
+                val url = (uiState as DownloadRecipeScreenState.Initial).url
+                DownloadRecipeScreen(
+                    url = url,
+                    onDownloadClick = { viewModel.importRecipe() },
+                    onUrlChange = { viewModel.updateUrl(it) },
+                    modifier =
+                        Modifier
+                            .padding(innerPadding)
+                            .padding(top = dimensionResource(id = R.dimen.padding_m)),
+                )
+            }
+            is DownloadRecipeScreenState.Error -> {
+                val errorState = (uiState as DownloadRecipeScreenState.Error)
+                DownloadRecipeScreen(
+                    url = errorState.url,
+                    onDownloadClick = { viewModel.importRecipe() },
+                    onUrlChange = { viewModel.updateUrl(it) },
+                    modifier =
+                        Modifier
+                            .padding(innerPadding)
+                            .padding(top = dimensionResource(id = R.dimen.padding_m)),
+                    error = errorState.uiText,
+                )
+            }
+            is DownloadRecipeScreenState.Loaded -> {
+                val id = (uiState as DownloadRecipeScreenState.Loaded).id
+                LaunchedEffect(id) {
+                    navigator.navigate(RecipeDetailScreenDestination(id)) {
+                        popUpTo(RecipeListScreenDestination.route)
+                    }
+                }
+            }
+        }
     }
 }
 
