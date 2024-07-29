@@ -111,7 +111,7 @@ class RecipeRepositoryImpl
 
                 when (val response = api.importRecipe(url = url)) {
                     is NetworkResponse.Success -> {
-                        // TODO: Refresh caches
+                        refreshCaches(id = response.body.id, categoryName = response.body.recipeCategory)
                         Resource.Success(response.body)
                     }
                     is NetworkResponse.Error -> handleResponseError(response.error, response.body?.msg)
