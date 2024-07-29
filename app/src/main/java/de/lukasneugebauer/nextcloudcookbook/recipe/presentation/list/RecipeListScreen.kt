@@ -29,10 +29,11 @@ import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.CloudDownload
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -70,6 +71,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.error.AbstractErro
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.error.NotFoundScreen
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
+import de.lukasneugebauer.nextcloudcookbook.destinations.DownloadRecipeScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeCreateScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeDetailScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipePreview
@@ -112,7 +114,8 @@ fun RecipeListScreen(
                                 categoryName
                             },
                         onBackClick = { navigator.navigateUp() },
-                        onSearchClicked = { viewModel.toggleSearchAppBarVisibility() },
+                        onImportClick = { navigator.navigate(DownloadRecipeScreenDestination) },
+                        onSearchClick = { viewModel.toggleSearchAppBarVisibility() },
                     )
                 }
             }
@@ -121,7 +124,7 @@ fun RecipeListScreen(
             FloatingActionButton(onClick = {
                 navigator.navigate(RecipeCreateScreenDestination)
             }) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
+                Icon(imageVector = Icons.Default.Add, contentDescription = stringResource(id = R.string.common_add))
             }
         },
     ) { innerPadding ->
@@ -239,7 +242,8 @@ private fun RecipeListScreen(
 private fun TopAppBar(
     categoryName: String?,
     onBackClick: () -> Unit,
-    onSearchClicked: () -> Unit,
+    onImportClick: () -> Unit,
+    onSearchClick: () -> Unit,
 ) {
     val title = categoryName ?: stringResource(id = R.string.common_recipes)
 
@@ -252,14 +256,20 @@ private fun TopAppBar(
                 {
                     IconButton(onClick = onBackClick) {
                         Icon(
-                            Icons.Filled.ArrowBack,
+                            Icons.AutoMirrored.Default.ArrowBack,
                             contentDescription = stringResource(id = R.string.common_back),
                         )
                     }
                 }
             },
         actions = {
-            IconButton(onClick = onSearchClicked) {
+            IconButton(onClick = onImportClick) {
+                Icon(
+                    Icons.Outlined.CloudDownload,
+                    contentDescription = stringResource(R.string.recipe_import_from_url),
+                )
+            }
+            IconButton(onClick = onSearchClick) {
                 Icon(
                     Icons.Default.Search,
                     contentDescription = stringResource(id = R.string.common_share),
@@ -401,7 +411,8 @@ private fun TopAppBarPreview() {
         TopAppBar(
             categoryName = null,
             onBackClick = {},
-            onSearchClicked = {},
+            onImportClick = {},
+            onSearchClick = {},
         )
     }
 }
@@ -413,7 +424,8 @@ private fun TopAppBarWithCategoryNamePreview() {
         TopAppBar(
             categoryName = "Lorem ipsum",
             onBackClick = {},
-            onSearchClicked = {},
+            onImportClick = {},
+            onSearchClick = {},
         )
     }
 }

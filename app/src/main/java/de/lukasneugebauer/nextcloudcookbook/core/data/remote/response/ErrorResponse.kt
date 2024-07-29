@@ -1,5 +1,8 @@
 package de.lukasneugebauer.nextcloudcookbook.core.data.remote.response
 
+import com.google.gson.annotations.SerializedName
+
 data class ErrorResponse(
-    val message: String,
+    @SerializedName("msg")
+    val msg: String,
 )
