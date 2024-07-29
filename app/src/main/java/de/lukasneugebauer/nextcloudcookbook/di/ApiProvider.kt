@@ -5,7 +5,9 @@ import com.haroldadmin.cnradapter.NetworkResponseAdapterFactory
 import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
 import de.lukasneugebauer.nextcloudcookbook.core.data.api.NcCookbookApi
 import de.lukasneugebauer.nextcloudcookbook.core.data.remote.BasicAuthInterceptor
+import de.lukasneugebauer.nextcloudcookbook.core.data.remote.ErrorResponseDeserializer
 import de.lukasneugebauer.nextcloudcookbook.core.data.remote.NetworkInterceptor
+import de.lukasneugebauer.nextcloudcookbook.core.data.remote.response.ErrorResponse
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.NcAccount
 import de.lukasneugebauer.nextcloudcookbook.core.util.addSuffix
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.NutritionDto
@@ -33,6 +35,7 @@ class ApiProvider
     ) {
         private val gson =
             GsonBuilder()
+                .registerTypeAdapter(ErrorResponse::class.java, ErrorResponseDeserializer())
                 .registerTypeAdapter(NutritionDto::class.java, NutritionDeserializer())
                 .create()
 
