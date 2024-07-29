@@ -123,4 +123,6 @@
     <string name="recipe_servings_reset">Resetovat porce</string>
     <string name="recipe_ingredients_copy">Zkopírovat přísady do schránky</string>
     <string name="recipe_ingredients_copied">Zkopírované přísady</string>
+    <string name="common_add">Přidat</string>
+    <string name="recipe_import_from_url">Importovat recept z URL</string>
 </resources>
