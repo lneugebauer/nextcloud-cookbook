@@ -10,11 +10,11 @@ Aktuelle Funktionen:
 - Einstellungen
 - Rezept bearbeiten
 - Rezept hinzufügen
+- Rezept über URL importieren
 
 Fehlende, aber geplante Funktionen:
 - Offline-Nutzung
 - Single Sign On über die Nextcloud Files App
 - Anmeldung über QR-Code
-- Rezept über URL importieren
 
 Für die Nutzung dieser App ist ein öffentlich zugänglicher Nextcloud-Server mit der neuesten Kochbuch-App erforderlich.

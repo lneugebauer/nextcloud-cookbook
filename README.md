@@ -44,13 +44,13 @@ An Android client for [Nextcloud Cookbook app](https://github.com/nextcloud/cook
 - Edit recipe
 - Stay awake on recipe screen
 - Settings
+- Import recipe via url
 
 ## Planned features :checkered_flag:
 
 - Offline usage
 - Single Sign On through Nextcloud Files app
 - Login via QR-Code
-- Import recipe via url
 
 ## Requirements :link:
 

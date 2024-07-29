@@ -65,13 +65,13 @@ const donationBadges = [
 - Edit recipe
 - Stay awake on recipe screen
 - Settings
+- Import recipe via url
 
 ## Planned features :checkered_flag:
 
 - Offline usage
 - Single Sign On through Nextcloud Files app
 - Login via QR-Code
-- Import recipe via url
 
 ## Donate
 
