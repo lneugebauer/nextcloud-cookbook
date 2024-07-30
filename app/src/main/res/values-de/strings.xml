@@ -6,6 +6,7 @@
     <string name="common_back">Zurück</string>
     <string name="common_categories">Kategorien</string>
     <string name="common_close">Schließen</string>
+    <string name="common_download">Herunterladen</string>
     <string name="common_edit">Bearbeiten</string>
     <string name="common_home">Start</string>
     <string name="common_hours">Stunden</string>
@@ -21,6 +22,8 @@
     <string name="common_username">Benutzername</string>
     <string name="common_yes">Ja</string>
     <string name="dialog_crash_report_text">Ups, Nextcloud Cookbook ist gerade abgestürzt. Willst du einen Fehlerbericht an die Entwickler senden?</string>
+    <string name="download_recipe">Rezept herunterladen</string>
+    <string name="download_recipe_url">Rezept URL</string>
     <string name="error_api_not_initialized">API nicht initialisiert</string>
     <string name="error_authentication_failed">Authentifizierung fehlgeschlagen</string>
     <string name="error_empty_password">Bitte gebe ein Passwort ein</string>

@@ -115,7 +115,7 @@ private fun DownloadRecipeScreen(
                     .fillMaxWidth()
                     .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
                     .padding(bottom = dimensionResource(id = R.dimen.padding_xs)),
-            label = { Text(text = "Recipe URL") },
+            label = { Text(text = stringResource(R.string.download_recipe_url)) },
             errorText = error?.asString(),
             keyboardOptions =
                 KeyboardOptions.Default.copy(
@@ -140,9 +140,9 @@ private fun DownloadRecipeScreen(
                 Modifier
                     .fillMaxWidth()
                     .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
-            enabled = url.isNotEmpty(),
+            enabled = url.isNotEmpty() && error == null,
         ) {
-            Text(text = "Download")
+            Text(text = stringResource(R.string.common_download))
         }
     }
 }
@@ -152,7 +152,7 @@ private fun RecipeDownloadTopBar(onNavIconClick: () -> Unit) {
     TopAppBar(
         title = {
             Text(
-                text = "Download recipe",
+                text = stringResource(R.string.download_recipe),
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1,
             )
