@@ -121,4 +121,6 @@
     <string name="recipe_nutrition_fiber">Lif</string>
     <string name="recipe_nutrition_protein">Protein</string>
     <string name="settings_source_code">Kaynak kodunu edinin</string>
+    <string name="common_add">Ekle</string>
+    <string name="recipe_import_from_url">URL\'den tarif içe aktar</string>
 </resources>
