@@ -38,19 +38,23 @@ class DownloadRecipeViewModel
             viewModelScope.launch {
                 val currentState = _uiState.value
                 if (currentState is DownloadRecipeScreenState.Initial) {
+                    _uiState.update { DownloadRecipeScreenState.Loading(url = currentState.url) }
                     val url = ImportUrlDto(url = currentState.url)
                     val result = recipeRepository.importRecipe(url)
                     when {
                         result is Resource.Success && result.data != null -> {
                             _uiState.update { DownloadRecipeScreenState.Loaded(id = result.data.id) }
                         }
-                        else ->
+                        else -> {
                             _uiState.update {
                                 DownloadRecipeScreenState.Error(
                                     url = currentState.url,
-                                    uiText = result.message ?: UiText.StringResource(R.string.error_unknown),
+                                    uiText =
+                                        result.message
+                                            ?: UiText.StringResource(R.string.error_unknown),
                                 )
                             }
+                        }
                     }
                 }
             }
