@@ -125,4 +125,7 @@
     <string name="recipe_ingredients_copied">Zkopírované přísady</string>
     <string name="common_add">Přidat</string>
     <string name="recipe_import_from_url">Importovat recept z URL</string>
+    <string name="download_recipe_url">URL receptu</string>
+    <string name="common_download">Stáhnout</string>
+    <string name="download_recipe">Stáhnout recept</string>
 </resources>
