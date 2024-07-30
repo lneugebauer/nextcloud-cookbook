@@ -9,6 +9,7 @@
 [![ktlint](https://img.shields.io/badge/code%20style-%E2%9D%A4-FF4081.svg)](https://ktlint.github.io/)
 [![Translation status](https://hosted.weblate.org/widget/nextcloud-cookbook/svg-badge.svg)](https://hosted.weblate.org/engage/nextcloud-cookbook/)
 [![Liberapay patrons](https://img.shields.io/liberapay/patrons/lneugebauer.svg?logo=liberapay)](https://liberapay.com/lneugebauer/)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Flneugebauer%2Fnextcloud-cookbook.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Flneugebauer%2Fnextcloud-cookbook?ref=badge_shield)
 
 An Android client for [Nextcloud Cookbook app](https://github.com/nextcloud/cookbook).
 
@@ -74,3 +75,6 @@ An Android client for [Nextcloud Cookbook app](https://github.com/nextcloud/cook
 ## License
 
 [MIT License](https://github.com/lneugebauer/nextcloud-cookbook/blob/main/LICENSE)
+
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Flneugebauer%2Fnextcloud-cookbook.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Flneugebauer%2Fnextcloud-cookbook?ref=badge_large)
