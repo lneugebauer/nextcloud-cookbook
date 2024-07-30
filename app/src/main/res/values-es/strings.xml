@@ -125,4 +125,7 @@
     <string name="recipe_ingredients_copy">Copiar ingredientes al portapapeles</string>
     <string name="common_add">Añadir</string>
     <string name="recipe_import_from_url">Importar receta desde una URL</string>
+    <string name="common_download">Descargar</string>
+    <string name="download_recipe">Descargar receta</string>
+    <string name="download_recipe_url">URL de la receta</string>
 </resources>
