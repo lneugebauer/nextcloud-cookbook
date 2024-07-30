@@ -31,6 +31,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.DefaultOutlinedTextField
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.HideBottomNavigation
+import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
 import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeDetailScreenDestination
@@ -79,6 +80,9 @@ fun DownloadRecipeScreen(
                             .padding(top = dimensionResource(id = R.dimen.padding_m)),
                     error = errorState.uiText,
                 )
+            }
+            is DownloadRecipeScreenState.Loading -> {
+                Loader()
             }
             is DownloadRecipeScreenState.Loaded -> {
                 val id = (uiState as DownloadRecipeScreenState.Loaded).id
