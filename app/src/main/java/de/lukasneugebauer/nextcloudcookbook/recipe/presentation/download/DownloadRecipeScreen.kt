@@ -172,7 +172,7 @@ private fun RecipeDownloadTopBar(onNavIconClick: () -> Unit) {
 
 @Preview
 @Composable
-private fun DownloadRecipeScreenPreview(modifier: Modifier = Modifier) {
+private fun DownloadRecipeScreenPreview() {
     NextcloudCookbookTheme {
         DownloadRecipeScreen(
             url = "https://example.com/recipe",
