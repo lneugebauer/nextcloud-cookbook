@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="common_back">Volver</string>
-    <string name="common_categories">Categorias</string>
+    <string name="common_categories">Categorías</string>
     <string name="common_close">Cerrar</string>
     <string name="common_home">Inicio</string>
     <string name="common_hours">Horas</string>
