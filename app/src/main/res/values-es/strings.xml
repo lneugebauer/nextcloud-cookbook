@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="common_back">Volver</string>
-    <string name="common_categories">Categorias</string>
+    <string name="common_categories">Categorías</string>
     <string name="common_close">Cerrar</string>
     <string name="common_home">Inicio</string>
     <string name="common_hours">Horas</string>
     <string name="common_minutes">Minutos</string>
     <string name="common_no">No</string>
-    <string name="common_password">Clave</string>
+    <string name="common_password">Contraseña</string>
     <string name="common_recipes">Recetas</string>
     <string name="common_save">Guardar</string>
     <string name="common_search">Buscar</string>
     <string name="common_settings">Ajustes</string>
     <string name="common_share">Compartir</string>
     <string name="common_username">Usuario</string>
-    <string name="common_yes">Si</string>
-    <string name="dialog_crash_report_text">Ouch, Error en Nextcloud Cookbook. Desea enviar un informe a los desarrolladores?</string>
+    <string name="common_yes">Sí</string>
+    <string name="dialog_crash_report_text">Ups, Nextcloud Cookbook acaba de fallar. ¿Quieres enviar un informe de errores a los desarrolladores?</string>
     <string name="error_authentication_failed">Error de autenticación</string>
     <string name="error_api_not_initialized">API no iniciada</string>
-    <string name="error_empty_url">Ingrese la URL</string>
-    <string name="error_empty_username">Ingrese el usuario</string>
+    <string name="error_empty_url">Por favor, introduce una URL</string>
+    <string name="error_empty_username">Por favor, ingresa un usuario</string>
     <string name="error_eof">Error fin de archivo</string>
     <string name="error_http_400">400 Error de solicitud. Bad request</string>
     <string name="error_http_401">401 No autorizado</string>
@@ -89,13 +89,13 @@
     <string name="settings_where_to_report_issues">Puedes reportar errores y proponer mejoras en el seguimiento de problemas de GitHub</string>
     <string name="common_about">Acerca de</string>
     <string name="common_edit">Editar</string>
-    <string name="common_more">Mas</string>
-    <string name="error_empty_password">Ingrese la clave</string>
+    <string name="common_more">Más</string>
+    <string name="error_empty_password">Por favor, introduce una contraseña</string>
     <string name="error_http_404">404 No encontrado</string>
     <string name="error_http_unknown">Error de HTTP desconocido</string>
     <string name="error_invalid_protocol">Protocolo invalido. La URL debe comenzar con https://</string>
     <string name="error_malformed_json">JSON error de formato</string>
-    <string name="error_recipe_id_missing">Se perdio el ID de la receta</string>
+    <string name="error_recipe_id_missing">Falta el ID de la receta</string>
     <string name="recipe_description">Descripción</string>
     <string name="error_http_405">405 Metodo no permitido</string>
     <string name="error_http_500">500 Error interno de servidor</string>
@@ -123,4 +123,9 @@
     <string name="recipe_servings_reset">Restablecer parte</string>
     <string name="recipe_ingredients_copied">Ingredientes copiados</string>
     <string name="recipe_ingredients_copy">Copiar ingredientes al portapapeles</string>
+    <string name="common_add">Añadir</string>
+    <string name="recipe_import_from_url">Importar receta desde una URL</string>
+    <string name="common_download">Descargar</string>
+    <string name="download_recipe">Descargar receta</string>
+    <string name="download_recipe_url">URL de la receta</string>
 </resources>
