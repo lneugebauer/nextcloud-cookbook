@@ -30,3 +30,7 @@ You can share recipes by sharing the Nextcloud folder from the Nextcloud Files a
 
 Currently it's not possible to share a public link to a recipe.
 However, you can share recipes as text using the share button on the details screen.
+
+## How can I update the image of a recipe?
+
+Due to limitations of the coobook api, it is currently not possible to update the image of a recipe using the app.
