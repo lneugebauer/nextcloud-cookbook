@@ -1,6 +1,6 @@
 ---
 lang: en-US
-title: Contributing
+title: FAQs
 ---
 
 # FAQs
