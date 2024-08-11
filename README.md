@@ -24,6 +24,10 @@ An Android client for [Nextcloud Cookbook app](https://github.com/nextcloud/cook
     alt="Get it on F-Droid"
     height="80">](https://f-droid.org/packages/de.lukasneugebauer.nextcloudcookbook/)
 
+### Obtainium
+
+To install through [Obtainium](https://github.com/ImranR98/Obtainium/tree/main?tab=readme-ov-file#installation), simply go to Add App and paste the URL of this repository as the source URL: `https://github.com/lneugebauer/nextcloud-cookbook`.
+
 ## Screenshots
 <table>
     <tr>
