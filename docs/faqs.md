@@ -14,7 +14,7 @@ No, a trusted SSL certificate is currently required to connect via https.
 If the app isn't available in your language yet, please have a look at the [contributing](./contributing#translations) page.
 The easiest way to contribute is to create a free Weblate account.
 
-## Why are my ingredients not calculated?
+## Why are my ingredients not calculated? <Badge type="tip" text="^0.18.0" />
 
 Ingredients must follow the following specific format to be calculated.
 
