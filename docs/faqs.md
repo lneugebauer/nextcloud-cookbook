@@ -5,16 +5,28 @@ title: FAQs
 
 # FAQs
 
-## How to contribute
+## Can I connect via http?
 
-Find more information on the [contribution page](./contributing).
+No, a trusted SSL certificate is currently required to connect via https.
 
-## How to share recipes
+## Is the app available in my language?
 
-### Sharing with another Nextcloud User
+If the app isn't available in your language yet, please have a look at the [contributing](./contributing#translations) page.
+The easiest way to contribute is to create a free Weblate account.
 
-Currently, the only way to share recipes is by sharing the Nextcloud folder from the Nextcloud Files app that contains all recipes with another Nextcloud user.
+## Why are my ingredients not calculated?
 
-### Public sharing
+Ingredients must follow the following specific format to be calculated.
 
-At the moment it is not possible to share a public link to a recipe.
+`<amount> <optional_unit> <name>`
+
+## How can I share recipes?
+
+**Sharing with another Nextcloud User**
+
+You can share recipes by sharing the Nextcloud folder from the Nextcloud Files app, which contains all recipes, with another Nextcloud user.
+
+**Public sharing**
+
+Currently it's not possible to share a public link to a recipe.
+However, you can share recipes as text using the share button on the details screen.
