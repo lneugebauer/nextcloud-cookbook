@@ -20,7 +20,8 @@ export default defineConfig({
     themeConfig: {
         nav: [
             {text: 'Home', link: '/'},
-            {text: 'Contributing', link: '/contributing'}
+            {text: 'Contributing', link: '/contributing'},
+            {text: 'FAQs', link: '/faqs'}
         ],
         logo: '/images/logo.png',
         socialLinks: [
