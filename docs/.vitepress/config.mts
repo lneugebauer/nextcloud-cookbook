@@ -29,5 +29,8 @@ export default defineConfig({
         footer: {
             message: 'Released under the <a href="https://github.com/lneugebauer/nextcloud-cookbook/blob/main/LICENSE">MIT License</a>.'
         },
+        editLink: {
+            pattern: 'https://github.com/lneugebauer/nextcloud-cookbook/edit/main/docs/:path'
+        }
     }
 })
