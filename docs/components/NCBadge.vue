@@ -2,16 +2,18 @@
 import type {NCBadge} from "./types.js";
 
 interface Props {
-  badge: NCBadge
+  alt: string
+  link: string
   size: 'small' | 'medium'
+  src: string
 }
 
 const props = defineProps<Props>()
 </script>
 
 <template>
-  <a :href="badge.link">
-    <img class="badge" :class="[size]" :src="badge.src" :alt="badge.alt"/>
+  <a :href="link">
+    <img class="badge" :class="[size]" :src="src" :alt="alt"/>
   </a>
 </template>
 
@@ -25,6 +27,6 @@ const props = defineProps<Props>()
 }
 
 .small {
-  height: 30px;
+  height: 32px;
 }
 </style>
