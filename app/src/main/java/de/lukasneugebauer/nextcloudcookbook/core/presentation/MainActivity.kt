@@ -98,9 +98,10 @@ fun NextcloudCookbookApp() {
         ) { innerPadding ->
             DestinationsNavHost(
                 navGraph = NavGraphs.root,
-                modifier = Modifier
-                    .padding(innerPadding)
-                    .fillMaxSize(),
+                modifier =
+                    Modifier
+                        .padding(innerPadding)
+                        .fillMaxSize(),
                 navController = navController,
             ) {
                 composable(SplashScreenDestination) {
