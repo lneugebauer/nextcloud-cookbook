@@ -17,44 +17,36 @@ hero:
 ---
 
 <script setup lang="ts">
+import NCBadge from './components/NCBadge.vue';
 import NCDonationBadges from './components/NCDonationBadges.vue';
 import NCStoreBadges from './components/NCStoreBadges.vue';
 
 import gitHubBadge from './assets/images/get_it_on_github.png';
 import payPalBadge from './assets/images/donate_with_paypal.svg';
-
-const storeBadges = [
-    {
-        alt: 'Get it on Play Store',
-        link: 'https://play.google.com/store/apps/details?id=de.lukasneugebauer.nextcloudcookbook',
-        src: 'https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png'
-    }, {
-        alt: 'Get it on GitHub',
-        link: 'https://github.com/lneugebauer/nextcloud-cookbook/releases',
-        src: gitHubBadge
-    }, {
-        alt: 'Get it on F-Droid',
-        link: 'https://f-droid.org/packages/de.lukasneugebauer.nextcloudcookbook/',
-        src: 'https://fdroid.gitlab.io/artwork/badge/get-it-on.png'
-    }
-];
-
-const donationBadges = [
-    {
-        alt: 'Donate using Liberapay',
-        link: 'https://liberapay.com/lneugebauer/donate',
-        src: 'https://liberapay.com/assets/widgets/donate.svg'
-    }, {
-        alt: 'Donate using PayPal',
-        link: 'https://www.paypal.com/donate/?hosted_button_id=ECDNN8PS3SSMQ',
-        src: payPalBadge
-    }
-];
 </script>
 
 ## Download
 
-<NCStoreBadges :badges="storeBadges" />
+<NCStoreBadges>
+    <NCBadge
+        alt="Get it on Play Store"
+        link="https://play.google.com/store/apps/details?id=de.lukasneugebauer.nextcloudcookbook"
+        size="medium"
+        src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png"
+    />
+    <NCBadge
+        alt="Get it on GitHub"
+        link="https://github.com/lneugebauer/nextcloud-cookbook/releases"
+        size="medium"
+        :src="gitHubBadge"
+    />
+    <NCBadge
+        alt="Get it on F-Droid"
+        link="https://f-droid.org/packages/de.lukasneugebauer.nextcloudcookbook/"
+        size="medium"
+        src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
+    />
+</NCStoreBadges>
 
 ## Features :rocket:
 
@@ -75,7 +67,22 @@ const donationBadges = [
 
 ## Donate
 
-<NCDonationBadges :badges="donationBadges" />
+<NCDonationBadges>
+    <NCBadge
+        alt="Donate using Liberapay"
+        link="https://liberapay.com/lneugebauer/donate"
+        size="small"
+        src="https://liberapay.com/assets/widgets/donate.svg"
+    />
+    <NCBadge
+        alt="Donate using PayPal"
+        link="https://www.paypal.com/donate/?hosted_button_id=ECDNN8PS3SSMQ"
+        size="small"
+        :src="payPalBadge"
+    />
+    <iframe src="https://github.com/sponsors/lneugebauer/button" title="Sponsor lneugebauer" height="32" width="114" style="border: 0; border-radius: 6px;"></iframe>
+</NCDonationBadges>
+
 
 ## Translations :earth_africa:
 
