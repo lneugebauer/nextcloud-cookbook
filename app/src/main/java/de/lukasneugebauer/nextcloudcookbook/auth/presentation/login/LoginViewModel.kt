@@ -172,7 +172,7 @@ class LoginViewModel
                 return false
             }
 
-            if (!url.lowercase().startsWith("https://")) {
+            if (!url.lowercase().startsWith("http://") && !url.lowercase().startsWith("https://")) {
                 _uiState.value =
                     _uiState.value.copy(urlError = UiText.StringResource(R.string.error_invalid_protocol))
                 return false
