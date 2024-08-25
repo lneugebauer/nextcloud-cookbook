@@ -11,8 +11,8 @@ const props = defineProps<Props>()
 </script>
 
 <template>
-  <a :href="link">
-    <img class="badge" :class="[size]" :src="src" :alt="alt" :data-umami-event="eventName"/>
+  <a :href="link" :data-umami-event="eventName">
+    <img class="badge" :class="[size]" :src="src" :alt="alt"/>
   </a>
 </template>
 
