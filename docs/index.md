@@ -51,6 +51,10 @@ import payPalBadge from './assets/images/donate_with_paypal.svg';
     />
 </NCStoreBadges>
 
+### Obtainium
+
+To install through [Obtainium](https://github.com/ImranR98/Obtainium/tree/main?tab=readme-ov-file#installation), simply go to "Add App" and paste the URL of this repository as the source URL: `https://github.com/lneugebauer/nextcloud-cookbook`.
+
 ## Features :rocket:
 
 - List all recipes
