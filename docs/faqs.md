@@ -5,9 +5,9 @@ title: FAQs
 
 # FAQs
 
-## Can I connect via http?
+## Can I connect via http? <Badge type="tip" text="^0.21.0" />
 
-No, a trusted SSL certificate is currently required to connect via https.
+Yes.
 
 ## Is the app available in my language?
 
