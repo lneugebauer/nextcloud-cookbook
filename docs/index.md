@@ -30,18 +30,21 @@ import payPalBadge from './assets/images/donate_with_paypal.svg';
 <NCStoreBadges>
     <NCBadge
         alt="Get it on Play Store"
+        event-name="get-it-on-play-store-button"
         link="https://play.google.com/store/apps/details?id=de.lukasneugebauer.nextcloudcookbook"
         size="medium"
         src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png"
     />
     <NCBadge
         alt="Get it on GitHub"
+        event-name="get-it-on-github-button"
         link="https://github.com/lneugebauer/nextcloud-cookbook/releases"
         size="medium"
         :src="gitHubBadge"
     />
     <NCBadge
         alt="Get it on F-Droid"
+        event-name="get-it-on-f-droid-button"
         link="https://f-droid.org/packages/de.lukasneugebauer.nextcloudcookbook/"
         size="medium"
         src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
@@ -70,12 +73,14 @@ import payPalBadge from './assets/images/donate_with_paypal.svg';
 <NCDonationBadges>
     <NCBadge
         alt="Donate using Liberapay"
+        event-name="donate-using-liberapay-button"
         link="https://liberapay.com/lneugebauer/donate"
         size="small"
         src="https://liberapay.com/assets/widgets/donate.svg"
     />
     <NCBadge
         alt="Donate using PayPal"
+        event-name="donate-using-paypal-button"
         link="https://www.paypal.com/donate/?hosted_button_id=ECDNN8PS3SSMQ"
         size="small"
         :src="payPalBadge"

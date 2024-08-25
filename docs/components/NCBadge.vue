@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import type {NCBadge} from "./types.js";
-
 interface Props {
   alt: string
+  eventName: string | null,
   link: string
   size: 'small' | 'medium'
   src: string
@@ -13,7 +12,7 @@ const props = defineProps<Props>()
 
 <template>
   <a :href="link">
-    <img class="badge" :class="[size]" :src="src" :alt="alt"/>
+    <img class="badge" :class="[size]" :src="src" :alt="alt" :data-umami-event="eventName"/>
   </a>
 </template>
 
