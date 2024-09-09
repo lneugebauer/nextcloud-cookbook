@@ -1,0 +1,20 @@
+Nextcloud sunucunuzda bulunan tüm tariflerinizi görüntüleyin.
+
+Kaynak kodu https://github.com/lneugebauer/nextcloud-cookbook/ adresinde bulunabilir. Hataları, iyileştirme önerilerini ve özellik isteklerini buradan bildirin.
+
+Şu anda:
+- Tüm tarifleri listeleyin
+- Tüm tarifleri kategoriye göre listeleyin
+- Tarifi görüntüleyin
+- Tarif ekranında ekranı uyanık tutun
+- Ayarlar
+- Tarifi düzenleyin
+- Tarif ekleyin
+- URL aracılığıyla tarif içe aktarın
+
+İleride:
+- Çevrim dışı kullanım
+- Nextcloud Dosyalar uygulaması üzerinden tekli oturum açma
+- QR kodu ile oturum açma
+
+Bu uygulamayı kullanmak için en son yemek kitabı uygulamasına sahip genel erişime açık bir Nextcloud sunucusu gereklidir.
