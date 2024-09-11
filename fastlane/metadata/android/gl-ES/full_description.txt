@@ -1,0 +1,20 @@
+Olla as receitas de cociña que gardas na túa instancia Nextcloud.
+
+Tes o código fonte en GitHub https://github.com/lneugebauer/nextcloud-cookbook/. Informa de problemas, propón melloras e solicita novas funcións.
+
+Características actuais:
+- Lista con todas as receitas
+- Lista coas receitas agrupadas en categorías
+- Ver receitas
+- Manter pantalla activa ao visualizar receita
+- Axustes
+- Editar receita
+- Engadir receita
+- Importar receita con URL
+
+No futuro:
+- Uso sen conexión a internet
+- Acceso SSO usando a aplicación Ficheiros de Nextcloud
+- Acceso usando código QR
+
+Esta aplicación require un servidor Nextcloud que teña dispoñible a aplicación Receitas de cociña.
