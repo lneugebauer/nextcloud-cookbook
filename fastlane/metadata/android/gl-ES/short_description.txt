@@ -1,0 +1,1 @@
+Olla as receitas gardadas na túa instancia Nextcloud.

@@ -125,4 +125,9 @@
     <string name="settings_translate">Помочь с переводом</string>
     <string name="recipe_ingredients_copied">Ингредиенты скопированы</string>
     <string name="recipe_ingredients_copy">Копировать ингредиенты в буфер обмена</string>
+    <string name="common_add">Добавить</string>
+    <string name="common_download">Скачать</string>
+    <string name="download_recipe">Скачать рецепт</string>
+    <string name="download_recipe_url">Ссылка на рецепт</string>
+    <string name="recipe_import_from_url">Импортировать рецепт по ссылке</string>
 </resources>

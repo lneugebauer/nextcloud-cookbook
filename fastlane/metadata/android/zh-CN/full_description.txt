@@ -1,0 +1,20 @@
+查看存储在 Nextcloud 实例中的所有食谱。
+
+源代码可在 GitHub 找到：https://github.com/lneugebauer/nextcloud-cookbook/。在那里报告错误、改进建议和功能请求。
+
+当前：
+- 列出所有食谱
+- 按类别列出所有食谱
+- 查看食谱
+- 在食谱屏幕上保持唤醒
+- 设置
+- 编辑食谱
+- 添加食谱
+- 通过 URL 导入食谱
+
+计划：
+- 离线使用
+- 通过 Nextcloud Files 应用单点登录
+- 通过二维码登录
+
+使用此应用需要有最新食谱应用的可公开访问的 Nextcloud 服务器。

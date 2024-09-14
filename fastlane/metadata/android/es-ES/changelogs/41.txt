@@ -1,0 +1,9 @@
+- Añadir botón de copia para los ingredientes
+- Añadida traducción al Turco
+- Mejorar la volver atrás
+- Actualizada la traducción al Checo
+- Actualizada la traducción al Ruso
+- Actualizada la traducción al Español
+- Actualizada la traducción al Ucraniano
+- Actualización de la traducción al Gallego
+- Corregido cálculo de raciones para cantidades separadas por guión
