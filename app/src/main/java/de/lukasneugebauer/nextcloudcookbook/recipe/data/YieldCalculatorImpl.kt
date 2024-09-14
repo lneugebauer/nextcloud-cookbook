@@ -46,9 +46,10 @@ class YieldCalculatorImpl(customLocale: Locale? = null) : YieldCalculator {
                 // Unicode fraction
                 if (numeratorRaw.isBlank()) {
                     val normalizedFraction = Normalizer.normalize(fractionMatch, Normalizer.Form.NFKD)
-                    val (numeratorPart, denominatorPart) = normalizedFraction
-                        .split("\u2044")
-                        .map { it.toDouble() }
+                    val (numeratorPart, denominatorPart) =
+                        normalizedFraction
+                            .split("\u2044")
+                            .map { it.toDouble() }
 
                     numerator = numeratorPart
                     denominator = denominatorPart
@@ -64,19 +65,23 @@ class YieldCalculatorImpl(customLocale: Locale? = null) : YieldCalculator {
                 val newAmountString: String
 
                 if (newNumerator % 1 == 0.0) {
-                    fun gcd(a: Int, b: Int): Int = if (b == 0) a else gcd(b, a % b)
+                    fun gcd(
+                        a: Int,
+                        b: Int,
+                    ): Int = if (b == 0) a else gcd(b, a % b)
                     val div = gcd(newNumerator.toInt(), 16)
                     newNumerator /= div
                     val newDenominator = 16 / div
                     val prefix = if (newWholeNumberPart != 0) "$newWholeNumberPart" else ""
 
-                    newAmountString = if (newNumerator == 0.0) {
-                        prefix
-                    } else if (prefix.isBlank()) {
-                        "${newNumerator.toInt()}/$newDenominator"
-                    } else {
-                        "$prefix ${newNumerator.toInt()}/$newDenominator"
-                    }
+                    newAmountString =
+                        if (newNumerator == 0.0) {
+                            prefix
+                        } else if (prefix.isBlank()) {
+                            "${newNumerator.toInt()}/$newDenominator"
+                        } else {
+                            "$prefix ${newNumerator.toInt()}/$newDenominator"
+                        }
                 } else {
                     newAmountString = numberFormat.format(newAmount).toString()
                 }
