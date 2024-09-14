@@ -1,6 +1,7 @@
 package de.lukasneugebauer.nextcloudcookbook.recipe.data
 
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.YieldCalculator
+import java.text.Normalizer
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -33,20 +34,62 @@ class YieldCalculatorImpl(customLocale: Locale? = null) : YieldCalculator {
 
             if (originalYield < 1) return@map ingredient
 
+            // Fraction
             val matchResult = FRACTION_REGEX.matchEntire(ingredient)
             if (matchResult !== null) {
                 val (fractionMatch, wholeNumberPartRaw, numeratorRaw, denominatorRaw) = matchResult.destructured
 
                 val wholeNumberPart = wholeNumberPartRaw.toDoubleOrNull() ?: 0.0
-                val numerator = numeratorRaw.toDouble()
-                val denominator = denominatorRaw.toDouble()
+                val numerator: Double
+                val denominator: Double
+
+                // Unicode fraction
+                if (numeratorRaw.isBlank()) {
+                    val normalizedFraction = Normalizer.normalize(fractionMatch, Normalizer.Form.NFKD)
+                    val (numeratorPart, denominatorPart) =
+                        normalizedFraction
+                            .split("\u2044")
+                            .map { it.toDouble() }
+
+                    numerator = numeratorPart
+                    denominator = denominatorPart
+                } else {
+                    numerator = numeratorRaw.toDouble()
+                    denominator = denominatorRaw.toDouble()
+                }
 
                 val decimalAmount = wholeNumberPart + numerator / denominator
                 val newAmount = (decimalAmount / originalYield) * currentYield
+                val newWholeNumberPart = newAmount.toInt()
+                var newNumerator = (newAmount - newWholeNumberPart) * 16
+                val newAmountString: String
 
-                return@map ingredient.replace(fractionMatch, numberFormat.format(newAmount))
+                if (newNumerator % 1 == 0.0) {
+                    fun gcd(
+                        a: Int,
+                        b: Int,
+                    ): Int = if (b == 0) a else gcd(b, a % b)
+                    val div = gcd(newNumerator.toInt(), 16)
+                    newNumerator /= div
+                    val newDenominator = 16 / div
+                    val prefix = if (newWholeNumberPart != 0) "$newWholeNumberPart" else ""
+
+                    newAmountString =
+                        if (newNumerator == 0.0) {
+                            prefix
+                        } else if (prefix.isBlank()) {
+                            "${newNumerator.toInt()}/$newDenominator"
+                        } else {
+                            "$prefix ${newNumerator.toInt()}/$newDenominator"
+                        }
+                } else {
+                    newAmountString = numberFormat.format(newAmount).toString()
+                }
+
+                return@map ingredient.replace(fractionMatch, newAmountString)
             }
 
+            // Decimal
             if (isValidIngredientSyntax(ingredient)) {
                 val possibleUnit =
                     ingredient.split(" ")
@@ -76,7 +119,7 @@ class YieldCalculatorImpl(customLocale: Locale? = null) : YieldCalculator {
     companion object {
         const val DOUBLE_HASH_PREFIX = "## "
         val MULTIPLE_SEPARATORS_REGEX = Regex("""^-?\d+(?:[.,]\d+){2,}.*""")
-        val FRACTION_REGEX = Regex("""^((\d+\s+)?(\d+)\s*/\s*(\d+)).*""")
-        val SYNTAX_REGEX = Regex("""^\d+(?:\.\d+)?(?:/\d+)?\s?.*$""")
+        val FRACTION_REGEX = Regex("""^((\d+\s+)?(?:\p{No}|(\d+)\s*\/\s*(\d+))).*""")
+        val SYNTAX_REGEX = Regex("""^(?:(?:\d+\s)?(?:\d+\/\d+|\p{No})|\d+(?:\.\d+)?)[a-zA-z]*\s.*$""")
     }
 }

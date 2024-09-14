@@ -20,7 +20,6 @@ class YieldCalculatorRecalculateIngredientsUnitTest {
                 "3 1/4 tsp salt",
                 "5 bell pepper",
                 "1.5 potatoes",
-                "1,6 carrots",
             )
         ingredients.forEach {
             assertTrue(yieldCalculator.isValidIngredientSyntax(it))
@@ -36,6 +35,8 @@ class YieldCalculatorRecalculateIngredientsUnitTest {
                 "some oregano",
                 "1.500,5 g mushrooms",
                 "1,250.50 g beans",
+                "1,6 carrots",
+                "2-3 bananas",
             )
         ingredients.forEach {
             assertFalse(yieldCalculator.isValidIngredientSyntax(it))
@@ -60,6 +61,10 @@ class YieldCalculatorRecalculateIngredientsUnitTest {
                 "1 - 2 onions",
                 "2-3 bananas",
                 "1 150 g apples",
+                "¼ unicode",
+                "3/8 cup creme",
+                "3/5 bananas",
+                "0.25 cup yogurt",
             )
         val expectedIngredients =
             listOf(
@@ -67,20 +72,24 @@ class YieldCalculatorRecalculateIngredientsUnitTest {
                 "6tbsp oil",
                 "1 cup sugar",
                 "3 kg butter",
-                "6.5 tsp salt",
+                "6 1/2 tsp salt",
                 "10 bell pepper",
                 "pepper",
                 "some oregano",
                 "3 potatoes",
-                "3.2 carrots",
+                "1,6 carrots",
                 "2 - 2 onions",
-                "4 bananas",
+                "2-3 bananas",
                 "2 150 g apples",
+                "1/2 unicode",
+                "3/4 cup creme",
+                "1.2 bananas",
+                "0.5 cup yogurt",
             )
 
         assertEquals(
-            yieldCalculator.recalculateIngredients(ingredients, 2, 1),
             expectedIngredients,
+            yieldCalculator.recalculateIngredients(ingredients, 2, 1),
         )
     }
 }
