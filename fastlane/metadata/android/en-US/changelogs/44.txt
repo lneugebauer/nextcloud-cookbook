@@ -1,0 +1,13 @@
+- Add http support
+- Add Chinese (Simplified) translation
+- Add French translation
+- Add Dutch translation
+- Update Czech translation
+- Update Spanish translation
+- Update Ukrainian translation
+- Update Galician translation
+- Update Russian translation
+- Update Turkish translation
+- Fix initial view size
+- Fix fractional ingredients
+- Fix short timeout duration

@@ -1,9 +1,0 @@
-- Engadido botón copiar para os ingredientes
-- Engadida a tradución ao turco
-- Melloras na navegación entre pantallas
-- Actualización da tradución ao checo
-- Actualización da tradución ao ruso
-- Actualización da tradución ao español
-- Actualización da tradución ao ucraíno
-- Actualización da tradución ao galego
-- Arranxo do cálculo das racións para cantidades separadas por un trazo

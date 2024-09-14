@@ -1,0 +1,13 @@
+- http-Unterstützung hinzugefügt
+- Chinesische (vereinfacht) Übersetzung hinzugefügt
+- Französische Übersetzung hinzugefügt
+- Niederländische Übersetzung hinzugefügt
+- Tschechische Übersetzung aktualisieren
+- Spanische Übersetzung aktualisiert
+- Ukrainischen Übersetzung aktualisiert
+- Galicischen Übersetzung aktualisiert
+- Russischen Übersetzung aktualisiert
+- Türkische Übersetzung aktualisieren
+- Größe der Start-Ansicht korrigiert
+- Korrektur Zutatenberechnung mit Brüchen
+- Timeout-Dauer angehoben
