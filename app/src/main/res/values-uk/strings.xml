@@ -125,4 +125,9 @@
         <item quantity="many">%1$d Подач</item>
         <item quantity="other">%1$d Подач</item>
     </plurals>
+    <string name="common_add">Додати</string>
+    <string name="common_download">Завантажити</string>
+    <string name="download_recipe">Завантажити рецепт</string>
+    <string name="download_recipe_url">URL-адреса рецепту</string>
+    <string name="recipe_import_from_url">Імпорт рецепта з URL-адреси</string>
 </resources>
