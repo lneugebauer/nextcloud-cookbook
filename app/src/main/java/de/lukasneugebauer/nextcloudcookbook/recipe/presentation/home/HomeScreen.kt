@@ -165,7 +165,7 @@ fun SingleItem(
                         .aspectRatio(16f / 9f)
                         .fillMaxWidth(),
             )
-            CommonItemBody(name = name, modifier = Modifier.fillMaxWidth(), onClick = {})
+            CommonItemBody(name = name, modifier = Modifier.fillMaxWidth())
         }
     }
 }
