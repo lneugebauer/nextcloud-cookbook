@@ -65,7 +65,7 @@ class YieldCalculatorRecalculateIngredientsUnitTest {
                 "3/8 cup creme",
                 "3/5 bananas",
                 "0.25 cup yogurt",
-                "3 ½ unicode"
+                "3 ½ unicode",
             )
         val expectedIngredients =
             listOf(
@@ -86,7 +86,7 @@ class YieldCalculatorRecalculateIngredientsUnitTest {
                 "3/4 cup creme",
                 "1.2 bananas",
                 "0.5 cup yogurt",
-                "7 unicode"
+                "7 unicode",
             )
 
         assertEquals(
