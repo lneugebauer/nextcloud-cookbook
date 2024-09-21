@@ -1,0 +1,3 @@
+- Remove unused 3 dot icon button
+- Fix yield calculator crash with fraction
+- Update Ukrainian translation

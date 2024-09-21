@@ -1,0 +1,3 @@
+- Unbenutzte 3-Punkt-Button entfernen
+- Crash bei Portionsberechnung mit Brüchen behoben
+- Ukrainischen Übersetzung aktualisiert

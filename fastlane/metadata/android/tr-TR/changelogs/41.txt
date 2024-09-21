@@ -1,9 +1,0 @@
-- Malzemeler için kopyalama düğmesi eklendi
-- Türkçe çeviri eklendi
-- Geri gezinme iyileştirildi
-- Çekçe çeviri güncellendi
-- Rusça çeviri güncellendi
-- İspanyolca çeviri güncellendi
-- Ukraynaca çeviri güncellendi
-- Galiçyaca çeviri güncellendi
-- Tire ile ayrılan miktarlar için porsiyon hesaplaması düzeltildi
