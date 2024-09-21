@@ -49,6 +49,7 @@ class YieldCalculatorImpl(customLocale: Locale? = null) : YieldCalculator {
                     val (numeratorPart, denominatorPart) =
                         normalizedFraction
                             .split("\u2044")
+                            .map { it.replace(wholeNumberPartRaw, "") }
                             .map { it.toDouble() }
 
                     numerator = numeratorPart
