@@ -32,7 +32,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.error.AbstractErro
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
-import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeListScreenDestination
+import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeListWithArgumentsScreenDestination
 import kotlin.random.Random.Default.nextInt
 
 @Destination
@@ -58,7 +58,7 @@ fun CategoryListScreen(
                         modifier = Modifier.padding(innerPadding),
                     ) { categoryName ->
                         navigator.navigate(
-                            RecipeListScreenDestination(
+                            RecipeListWithArgumentsScreenDestination(
                                 categoryName = categoryName,
                                 keyword = null,
                             ),

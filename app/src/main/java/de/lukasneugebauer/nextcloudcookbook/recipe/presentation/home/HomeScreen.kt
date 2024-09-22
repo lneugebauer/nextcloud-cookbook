@@ -39,7 +39,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.error.UnknownError
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
 import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeDetailScreenDestination
-import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeListScreenDestination
+import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeListWithArgumentsScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.destinations.SettingsScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.HomeScreenDataResult
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.HomeScreenState
@@ -85,7 +85,7 @@ fun HomeScreen(
                                         clickable = item.recipes.size > MORE_BUTTON_THRESHOLD,
                                     ) {
                                         navigator.navigate(
-                                            RecipeListScreenDestination(
+                                            RecipeListWithArgumentsScreenDestination(
                                                 categoryName = item.headline,
                                                 keyword = null,
                                             ),

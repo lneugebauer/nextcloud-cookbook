@@ -88,7 +88,7 @@ fun DownloadRecipeScreen(
                 val id = (uiState as DownloadRecipeScreenState.Loaded).id
                 LaunchedEffect(id) {
                     navigator.navigate(RecipeDetailScreenDestination(id)) {
-                        popUpTo(RecipeListScreenDestination.route)
+                        popUpTo(RecipeListScreenDestination)
                     }
                 }
             }

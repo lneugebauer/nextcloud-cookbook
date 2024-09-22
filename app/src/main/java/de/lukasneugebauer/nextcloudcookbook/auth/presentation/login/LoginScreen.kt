@@ -19,7 +19,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -74,7 +73,6 @@ import de.lukasneugebauer.nextcloudcookbook.destinations.HomeScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.destinations.LoginScreenDestination
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterialApi::class)
 @Destination
 @Composable
 fun LoginScreen(
@@ -105,7 +103,7 @@ fun LoginScreen(
         // Navigate to home screen if user authorized
         if (uiState.authorized) {
             navigator.navigate(HomeScreenDestination()) {
-                popUpTo(LoginScreenDestination.route) {
+                popUpTo(LoginScreenDestination) {
                     inclusive = true
                 }
             }

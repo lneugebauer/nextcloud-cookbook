@@ -34,7 +34,7 @@ fun SplashScreen(
             SplashScreenState.Authorized -> {
                 mainViewModel.finishSplash()
                 navigator.navigate(HomeScreenDestination) {
-                    popUpTo(SplashScreenDestination.route) {
+                    popUpTo(SplashScreenDestination) {
                         inclusive = true
                     }
                 }
@@ -42,7 +42,7 @@ fun SplashScreen(
             SplashScreenState.Unauthorized -> {
                 mainViewModel.finishSplash()
                 navigator.navigate(LoginScreenDestination) {
-                    popUpTo(SplashScreenDestination.route) {
+                    popUpTo(SplashScreenDestination) {
                         inclusive = true
                     }
                 }

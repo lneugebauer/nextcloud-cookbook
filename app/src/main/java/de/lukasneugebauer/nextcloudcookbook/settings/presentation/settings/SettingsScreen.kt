@@ -71,9 +71,7 @@ fun SettingsScreen(
             onLogoutClick = {
                 viewModel.logout {
                     navigator.navigate(LoginScreenDestination) {
-                        popUpTo(
-                            SplashScreenDestination.route,
-                        ) {
+                        popUpTo(SplashScreenDestination) {
                             inclusive = true
                         }
                     }

@@ -84,10 +84,23 @@ import kotlin.random.Random.Default.nextInt
 @Composable
 fun RecipeListScreen(
     navigator: DestinationsNavigator,
-    categoryName: String?,
-    @Suppress("UNUSED_PARAMETER") keyword: String?,
     resultRecipient: ResultRecipient<RecipeCreateScreenDestination, Int>,
     viewModel: RecipeListViewModel = hiltViewModel(),
+) {
+    RecipeListScreenWrapper(
+        navigator = navigator,
+        categoryName = null,
+        resultRecipient = resultRecipient,
+        viewModel = viewModel,
+    )
+}
+
+@Composable
+fun RecipeListScreenWrapper(
+    navigator: DestinationsNavigator,
+    categoryName: String?,
+    resultRecipient: ResultRecipient<RecipeCreateScreenDestination, Int>,
+    viewModel: RecipeListViewModel,
 ) {
     val uiState by viewModel.state.collectAsState()
     val searchAppBarState by viewModel.searchAppBarState

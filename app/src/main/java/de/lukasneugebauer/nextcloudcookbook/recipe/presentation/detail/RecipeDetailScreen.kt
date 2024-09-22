@@ -86,7 +86,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.util.getActivity
 import de.lukasneugebauer.nextcloudcookbook.core.util.notZero
 import de.lukasneugebauer.nextcloudcookbook.core.util.openInBrowser
 import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeEditScreenDestination
-import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeListScreenDestination
+import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeListWithArgumentsScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Nutrition
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Recipe
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.emptyRecipe
@@ -199,7 +199,7 @@ fun RecipeDetailScreen(
                 },
                 onKeywordClick = {
                     navigator.navigate(
-                        RecipeListScreenDestination(
+                        RecipeListWithArgumentsScreenDestination(
                             categoryName = null,
                             keyword = it,
                         ),

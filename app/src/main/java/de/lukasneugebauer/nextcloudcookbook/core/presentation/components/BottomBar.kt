@@ -18,16 +18,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
+import com.ramcosta.composedestinations.spec.DirectionDestinationSpec
+import com.ramcosta.composedestinations.utils.rememberDestinationsNavigator
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.domain.state.LocalAppState
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
 import de.lukasneugebauer.nextcloudcookbook.destinations.CategoryListScreenDestination
-import de.lukasneugebauer.nextcloudcookbook.destinations.Destination
 import de.lukasneugebauer.nextcloudcookbook.destinations.HomeScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeListScreenDestination
 
 enum class BottomBarDestination(
-    val direction: Destination,
+    val direction: DirectionDestinationSpec,
     val icon: ImageVector,
     @StringRes val label: Int,
 ) {
@@ -39,15 +40,16 @@ enum class BottomBarDestination(
 @Composable
 fun BottomBar(navController: NavController) {
     val appState = LocalAppState.current
+    val destinationsNavigator = navController.rememberDestinationsNavigator()
     var selected by rememberSaveable { mutableStateOf(BottomBarDestination.Home) }
     if (appState.isBottomBarVisible) {
         BottomNavigation(backgroundColor = NcBlue700) {
-            BottomBarDestination.values().forEach { destination ->
+            BottomBarDestination.entries.forEach { destination ->
                 BottomNavigationItem(
                     selected = selected == destination,
                     onClick = {
                         selected = destination
-                        navController.navigate(destination.direction.route) {
+                        destinationsNavigator.navigate(destination.direction) {
                             launchSingleTop = true
                         }
                     },
