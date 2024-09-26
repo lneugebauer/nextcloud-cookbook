@@ -34,7 +34,7 @@
     <string name="recipe_image_url">URL da imaxe</string>
     <string name="recipe_ingredient_add">Engadir ingrediente</string>
     <string name="recipe_instruction_add">Engadir instrución</string>
-    <string name="recipe_instructions">Indicacións</string>
+    <string name="recipe_instructions">Elaboración</string>
     <string name="recipe_instruction">Instrución</string>
     <string name="recipe_more_menu_delete">Eliminar</string>
     <plurals name="recipe_ingredients_servings">
