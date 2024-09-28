@@ -1,0 +1,20 @@
+Retrouver toutes vos recettes dans votre instance Nextxloud.
+
+Le code source peut être trouvé sur GitHub à cette adresse : https://github.com/lneugebauer/nextcloud-cookbook/. Les reports de bug, les propositions d'amélioration et de nouvelle fonctionnalités se font là bas.
+
+Déjà implémenté :
+- List toutes vos recettes
+- List les recettes par catégories
+- Voir les recettes
+- L'écran reste allumé quand on regarde une recettes
+- Paramètre
+- Édition des recettes
+- Ajout de recettes
+- Importation de recette via URL
+
+Prévu :
+- Usage hors ligne
+- Utilisation de la connections via l'application Nextcloud files
+- Connection via QR code
+
+Il faut avoir accès à un serveur Nextcloud avec la dernière version de l'application Cookbook installé pour utiliser cette application.
