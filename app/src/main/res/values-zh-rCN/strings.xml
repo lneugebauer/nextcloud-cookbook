@@ -29,7 +29,6 @@
     <string name="recipe_import_from_url">从 URL 导入食谱</string>
     <string name="recipe_ingredient_add">添加配料</string>
     <string name="recipe_ingredients">配料</string>
-    <string name="recipe_ingredients_copied">已复制配料</string>
     <string name="recipe_ingredients_copy">将配料复制到剪贴板</string>
     <plurals name="recipe_ingredients_servings">
         <item quantity="other">%1$d 份的配料</item>

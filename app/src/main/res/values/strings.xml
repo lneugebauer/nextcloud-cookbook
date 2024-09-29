@@ -65,7 +65,10 @@
     <string name="recipe_ingredient_add">Add ingredient</string>
     <string name="recipe_ingredient_delete">Delete ingredient</string>
     <string name="recipe_ingredients">Ingredients</string>
-    <string name="recipe_ingredients_copied">Copied ingredients</string>
+    <plurals name="recipe_ingredients_copied">
+        <item quantity="one">Copied ingredient</item>
+        <item quantity="other">Copied ingredients</item>
+    </plurals>
     <string name="recipe_ingredients_copy">Copy ingredients to clipboard</string>
     <string name="recipe_ingredient">Ingredient</string>
     <plurals name="recipe_ingredients_servings">

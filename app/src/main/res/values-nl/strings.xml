@@ -29,7 +29,6 @@
     <string name="recipe_ingredient_add">Ingrediënt toevoegen</string>
     <string name="recipe_ingredient_delete">Ingrediënt verwijderen</string>
     <string name="recipe_ingredients">Ingrediënten</string>
-    <string name="recipe_ingredients_copied">Gekopieerde ingrediënten</string>
     <string name="recipe_ingredients_copy">Kopieer ingrediënten naar klembord</string>
     <string name="recipe_ingredient">Ingrediënt</string>
     <string name="recipe_instruction_add">Instructies toevoegen</string>

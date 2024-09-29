@@ -100,7 +100,6 @@
     <string name="recipe_category">Catégorie</string>
     <string name="recipe_edit">Modifier la recette</string>
     <string name="recipe_ingredient_delete">Retirer un ingrédient</string>
-    <string name="recipe_ingredients_copied">Ingrédients copiés</string>
     <string name="recipe_ingredients_copy">Copier les ingrédients dans le presse-papiers</string>
     <string name="recipe_instruction_add">Ajouter une instruction</string>
     <plurals name="recipe_ingredients_servings">

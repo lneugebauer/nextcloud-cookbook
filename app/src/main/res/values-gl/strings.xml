@@ -119,7 +119,6 @@
         <item quantity="other">%1$d racións</item>
     </plurals>
     <string name="recipe_servings_decrease">Quitar unha porción</string>
-    <string name="recipe_ingredients_copied">Copiaronse os ingredientes</string>
     <string name="recipe_yield">Cantidade</string>
     <string name="common_download">Descargar</string>
     <string name="download_recipe">Descargar receita</string>

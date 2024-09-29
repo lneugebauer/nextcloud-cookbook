@@ -59,7 +59,6 @@
     <string name="recipe_ingredient_add">Malzeme ekle</string>
     <string name="recipe_ingredient_delete">Malzemeyi sil</string>
     <string name="recipe_ingredients">Malzemeler</string>
-    <string name="recipe_ingredients_copied">Malzemeler kopyalandı</string>
     <string name="recipe_ingredients_copy">Malzemeleri panoya kopyala</string>
     <string name="recipe_ingredient">Malzeme</string>
     <plurals name="recipe_ingredients_servings">

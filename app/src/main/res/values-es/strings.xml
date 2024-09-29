@@ -121,7 +121,6 @@
         <item quantity="other">Sirviendo %1$d</item>
     </plurals>
     <string name="recipe_servings_reset">Restablecer parte</string>
-    <string name="recipe_ingredients_copied">Ingredientes copiados</string>
     <string name="recipe_ingredients_copy">Copiar ingredientes al portapapeles</string>
     <string name="common_add">Añadir</string>
     <string name="recipe_import_from_url">Importar receta desde una URL</string>

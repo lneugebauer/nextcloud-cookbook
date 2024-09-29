@@ -8,6 +8,8 @@ import android.view.WindowManager
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -528,6 +530,7 @@ private fun Category(category: String) {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun Ingredients(
     ingredients: List<String>,
@@ -562,7 +565,7 @@ private fun Ingredients(
             if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
                 Toast.makeText(
                     context,
-                    context.getString(R.string.recipe_ingredients_copied),
+                    context.resources.getQuantityString(R.plurals.recipe_ingredients_copied, ingredients.size),
                     Toast.LENGTH_SHORT,
                 ).show()
             }
@@ -609,10 +612,29 @@ private fun Ingredients(
                 },
             modifier =
                 Modifier
+                    .combinedClickable(
+                        onLongClick = {
+                            clipboardManager.setText(
+                                buildAnnotatedString {
+                                    append(ingredient)
+                                    toAnnotatedString()
+                                },
+                            )
+                            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
+                                Toast.makeText(
+                                    context,
+                                    context.resources.getQuantityString(R.plurals.recipe_ingredients_copied, 1),
+                                    Toast.LENGTH_SHORT,
+                                ).show()
+                            }
+                        },
+                        onClick = {
+                            checked = !checked
+                        },
+                    )
                     .fillMaxWidth()
                     .minimumInteractiveComponentSize()
                     .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
-            onClick = { checked = !checked },
         )
     }
     Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_m)))
