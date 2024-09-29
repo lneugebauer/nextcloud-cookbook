@@ -45,6 +45,7 @@ import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.outlined.Remove
+import androidx.compose.material.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -53,6 +54,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -72,7 +74,6 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.colintheshots.twain.MarkdownText
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import de.lukasneugebauer.nextcloudcookbook.R
@@ -90,6 +91,7 @@ import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeListWithArguments
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Nutrition
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Recipe
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.emptyRecipe
+import dev.jeziellago.compose.markdowntext.MarkdownText
 import java.time.Duration
 
 @Destination
@@ -596,24 +598,24 @@ private fun Ingredients(
             }
         }
     }
-    ingredients.forEachIndexed { index, ingredient ->
-        val paddingBottom =
-            if (ingredients.size == index + 1) {
-                dimensionResource(id = R.dimen.padding_l)
-            } else {
-                dimensionResource(id = R.dimen.padding_xs)
-            }
+    ingredients.forEach { ingredient ->
+        var checked by rememberSaveable { mutableStateOf(false) }
         MarkdownText(
-            markdown = ingredient,
+            markdown =
+                if (checked) {
+                    "~~$ingredient~~"
+                } else {
+                    ingredient
+                },
             modifier =
                 Modifier
-                    .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
-                    .padding(
-                        top = dimensionResource(id = R.dimen.padding_xs),
-                        bottom = paddingBottom,
-                    ),
+                    .fillMaxWidth()
+                    .minimumInteractiveComponentSize()
+                    .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
+            onClick = { checked = !checked },
         )
     }
+    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_m)))
 }
 
 @Composable
