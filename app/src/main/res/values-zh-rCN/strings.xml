@@ -123,4 +123,7 @@
     <string name="settings_account">账号</string>
     <string name="recipe_yield">食量</string>
     <string name="settings_general">常规</string>
+    <plurals name="recipe_ingredients_copied">
+        <item quantity="other">已复制配料</item>
+    </plurals>
 </resources>
