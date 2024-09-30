@@ -125,4 +125,8 @@
     <string name="download_recipe_url">URL da receita</string>
     <string name="recipe_import_from_url">Importar receita desde URL</string>
     <string name="common_add">Engadir</string>
+    <plurals name="recipe_ingredients_copied">
+        <item quantity="one">Ingrediente copiado</item>
+        <item quantity="other">Ingredientes copiados</item>
+    </plurals>
 </resources>
