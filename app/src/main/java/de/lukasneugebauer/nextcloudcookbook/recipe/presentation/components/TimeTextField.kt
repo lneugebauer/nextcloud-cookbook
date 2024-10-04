@@ -6,11 +6,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
-import androidx.compose.material.TextFieldColors
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,12 +29,13 @@ fun TimeTextField(
     onTimeChange: (time: DurationComponents) -> Unit,
     @StringRes label: Int,
     modifier: Modifier = Modifier,
-    colors: TextFieldColors =
-        TextFieldDefaults.outlinedTextFieldColors(
-            textColor = Color.White,
-            cursorColor = Color.White,
-            focusedBorderColor = Color.White,
-            unfocusedBorderColor = Color.White,
+    colors: androidx.compose.material3.TextFieldColors =
+        TextFieldDefaults.colors(
+            focusedContainerColor = MaterialTheme.colorScheme.onSurface,
+            unfocusedContainerColor = MaterialTheme.colorScheme.onSurface,
+            cursorColor = MaterialTheme.colorScheme.onSurface,
+            focusedIndicatorColor = MaterialTheme.colorScheme.onSurface,
+            unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface
         ),
     hoursKeyboardActions: KeyboardActions = KeyboardActions.Default,
     minutesKeyboardActions: KeyboardActions = KeyboardActions.Default,
@@ -45,7 +45,7 @@ fun TimeTextField(
     Column(modifier = modifier) {
         Text(
             text = stringResource(id = label),
-            style = MaterialTheme.typography.caption,
+            style = MaterialTheme.typography.bodySmall,
         )
         Row(
             horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_s)),

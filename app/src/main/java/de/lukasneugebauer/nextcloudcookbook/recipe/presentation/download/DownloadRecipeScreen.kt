@@ -5,16 +5,19 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Button
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TextFieldDefaults
-import androidx.compose.material.TopAppBar
+import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TopAppBarColors
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -115,7 +118,11 @@ private fun DownloadRecipeScreen(
                     .fillMaxWidth()
                     .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
                     .padding(bottom = dimensionResource(id = R.dimen.padding_xs)),
-            label = { Text(text = stringResource(R.string.download_recipe_url)) },
+            label = {
+                Text(
+                    text = stringResource(R.string.download_recipe_url),
+                    color = MaterialTheme.colorScheme.onSurface
+                )},
             errorText = error?.asString(),
             keyboardOptions =
                 KeyboardOptions.Default.copy(
@@ -126,13 +133,13 @@ private fun DownloadRecipeScreen(
                     onDone = { },
                 ),
             singleLine = true,
-            colors =
-                TextFieldDefaults.outlinedTextFieldColors(
-                    textColor = MaterialTheme.colors.onBackground,
-                    cursorColor = MaterialTheme.colors.onBackground,
-                    focusedBorderColor = MaterialTheme.colors.primary,
-                    unfocusedBorderColor = MaterialTheme.colors.primary,
-                ),
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.surface,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                cursorColor = MaterialTheme.colorScheme.onSurface,
+                focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface,
+            )
         )
         Button(
             onClick = onDownloadClick,
@@ -147,6 +154,7 @@ private fun DownloadRecipeScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun RecipeDownloadTopBar(onNavIconClick: () -> Unit) {
     TopAppBar(
@@ -165,8 +173,10 @@ private fun RecipeDownloadTopBar(onNavIconClick: () -> Unit) {
                 )
             }
         },
-        backgroundColor = MaterialTheme.colors.primary,
-        contentColor = MaterialTheme.colors.onPrimary,
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+            titleContentColor = MaterialTheme.colorScheme.onSurface
+        )
     )
 }
 

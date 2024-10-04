@@ -12,7 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
-/*@SuppressLint("ConflictingOnColor")
+@SuppressLint("ConflictingOnColor")
 private val DarkColorPalette =
     darkColors(
         primary = NcBlue700,
@@ -36,24 +36,33 @@ private val LightColorPalette =
         onSecondary = Color.White,
         onBackground = Color.Black,
     )
-*/
-@SuppressLint("NewApi")
+
 @Composable
 fun NextcloudCookbookTheme(
     useDynamicColor: Boolean = true,
     content: @Composable () -> Unit,
 ) {
     val context = LocalContext.current
-    val colorScheme =
+    val colorScheme = when {
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && useDynamicColor -> {
             // Use dynamic color scheme for devices running Android 12 (API 31) and above
             if (isSystemInDarkTheme()) {
                 dynamicDarkColorScheme(context)
             } else {
                 dynamicLightColorScheme(context)
             }
+        }
 
-
-
+        else -> {
+            when{
+                isSystemInDarkTheme() -> {
+                   darkColors() // Your predefined dark color scheme
+                } else->{
+                   lightColors() // Your predefined light color scheme
+                }
+            }
+        }
+    }
     androidx.compose.material3.MaterialTheme(
         colorScheme = colorScheme as ColorScheme,
         typography = Typography,

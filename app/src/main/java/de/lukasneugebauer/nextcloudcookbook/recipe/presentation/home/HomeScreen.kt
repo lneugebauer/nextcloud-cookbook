@@ -60,9 +60,10 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val systemUiController = rememberSystemUiController()
+    systemUiController.setStatusBarColor(color = MaterialTheme.colorScheme.primary)
     val uiState by viewModel.uiState.collectAsState()
 
-    systemUiController.setStatusBarColor(color = MaterialTheme.colorScheme.primary)
+
 
     Scaffold(topBar = {
         TopBar(
