@@ -5,7 +5,9 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
@@ -17,7 +19,6 @@ import androidx.compose.material.Chip
 import androidx.compose.material.ChipDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldColors
@@ -26,7 +27,6 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Save
@@ -46,6 +46,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dokar.chiptextfield.Chip
+
 import com.dokar.chiptextfield.OutlinedChipTextField
 import com.dokar.chiptextfield.rememberChipTextFieldState
 import de.lukasneugebauer.nextcloudcookbook.R
@@ -58,7 +59,9 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.Nextcloud
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.DurationComponents
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Recipe
 import timber.log.Timber
+import androidx.compose.material3.*
 import java.time.Duration
+
 
 @Composable
 fun CreateEditRecipeForm(
@@ -115,25 +118,22 @@ fun CreateEditRecipeForm(
         },
     ) { innerPadding ->
         Column(
-            modifier =
-                Modifier
-                    .padding(innerPadding)
-                    .verticalScroll(scrollState),
+            modifier = Modifier
+                .padding(innerPadding)
+                .verticalScroll(scrollState)
         ) {
-            val modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
-                    .padding(bottom = dimensionResource(id = R.dimen.padding_m))
-            val textFieldColors =
-                TextFieldDefaults.outlinedTextFieldColors(
-                    textColor = MaterialTheme.colors.onBackground,
-                    cursorColor = MaterialTheme.colors.onBackground,
-                    focusedBorderColor = MaterialTheme.colors.primary,
-                    unfocusedBorderColor = MaterialTheme.colors.primary,
-                )
+            val modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
+                .padding(bottom = dimensionResource(id = R.dimen.padding_m))
+            val textFieldColors = TextFieldDefaults.outlinedTextFieldColors(
+                textColor = MaterialTheme.colorScheme.onBackground,
+                cursorColor = MaterialTheme.colorScheme.onBackground,
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = MaterialTheme.colorScheme.primary,
+            )
 
-            Gap(size = dimensionResource(id = R.dimen.padding_m))
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.padding_m)))
             CompositionLocalProvider(LocalTextFieldColors provides textFieldColors) {
                 Name(
                     recipe = recipe,
@@ -227,6 +227,7 @@ fun CreateEditRecipeForm(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun RecipeEditTopBar(
     title: String,
@@ -244,7 +245,7 @@ private fun RecipeEditTopBar(
         navigationIcon = {
             IconButton(onClick = onNavIconClick) {
                 Icon(
-                    Icons.AutoMirrored.Default.ArrowBack,
+                    Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = stringResource(id = R.string.common_back),
                 )
             }
@@ -257,8 +258,12 @@ private fun RecipeEditTopBar(
                 )
             }
         },
-        backgroundColor = MaterialTheme.colors.primary,
-        contentColor = MaterialTheme.colors.onPrimary,
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+            titleContentColor = MaterialTheme.colorScheme.onPrimary,
+            navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
+            actionIconContentColor = MaterialTheme.colorScheme.onPrimary
+        )
     )
 }
 
@@ -615,7 +620,7 @@ private fun Ingredients(
     Column(modifier = modifier) {
         Text(
             text = stringResource(id = R.string.recipe_ingredients),
-            style = MaterialTheme.typography.h6,
+            style = MaterialTheme.typography.headlineSmall,
         )
         recipe.ingredients.forEachIndexed { index, ingredient ->
             DefaultOutlinedTextField(
@@ -650,11 +655,6 @@ private fun Ingredients(
         }
         DefaultButton(
             onClick = onAddIngredient,
-            colors =
-                ButtonDefaults.buttonColors(
-                    backgroundColor = NcBlue700,
-                    contentColor = Color.White,
-                ),
         ) {
             Icon(
                 imageVector = Icons.Default.Add,
@@ -685,7 +685,7 @@ private fun Nutritions(
     Column(modifier = modifier) {
         Text(
             text = stringResource(id = R.string.recipe_nutrition),
-            style = MaterialTheme.typography.h6,
+            style = MaterialTheme.typography.headlineSmall,
         )
         NutritionItem(
             value = recipe.nutrition?.calories,
@@ -818,7 +818,7 @@ private fun Tools(
     Column(modifier = modifier) {
         Text(
             text = stringResource(id = R.string.recipe_tools),
-            style = MaterialTheme.typography.h6,
+            style = MaterialTheme.typography.headlineSmall,
         )
         recipe.tools.forEachIndexed { index, tool ->
             DefaultOutlinedTextField(
@@ -853,11 +853,6 @@ private fun Tools(
         }
         DefaultButton(
             onClick = onAddTool,
-            colors =
-                ButtonDefaults.buttonColors(
-                    backgroundColor = NcBlue700,
-                    contentColor = Color.White,
-                ),
         ) {
             Icon(
                 imageVector = Icons.Default.Add,
@@ -881,7 +876,7 @@ private fun Instructions(
     Column(modifier = modifier) {
         Text(
             text = stringResource(id = R.string.recipe_instructions),
-            style = MaterialTheme.typography.h6,
+            style = MaterialTheme.typography.headlineSmall,
         )
         recipe.instructions.forEachIndexed { index, instruction ->
             DefaultOutlinedTextField(
@@ -905,11 +900,7 @@ private fun Instructions(
         }
         DefaultButton(
             onClick = onAddInstruction,
-            colors =
-                ButtonDefaults.buttonColors(
-                    backgroundColor = NcBlue700,
-                    contentColor = Color.White,
-                ),
+
         ) {
             Icon(
                 imageVector = Icons.Default.Add,

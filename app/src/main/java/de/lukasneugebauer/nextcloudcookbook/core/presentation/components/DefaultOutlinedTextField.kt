@@ -52,17 +52,17 @@ fun DefaultOutlinedTextField(
             label = label,
             placeholder = placeholder,
             trailingIcon =
-                if (isError) {
-                    {
-                        Icon(
-                            imageVector = Icons.Default.Error,
-                            contentDescription = "Error",
-                            tint = MaterialTheme.colors.error,
-                        )
-                    }
-                } else {
-                    trailingIcon
-                },
+            if (isError) {
+                {
+                    Icon(
+                        imageVector = Icons.Default.Error,
+                        contentDescription = "Error",
+                        tint = MaterialTheme.colors.error,
+                    )
+                }
+            } else {
+                trailingIcon
+            },
             isError = isError,
             visualTransformation = visualTransformation,
             keyboardOptions = keyboardOptions,
@@ -76,8 +76,8 @@ fun DefaultOutlinedTextField(
                 color = MaterialTheme.colors.error,
                 style = MaterialTheme.typography.caption,
                 modifier =
-                    Modifier
-                        .padding(horizontal = dimensionResource(id = R.dimen.padding_l)),
+                Modifier
+                    .padding(horizontal = dimensionResource(id = R.dimen.padding_l)),
             )
         }
     }

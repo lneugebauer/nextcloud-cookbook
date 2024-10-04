@@ -8,19 +8,26 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Card
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
+
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -36,7 +43,6 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.RowCont
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.RowContent
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.error.NotFoundScreen
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.error.UnknownErrorScreen
-import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
 import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeDetailScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeListWithArgumentsScreenDestination
@@ -44,6 +50,8 @@ import de.lukasneugebauer.nextcloudcookbook.destinations.SettingsScreenDestinati
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.HomeScreenDataResult
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.HomeScreenState
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.RecipeConstants.MORE_BUTTON_THRESHOLD
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
+
 
 @Destination
 @Composable
@@ -51,7 +59,10 @@ fun HomeScreen(
     navigator: DestinationsNavigator,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
+    val systemUiController = rememberSystemUiController()
     val uiState by viewModel.uiState.collectAsState()
+
+    systemUiController.setStatusBarColor(color = MaterialTheme.colorScheme.primary)
 
     Scaffold(topBar = {
         TopBar(
@@ -129,22 +140,28 @@ fun HomeScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun TopBar(onSettingsIconClick: () -> Unit) {
+fun TopBar(onSettingsIconClick: () -> Unit) {
     TopAppBar(
         title = { Text(text = stringResource(id = R.string.app_name)) },
         actions = {
             IconButton(onClick = onSettingsIconClick) {
                 Icon(
-                    Icons.Default.Settings,
+                    imageVector = Icons.Filled.Settings,
                     contentDescription = stringResource(id = R.string.common_settings),
+                    tint = MaterialTheme.colorScheme.onPrimary
                 )
             }
         },
-        backgroundColor = NcBlue700,
-        contentColor = Color.White,
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+            titleContentColor = MaterialTheme.colorScheme.onPrimary,
+            actionIconContentColor = MaterialTheme.colorScheme.onPrimary
+        )
     )
 }
+
 
 @Composable
 fun SingleItem(
@@ -155,6 +172,13 @@ fun SingleItem(
     Card(
         modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
         onClick = onClick,
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+            disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant
+
+        )
     ) {
         Column {
             AuthorizedImage(
@@ -175,5 +199,13 @@ fun SingleItem(
 private fun TopBarPreview() {
     NextcloudCookbookTheme {
         TopBar {}
+    }
+}
+
+@Preview
+@Composable
+private fun SingleItemPreview(){
+    NextcloudCookbookTheme {
+        SingleItem("Lorem ipsum", "https://placehold.co/600x400?text=Hello+World") { }
     }
 }

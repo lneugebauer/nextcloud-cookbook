@@ -443,7 +443,7 @@ private fun LoginScreenPreview() {
 @Preview
 @Composable
 private fun LoginScreenDarkModePreview() {
-    NextcloudCookbookTheme(darkTheme = true) {
+    NextcloudCookbookTheme {
         LoginScreen(false, null, null, null, {}, {}, {}, { _, _, _ -> })
     }
 }

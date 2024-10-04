@@ -1,10 +1,7 @@
 package de.lukasneugebauer.nextcloudcookbook.core.presentation.components
 
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonColors
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Text
+import androidx.compose.material3.* // Updated to Material3
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -15,11 +12,10 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
 fun DefaultButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    colors: ButtonColors =
-        ButtonDefaults.buttonColors(
-            backgroundColor = Color.White,
-            contentColor = NcBlue700,
-        ),
+    colors: ButtonColors = ButtonDefaults.buttonColors(
+        containerColor = MaterialTheme.colorScheme.primary,
+        contentColor = MaterialTheme.colorScheme.onPrimary,
+    ),
     content: @Composable RowScope.() -> Unit,
 ) {
     Button(

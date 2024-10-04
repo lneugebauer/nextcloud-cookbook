@@ -1,14 +1,7 @@
 package de.lukasneugebauer.nextcloudcookbook.core.presentation.components
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.minimumInteractiveComponentSize
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.* // Updated to Material3
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,12 +43,12 @@ fun CommonItemBody(
     Text(
         text = name,
         modifier =
-            modifier
-                .minimumInteractiveComponentSize()
-                .padding(dimensionResource(id = R.dimen.padding_s))
-                .wrapContentWidth(Alignment.Start),
+        modifier
+            .minimumInteractiveComponentSize()
+            .padding(dimensionResource(id = R.dimen.padding_s))
+            .wrapContentWidth(Alignment.Start),
         overflow = TextOverflow.Ellipsis,
         maxLines = 1,
-        style = MaterialTheme.typography.body1,
+        style = MaterialTheme.typography.bodyLarge, // Updated to Material3 Typography
     )
 }
