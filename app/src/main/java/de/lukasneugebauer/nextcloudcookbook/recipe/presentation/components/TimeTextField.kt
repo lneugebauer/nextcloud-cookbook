@@ -13,7 +13,6 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -35,7 +34,7 @@ fun TimeTextField(
             unfocusedContainerColor = MaterialTheme.colorScheme.onSurface,
             cursorColor = MaterialTheme.colorScheme.onSurface,
             focusedIndicatorColor = MaterialTheme.colorScheme.onSurface,
-            unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface
+            unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface,
         ),
     hoursKeyboardActions: KeyboardActions = KeyboardActions.Default,
     minutesKeyboardActions: KeyboardActions = KeyboardActions.Default,

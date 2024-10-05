@@ -14,7 +14,7 @@ fun Loader(modifier: Modifier = Modifier) {
     Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         CircularProgressIndicator(
             color = MaterialTheme.colorScheme.primary,
-            strokeWidth = 4.dp
+            strokeWidth = 4.dp,
         ) // Material 3 CircularProgressIndicator
     }
 }

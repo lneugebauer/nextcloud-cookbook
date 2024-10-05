@@ -8,24 +8,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
-
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CenterAlignedTopAppBar
-
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberTopAppBarState
@@ -38,6 +31,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import de.lukasneugebauer.nextcloudcookbook.R
@@ -56,8 +50,6 @@ import de.lukasneugebauer.nextcloudcookbook.destinations.SettingsScreenDestinati
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.HomeScreenDataResult
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.HomeScreenState
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.RecipeConstants.MORE_BUTTON_THRESHOLD
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Destination
@@ -71,15 +63,15 @@ fun HomeScreen(
     val uiState by viewModel.uiState.collectAsState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
-
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-        TopBar(
-            onSettingsIconClick = { navigator.navigate(SettingsScreenDestination()) },
-            scrollBehavior = scrollBehavior
-        )
-    }) { innerPadding ->
+            TopBar(
+                onSettingsIconClick = { navigator.navigate(SettingsScreenDestination()) },
+                scrollBehavior = scrollBehavior,
+            )
+        },
+    ) { innerPadding ->
         when (uiState) {
             HomeScreenState.Initial -> Loader()
             is HomeScreenState.Loaded -> {
@@ -145,7 +137,6 @@ fun HomeScreen(
                     }
                 }
             }
-
             is HomeScreenState.Error -> UnknownErrorScreen()
         }
     }
@@ -153,31 +144,36 @@ fun HomeScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar(onSettingsIconClick: () -> Unit, scrollBehavior: TopAppBarScrollBehavior) {
-
+fun TopBar(
+    onSettingsIconClick: () -> Unit,
+    scrollBehavior: TopAppBarScrollBehavior,
+) {
     TopAppBar(
-        title = { Text(text = stringResource(id = R.string.app_name)) },
+        title = {
+            Text(
+                text = stringResource(id = R.string.app_name),
+                style = MaterialTheme.typography.headlineLarge,
+            )
+        },
         actions = {
             IconButton(onClick = onSettingsIconClick) {
                 Icon(
                     imageVector = Icons.Filled.Settings,
                     contentDescription = stringResource(id = R.string.common_settings),
-                    tint = MaterialTheme.colorScheme.onPrimary
+                    tint = MaterialTheme.colorScheme.onPrimary,
                 )
             }
         },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primary,
-            titleContentColor = MaterialTheme.colorScheme.onPrimary,
-            actionIconContentColor = MaterialTheme.colorScheme.onPrimary,
-            scrolledContainerColor = MaterialTheme.colorScheme.primary,
-
-        ),
-        scrollBehavior = scrollBehavior
-
+        colors =
+            TopAppBarDefaults.topAppBarColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                actionIconContentColor = MaterialTheme.colorScheme.onPrimary,
+                scrolledContainerColor = MaterialTheme.colorScheme.primary,
+            ),
+        scrollBehavior = scrollBehavior,
     )
 }
-
 
 @Composable
 fun SingleItem(
@@ -188,13 +184,13 @@ fun SingleItem(
     Card(
         modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
         onClick = onClick,
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant,
-            contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-            disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-            disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant
-
-        )
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            ),
     ) {
         Column {
             AuthorizedImage(
@@ -210,11 +206,9 @@ fun SingleItem(
     }
 }
 
-
-
 @Preview
 @Composable
-private fun SingleItemPreview(){
+private fun SingleItemPreview() {
     NextcloudCookbookTheme {
         SingleItem("Lorem ipsum", "https://placehold.co/600x400?text=Hello+World") { }
     }

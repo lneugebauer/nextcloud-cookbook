@@ -26,16 +26,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Category
@@ -49,8 +39,18 @@ import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.outlined.Remove
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
+import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
@@ -65,7 +65,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
@@ -89,7 +88,6 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Authori
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Gap
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.pluralResource
-import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
 import de.lukasneugebauer.nextcloudcookbook.core.util.getActivity
 import de.lukasneugebauer.nextcloudcookbook.core.util.notZero
@@ -109,10 +107,8 @@ fun RecipeDetailScreen(
     @Suppress("UNUSED_PARAMETER") recipeId: Int,
     viewModel: RecipeDetailViewModel = hiltViewModel(),
 ) {
-
     val systemUiController = rememberSystemUiController()
     systemUiController.setStatusBarColor(color = MaterialTheme.colorScheme.primary)
-
     val context = LocalContext.current
     val state by viewModel.state.collectAsState()
     val recipe by remember { derivedStateOf { state.data ?: emptyRecipe() } }
@@ -179,12 +175,12 @@ fun RecipeDetailScreen(
             FloatingActionButton(
                 onClick = {
                     if (recipe.isNotEmpty()) {
-                      navigator.navigate(RecipeEditScreenDestination(recipe.id))
+                        navigator.navigate(RecipeEditScreenDestination(recipe.id))
                     }
                 },
                 shape = RoundedCornerShape(16.dp),
                 containerColor = MaterialTheme.colorScheme.primary,
-                elevation = FloatingActionButtonDefaults.elevation(8.dp)
+                elevation = FloatingActionButtonDefaults.elevation(8.dp),
             ) {
                 Icon(
                     imageVector = Icons.Default.Edit,
@@ -307,11 +303,12 @@ private fun TopBar(
                 }
             }
         },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-            titleContentColor = MaterialTheme.colorScheme.onSurface,
-            actionIconContentColor = MaterialTheme.colorScheme.onSurface
-        )
+        colors =
+            TopAppBarDefaults.topAppBarColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+                titleContentColor = MaterialTheme.colorScheme.onSurface,
+                actionIconContentColor = MaterialTheme.colorScheme.onSurface,
+            ),
     )
 }
 
@@ -323,7 +320,7 @@ private fun DropDownMenuItemOpenSource(
     if (recipeUrl.isNotBlank()) {
         DropdownMenuItem(
             onClick = { Uri.parse(recipeUrl).openInBrowser(context) },
-            text = {Text(stringResource(id = R.string.recipe_more_menu_share))}
+            text = { Text(stringResource(id = R.string.recipe_more_menu_share)) },
         )
     }
 }
@@ -332,7 +329,7 @@ private fun DropDownMenuItemOpenSource(
 private fun DropDownMenuItemEdit(onClick: () -> Unit) {
     DropdownMenuItem(
         onClick = onClick,
-        text = { Text(text = stringResource(id = R.string.recipe_more_menu_edit))}
+        text = { Text(text = stringResource(id = R.string.recipe_more_menu_edit)) },
     )
 }
 
@@ -340,7 +337,7 @@ private fun DropDownMenuItemEdit(onClick: () -> Unit) {
 private fun DropDownMenuItemDelete(onClick: () -> Unit) {
     DropdownMenuItem(
         onClick = onClick,
-        text = {Text(text = stringResource(id = R.string.recipe_more_menu_delete))}
+        text = { Text(text = stringResource(id = R.string.recipe_more_menu_delete)) },
     )
 }
 
@@ -444,14 +441,15 @@ private fun Keywords(
             AssistChip(
                 onClick = { onClick.invoke(it) },
                 border = BorderStroke(2.dp, MaterialTheme.colorScheme.secondary),
-                colors = AssistChipDefaults.assistChipColors(
-                    containerColor = MaterialTheme.colorScheme.secondary,
-                    labelColor = MaterialTheme.colorScheme.onSecondary,
-                    //disabledContainerColor = MaterialTheme.colorScheme.surface,
-                    //selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                    disabledLabelColor = MaterialTheme.colorScheme.onSurface
-                ),
-                label = {Text(text = it)}
+                colors =
+                    AssistChipDefaults.assistChipColors(
+                        containerColor = MaterialTheme.colorScheme.secondary,
+                        labelColor = MaterialTheme.colorScheme.onSecondary,
+                        // disabledContainerColor = MaterialTheme.colorScheme.surface,
+                        // selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                        disabledLabelColor = MaterialTheme.colorScheme.onSurface,
+                    ),
+                label = { Text(text = it) },
             )
         }
     }
@@ -803,23 +801,31 @@ private fun Instructions(instructions: List<String>) {
                 enabled = true,
                 border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
                 colors =
-                AssistChipDefaults.assistChipColors(
-                    containerColor = if (enabledStates[index].value) {
-                        MaterialTheme.colorScheme.primary
-                    } else {
-                        MaterialTheme.colorScheme.surface
-                    },
-                    labelColor = if (enabledStates[index].value) {
-                        MaterialTheme.colorScheme.onPrimary
-                    } else {
-                        MaterialTheme.colorScheme.onSurface
-                    }
-                ),
-                label = {Text(text = "${index + 1}", color = if(enabledStates[index].value){
-                    MaterialTheme.colorScheme.onPrimary
-                }else{
-                    MaterialTheme.colorScheme.onSurface
-                })}
+                    AssistChipDefaults.assistChipColors(
+                        containerColor =
+                            if (enabledStates[index].value) {
+                                MaterialTheme.colorScheme.primary
+                            } else {
+                                MaterialTheme.colorScheme.surface
+                            },
+                        labelColor =
+                            if (enabledStates[index].value) {
+                                MaterialTheme.colorScheme.onPrimary
+                            } else {
+                                MaterialTheme.colorScheme.onSurface
+                            },
+                    ),
+                label = {
+                    Text(
+                        text = "${index + 1}",
+                        color =
+                            if (enabledStates[index].value) {
+                                MaterialTheme.colorScheme.onPrimary
+                            } else {
+                                MaterialTheme.colorScheme.onSurface
+                            },
+                    )
+                },
             )
             MarkdownText(
                 markdown = instruction,

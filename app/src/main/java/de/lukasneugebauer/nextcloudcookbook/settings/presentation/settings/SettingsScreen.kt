@@ -64,16 +64,16 @@ fun SettingsScreen(
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     Scaffold(
-        topBar = { SettingsTopBar(onNavIconClick = { navigator.navigateUp() },) },
+        topBar = { SettingsTopBar(onNavIconClick = { navigator.navigateUp() }) },
         containerColor = MaterialTheme.colorScheme.surface,
-        contentColor = MaterialTheme.colorScheme.onSurface
+        contentColor = MaterialTheme.colorScheme.onSurface,
     ) { innerPadding ->
         SettingsContent(
             modifier =
-            Modifier
-                .padding(paddingValues = innerPadding)
-                .fillMaxWidth()
-                .verticalScroll(rememberScrollState()),
+                Modifier
+                    .padding(paddingValues = innerPadding)
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState()),
             onLibrariesClick = { navigator.navigate(LibrariesScreenDestination) },
             onLogoutClick = {
                 viewModel.logout {
@@ -102,11 +102,12 @@ fun SettingsTopBar(onNavIconClick: () -> Unit) {
                 )
             }
         },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-            titleContentColor = MaterialTheme.colorScheme.onSurface,
-            actionIconContentColor = MaterialTheme.colorScheme.onSurface
-        )
+        colors =
+            TopAppBarDefaults.topAppBarColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+                titleContentColor = MaterialTheme.colorScheme.onSurface,
+                actionIconContentColor = MaterialTheme.colorScheme.onSurface,
+            ),
     )
 }
 
@@ -119,9 +120,12 @@ fun SettingsContent(
 ) {
     val context = LocalContext.current
 
-    Box(modifier= modifier.fillMaxSize()
-        .background(MaterialTheme.colorScheme.surface) ) {
-        Column(modifier = Modifier){
+    Box(
+        modifier =
+            modifier.fillMaxSize()
+                .background(MaterialTheme.colorScheme.surface),
+    ) {
+        Column(modifier = Modifier) {
             SettingsGroupGeneral(sharedPreferences)
             SettingsGroupAccount(onLogoutClick)
             SettingsGroupAbout(context, onLibrariesClick)
@@ -141,7 +145,8 @@ fun SettingsGroupGeneral(sharedPreferences: SharedPreferences) {
 
     SettingsGroup(
         modifier = Modifier.background(MaterialTheme.colorScheme.surface),
-        title = { Text(text = stringResource(R.string.settings_general)) }) {
+        title = { Text(text = stringResource(R.string.settings_general)) },
+    ) {
         SettingsSwitch(
             modifier = Modifier.background(MaterialTheme.colorScheme.surface),
             state = stayAwakeState,
@@ -154,12 +159,13 @@ fun SettingsGroupGeneral(sharedPreferences: SharedPreferences) {
             title = { Text(text = stringResource(R.string.settings_stay_awake)) },
             subtitle = { Text(text = stringResource(R.string.settings_stay_awake_on_recipe_screen)) },
             onCheckedChange = {},
-            switchColors = SwitchDefaults.colors(
-                checkedThumbColor = MaterialTheme.colorScheme.primary,
-                uncheckedThumbColor = MaterialTheme.colorScheme.onSurface,
-                checkedTrackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
-                uncheckedTrackColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
-            )
+            switchColors =
+                SwitchDefaults.colors(
+                    checkedThumbColor = MaterialTheme.colorScheme.primary,
+                    uncheckedThumbColor = MaterialTheme.colorScheme.onSurface,
+                    checkedTrackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                    uncheckedTrackColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+                ),
         )
     }
 }
@@ -168,7 +174,8 @@ fun SettingsGroupGeneral(sharedPreferences: SharedPreferences) {
 fun SettingsGroupAccount(onLogoutClick: () -> Unit) {
     SettingsGroup(
         modifier = Modifier.background(MaterialTheme.colorScheme.surface),
-        title = { Text(text = stringResource(R.string.settings_account)) }) {
+        title = { Text(text = stringResource(R.string.settings_account)) },
+    ) {
         SettingsMenuLink(
             modifier = Modifier.background(MaterialTheme.colorScheme.surface),
             icon = {
@@ -190,7 +197,8 @@ fun SettingsGroupAbout(
 ) {
     SettingsGroup(
         modifier = Modifier.background(MaterialTheme.colorScheme.surface),
-        title = { Text(text = stringResource(id = R.string.common_about)) }) {
+        title = { Text(text = stringResource(id = R.string.common_about)) },
+    ) {
         SettingsMenuLink(
             modifier = Modifier.background(MaterialTheme.colorScheme.surface),
             icon = {
@@ -243,7 +251,8 @@ fun SettingsGroupAbout(
 fun SettingsGroupContribution(context: Context) {
     SettingsGroup(
         modifier = Modifier.background(MaterialTheme.colorScheme.surface),
-        title = { Text(text = stringResource(R.string.settings_contribution)) }) {
+        title = { Text(text = stringResource(R.string.settings_contribution)) },
+    ) {
         SettingsMenuLink(
             modifier = Modifier.background(MaterialTheme.colorScheme.surface),
             icon = {

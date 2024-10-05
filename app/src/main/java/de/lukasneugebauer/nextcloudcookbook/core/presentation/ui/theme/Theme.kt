@@ -43,26 +43,27 @@ fun NextcloudCookbookTheme(
     content: @Composable () -> Unit,
 ) {
     val context = LocalContext.current
-    val colorScheme = when {
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && useDynamicColor -> {
-            // Use dynamic color scheme for devices running Android 12 (API 31) and above
-            if (isSystemInDarkTheme()) {
-                dynamicDarkColorScheme(context)
-            } else {
-                dynamicLightColorScheme(context)
+    val colorScheme =
+        when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && useDynamicColor -> {
+                // Use dynamic color scheme for devices running Android 12 (API 31) and above
+                if (isSystemInDarkTheme()) {
+                    dynamicDarkColorScheme(context)
+                } else {
+                    dynamicLightColorScheme(context)
+                }
             }
-        }
 
-        else -> {
-            when{
-                isSystemInDarkTheme() -> {
-                   darkColors() // Your predefined dark color scheme
-                } else->{
-                   lightColors() // Your predefined light color scheme
+            else -> {
+                when {
+                    isSystemInDarkTheme() -> {
+                        darkColors() // Your predefined dark color scheme
+                    } else -> {
+                        lightColors() // Your predefined light color scheme
+                    }
                 }
             }
         }
-    }
     androidx.compose.material3.MaterialTheme(
         colorScheme = colorScheme as ColorScheme,
         typography = Typography,
@@ -70,4 +71,3 @@ fun NextcloudCookbookTheme(
         content = content,
     )
 }
-

@@ -11,15 +11,21 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-
-
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.CloudDownload
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
@@ -30,15 +36,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.outlined.CloudDownload
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChipDefaults
-import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -48,7 +45,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -75,7 +71,6 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.keyboardAsState
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.error.AbstractErrorScreen
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.error.NotFoundScreen
-import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
 import de.lukasneugebauer.nextcloudcookbook.destinations.DownloadRecipeScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeCreateScreenDestination
@@ -146,7 +141,7 @@ fun RecipeListScreenWrapper(
                 },
                 shape = RoundedCornerShape(16.dp),
                 containerColor = MaterialTheme.colorScheme.primary,
-                elevation = FloatingActionButtonDefaults.elevation(8.dp)
+                elevation = FloatingActionButtonDefaults.elevation(8.dp),
             ) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = stringResource(id = R.string.common_add))
             }
@@ -217,11 +212,11 @@ private fun RecipeListScreen(
                                 label = {
                                     Text(text = it)
                                 },
-                                colors = FilterChipDefaults.filterChipColors(
-                                    selectedContainerColor = MaterialTheme.colorScheme.primary,
-                                    selectedLabelColor = MaterialTheme.colorScheme.onPrimary
-
-                                )
+                                colors =
+                                    FilterChipDefaults.filterChipColors(
+                                        selectedContainerColor = MaterialTheme.colorScheme.primary,
+                                        selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                                    ),
                             )
                         }
                     }
@@ -251,11 +246,9 @@ private fun RecipeListScreen(
                         supportingContent = {
                             Text(
                                 text = recipePreview.keywords.joinToString(separator = ", "),
-                                style = MaterialTheme.typography.bodySmall
+                                style = MaterialTheme.typography.bodySmall,
                             )
                         },
-
-
                     )
                     if (index != recipePreviews.size - 1) {
                         Divider(
@@ -280,7 +273,6 @@ private fun TopAppBar(
 ) {
     val title = categoryName ?: stringResource(id = R.string.common_recipes)
 
-
     TopAppBar(
         title = { Text(text = title) },
         navigationIcon = {
@@ -291,7 +283,6 @@ private fun TopAppBar(
                 )
             }
         },
-
         actions = {
             IconButton(onClick = onImportClick) {
                 Icon(
@@ -306,12 +297,13 @@ private fun TopAppBar(
                 )
             }
         },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-            titleContentColor = MaterialTheme.colorScheme.onSurface,
-            navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
-            actionIconContentColor = MaterialTheme.colorScheme.onSurface
-        )
+        colors =
+            TopAppBarDefaults.topAppBarColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+                titleContentColor = MaterialTheme.colorScheme.onSurface,
+                navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
+                actionIconContentColor = MaterialTheme.colorScheme.onSurface,
+            ),
     )
 }
 
@@ -333,11 +325,10 @@ private fun SearchAppBar(
 
     Surface(
         modifier =
-        Modifier
-            .fillMaxWidth()
-            .height(AppBarHeight),
+            Modifier
+                .fillMaxWidth()
+                .height(AppBarHeight),
         color = MaterialTheme.colorScheme.primary,
-
     ) {
         val layoutDirection = LocalLayoutDirection.current
         var textFieldValue by remember {
@@ -355,12 +346,11 @@ private fun SearchAppBar(
                 onQueryChange.invoke(it)
             },
             modifier =
-            Modifier
-                .fillMaxWidth()
-                .focusRequester(focusRequester),
+                Modifier
+                    .fillMaxWidth()
+                    .focusRequester(focusRequester),
             placeholder = {
                 Text(
-
                     text = stringResource(R.string.common_search),
                     color = MaterialTheme.colorScheme.onSurface,
                 )
@@ -370,7 +360,6 @@ private fun SearchAppBar(
                     Icon(
                         imageVector = Icons.Default.Search,
                         contentDescription = stringResource(R.string.common_search),
-
                         tint = MaterialTheme.colorScheme.onSurface,
                     )
                 }
@@ -394,22 +383,22 @@ private fun SearchAppBar(
                 }
             },
             keyboardOptions =
-            KeyboardOptions(
-                imeAction = ImeAction.Search,
-            ),
+                KeyboardOptions(
+                    imeAction = ImeAction.Search,
+                ),
             keyboardActions =
-            KeyboardActions(
-                onSearch = {},
-            ),
+                KeyboardActions(
+                    onSearch = {},
+                ),
             singleLine = true,
             colors =
-            TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.surface,
-                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                cursorColor = MaterialTheme.colorScheme.onSurface,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent
-            ),
+                TextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.surface,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                    cursorColor = MaterialTheme.colorScheme.onSurface,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                ),
         )
     }
 }

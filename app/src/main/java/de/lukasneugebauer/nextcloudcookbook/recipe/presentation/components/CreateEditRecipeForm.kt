@@ -14,27 +14,30 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldColors
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Save
+import androidx.compose.material3.AssistChip
+import androidx.compose.material3.AssistChipDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldColors
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -44,7 +47,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dokar.chiptextfield.Chip
-
 import com.dokar.chiptextfield.OutlinedChipTextField
 import com.dokar.chiptextfield.rememberChipTextFieldState
 import de.lukasneugebauer.nextcloudcookbook.R
@@ -52,15 +54,11 @@ import de.lukasneugebauer.nextcloudcookbook.category.domain.model.Category
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.DefaultButton
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.DefaultOutlinedTextField
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Gap
-import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.DurationComponents
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Recipe
 import timber.log.Timber
-import androidx.compose.material3.*
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import java.time.Duration
-
 
 @Composable
 fun CreateEditRecipeForm(
@@ -105,10 +103,7 @@ fun CreateEditRecipeForm(
     onAddInstruction: () -> Unit,
     onSaveClick: () -> Unit,
 ) {
-    val systemUiController = rememberSystemUiController()
-    systemUiController.setStatusBarColor(color = MaterialTheme.colorScheme.primary)
     val scrollState = rememberScrollState()
-
     Scaffold(
         topBar = {
             RecipeEditTopBar(
@@ -119,21 +114,24 @@ fun CreateEditRecipeForm(
         },
     ) { innerPadding ->
         Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .verticalScroll(scrollState)
+            modifier =
+                Modifier
+                    .padding(innerPadding)
+                    .verticalScroll(scrollState),
         ) {
-            val modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
-                .padding(bottom = dimensionResource(id = R.dimen.padding_m))
-            val textFieldColors = TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.surface,
-                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                cursorColor = MaterialTheme.colorScheme.onSurface,
-                focusedIndicatorColor = MaterialTheme.colorScheme.primary,
-                unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface,
-            )
+            val modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
+                    .padding(bottom = dimensionResource(id = R.dimen.padding_m))
+            val textFieldColors =
+                TextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.surface,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                    cursorColor = MaterialTheme.colorScheme.onSurface,
+                    focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                    unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface,
+                )
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.padding_m)))
             CompositionLocalProvider(LocalTextFieldColors provides textFieldColors) {
@@ -260,12 +258,13 @@ private fun RecipeEditTopBar(
                 )
             }
         },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-            titleContentColor = MaterialTheme.colorScheme.onSurface,
-            navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
-            actionIconContentColor = MaterialTheme.colorScheme.onSurface
-        )
+        colors =
+            TopAppBarDefaults.topAppBarColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+                titleContentColor = MaterialTheme.colorScheme.onSurface,
+                navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
+                actionIconContentColor = MaterialTheme.colorScheme.onSurface,
+            ),
     )
 }
 
@@ -507,16 +506,17 @@ private fun Category(
                     AssistChip(
                         onClick = { onCategoryChange.invoke(it.name) },
                         border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
-                        colors = AssistChipDefaults.assistChipColors(
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            labelColor = MaterialTheme.colorScheme.onPrimary,
-                            //disabledContainerColor = MaterialTheme.colorScheme.surface,
-                            //selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                            disabledLabelColor = MaterialTheme.colorScheme.onSurface
-                        ),
+                        colors =
+                            AssistChipDefaults.assistChipColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                labelColor = MaterialTheme.colorScheme.onPrimary,
+                                // disabledContainerColor = MaterialTheme.colorScheme.surface,
+                                // selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                                disabledLabelColor = MaterialTheme.colorScheme.onSurface,
+                            ),
                         label = {
                             Text(text = it.name)
-                        }
+                        },
                     )
                 }
             }
@@ -530,8 +530,6 @@ private fun Keywords(
     keywords: Set<String>,
     onKeywordsChange: (keywords: Set<String>) -> Unit,
 ) {
-    val textFieldColors = LocalTextFieldColors.current
-
     val state =
         rememberChipTextFieldState(
             chips = recipe.keywords.map { Chip(text = it) },
@@ -552,13 +550,14 @@ private fun Keywords(
         onChipClick = {
             Timber.d("$it clicked")
         },
-        colors = androidx.compose.material.TextFieldDefaults.textFieldColors(
-            backgroundColor = MaterialTheme.colorScheme.surface,
-            cursorColor = MaterialTheme.colorScheme.onSurface,
-            focusedIndicatorColor = MaterialTheme.colorScheme.onSurface,
-            unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface,
-            textColor = MaterialTheme.colorScheme.onSurface
-        )
+        colors =
+            androidx.compose.material.TextFieldDefaults.textFieldColors(
+                backgroundColor = MaterialTheme.colorScheme.surface,
+                cursorColor = MaterialTheme.colorScheme.onSurface,
+                focusedIndicatorColor = MaterialTheme.colorScheme.onSurface,
+                unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface,
+                textColor = MaterialTheme.colorScheme.onSurface,
+            ),
     )
 
     if (keywords.isEmpty()) {
@@ -573,19 +572,19 @@ private fun Keywords(
                 .forEach {
                     item {
                         AssistChip(
-
                             onClick = { state.addChip(Chip(text = it)) },
                             border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
                             colors =
                                 AssistChipDefaults.assistChipColors(
                                     containerColor = MaterialTheme.colorScheme.primary,
                                     labelColor = MaterialTheme.colorScheme.onPrimary,
-                                    //disabledContainerColor = MaterialTheme.colorScheme.surface,
-                                    //selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                                    disabledLabelColor = MaterialTheme.colorScheme.onSurface
+                                    // disabledContainerColor = MaterialTheme.colorScheme.surface,
+                                    // selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                                    disabledLabelColor = MaterialTheme.colorScheme.onSurface,
                                 ),
-                            label = {Text(text = it)
-                                    }
+                            label = {
+                                Text(text = it)
+                            },
                         )
                     }
                 }
@@ -917,7 +916,6 @@ private fun Instructions(
         }
         DefaultButton(
             onClick = onAddInstruction,
-
         ) {
             Icon(
                 imageVector = Icons.Default.Add,

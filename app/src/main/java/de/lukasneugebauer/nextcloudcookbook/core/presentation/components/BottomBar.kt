@@ -27,7 +27,6 @@ import de.lukasneugebauer.nextcloudcookbook.destinations.CategoryListScreenDesti
 import de.lukasneugebauer.nextcloudcookbook.destinations.HomeScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeListScreenDestination
 
-
 enum class BottomBarDestination(
     val direction: DirectionDestinationSpec,
     val icon: ImageVector,
@@ -46,7 +45,7 @@ fun BottomBar(navController: NavController) {
 
     if (appState.isBottomBarVisible) {
         NavigationBar(
-            containerColor = MaterialTheme.colorScheme.background
+            containerColor = MaterialTheme.colorScheme.background,
         ) {
             BottomBarDestination.entries.forEach { destination ->
                 NavigationBarItem(
@@ -64,13 +63,13 @@ fun BottomBar(navController: NavController) {
                         )
                     },
                     label = { Text(stringResource(destination.label)) },
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = MaterialTheme.colorScheme.primary,
-                        unselectedIconColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-                        selectedTextColor = MaterialTheme.colorScheme.primary,
-                        unselectedTextColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-
-                    )
+                    colors =
+                        NavigationBarItemDefaults.colors(
+                            selectedIconColor = MaterialTheme.colorScheme.primary,
+                            unselectedIconColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                            selectedTextColor = MaterialTheme.colorScheme.primary,
+                            unselectedTextColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                        ),
                 )
             }
         }
