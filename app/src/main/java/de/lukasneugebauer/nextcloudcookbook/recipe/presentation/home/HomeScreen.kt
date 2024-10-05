@@ -8,12 +8,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CenterAlignedTopAppBar
 
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -23,11 +25,15 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -53,6 +59,7 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.util.RecipeConstants.MORE_BUT
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Destination
 @Composable
 fun HomeScreen(
@@ -62,12 +69,15 @@ fun HomeScreen(
     val systemUiController = rememberSystemUiController()
     systemUiController.setStatusBarColor(color = MaterialTheme.colorScheme.primary)
     val uiState by viewModel.uiState.collectAsState()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
 
-
-    Scaffold(topBar = {
+    Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
         TopBar(
             onSettingsIconClick = { navigator.navigate(SettingsScreenDestination()) },
+            scrollBehavior = scrollBehavior
         )
     }) { innerPadding ->
         when (uiState) {
@@ -143,7 +153,8 @@ fun HomeScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar(onSettingsIconClick: () -> Unit) {
+fun TopBar(onSettingsIconClick: () -> Unit, scrollBehavior: TopAppBarScrollBehavior) {
+
     TopAppBar(
         title = { Text(text = stringResource(id = R.string.app_name)) },
         actions = {
@@ -158,8 +169,12 @@ fun TopBar(onSettingsIconClick: () -> Unit) {
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primary,
             titleContentColor = MaterialTheme.colorScheme.onPrimary,
-            actionIconContentColor = MaterialTheme.colorScheme.onPrimary
-        )
+            actionIconContentColor = MaterialTheme.colorScheme.onPrimary,
+            scrolledContainerColor = MaterialTheme.colorScheme.primary,
+
+        ),
+        scrollBehavior = scrollBehavior
+
     )
 }
 
@@ -195,13 +210,7 @@ fun SingleItem(
     }
 }
 
-@Preview
-@Composable
-private fun TopBarPreview() {
-    NextcloudCookbookTheme {
-        TopBar {}
-    }
-}
+
 
 @Preview
 @Composable

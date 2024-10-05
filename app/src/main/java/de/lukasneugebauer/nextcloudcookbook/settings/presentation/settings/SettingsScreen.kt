@@ -139,8 +139,11 @@ fun SettingsGroupGeneral(sharedPreferences: SharedPreferences) {
             preferences = sharedPreferences,
         )
 
-    SettingsGroup(title = { Text(text = stringResource(R.string.settings_general)) }) {
+    SettingsGroup(
+        modifier = Modifier.background(MaterialTheme.colorScheme.surface),
+        title = { Text(text = stringResource(R.string.settings_general)) }) {
         SettingsSwitch(
+            modifier = Modifier.background(MaterialTheme.colorScheme.surface),
             state = stayAwakeState,
             icon = {
                 Icon(
@@ -163,8 +166,11 @@ fun SettingsGroupGeneral(sharedPreferences: SharedPreferences) {
 
 @Composable
 fun SettingsGroupAccount(onLogoutClick: () -> Unit) {
-    SettingsGroup(title = { Text(text = stringResource(R.string.settings_account)) }) {
+    SettingsGroup(
+        modifier = Modifier.background(MaterialTheme.colorScheme.surface),
+        title = { Text(text = stringResource(R.string.settings_account)) }) {
         SettingsMenuLink(
+            modifier = Modifier.background(MaterialTheme.colorScheme.surface),
             icon = {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.Logout,
@@ -182,8 +188,11 @@ fun SettingsGroupAbout(
     context: Context,
     onLibrariesClick: () -> Unit,
 ) {
-    SettingsGroup(title = { Text(text = stringResource(id = R.string.common_about)) }) {
+    SettingsGroup(
+        modifier = Modifier.background(MaterialTheme.colorScheme.surface),
+        title = { Text(text = stringResource(id = R.string.common_about)) }) {
         SettingsMenuLink(
+            modifier = Modifier.background(MaterialTheme.colorScheme.surface),
             icon = {
                 Icon(
                     imageVector = Icons.Outlined.Lock,
@@ -194,12 +203,14 @@ fun SettingsGroupAbout(
             onClick = { Uri.parse(PRIVACY_URL).openInBrowser(context) },
         )
         SettingsMenuLink(
+            modifier = Modifier.background(MaterialTheme.colorScheme.surface),
             icon = {},
             title = { Text(text = stringResource(R.string.settings_license)) },
             subtitle = { Text(text = stringResource(R.string.settings_mit_license)) },
             onClick = { Uri.parse(LICENSE_URL).openInBrowser(context) },
         )
         SettingsMenuLink(
+            modifier = Modifier.background(MaterialTheme.colorScheme.surface),
             icon = {
                 Icon(
                     imageVector = Icons.Default.Gavel,
@@ -210,6 +221,7 @@ fun SettingsGroupAbout(
             onClick = onLibrariesClick,
         )
         SettingsMenuLink(
+            modifier = Modifier.background(MaterialTheme.colorScheme.surface),
             icon = {},
             title = { Text(text = stringResource(R.string.settings_version)) },
             subtitle = {
@@ -229,8 +241,11 @@ fun SettingsGroupAbout(
 
 @Composable
 fun SettingsGroupContribution(context: Context) {
-    SettingsGroup(title = { Text(text = stringResource(R.string.settings_contribution)) }) {
+    SettingsGroup(
+        modifier = Modifier.background(MaterialTheme.colorScheme.surface),
+        title = { Text(text = stringResource(R.string.settings_contribution)) }) {
         SettingsMenuLink(
+            modifier = Modifier.background(MaterialTheme.colorScheme.surface),
             icon = {
                 Icon(
                     imageVector = Icons.Default.Code,
@@ -242,6 +257,7 @@ fun SettingsGroupContribution(context: Context) {
             onClick = { Uri.parse(GITHUB_URL).openInBrowser(context) },
         )
         SettingsMenuLink(
+            modifier = Modifier.background(MaterialTheme.colorScheme.surface),
             icon = {
                 Icon(
                     imageVector = Icons.Outlined.Translate,
@@ -252,6 +268,7 @@ fun SettingsGroupContribution(context: Context) {
             onClick = { Uri.parse(WEBLATE_URL).openInBrowser(context) },
         )
         SettingsMenuLink(
+            modifier = Modifier.background(MaterialTheme.colorScheme.surface),
             icon = {
                 Icon(
                     imageVector = Icons.Outlined.BugReport,
