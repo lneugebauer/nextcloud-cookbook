@@ -8,19 +8,25 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Card
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -36,7 +42,6 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.RowCont
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.RowContent
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.error.NotFoundScreen
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.error.UnknownErrorScreen
-import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
 import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeDetailScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeListWithArgumentsScreenDestination
@@ -45,6 +50,7 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.HomeScreenDataRe
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.HomeScreenState
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.RecipeConstants.MORE_BUTTON_THRESHOLD
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Destination
 @Composable
 fun HomeScreen(
@@ -52,12 +58,16 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
-
-    Scaffold(topBar = {
-        TopBar(
-            onSettingsIconClick = { navigator.navigate(SettingsScreenDestination()) },
-        )
-    }) { innerPadding ->
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+    Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            TopBar(
+                onSettingsIconClick = { navigator.navigate(SettingsScreenDestination()) },
+                scrollBehavior = scrollBehavior,
+            )
+        },
+    ) { innerPadding ->
         when (uiState) {
             HomeScreenState.Initial -> Loader()
             is HomeScreenState.Loaded -> {
@@ -123,26 +133,40 @@ fun HomeScreen(
                     }
                 }
             }
-
             is HomeScreenState.Error -> UnknownErrorScreen()
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun TopBar(onSettingsIconClick: () -> Unit) {
+fun TopBar(
+    onSettingsIconClick: () -> Unit,
+    scrollBehavior: TopAppBarScrollBehavior,
+) {
     TopAppBar(
-        title = { Text(text = stringResource(id = R.string.app_name)) },
+        title = {
+            Text(
+                text = stringResource(id = R.string.app_name),
+                style = MaterialTheme.typography.headlineLarge,
+            )
+        },
         actions = {
             IconButton(onClick = onSettingsIconClick) {
                 Icon(
-                    Icons.Default.Settings,
+                    imageVector = Icons.Filled.Settings,
                     contentDescription = stringResource(id = R.string.common_settings),
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
                 )
             }
         },
-        backgroundColor = NcBlue700,
-        contentColor = Color.White,
+        colors =
+            TopAppBarDefaults.topAppBarColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                actionIconContentColor = MaterialTheme.colorScheme.onPrimary,
+            ),
+        scrollBehavior = scrollBehavior,
     )
 }
 
@@ -155,6 +179,13 @@ fun SingleItem(
     Card(
         modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
         onClick = onClick,
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            ),
     ) {
         Column {
             AuthorizedImage(
@@ -174,6 +205,6 @@ fun SingleItem(
 @Composable
 private fun TopBarPreview() {
     NextcloudCookbookTheme {
-        TopBar {}
+        SingleItem("Lorem ipsum", "https://placehold.co/600x400?text=Hello+World") { }
     }
 }

@@ -19,20 +19,22 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.Scaffold
 import androidx.compose.material.SwipeableDefaults
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -45,6 +47,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.dimensionResource
@@ -65,14 +68,13 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Default
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.DefaultTextButton
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.HideBottomNavigation
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
-import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
-import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlueGradient
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
 import de.lukasneugebauer.nextcloudcookbook.destinations.HomeScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.destinations.LoginScreenDestination
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Destination
 @Composable
 fun LoginScreen(
@@ -119,6 +121,23 @@ fun LoginScreen(
             sheetState.hide()
         }
     }
+
+    LoginScreen(
+        showManualLogin = showManualLogin,
+        usernameError = uiState.usernameError,
+        passwordError = uiState.passwordError,
+        urlError = uiState.urlError,
+        onClearError = viewModel::clearErrors,
+        onLoginClick = { url ->
+            viewModel.getLoginEndpoint(url)
+            keyboardController?.hide()
+        },
+        onShowManualLoginClick = { showManualLogin = !showManualLogin },
+        onManualLoginClick = { username, password, url ->
+            viewModel.tryManualLogin(username, password, url)
+            keyboardController?.hide()
+        },
+    )
 
     ModalBottomSheetLayout(
         sheetContent = {
@@ -167,7 +186,7 @@ private fun LoginScreen(
     Column(
         modifier =
             Modifier
-                .background(NcBlueGradient)
+                .background(MaterialTheme.colorScheme.surface)
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Center,
@@ -177,12 +196,13 @@ private fun LoginScreen(
             painter = painterResource(id = R.drawable.ic_nextcloud_logo_symbol),
             contentDescription = "Nextcloud Logo",
             alignment = Alignment.Center,
+            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
         )
         Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_s)))
         Text(
             text = "Nextcloud Cookbook",
-            color = Color.White,
-            style = MaterialTheme.typography.h5,
+            color = MaterialTheme.colorScheme.onSurface,
+            style = MaterialTheme.typography.titleLarge,
         )
         Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_l)))
         DefaultOutlinedTextField(
@@ -198,15 +218,20 @@ private fun LoginScreen(
             label = {
                 Text(
                     text = stringResource(R.string.login_root_address),
-                    color = MaterialTheme.colors.onPrimary,
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
             },
             placeholder = {
                 Text(
                     text = stringResource(R.string.login_example_url),
-                    color = MaterialTheme.colors.onPrimary.copy(alpha = 0.5f),
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
                 )
             },
+            colors =
+                TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                ),
             errorText = urlError?.asString(),
             keyboardOptions =
                 KeyboardOptions.Default.copy(
@@ -230,7 +255,10 @@ private fun LoginScreen(
         }
         Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_m)))
         DefaultTextButton(onClick = onShowManualLoginClick) {
-            Text(text = stringResource(R.string.login_manual))
+            Text(
+                color = MaterialTheme.colorScheme.onSurface,
+                text = stringResource(R.string.login_manual),
+            )
         }
         if (showManualLogin) {
             ManualLoginForm(
@@ -270,9 +298,14 @@ private fun ManualLoginForm(
         label = {
             Text(
                 text = stringResource(R.string.common_username),
-                color = MaterialTheme.colors.onPrimary,
+                color = MaterialTheme.colorScheme.onSurface,
             )
         },
+        colors =
+            TextFieldDefaults.colors(
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent,
+            ),
         errorText = usernameError?.asString(),
         keyboardOptions =
             KeyboardOptions.Default.copy(
@@ -293,6 +326,11 @@ private fun ManualLoginForm(
             password = it
             onClearError.invoke()
         },
+        colors =
+            TextFieldDefaults.colors(
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent,
+            ),
         modifier =
             Modifier
                 .fillMaxWidth()
@@ -300,7 +338,7 @@ private fun ManualLoginForm(
         label = {
             Text(
                 text = stringResource(R.string.common_password),
-                color = MaterialTheme.colors.onPrimary,
+                color = MaterialTheme.colorScheme.onSurface,
             )
         },
         visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
@@ -333,6 +371,11 @@ private fun ManualLoginForm(
     Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_s)))
     DefaultOutlinedTextField(
         value = url,
+        colors =
+            TextFieldDefaults.colors(
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent,
+            ),
         onValueChange = {
             url = it
             onClearError.invoke()
@@ -344,13 +387,13 @@ private fun ManualLoginForm(
         label = {
             Text(
                 text = stringResource(R.string.login_root_address),
-                color = MaterialTheme.colors.onPrimary,
+                color = MaterialTheme.colorScheme.onSurface,
             )
         },
         placeholder = {
             Text(
                 text = stringResource(R.string.login_example_url),
-                color = MaterialTheme.colors.onPrimary.copy(alpha = 0.5f),
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
             )
         },
         errorText = urlError?.asString(),
@@ -378,6 +421,7 @@ private fun ManualLoginForm(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
 fun LoginWebView(
@@ -399,8 +443,6 @@ fun LoginWebView(
                         )
                     }
                 },
-                backgroundColor = NcBlue700,
-                contentColor = Color.White,
             )
         },
     ) { innerPadding ->
@@ -443,7 +485,7 @@ private fun LoginScreenPreview() {
 @Preview
 @Composable
 private fun LoginScreenDarkModePreview() {
-    NextcloudCookbookTheme(darkTheme = true) {
+    NextcloudCookbookTheme {
         LoginScreen(false, null, null, null, {}, {}, {}, { _, _, _ -> })
     }
 }

@@ -5,11 +5,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,19 +30,20 @@ fun AbstractErrorScreen(
             modifier
                 .fillMaxSize()
                 .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
+        horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.Start,
     ) {
-        Icon(
+        androidx.compose.material3.Icon(
             imageVector = icon,
-            contentDescription = iconContentDescription?.asString(),
-            modifier =
-                Modifier
-                    .size(dimensionResource(id = R.dimen.error_icon_size))
-                    .padding(bottom = dimensionResource(id = R.dimen.padding_s)),
-            tint = MaterialTheme.colors.onBackground,
+            contentDescription = iconContentDescription.toString(),
+            modifier = Modifier.size(dimensionResource(id = R.dimen.error_icon_size)),
+            tint = MaterialTheme.colorScheme.primary,
         )
-        Text(text = uiText.asString())
+        androidx.compose.material3.Text(
+            text = uiText.asString(),
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onBackground,
+        )
     }
 }
 
