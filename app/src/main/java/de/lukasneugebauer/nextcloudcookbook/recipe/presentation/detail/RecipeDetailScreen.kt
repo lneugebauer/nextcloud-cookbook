@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
-import android.util.Log
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.annotation.StringRes
@@ -24,7 +23,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -44,14 +42,12 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -80,7 +76,6 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import de.lukasneugebauer.nextcloudcookbook.R
@@ -107,8 +102,6 @@ fun RecipeDetailScreen(
     @Suppress("UNUSED_PARAMETER") recipeId: Int,
     viewModel: RecipeDetailViewModel = hiltViewModel(),
 ) {
-    val systemUiController = rememberSystemUiController()
-    systemUiController.setStatusBarColor(color = MaterialTheme.colorScheme.primary)
     val context = LocalContext.current
     val state by viewModel.state.collectAsState()
     val recipe by remember { derivedStateOf { state.data ?: emptyRecipe() } }
@@ -178,9 +171,7 @@ fun RecipeDetailScreen(
                         navigator.navigate(RecipeEditScreenDestination(recipe.id))
                     }
                 },
-                shape = RoundedCornerShape(16.dp),
-                containerColor = MaterialTheme.colorScheme.primary,
-                elevation = FloatingActionButtonDefaults.elevation(8.dp),
+                shape = MaterialTheme.shapes.medium,
             ) {
                 Icon(
                     imageVector = Icons.Default.Edit,
@@ -303,12 +294,6 @@ private fun TopBar(
                 }
             }
         },
-        colors =
-            TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.surface,
-                titleContentColor = MaterialTheme.colorScheme.onSurface,
-                actionIconContentColor = MaterialTheme.colorScheme.onSurface,
-            ),
     )
 }
 
@@ -450,6 +435,7 @@ private fun Keywords(
                         disabledLabelColor = MaterialTheme.colorScheme.onSurface,
                     ),
                 label = { Text(text = it) },
+                shape = MaterialTheme.shapes.medium,
             )
         }
     }
@@ -793,7 +779,6 @@ private fun Instructions(instructions: List<String>) {
             AssistChip(
                 onClick = {
                     enabledStates[index].value = !enabledStates[index].value
-                    Log.d("Instructions", "Chip $index state: ${enabledStates[index].value}")
                 },
                 modifier =
                     Modifier

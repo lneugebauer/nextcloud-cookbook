@@ -122,10 +122,8 @@ dependencies {
     implementation platform('androidx.compose:compose-bom:2024.09.02')
     implementation 'androidx.compose.ui:ui'
     implementation 'androidx.compose.ui:ui-tooling-preview'
-    implementation 'androidx.compose.material:material'
-    implementation "androidx.compose.material3:material3:1.3.0"
-    implementation 'androidx.compose.material:material-icons-extended:1.7.3'
-    implementation 'androidx.activity:activity-ktx:1.9.2'
+    implementation "androidx.compose.material3:material3"
+    implementation 'androidx.compose.material:material-icons-extended'
 
     implementation "com.google.accompanist:accompanist-systemuicontroller:0.36.0"
 
@@ -148,7 +146,7 @@ dependencies {
 
     implementation 'com.jakewharton.timber:timber:5.0.1'
 
-    implementation "com.github.alorma:compose-settings-ui:$compose_settings_version"
+    implementation "com.github.alorma:compose-settings-ui-m3:$compose_settings_version"
     implementation "com.github.alorma:compose-settings-storage-preferences:$compose_settings_version"
 
     implementation "io.github.raamcosta.compose-destinations:core:$compose_destinations_version"
@@ -157,9 +155,10 @@ dependencies {
     implementation 'com.github.haroldadmin:NetworkResponseAdapter:5.0.0'
 
     implementation "com.mikepenz:aboutlibraries-core:$aboutlibs_version"
-    implementation "com.mikepenz:aboutlibraries-compose:$aboutlibs_version"
+    implementation "com.mikepenz:aboutlibraries-compose-m3:$aboutlibs_version"
 
-    implementation 'io.github.dokar3:chiptextfield:0.6.5'
+    implementation "io.github.dokar3:chiptextfield-m3:0.7.0-alpha05"
+
 
     implementation "ch.acra:acra-mail:$acra_version"
     implementation "ch.acra:acra-dialog:$acra_version"

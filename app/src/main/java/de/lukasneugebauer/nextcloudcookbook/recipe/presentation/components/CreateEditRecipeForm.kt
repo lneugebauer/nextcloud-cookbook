@@ -47,7 +47,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dokar.chiptextfield.Chip
-import com.dokar.chiptextfield.OutlinedChipTextField
+import com.dokar.chiptextfield.m3.OutlinedChipTextField
 import com.dokar.chiptextfield.rememberChipTextFieldState
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.category.domain.model.Category
@@ -57,7 +57,6 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Gap
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.DurationComponents
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Recipe
-import timber.log.Timber
 import java.time.Duration
 
 @Composable
@@ -541,23 +540,12 @@ private fun Keywords(
 
     OutlinedChipTextField(
         state = state,
-        onSubmit = ::Chip,
         modifier =
             Modifier
                 .fillMaxWidth()
                 .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
+        onSubmit = ::Chip,
         label = { Text(text = "Keywords") },
-        onChipClick = {
-            Timber.d("$it clicked")
-        },
-        colors =
-            androidx.compose.material.TextFieldDefaults.textFieldColors(
-                backgroundColor = MaterialTheme.colorScheme.surface,
-                cursorColor = MaterialTheme.colorScheme.onSurface,
-                focusedIndicatorColor = MaterialTheme.colorScheme.onSurface,
-                unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface,
-                textColor = MaterialTheme.colorScheme.onSurface,
-            ),
     )
 
     if (keywords.isEmpty()) {

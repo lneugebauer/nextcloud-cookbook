@@ -19,28 +19,26 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ModalBottomSheetLayout
-import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -60,7 +58,6 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import de.lukasneugebauer.nextcloudcookbook.R
@@ -73,29 +70,24 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.Nextcloud
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
 import de.lukasneugebauer.nextcloudcookbook.destinations.HomeScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.destinations.LoginScreenDestination
-import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Destination
 @Composable
 fun LoginScreen(
     navigator: DestinationsNavigator,
     viewModel: LoginViewModel = hiltViewModel(),
 ) {
-    val systemUiController = rememberSystemUiController()
-    systemUiController.setStatusBarColor(color = MaterialTheme.colorScheme.primary)
     val keyboardController = LocalSoftwareKeyboardController.current
-    val scope = rememberCoroutineScope()
     val sheetState =
         rememberModalBottomSheetState(
-            initialValue = ModalBottomSheetValue.Hidden,
             confirmValueChange = {
                 when (it) {
-                    ModalBottomSheetValue.Hidden -> true
-                    ModalBottomSheetValue.Expanded -> true
-                    ModalBottomSheetValue.HalfExpanded -> false
+                    SheetValue.Hidden -> true
+                    SheetValue.Expanded -> true
+                    SheetValue.PartiallyExpanded -> false
                 }
             },
-            skipHalfExpanded = true,
         )
     var showManualLogin: Boolean by rememberSaveable { mutableStateOf(false) }
     val uiState by viewModel.uiState.collectAsState()
@@ -118,41 +110,27 @@ fun LoginScreen(
         }
 
         // Close modal bottom sheet if currently open and url is unavailable
-        if (sheetState.currentValue == ModalBottomSheetValue.Expanded && uiState.webViewUrl == null) {
+        if (sheetState.currentValue == SheetValue.Expanded && uiState.webViewUrl == null) {
             sheetState.hide()
         }
     }
 
-    ModalBottomSheetLayout(
-        sheetContent = {
-            LoginWebView(
-                url = uiState.webViewUrl,
-                onCloseClick = {
-                    scope.launch { sheetState.hide() }
-                    viewModel.onHideWebView()
-                },
-            )
+    LoginScreen(
+        showManualLogin = showManualLogin,
+        usernameError = uiState.usernameError,
+        passwordError = uiState.passwordError,
+        urlError = uiState.urlError,
+        onClearError = viewModel::clearErrors,
+        onLoginClick = { url ->
+            viewModel.getLoginEndpoint(url)
+            keyboardController?.hide()
         },
-        sheetState = sheetState,
-        sheetGesturesEnabled = false,
-    ) {
-        LoginScreen(
-            showManualLogin = showManualLogin,
-            usernameError = uiState.usernameError,
-            passwordError = uiState.passwordError,
-            urlError = uiState.urlError,
-            onClearError = viewModel::clearErrors,
-            onLoginClick = { url ->
-                viewModel.getLoginEndpoint(url)
-                keyboardController?.hide()
-            },
-            onShowManualLoginClick = { showManualLogin = !showManualLogin },
-            onManualLoginClick = { username, password, url ->
-                viewModel.tryManualLogin(username, password, url)
-                keyboardController?.hide()
-            },
-        )
-    }
+        onShowManualLoginClick = { showManualLogin = !showManualLogin },
+        onManualLoginClick = { username, password, url ->
+            viewModel.tryManualLogin(username, password, url)
+            keyboardController?.hide()
+        },
+    )
 }
 
 @Composable

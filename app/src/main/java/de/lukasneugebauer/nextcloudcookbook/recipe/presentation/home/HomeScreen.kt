@@ -31,7 +31,6 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import de.lukasneugebauer.nextcloudcookbook.R
@@ -58,11 +57,8 @@ fun HomeScreen(
     navigator: DestinationsNavigator,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
-    val systemUiController = rememberSystemUiController()
-    systemUiController.setStatusBarColor(color = MaterialTheme.colorScheme.primary)
     val uiState by viewModel.uiState.collectAsState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
-
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
@@ -160,16 +156,15 @@ fun TopBar(
                 Icon(
                     imageVector = Icons.Filled.Settings,
                     contentDescription = stringResource(id = R.string.common_settings),
-                    tint = MaterialTheme.colorScheme.onPrimary,
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
                 )
             }
         },
         colors =
             TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.primary,
-                titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                 actionIconContentColor = MaterialTheme.colorScheme.onPrimary,
-                scrolledContainerColor = MaterialTheme.colorScheme.primary,
             ),
         scrollBehavior = scrollBehavior,
     )
@@ -208,7 +203,7 @@ fun SingleItem(
 
 @Preview
 @Composable
-private fun SingleItemPreview() {
+private fun TopBarPreview() {
     NextcloudCookbookTheme {
         SingleItem("Lorem ipsum", "https://placehold.co/600x400?text=Hello+World") { }
     }

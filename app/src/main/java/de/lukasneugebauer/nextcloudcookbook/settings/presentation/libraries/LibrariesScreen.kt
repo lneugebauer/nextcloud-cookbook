@@ -13,8 +13,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import com.mikepenz.aboutlibraries.ui.compose.LibrariesContainer
-import com.mikepenz.aboutlibraries.ui.compose.LibraryDefaults
+import com.mikepenz.aboutlibraries.ui.compose.m3.LibrariesContainer
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import de.lukasneugebauer.nextcloudcookbook.R
@@ -49,14 +48,6 @@ fun LibrariesScreen(navigator: DestinationsNavigator) {
         containerColor = MaterialTheme.colorScheme.surface,
         contentColor = MaterialTheme.colorScheme.onSurface,
     ) {
-        LibrariesContainer(
-            colors =
-                LibraryDefaults.libraryColors(
-                    backgroundColor = MaterialTheme.colorScheme.surface,
-                    contentColor = MaterialTheme.colorScheme.onSurface,
-                    badgeBackgroundColor = MaterialTheme.colorScheme.secondary,
-                    badgeContentColor = MaterialTheme.colorScheme.onSecondary,
-                ),
-        )
+        LibrariesContainer()
     }
 }

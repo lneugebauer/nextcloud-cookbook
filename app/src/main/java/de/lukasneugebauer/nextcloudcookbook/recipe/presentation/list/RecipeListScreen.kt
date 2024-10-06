@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -25,7 +24,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.FloatingActionButtonDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
@@ -139,9 +138,7 @@ fun RecipeListScreenWrapper(
                 onClick = {
                     navigator.navigate(RecipeCreateScreenDestination)
                 },
-                shape = RoundedCornerShape(16.dp),
-                containerColor = MaterialTheme.colorScheme.primary,
-                elevation = FloatingActionButtonDefaults.elevation(8.dp),
+                shape = MaterialTheme.shapes.medium,
             ) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = stringResource(id = R.string.common_add))
             }
@@ -208,7 +205,7 @@ private fun RecipeListScreen(
                         item {
                             FilterChip(
                                 selected = isKeywordSelected(it),
-                                onClick = { onKeywordClick(it) },
+                                onClick = { onKeywordClick.invoke(it) },
                                 label = {
                                     Text(text = it)
                                 },
@@ -217,6 +214,7 @@ private fun RecipeListScreen(
                                         selectedContainerColor = MaterialTheme.colorScheme.primary,
                                         selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
                                     ),
+                                shape = MaterialTheme.shapes.medium,
                             )
                         }
                     }
@@ -251,9 +249,7 @@ private fun RecipeListScreen(
                         },
                     )
                     if (index != recipePreviews.size - 1) {
-                        Divider(
-                            modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
-                        )
+                        HorizontalDivider(modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_m)))
                     } else {
                         Gap(size = dimensionResource(id = R.dimen.fab_offset))
                     }
@@ -276,11 +272,15 @@ private fun TopAppBar(
     TopAppBar(
         title = { Text(text = title) },
         navigationIcon = {
-            IconButton(onClick = onBackClick) {
-                Icon(
-                    Icons.AutoMirrored.Default.ArrowBack,
-                    contentDescription = stringResource(id = R.string.common_back),
-                )
+            if (categoryName == null) {
+                null
+            } else {
+                IconButton(onClick = onBackClick) {
+                    Icon(
+                        Icons.AutoMirrored.Default.ArrowBack,
+                        contentDescription = stringResource(id = R.string.common_back),
+                    )
+                }
             }
         },
         actions = {
