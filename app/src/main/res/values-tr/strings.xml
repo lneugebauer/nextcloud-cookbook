@@ -125,4 +125,8 @@
     <string name="common_download">İndir</string>
     <string name="download_recipe_url">Tarif URL\'si</string>
     <string name="download_recipe">Tarifi indir</string>
+    <plurals name="recipe_ingredients_copied">
+        <item quantity="one">Malzeme kopyalandı</item>
+        <item quantity="other">Malzemeler kopyalandı</item>
+    </plurals>
 </resources>
