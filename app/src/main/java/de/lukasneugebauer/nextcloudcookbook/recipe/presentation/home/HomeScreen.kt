@@ -11,14 +11,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberTopAppBarState
@@ -144,11 +142,10 @@ fun TopBar(
     onSettingsIconClick: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
 ) {
-    TopAppBar(
+    MediumTopAppBar(
         title = {
             Text(
                 text = stringResource(id = R.string.app_name),
-                style = MaterialTheme.typography.headlineLarge,
             )
         },
         actions = {
@@ -156,16 +153,9 @@ fun TopBar(
                 Icon(
                     imageVector = Icons.Filled.Settings,
                     contentDescription = stringResource(id = R.string.common_settings),
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
                 )
             }
         },
-        colors =
-            TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                actionIconContentColor = MaterialTheme.colorScheme.onPrimary,
-            ),
         scrollBehavior = scrollBehavior,
     )
 }
@@ -179,13 +169,6 @@ fun SingleItem(
     Card(
         modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
         onClick = onClick,
-        colors =
-            CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-            ),
     ) {
         Column {
             AuthorizedImage(
@@ -201,10 +184,14 @@ fun SingleItem(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 private fun TopBarPreview() {
     NextcloudCookbookTheme {
-        SingleItem("Lorem ipsum", "https://placehold.co/600x400?text=Hello+World") { }
+        TopBar(
+            onSettingsIconClick = {},
+            scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(),
+        )
     }
 }

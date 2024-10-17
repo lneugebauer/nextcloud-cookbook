@@ -1,8 +1,7 @@
 <resources>
 
     <style name="Theme.NextcloudCookbook.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:statusBarColor">@android:color/background_dark</item>
     </style>
 
     <style name="Theme.NextcloudCookbook" parent="Theme.NextcloudCookbook.NoActionBar" />

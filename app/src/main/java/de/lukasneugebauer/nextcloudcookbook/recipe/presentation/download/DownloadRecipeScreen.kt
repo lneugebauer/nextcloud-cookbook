@@ -16,7 +16,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -120,7 +119,6 @@ private fun DownloadRecipeScreen(
             label = {
                 Text(
                     text = stringResource(R.string.download_recipe_url),
-                    color = MaterialTheme.colorScheme.onSurface,
                 )
             },
             errorText = error?.asString(),
@@ -174,11 +172,6 @@ private fun RecipeDownloadTopBar(onNavIconClick: () -> Unit) {
                 )
             }
         },
-        colors =
-            TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.surface,
-                titleContentColor = MaterialTheme.colorScheme.onSurface,
-            ),
     )
 }
 

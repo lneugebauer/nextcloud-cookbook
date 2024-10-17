@@ -127,8 +127,6 @@ dependencies {
     implementation "androidx.compose.material3:material3"
     implementation 'androidx.compose.material:material-icons-extended'
 
-    implementation "com.google.accompanist:accompanist-systemuicontroller:0.36.0"
-
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-compiler:$hilt_version"
 

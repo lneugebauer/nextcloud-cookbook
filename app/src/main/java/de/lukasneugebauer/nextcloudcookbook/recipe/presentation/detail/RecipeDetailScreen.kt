@@ -427,13 +427,7 @@ private fun Keywords(
                 onClick = { onClick.invoke(it) },
                 border = BorderStroke(2.dp, MaterialTheme.colorScheme.secondary),
                 colors =
-                    AssistChipDefaults.assistChipColors(
-                        containerColor = MaterialTheme.colorScheme.secondary,
-                        labelColor = MaterialTheme.colorScheme.onSecondary,
-                        // disabledContainerColor = MaterialTheme.colorScheme.surface,
-                        // selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                        disabledLabelColor = MaterialTheme.colorScheme.onSurface,
-                    ),
+                    AssistChipDefaults.assistChipColors(),
                 label = { Text(text = it) },
                 shape = MaterialTheme.shapes.medium,
             )

@@ -6,10 +6,8 @@ import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.Fastfood
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -44,9 +42,7 @@ fun BottomBar(navController: NavController) {
     var selected by rememberSaveable { mutableStateOf(BottomBarDestination.Home) }
 
     if (appState.isBottomBarVisible) {
-        NavigationBar(
-            containerColor = MaterialTheme.colorScheme.background,
-        ) {
+        NavigationBar {
             BottomBarDestination.entries.forEach { destination ->
                 NavigationBarItem(
                     selected = selected == destination,
@@ -63,13 +59,6 @@ fun BottomBar(navController: NavController) {
                         )
                     },
                     label = { Text(stringResource(destination.label)) },
-                    colors =
-                        NavigationBarItemDefaults.colors(
-                            selectedIconColor = MaterialTheme.colorScheme.primary,
-                            unselectedIconColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-                            selectedTextColor = MaterialTheme.colorScheme.primary,
-                            unselectedTextColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-                        ),
                 )
             }
         }

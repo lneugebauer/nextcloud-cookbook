@@ -377,27 +377,11 @@ private fun PrepTime(
     modifier: Modifier,
     onPrepTimeChange: (time: DurationComponents) -> Unit,
 ) {
-    val focusManager = LocalFocusManager.current
-    val textFieldColors = LocalTextFieldColors.current
-
-    TimeTextField(
+    TimeInput(
         time = prepTime,
         onTimeChange = onPrepTimeChange,
         label = R.string.recipe_prep_time,
         modifier = modifier,
-        colors = textFieldColors,
-        hoursKeyboardActions =
-            KeyboardActions(
-                onNext = {
-                    focusManager.moveFocus(FocusDirection.Next)
-                },
-            ),
-        minutesKeyboardActions =
-            KeyboardActions(
-                onNext = {
-                    focusManager.moveFocus(FocusDirection.Next)
-                },
-            ),
     )
 }
 
@@ -407,27 +391,11 @@ private fun CookTime(
     modifier: Modifier,
     onCookTimeChange: (time: DurationComponents) -> Unit,
 ) {
-    val focusManager = LocalFocusManager.current
-    val textFieldColors = LocalTextFieldColors.current
-
-    TimeTextField(
+    TimeInput(
         time = cookTime,
         onTimeChange = onCookTimeChange,
         label = R.string.recipe_cook_time,
         modifier = modifier,
-        colors = textFieldColors,
-        hoursKeyboardActions =
-            KeyboardActions(
-                onNext = {
-                    focusManager.moveFocus(FocusDirection.Next)
-                },
-            ),
-        minutesKeyboardActions =
-            KeyboardActions(
-                onNext = {
-                    focusManager.moveFocus(FocusDirection.Next)
-                },
-            ),
     )
 }
 
@@ -437,27 +405,11 @@ private fun TotalTime(
     modifier: Modifier,
     onTotalTimeChange: (time: DurationComponents) -> Unit,
 ) {
-    val focusManager = LocalFocusManager.current
-    val textFieldColors = LocalTextFieldColors.current
-
-    TimeTextField(
+    TimeInput(
         time = totalTime,
         onTimeChange = onTotalTimeChange,
         label = R.string.recipe_total_time,
         modifier = modifier,
-        colors = textFieldColors,
-        hoursKeyboardActions =
-            KeyboardActions(
-                onNext = {
-                    focusManager.moveFocus(FocusDirection.Next)
-                },
-            ),
-        minutesKeyboardActions =
-            KeyboardActions(
-                onNext = {
-                    focusManager.moveFocus(FocusDirection.Next)
-                },
-            ),
     )
 }
 
@@ -509,8 +461,6 @@ private fun Category(
                             AssistChipDefaults.assistChipColors(
                                 containerColor = MaterialTheme.colorScheme.primary,
                                 labelColor = MaterialTheme.colorScheme.onPrimary,
-                                // disabledContainerColor = MaterialTheme.colorScheme.surface,
-                                // selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
                                 disabledLabelColor = MaterialTheme.colorScheme.onSurface,
                             ),
                         label = {
@@ -566,8 +516,6 @@ private fun Keywords(
                                 AssistChipDefaults.assistChipColors(
                                     containerColor = MaterialTheme.colorScheme.primary,
                                     labelColor = MaterialTheme.colorScheme.onPrimary,
-                                    // disabledContainerColor = MaterialTheme.colorScheme.surface,
-                                    // selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
                                     disabledLabelColor = MaterialTheme.colorScheme.onSurface,
                                 ),
                             label = {

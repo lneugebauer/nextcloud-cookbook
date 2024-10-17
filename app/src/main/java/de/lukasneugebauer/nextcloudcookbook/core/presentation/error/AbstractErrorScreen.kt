@@ -36,13 +36,15 @@ fun AbstractErrorScreen(
         androidx.compose.material3.Icon(
             imageVector = icon,
             contentDescription = iconContentDescription.toString(),
-            modifier = Modifier.size(dimensionResource(id = R.dimen.error_icon_size)),
-            tint = MaterialTheme.colorScheme.primary,
+            modifier =
+                Modifier
+                    .size(dimensionResource(id = R.dimen.error_icon_size))
+                    .padding(bottom = dimensionResource(id = R.dimen.padding_s)),
+            tint = MaterialTheme.colorScheme.error,
         )
         androidx.compose.material3.Text(
             text = uiText.asString(),
             style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.onBackground,
         )
     }
 }

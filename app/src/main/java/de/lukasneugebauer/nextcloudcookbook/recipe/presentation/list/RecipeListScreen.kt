@@ -210,10 +210,7 @@ private fun RecipeListScreen(
                                     Text(text = it)
                                 },
                                 colors =
-                                    FilterChipDefaults.filterChipColors(
-                                        selectedContainerColor = MaterialTheme.colorScheme.primary,
-                                        selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                                    ),
+                                    FilterChipDefaults.filterChipColors(),
                                 shape = MaterialTheme.shapes.medium,
                             )
                         }
@@ -297,13 +294,7 @@ private fun TopAppBar(
                 )
             }
         },
-        colors =
-            TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.surface,
-                titleContentColor = MaterialTheme.colorScheme.onSurface,
-                navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
-                actionIconContentColor = MaterialTheme.colorScheme.onSurface,
-            ),
+        colors = TopAppBarDefaults.topAppBarColors(),
     )
 }
 
@@ -328,7 +319,6 @@ private fun SearchAppBar(
             Modifier
                 .fillMaxWidth()
                 .height(AppBarHeight),
-        color = MaterialTheme.colorScheme.primary,
     ) {
         val layoutDirection = LocalLayoutDirection.current
         var textFieldValue by remember {
@@ -352,7 +342,6 @@ private fun SearchAppBar(
             placeholder = {
                 Text(
                     text = stringResource(R.string.common_search),
-                    color = MaterialTheme.colorScheme.onSurface,
                 )
             },
             leadingIcon = {
@@ -393,9 +382,6 @@ private fun SearchAppBar(
             singleLine = true,
             colors =
                 TextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colorScheme.surface,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                    cursorColor = MaterialTheme.colorScheme.onSurface,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
                 ),

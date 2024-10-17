@@ -201,8 +201,6 @@ private fun LoginScreen(
         Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_s)))
         Text(
             text = "Nextcloud Cookbook",
-            color = MaterialTheme.colorScheme.onSurface,
-            style = MaterialTheme.typography.titleLarge,
         )
         Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_l)))
         DefaultOutlinedTextField(
@@ -218,7 +216,6 @@ private fun LoginScreen(
             label = {
                 Text(
                     text = stringResource(R.string.login_root_address),
-                    color = MaterialTheme.colorScheme.onSurface,
                 )
             },
             placeholder = {
@@ -256,7 +253,6 @@ private fun LoginScreen(
         Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_m)))
         DefaultTextButton(onClick = onShowManualLoginClick) {
             Text(
-                color = MaterialTheme.colorScheme.onSurface,
                 text = stringResource(R.string.login_manual),
             )
         }
@@ -298,7 +294,6 @@ private fun ManualLoginForm(
         label = {
             Text(
                 text = stringResource(R.string.common_username),
-                color = MaterialTheme.colorScheme.onSurface,
             )
         },
         colors =
@@ -338,7 +333,6 @@ private fun ManualLoginForm(
         label = {
             Text(
                 text = stringResource(R.string.common_password),
-                color = MaterialTheme.colorScheme.onSurface,
             )
         },
         visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
@@ -387,7 +381,6 @@ private fun ManualLoginForm(
         label = {
             Text(
                 text = stringResource(R.string.login_root_address),
-                color = MaterialTheme.colorScheme.onSurface,
             )
         },
         placeholder = {
