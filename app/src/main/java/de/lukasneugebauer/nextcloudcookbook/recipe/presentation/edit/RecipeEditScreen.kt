@@ -132,6 +132,9 @@ fun RecipeEditScreen(
                 onAddTool = {
                     viewModel.addTool()
                 },
+                onSwapTool = { fromIndex, toIndex ->
+                    viewModel.swapTool(fromIndex, toIndex)
+                },
                 onInstructionChanged = { index, newInstruction ->
                     viewModel.changeInstruction(index, newInstruction)
                 },
@@ -140,6 +143,9 @@ fun RecipeEditScreen(
                 },
                 onAddInstruction = {
                     viewModel.addInstruction()
+                },
+                onSwapInstruction = { fromIndex, toIndex ->
+                    viewModel.swapInstruction(fromIndex, toIndex)
                 },
                 onSaveClick = {
                     viewModel.save()

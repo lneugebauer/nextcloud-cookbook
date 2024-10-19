@@ -324,6 +324,21 @@ abstract class RecipeCreateEditViewModel(
         }
     }
 
+    fun swapTool(
+        fromIndex: Int,
+        toIndex: Int,
+    ) {
+        _uiState.value.ifSuccess {
+            val tools = recipeDto.tool.toMutableList()
+            try {
+                Collections.swap(tools, fromIndex, toIndex)
+                recipeDto = recipeDto.copy(tool = tools)
+            } catch (e: IndexOutOfBoundsException) {
+                Timber.e(e.stackTraceToString())
+            }
+        }
+    }
+
     fun changeInstruction(
         index: Int,
         newInstruction: String,
@@ -348,6 +363,21 @@ abstract class RecipeCreateEditViewModel(
             val instructions = recipeDto.recipeInstructions.toMutableList()
             instructions.add("")
             recipeDto = recipeDto.copy(recipeInstructions = instructions)
+        }
+    }
+
+    fun swapInstruction(
+        fromIndex: Int,
+        toIndex: Int,
+    ) {
+        _uiState.value.ifSuccess {
+            val instructions = recipeDto.recipeInstructions.toMutableList()
+            try {
+                Collections.swap(instructions, fromIndex, toIndex)
+                recipeDto = recipeDto.copy(recipeInstructions = instructions)
+            } catch (e: IndexOutOfBoundsException) {
+                Timber.e(e.stackTraceToString())
+            }
         }
     }
 
