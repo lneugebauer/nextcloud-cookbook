@@ -398,7 +398,7 @@ private fun RecipeListPreview() {
             RecipePreview(
                 id = id,
                 name = "Recipe $id",
-                keywords = List(nextInt(0, 5)) { "Keyword $it" },
+                keywords = List(nextInt(0, 5)) { "Keyword $it" }.toSet(),
                 category = "",
                 imageUrl = "",
                 createdAt = "",
