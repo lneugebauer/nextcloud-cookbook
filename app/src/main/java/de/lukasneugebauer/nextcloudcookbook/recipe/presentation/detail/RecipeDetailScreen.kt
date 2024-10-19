@@ -213,7 +213,7 @@ fun RecipeDetailScreen(
                 onResetYield = {
                     viewModel.resetYield()
                 },
-                onInstructionLinkClicked = { url ->
+                onLinkClicked = { url ->
                     viewModel.getRecipeIdFromInstructionLink(url)?.let { id ->
                         navigator.navigate(RecipeDetailScreenDestination(id))
                     }
@@ -338,7 +338,7 @@ private fun Content(
     onIncreaseYield: () -> Unit,
     onKeywordClick: (keyword: String) -> Unit,
     onResetYield: () -> Unit,
-    onInstructionLinkClicked: (String) -> Unit,
+    onLinkClicked: (String) -> Unit,
 ) {
     Column(
         modifier = modifier,
@@ -349,7 +349,7 @@ private fun Content(
             Keywords(keywords = recipe.keywords, onClick = onKeywordClick)
         }
         if (recipe.description.isNotBlank()) {
-            Description(recipe.description)
+            Description(description = recipe.description, onLinkClicked = onLinkClicked)
         }
         if (recipe.prepTime?.notZero() == true ||
             recipe.cookTime?.notZero() == true ||
@@ -368,18 +368,19 @@ private fun Content(
                 onResetYield,
                 currentYield,
                 recipe.yield != currentYield,
+                onLinkClicked,
             )
         }
         if (recipe.nutrition != null) {
             Nutrition(recipe.nutrition)
         }
         if (recipe.tools.isNotEmpty()) {
-            Tools(recipe.tools)
+            Tools(tools = recipe.tools, onLinkClicked = onLinkClicked)
         }
         if (recipe.instructions.isNotEmpty()) {
             Instructions(
                 instructions = recipe.instructions,
-                onLinkClicked = onInstructionLinkClicked,
+                onLinkClicked = onLinkClicked,
             )
         }
         Gap(size = dimensionResource(id = R.dimen.padding_s))
@@ -444,7 +445,10 @@ private fun Keywords(
 }
 
 @Composable
-private fun Description(description: String) {
+private fun Description(
+    description: String,
+    onLinkClicked: (String) -> Unit,
+) {
     MarkdownText(
         markdown = description,
         modifier =
@@ -452,6 +456,7 @@ private fun Description(description: String) {
                 .fillMaxWidth()
                 .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
                 .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
+        onLinkClicked = onLinkClicked,
     )
 }
 
@@ -549,6 +554,7 @@ private fun Ingredients(
     onResetYield: () -> Unit,
     currentYield: Int,
     showResetButton: Boolean,
+    onLinkClicked: (String) -> Unit,
 ) {
     val clipboardManager = LocalClipboardManager.current
     val context = LocalContext.current
@@ -665,6 +671,7 @@ private fun Ingredients(
                     .fillMaxWidth()
                     .minimumInteractiveComponentSize()
                     .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
+            onLinkClicked = onLinkClicked,
         )
     }
     Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_m)))
@@ -759,7 +766,10 @@ private fun Nutrition(nutrition: Nutrition) {
 }
 
 @Composable
-private fun Tools(tools: List<String>) {
+private fun Tools(
+    tools: List<String>,
+    onLinkClicked: (String) -> Unit,
+) {
     Text(
         text = stringResource(R.string.recipe_tools),
         modifier =
@@ -774,6 +784,7 @@ private fun Tools(tools: List<String>) {
             Modifier
                 .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
                 .padding(bottom = dimensionResource(id = R.dimen.padding_l)),
+        onLinkClicked = onLinkClicked,
     )
 }
 
@@ -911,7 +922,7 @@ private fun ContentPreview() {
             onIncreaseYield = {},
             onKeywordClick = {},
             onResetYield = {},
-            onInstructionLinkClicked = {},
+            onLinkClicked = {},
         )
     }
 }
