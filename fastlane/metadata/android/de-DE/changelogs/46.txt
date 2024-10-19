@@ -1,0 +1,12 @@
+- Option Zutaten abzuhaken hinzugefügt
+- Möglichkeit, einzelne Zutaten zu kopieren, hinzugefügt
+- Möglichkeit, Werkzeuge, Zutaten und Anweisungen zu sortieren, hinzugefügt
+- Inline-Rezeptlinks hinzugefügt
+- Galicische Übersetzung aktualisieren
+- Französische Übersetzung aktualisieren
+- Spanische Übersetzung aktualisieren
+- Türkische Übersetzung aktualisieren
+- Chinesische (vereinfacht) Übersetzung aktualisiert
+- Russische Übersetzung aktualisiert
+- Italienischen Übersetzung aktualisiert
+- Schlüsselwörter in der Rezeptliste korrigiert
