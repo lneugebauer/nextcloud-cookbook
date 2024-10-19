@@ -36,7 +36,7 @@ class YieldCalculatorImpl(customLocale: Locale? = null) : YieldCalculator {
 
             // Fraction
             val matchResult = FRACTION_REGEX.matchEntire(ingredient)
-            if (matchResult !== null) {
+            if (matchResult != null) {
                 val (fractionMatch, wholeNumberPartRaw, numeratorRaw, denominatorRaw) = matchResult.destructured
 
                 val wholeNumberPart = wholeNumberPartRaw.toDoubleOrNull() ?: 0.0

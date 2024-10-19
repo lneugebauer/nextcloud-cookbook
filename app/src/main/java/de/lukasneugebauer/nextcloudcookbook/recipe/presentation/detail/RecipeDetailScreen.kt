@@ -88,6 +88,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.Nextcloud
 import de.lukasneugebauer.nextcloudcookbook.core.util.getActivity
 import de.lukasneugebauer.nextcloudcookbook.core.util.notZero
 import de.lukasneugebauer.nextcloudcookbook.core.util.openInBrowser
+import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeDetailScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeEditScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeListWithArgumentsScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Nutrition
@@ -212,6 +213,11 @@ fun RecipeDetailScreen(
                 onResetYield = {
                     viewModel.resetYield()
                 },
+                onInstructionLinkClicked = { url ->
+                    viewModel.getRecipeIdFromInstructionLink(url)?.let { id ->
+                        navigator.navigate(RecipeDetailScreenDestination(id))
+                    }
+                },
             )
         }
     }
@@ -332,6 +338,7 @@ private fun Content(
     onIncreaseYield: () -> Unit,
     onKeywordClick: (keyword: String) -> Unit,
     onResetYield: () -> Unit,
+    onInstructionLinkClicked: (String) -> Unit,
 ) {
     Column(
         modifier = modifier,
@@ -370,7 +377,10 @@ private fun Content(
             Tools(recipe.tools)
         }
         if (recipe.instructions.isNotEmpty()) {
-            Instructions(recipe.instructions)
+            Instructions(
+                instructions = recipe.instructions,
+                onLinkClicked = onInstructionLinkClicked,
+            )
         }
         Gap(size = dimensionResource(id = R.dimen.padding_s))
         Gap(size = dimensionResource(id = R.dimen.fab_offset))
@@ -565,12 +575,18 @@ private fun Ingredients(
             if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
                 Toast.makeText(
                     context,
-                    context.resources.getQuantityString(R.plurals.recipe_ingredients_copied, ingredients.size),
+                    context.resources.getQuantityString(
+                        R.plurals.recipe_ingredients_copied,
+                        ingredients.size,
+                    ),
                     Toast.LENGTH_SHORT,
                 ).show()
             }
         }) {
-            Icon(imageVector = Icons.Outlined.ContentCopy, contentDescription = stringResource(R.string.recipe_ingredients_copy))
+            Icon(
+                imageVector = Icons.Outlined.ContentCopy,
+                contentDescription = stringResource(R.string.recipe_ingredients_copy),
+            )
         }
     }
     Row(
@@ -585,7 +601,10 @@ private fun Ingredients(
             onClick = onDecreaseYield,
             enabled = currentYield > 1,
         ) {
-            Icon(imageVector = Icons.Outlined.Remove, contentDescription = stringResource(id = R.string.recipe_servings_decrease))
+            Icon(
+                imageVector = Icons.Outlined.Remove,
+                contentDescription = stringResource(id = R.string.recipe_servings_decrease),
+            )
         }
         Text(
             text = pluralResource(resId = R.plurals.recipe_servings, currentYield, currentYield),
@@ -593,11 +612,17 @@ private fun Ingredients(
             style = MaterialTheme.typography.body1,
         )
         Button(onClick = onIncreaseYield) {
-            Icon(imageVector = Icons.Outlined.Add, contentDescription = stringResource(id = R.string.recipe_servings_increase))
+            Icon(
+                imageVector = Icons.Outlined.Add,
+                contentDescription = stringResource(id = R.string.recipe_servings_increase),
+            )
         }
         if (showResetButton) {
             Button(onClick = onResetYield) {
-                Icon(imageVector = Icons.Outlined.Refresh, contentDescription = stringResource(id = R.string.recipe_servings_reset))
+                Icon(
+                    imageVector = Icons.Outlined.Refresh,
+                    contentDescription = stringResource(id = R.string.recipe_servings_reset),
+                )
             }
         }
     }
@@ -621,11 +646,16 @@ private fun Ingredients(
                                 },
                             )
                             if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
-                                Toast.makeText(
-                                    context,
-                                    context.resources.getQuantityString(R.plurals.recipe_ingredients_copied, 1),
-                                    Toast.LENGTH_SHORT,
-                                ).show()
+                                Toast
+                                    .makeText(
+                                        context,
+                                        context.resources.getQuantityString(
+                                            R.plurals.recipe_ingredients_copied,
+                                            1,
+                                        ),
+                                        Toast.LENGTH_SHORT,
+                                    )
+                                    .show()
                             }
                         },
                         onClick = {
@@ -748,7 +778,10 @@ private fun Tools(tools: List<String>) {
 }
 
 @Composable
-private fun Instructions(instructions: List<String>) {
+private fun Instructions(
+    instructions: List<String>,
+    onLinkClicked: (String) -> Unit,
+) {
     Text(
         text = stringResource(R.string.recipe_instructions),
         modifier =
@@ -787,6 +820,7 @@ private fun Instructions(instructions: List<String>) {
                     Modifier
                         .padding(bottom = dimensionResource(id = R.dimen.padding_s))
                         .fillMaxWidth(),
+                onLinkClicked = onLinkClicked,
             )
         }
     }
@@ -825,7 +859,7 @@ private fun InstructionsPreview() {
         }
     NextcloudCookbookTheme {
         Column {
-            Instructions(instructions = instructions)
+            Instructions(instructions = instructions, onLinkClicked = {})
         }
     }
 }
@@ -877,6 +911,7 @@ private fun ContentPreview() {
             onIncreaseYield = {},
             onKeywordClick = {},
             onResetYield = {},
+            onInstructionLinkClicked = {},
         )
     }
 }

@@ -194,4 +194,18 @@ class RecipeDetailViewModel
                 }
             }
         }
+
+        fun getRecipeIdFromInstructionLink(url: String): Int? {
+            val matchResult = RECIPE_URL_REGEX.matchEntire(url)
+            if (matchResult != null) {
+                val (id) = matchResult.destructured
+                return id.toIntOrNull()
+            }
+
+            return null
+        }
+
+        companion object {
+            val RECIPE_URL_REGEX = Regex("""#/recipe/(\d+)""")
+        }
     }
