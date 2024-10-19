@@ -32,6 +32,8 @@ import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.LocalContentColor
+import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -456,6 +458,7 @@ private fun Description(
                 .fillMaxWidth()
                 .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
                 .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
+        style = LocalTextStyle.current.copy(color = LocalContentColor.current),
         onLinkClicked = onLinkClicked,
     )
 }
@@ -671,6 +674,7 @@ private fun Ingredients(
                     .fillMaxWidth()
                     .minimumInteractiveComponentSize()
                     .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
+            style = LocalTextStyle.current.copy(color = LocalContentColor.current),
             onLinkClicked = onLinkClicked,
         )
     }
@@ -784,6 +788,7 @@ private fun Tools(
             Modifier
                 .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
                 .padding(bottom = dimensionResource(id = R.dimen.padding_l)),
+        style = LocalTextStyle.current.copy(color = LocalContentColor.current),
         onLinkClicked = onLinkClicked,
     )
 }
@@ -831,6 +836,7 @@ private fun Instructions(
                     Modifier
                         .padding(bottom = dimensionResource(id = R.dimen.padding_s))
                         .fillMaxWidth(),
+                style = LocalTextStyle.current.copy(color = LocalContentColor.current),
                 onLinkClicked = onLinkClicked,
             )
         }
