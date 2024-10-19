@@ -80,7 +80,7 @@ class RecipeListViewModel
             // Fetch all recipes to list uncategorized recipes.
             val recipePreviewsFlow =
                 if (categoryName == null || categoryName == UNCATEGORIZED_RECIPE) {
-                    recipeRepository.getRecipePreviews()
+                    recipeRepository.getRecipePreviewsFlow()
                 } else {
                     recipeRepository.getRecipePreviewsByCategory(categoryName)
                 }
