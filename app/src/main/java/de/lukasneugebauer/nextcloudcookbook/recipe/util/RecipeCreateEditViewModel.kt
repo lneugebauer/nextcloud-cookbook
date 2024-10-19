@@ -20,6 +20,9 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
+import java.lang.IndexOutOfBoundsException
+import java.util.Collections
 
 abstract class RecipeCreateEditViewModel(
     private val categoryRepository: CategoryRepository,
@@ -192,6 +195,21 @@ abstract class RecipeCreateEditViewModel(
             val ingredients = recipeDto.recipeIngredient.toMutableList()
             ingredients.add("")
             recipeDto = recipeDto.copy(recipeIngredient = ingredients)
+        }
+    }
+
+    fun swapIngredient(
+        fromIndex: Int,
+        toIndex: Int,
+    ) {
+        _uiState.value.ifSuccess {
+            val ingredients = recipeDto.recipeIngredient.toMutableList()
+            try {
+                Collections.swap(ingredients, fromIndex, toIndex)
+                recipeDto = recipeDto.copy(recipeIngredient = ingredients)
+            } catch (e: IndexOutOfBoundsException) {
+                Timber.e(e.stackTraceToString())
+            }
         }
     }
 

@@ -84,6 +84,9 @@ fun RecipeEditScreen(
                 onAddIngredient = {
                     viewModel.addIngredient()
                 },
+                onSwapIngredient = { fromIndex, toIndex ->
+                    viewModel.swapIngredient(fromIndex, toIndex)
+                },
                 onCaloriesChanged = { newCalories ->
                     viewModel.changeCalories(newCalories)
                 },
