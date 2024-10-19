@@ -1,0 +1,12 @@
+- Add option to check of ingredients
+- Add ability to copy ingredient
+- Add ability to sort tools, ingredients and instructions
+- Add inline recipe links
+- Update Galician translation
+- Update French translation
+- Update Spanish translation
+- Update Turkish translation
+- Update Chinese (Simplified) translation
+- Update Russian translation
+- Update Italian translation
+- Fix keywords in recipe list
