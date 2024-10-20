@@ -33,7 +33,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -74,7 +73,6 @@ import de.lukasneugebauer.nextcloudcookbook.destinations.HomeScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.destinations.LoginScreenDestination
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Destination
 @Composable
 fun LoginScreen(
@@ -121,23 +119,6 @@ fun LoginScreen(
             sheetState.hide()
         }
     }
-
-    LoginScreen(
-        showManualLogin = showManualLogin,
-        usernameError = uiState.usernameError,
-        passwordError = uiState.passwordError,
-        urlError = uiState.urlError,
-        onClearError = viewModel::clearErrors,
-        onLoginClick = { url ->
-            viewModel.getLoginEndpoint(url)
-            keyboardController?.hide()
-        },
-        onShowManualLoginClick = { showManualLogin = !showManualLogin },
-        onManualLoginClick = { username, password, url ->
-            viewModel.tryManualLogin(username, password, url)
-            keyboardController?.hide()
-        },
-    )
 
     ModalBottomSheetLayout(
         sheetContent = {
@@ -224,11 +205,6 @@ private fun LoginScreen(
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
                 )
             },
-            colors =
-                TextFieldDefaults.colors(
-                    focusedContainerColor = Color.Transparent,
-                    unfocusedContainerColor = Color.Transparent,
-                ),
             errorText = urlError?.asString(),
             keyboardOptions =
                 KeyboardOptions.Default.copy(
@@ -296,11 +272,6 @@ private fun ManualLoginForm(
                 text = stringResource(R.string.common_username),
             )
         },
-        colors =
-            TextFieldDefaults.colors(
-                focusedContainerColor = Color.Transparent,
-                unfocusedContainerColor = Color.Transparent,
-            ),
         errorText = usernameError?.asString(),
         keyboardOptions =
             KeyboardOptions.Default.copy(
@@ -321,11 +292,6 @@ private fun ManualLoginForm(
             password = it
             onClearError.invoke()
         },
-        colors =
-            TextFieldDefaults.colors(
-                focusedContainerColor = Color.Transparent,
-                unfocusedContainerColor = Color.Transparent,
-            ),
         modifier =
             Modifier
                 .fillMaxWidth()
@@ -365,11 +331,6 @@ private fun ManualLoginForm(
     Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_s)))
     DefaultOutlinedTextField(
         value = url,
-        colors =
-            TextFieldDefaults.colors(
-                focusedContainerColor = Color.Transparent,
-                unfocusedContainerColor = Color.Transparent,
-            ),
         onValueChange = {
             url = it
             onClearError.invoke()

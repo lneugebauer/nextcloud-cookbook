@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
@@ -22,7 +23,6 @@ import androidx.compose.material.icons.outlined.CloudDownload
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -35,7 +35,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -44,6 +43,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -138,7 +138,6 @@ fun RecipeListScreenWrapper(
                 onClick = {
                     navigator.navigate(RecipeCreateScreenDestination)
                 },
-                shape = MaterialTheme.shapes.medium,
             ) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = stringResource(id = R.string.common_add))
             }
@@ -209,9 +208,6 @@ private fun RecipeListScreen(
                                 label = {
                                     Text(text = it)
                                 },
-                                colors =
-                                    FilterChipDefaults.filterChipColors(),
-                                shape = MaterialTheme.shapes.medium,
                             )
                         }
                     }
@@ -236,12 +232,11 @@ private fun RecipeListScreen(
                             )
                         },
                         headlineContent = {
-                            Text(text = recipePreview.name, style = MaterialTheme.typography.titleMedium)
+                            Text(text = recipePreview.name)
                         },
                         supportingContent = {
                             Text(
                                 text = recipePreview.keywords.joinToString(separator = ", "),
-                                style = MaterialTheme.typography.bodySmall,
                             )
                         },
                     )
@@ -269,9 +264,7 @@ private fun TopAppBar(
     TopAppBar(
         title = { Text(text = title) },
         navigationIcon = {
-            if (categoryName == null) {
-                null
-            } else {
+            if (categoryName != null) {
                 IconButton(onClick = onBackClick) {
                     Icon(
                         Icons.AutoMirrored.Default.ArrowBack,
@@ -294,7 +287,6 @@ private fun TopAppBar(
                 )
             }
         },
-        colors = TopAppBarDefaults.topAppBarColors(),
     )
 }
 
@@ -342,6 +334,7 @@ private fun SearchAppBar(
             placeholder = {
                 Text(
                     text = stringResource(R.string.common_search),
+                    modifier = Modifier.alpha(ContentAlpha.medium),
                 )
             },
             leadingIcon = {
@@ -349,7 +342,7 @@ private fun SearchAppBar(
                     Icon(
                         imageVector = Icons.Default.Search,
                         contentDescription = stringResource(R.string.common_search),
-                        tint = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.alpha(ContentAlpha.medium),
                     )
                 }
             },
@@ -367,7 +360,6 @@ private fun SearchAppBar(
                     Icon(
                         imageVector = Icons.Default.Close,
                         contentDescription = stringResource(R.string.common_close),
-                        tint = MaterialTheme.colorScheme.onSurface,
                     )
                 }
             },

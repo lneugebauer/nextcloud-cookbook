@@ -9,9 +9,9 @@ import androidx.compose.material.icons.filled.Error
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldColors
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -34,7 +34,7 @@ fun DefaultOutlinedTextField(
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     singleLine: Boolean = false,
     colors: TextFieldColors =
-        TextFieldDefaults.colors(),
+        OutlinedTextFieldDefaults.colors(),
 ) {
     val isError = errorText?.isNotBlank() == true
 

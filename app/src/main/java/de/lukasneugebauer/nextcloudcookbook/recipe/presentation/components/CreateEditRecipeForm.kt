@@ -1,7 +1,6 @@
 package de.lukasneugebauer.nextcloudcookbook.recipe.presentation.components
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -20,13 +19,12 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Save
-import androidx.compose.material3.AssistChip
-import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
@@ -45,7 +43,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.dokar.chiptextfield.Chip
 import com.dokar.chiptextfield.m3.OutlinedChipTextField
 import com.dokar.chiptextfield.rememberChipTextFieldState
@@ -454,15 +451,8 @@ private fun Category(
         ) {
             categories.forEach {
                 item {
-                    AssistChip(
+                    SuggestionChip(
                         onClick = { onCategoryChange.invoke(it.name) },
-                        border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
-                        colors =
-                            AssistChipDefaults.assistChipColors(
-                                containerColor = MaterialTheme.colorScheme.primary,
-                                labelColor = MaterialTheme.colorScheme.onPrimary,
-                                disabledLabelColor = MaterialTheme.colorScheme.onSurface,
-                            ),
                         label = {
                             Text(text = it.name)
                         },
@@ -509,15 +499,8 @@ private fun Keywords(
             keywords.filter { keyword -> !state.chips.any { it.text == keyword } }
                 .forEach {
                     item {
-                        AssistChip(
+                        SuggestionChip(
                             onClick = { state.addChip(Chip(text = it)) },
-                            border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
-                            colors =
-                                AssistChipDefaults.assistChipColors(
-                                    containerColor = MaterialTheme.colorScheme.primary,
-                                    labelColor = MaterialTheme.colorScheme.onPrimary,
-                                    disabledLabelColor = MaterialTheme.colorScheme.onSurface,
-                                ),
                             label = {
                                 Text(text = it)
                             },

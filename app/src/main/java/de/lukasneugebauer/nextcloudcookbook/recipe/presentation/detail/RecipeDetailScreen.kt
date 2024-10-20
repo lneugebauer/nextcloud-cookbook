@@ -171,7 +171,6 @@ fun RecipeDetailScreen(
                         navigator.navigate(RecipeEditScreenDestination(recipe.id))
                     }
                 },
-                shape = MaterialTheme.shapes.medium,
             ) {
                 Icon(
                     imageVector = Icons.Default.Edit,
@@ -425,11 +424,7 @@ private fun Keywords(
         keywords.forEach {
             AssistChip(
                 onClick = { onClick.invoke(it) },
-                border = BorderStroke(2.dp, MaterialTheme.colorScheme.secondary),
-                colors =
-                    AssistChipDefaults.assistChipColors(),
                 label = { Text(text = it) },
-                shape = MaterialTheme.shapes.medium,
             )
         }
     }
@@ -787,22 +782,10 @@ private fun Instructions(instructions: List<String>) {
                             } else {
                                 MaterialTheme.colorScheme.surface
                             },
-                        labelColor =
-                            if (enabledStates[index].value) {
-                                MaterialTheme.colorScheme.onPrimary
-                            } else {
-                                MaterialTheme.colorScheme.onSurface
-                            },
                     ),
                 label = {
                     Text(
                         text = "${index + 1}",
-                        color =
-                            if (enabledStates[index].value) {
-                                MaterialTheme.colorScheme.onPrimary
-                            } else {
-                                MaterialTheme.colorScheme.onSurface
-                            },
                     )
                 },
             )
