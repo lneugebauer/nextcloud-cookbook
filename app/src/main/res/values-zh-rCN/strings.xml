@@ -126,4 +126,5 @@
     <plurals name="recipe_ingredients_copied">
         <item quantity="other">已复制配料</item>
     </plurals>
+    <string name="common_reorder">重新排序</string>
 </resources>
