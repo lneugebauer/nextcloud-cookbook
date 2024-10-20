@@ -165,9 +165,10 @@ dependencies {
     implementation "ch.acra:acra-mail:$acra_version"
     implementation "ch.acra:acra-dialog:$acra_version"
 
-    implementation 'com.github.jeziellago:compose-markdown:0.5.4'
-
     implementation 'sh.calvin.reorderable:reorderable:2.4.0'
+
+    implementation 'org.commonmark:commonmark:0.23.0'
+    implementation 'org.commonmark:commonmark-ext-gfm-strikethrough:0.23.0'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.2.1'

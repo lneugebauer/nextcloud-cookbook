@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
@@ -84,6 +85,7 @@ import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.AuthorizedImage
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Gap
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
+import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.MarkdownView
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.pluralResource
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
@@ -96,7 +98,6 @@ import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeListWithArguments
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Nutrition
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Recipe
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.emptyRecipe
-import dev.jeziellago.compose.markdowntext.MarkdownText
 import java.time.Duration
 
 @Destination
@@ -451,15 +452,14 @@ private fun Description(
     description: String,
     onLinkClicked: (String) -> Unit,
 ) {
-    MarkdownText(
+    MarkdownView(
         markdown = description,
         modifier =
             Modifier
                 .fillMaxWidth()
                 .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
                 .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
-        style = LocalTextStyle.current.copy(color = LocalContentColor.current),
-        onLinkClicked = onLinkClicked,
+//        onLinkClicked = onLinkClicked,
     )
 }
 
@@ -637,7 +637,7 @@ private fun Ingredients(
     }
     ingredients.forEach { ingredient ->
         var checked by rememberSaveable { mutableStateOf(false) }
-        MarkdownText(
+        MarkdownView(
             markdown =
                 if (checked) {
                     "~~$ingredient~~"
@@ -674,8 +674,19 @@ private fun Ingredients(
                     .fillMaxWidth()
                     .minimumInteractiveComponentSize()
                     .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
-            style = LocalTextStyle.current.copy(color = LocalContentColor.current),
-            onLinkClicked = onLinkClicked,
+//            onLinkClicked = onLinkClicked,
+            onClick = { checked = !checked },
+            onLongClick = {
+                clipboardManager.setText(
+                    buildAnnotatedString {
+                        append(ingredient)
+                        toAnnotatedString()
+                    },
+                )
+                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
+                    Toast.makeText(context, context.resources.getQuantityString(R.plurals.recipe_ingredients_copied, 1), Toast.LENGTH_SHORT).show()
+                }
+            }
         )
     }
     Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_m)))
@@ -782,14 +793,13 @@ private fun Tools(
                 .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
         style = MaterialTheme.typography.h6,
     )
-    MarkdownText(
+    MarkdownView(
         markdown = tools.joinToString(separator = ", "),
         modifier =
             Modifier
                 .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
                 .padding(bottom = dimensionResource(id = R.dimen.padding_l)),
-        style = LocalTextStyle.current.copy(color = LocalContentColor.current),
-        onLinkClicked = onLinkClicked,
+//        onLinkClicked = onLinkClicked,
     )
 }
 
@@ -830,14 +840,13 @@ private fun Instructions(
             ) {
                 Text(text = "${index + 1}", color = MaterialTheme.colors.onSurface)
             }
-            MarkdownText(
+            MarkdownView(
                 markdown = instruction,
                 modifier =
                     Modifier
                         .padding(bottom = dimensionResource(id = R.dimen.padding_s))
                         .fillMaxWidth(),
-                style = LocalTextStyle.current.copy(color = LocalContentColor.current),
-                onLinkClicked = onLinkClicked,
+//                onLinkClicked = onLinkClicked,
             )
         }
     }
