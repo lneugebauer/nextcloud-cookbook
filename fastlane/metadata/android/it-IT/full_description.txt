@@ -1,4 +1,4 @@
-Visualizza tutte le ricette memorizzate nell'istanza Nextcloud.
+Visualizzate tutte le ricette memorizzate nell'istanza Nextcloud.
 
 Il codice sorgente è disponibile su GitHub all'indirizzo https://github.com/lneugebauer/nextcloud-cookbook/. Segnalate bug, proposte di miglioramento e richieste di funzionalità.
 

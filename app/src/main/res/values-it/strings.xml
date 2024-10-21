@@ -132,4 +132,5 @@
     <string name="common_password">Password</string>
     <string name="common_minutes">Minuti</string>
     <string name="common_more">Altro</string>
+    <string name="common_reorder">Riordina</string>
 </resources>
