@@ -1,0 +1,14 @@
+[
+    {
+        "relation": [
+            "delegate_permission/common.handle_all_urls"
+        ],
+        "target": {
+            "namespace": "android_app",
+            "package_name": "de.lukasneugebauer.nextcloudcookbook",
+            "sha256_cert_fingerprints": [
+                "97:BE:14:7A:10:CA:95:77:20:92:C9:F2:82:DC:77:BB:53:69:F5:8C:D7:3D:0E:94:17:7D:3B:F0:C2:9C:50:DB"
+            ]
+        }
+    }
+]
