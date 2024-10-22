@@ -1,5 +1,6 @@
 package de.lukasneugebauer.nextcloudcookbook.recipe.presentation.detail
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -129,8 +130,10 @@ fun RecipeDetailScreen(
             TopBar(
                 recipe = recipe,
                 onNavIconClick = {
-                    // TODO: Handle nav icon click correctly after deep link
-                    navigator.navigateUp()
+                    navigator.popBackStack()
+                    if (!navigator.popBackStack()) {
+                        (context as? Activity)?.finish()
+                    }
                 },
                 onEditClick = {
                     if (recipe.isNotEmpty()) {
