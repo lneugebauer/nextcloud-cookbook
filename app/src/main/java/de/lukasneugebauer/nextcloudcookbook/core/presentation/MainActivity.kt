@@ -1,5 +1,6 @@
 package de.lukasneugebauer.nextcloudcookbook.core.presentation
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -33,6 +35,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.BottomB
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
 import de.lukasneugebauer.nextcloudcookbook.destinations.SplashScreenDestination
 import org.acra.ACRA
+import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -46,6 +49,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val appState = AppState()
             val authState by viewModel.authState.collectAsState()
+            val intent by viewModel.intentState.collectAsState()
             val splashState by viewModel.splashState.collectAsState()
             val credentials: Credentials? by remember {
                 derivedStateOf {
@@ -72,14 +76,21 @@ class MainActivity : ComponentActivity() {
                 LocalAppState provides appState,
                 LocalCredentials provides credentials,
             ) {
-                NextcloudCookbookApp()
+                NextcloudCookbookApp(intent = intent)
             }
         }
+    }
+
+    override fun onResume() {
+        this.addOnNewIntentListener {
+            viewModel.setIntent(it)
+        }
+        super.onResume()
     }
 }
 
 @Composable
-fun NextcloudCookbookApp() {
+fun NextcloudCookbookApp(intent: Intent) {
     NextcloudCookbookTheme {
         val navController = rememberNavController()
         val viewModelStoreOwner =
@@ -91,6 +102,11 @@ fun NextcloudCookbookApp() {
             destination.route?.let {
                 ACRA.errorReporter.putCustomData("Event at ${System.currentTimeMillis()}", it)
             }
+        }
+
+        LaunchedEffect(intent) {
+            Timber.d(navController.currentBackStackEntry.toString())
+            navController.handleDeepLink(intent)
         }
 
         Scaffold(
