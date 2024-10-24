@@ -130,7 +130,6 @@ fun RecipeDetailScreen(
             TopBar(
                 recipe = recipe,
                 onNavIconClick = {
-                    navigator.popBackStack()
                     if (!navigator.popBackStack()) {
                         (context as? Activity)?.finish()
                     }
