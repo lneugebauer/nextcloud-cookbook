@@ -129,4 +129,5 @@
         <item quantity="one">Ingrediente copiado</item>
         <item quantity="other">Ingredientes copiados</item>
     </plurals>
+    <string name="common_reorder">Reordenar</string>
 </resources>

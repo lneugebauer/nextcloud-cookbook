@@ -125,4 +125,5 @@
     <string name="settings_stay_awake">Wakker blijven</string>
     <string name="settings_translate">Help vertalen</string>
     <string name="settings_where_to_report_issues">Je kunt bugs, verbeteringsvoorstellen en functieverzoeken melden op de GitHub issue tracker</string>
+    <string name="common_reorder">Herschikken</string>
 </resources>

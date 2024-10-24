@@ -127,4 +127,10 @@
     <string name="download_recipe_url">URL receptu</string>
     <string name="common_download">Stáhnout</string>
     <string name="download_recipe">Stáhnout recept</string>
+    <string name="common_reorder">Přerovnat</string>
+    <plurals name="recipe_ingredients_copied">
+        <item quantity="one">Zkopírovaná ingredience</item>
+        <item quantity="few">Zkopírované ingredience</item>
+        <item quantity="other">Zkopírovaná ingredience</item>
+    </plurals>
 </resources>
