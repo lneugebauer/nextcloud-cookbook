@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
@@ -21,7 +22,9 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.navigation.compose.rememberNavController
 import com.ramcosta.composedestinations.DestinationsNavHost
+import com.ramcosta.composedestinations.animations.defaults.RootNavGraphDefaultAnimations
 import com.ramcosta.composedestinations.manualcomposablecalls.composable
+import com.ramcosta.composedestinations.rememberNavHostEngine
 import dagger.hilt.android.AndroidEntryPoint
 import de.lukasneugebauer.nextcloudcookbook.NavGraphs
 import de.lukasneugebauer.nextcloudcookbook.auth.presentation.splash.SplashScreen
@@ -93,6 +96,14 @@ class MainActivity : ComponentActivity() {
 fun NextcloudCookbookApp(intent: Intent) {
     NextcloudCookbookTheme {
         val navController = rememberNavController()
+        val navHostEngine =
+            rememberNavHostEngine(
+                rootDefaultAnimations =
+                    RootNavGraphDefaultAnimations(
+                        enterTransition = { slideIntoContainer(towards = AnimatedContentTransitionScope.SlideDirection.End) },
+                        exitTransition = { slideOutOfContainer(towards = AnimatedContentTransitionScope.SlideDirection.Start) },
+                    ),
+            )
         val viewModelStoreOwner =
             checkNotNull(LocalViewModelStoreOwner.current) {
                 "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
@@ -118,6 +129,7 @@ fun NextcloudCookbookApp(intent: Intent) {
                     Modifier
                         .padding(innerPadding)
                         .fillMaxSize(),
+                engine = navHostEngine,
                 navController = navController,
             ) {
                 composable(SplashScreenDestination) {
