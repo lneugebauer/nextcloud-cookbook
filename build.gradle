@@ -1,4 +1,4 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
@@ -34,20 +34,16 @@ plugins {
     id "com.mikepenz.aboutlibraries.plugin" version "$aboutlibs_version"
 }
 
-// https://stackoverflow.com/a/70217715
-// https://kotlinlang.org/docs/opt-in-requirements.html
 allprojects {
-    tasks.withType(KotlinCompile).configureEach {
-        kotlinOptions {
-            freeCompilerArgs += [
-                    "-opt-in=androidx.compose.animation.ExperimentalAnimationApi",
-                    "-opt-in=androidx.compose.foundation.layout.ExperimentalLayoutApi",
-                    "-opt-in=androidx.compose.material.ExperimentalMaterialApi",
-            ]
+    tasks.withType(KotlinJvmCompile.class).configureEach {
+        compilerOptions {
+            freeCompilerArgs.add("-opt-in=androidx.compose.animation.ExperimentalAnimationApi")
+            freeCompilerArgs.add("-opt-in=androidx.compose.foundation.layout.ExperimentalLayoutApi")
+            freeCompilerArgs.add("-opt-in=androidx.compose.material.ExperimentalMaterialApi")
         }
     }
 }
 
 tasks.register('clean', Delete) {
-    delete rootProject.buildDir
+    delete rootProject.layout.buildDirectory
 }
