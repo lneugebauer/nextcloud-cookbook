@@ -60,7 +60,7 @@
         <item quantity="other">Ингредиенты для %1$d порций</item>
     </plurals>
     <string name="recipe_image_url">Ссылка на изображение</string>
-    <string name="dialog_crash_report_text">Упс.. Похоже, Книга рецептов Nextcloud вылетела. Хотите отправить отчёт об этом вылете разработчикам\?</string>
+    <string name="dialog_crash_report_text">Упс.. Похоже, Книга рецептов Nextcloud вылетела. Хотите отправить отчёт об этом вылете разработчикам?</string>
     <string name="error_authentication_failed">Аутентификация не удалась</string>
     <string name="recipe_url">Ссылка</string>
     <string name="common_minutes">минут</string>
