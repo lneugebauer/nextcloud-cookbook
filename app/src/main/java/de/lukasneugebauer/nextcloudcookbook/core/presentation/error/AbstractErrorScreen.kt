@@ -7,7 +7,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,28 +28,33 @@ fun AbstractErrorScreen(
     icon: ImageVector = Icons.Default.Warning,
     iconContentDescription: UiText? = null,
 ) {
-    Column(
-        modifier =
-            modifier
-                .fillMaxSize()
-                .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-    ) {
-        androidx.compose.material3.Icon(
-            imageVector = icon,
-            contentDescription = iconContentDescription.toString(),
-            modifier =
-                Modifier
-                    .size(dimensionResource(id = R.dimen.error_icon_size))
-                    .padding(bottom = dimensionResource(id = R.dimen.padding_s)),
-            tint = MaterialTheme.colorScheme.error,
-        )
-        androidx.compose.material3.Text(
-            text = uiText.asString(),
-            style = MaterialTheme.typography.titleLarge,
-        )
-    }
+    Scaffold(
+        content = { innerPadding ->
+            Column(
+                modifier =
+                modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = iconContentDescription?.asString(),
+                    modifier =
+                    Modifier
+                        .size(dimensionResource(id = R.dimen.error_icon_size))
+                        .padding(bottom = dimensionResource(id = R.dimen.padding_s)),
+                    tint = MaterialTheme.colorScheme.error,
+                )
+                Text(
+                    text = uiText.asString(),
+                    style = MaterialTheme.typography.titleLarge,
+                )
+            }
+        }
+    )
 }
 
 @Composable
