@@ -65,7 +65,7 @@ class RecipeDetailViewModel
                 when (recipeResponse) {
                     is StoreResponse.Loading -> _state.value = _state.value.copy(loading = true)
                     is StoreResponse.Data -> {
-                        val recipe = replaceRecipeShortLinks(recipeResponse.value.toRecipe(), recipePreviewDtos)
+                        val recipe = enrichRecipeLinks(recipeResponse.value.toRecipe(), recipePreviewDtos)
                         _state.value =
                             _state.value.copy(
                                 calculatedIngredients =
@@ -208,23 +208,27 @@ class RecipeDetailViewModel
             }
         }
 
-        private fun replaceRecipeShortLinks(
+        private fun enrichRecipeLinks(
             recipe: Recipe,
             recipePreviewDtos: List<RecipePreviewDto>?,
         ): Recipe {
             fun replace(text: String): String {
-                return RECIPE_SHORT_URL_REGEX.replace(text) { matchResult ->
-                    val (id) = matchResult.destructured
+                return RECIPE_URL_REGEX.replace(text) { matchResult ->
+                    val (shortId, fullId) = matchResult.destructured
 
-                    val recipePreviewDto =
-                        recipePreviewDtos?.firstOrNull { recipePreviewDto ->
-                            recipePreviewDto.recipeId == id
+                    if (shortId.isNotBlank()) {
+                        val recipePreviewDto =
+                            recipePreviewDtos?.firstOrNull { recipePreviewDto ->
+                                recipePreviewDto.recipeId == shortId
+                            }
+
+                        if (recipePreviewDto?.name?.isNotBlank() == true) {
+                            "[${recipePreviewDto.name} (#r/$shortId)](nccookbook://lneugebauer.github.io/recipe/$shortId)"
+                        } else {
+                            "[#r/$shortId](nccookbook://lneugebauer.github.io/recipe/$shortId)"
                         }
-
-                    if (recipePreviewDto?.name?.isNotBlank() == true) {
-                        "[${recipePreviewDto.name} (#r/$id)](#/recipe/$id)"
                     } else {
-                        "[#r/$id](#/recipe/$id)"
+                        "nccookbook://lneugebauer.github.io/recipe/$fullId"
                     }
                 }
             }
@@ -254,18 +258,7 @@ class RecipeDetailViewModel
             )
         }
 
-        fun getRecipeIdFromInstructionLink(url: String): Int? {
-            val matchResult = RECIPE_URL_REGEX.matchEntire(url)
-            if (matchResult != null) {
-                val (id) = matchResult.destructured
-                return id.toIntOrNull()
-            }
-
-            return null
-        }
-
         companion object {
-            val RECIPE_SHORT_URL_REGEX = Regex("""#r/(\d+)""")
-            val RECIPE_URL_REGEX = Regex("""#/recipe/(\d+)""")
+            val RECIPE_URL_REGEX = Regex("""#r/(\d+)|#/recipe/(\d+)""")
         }
     }

@@ -1,14 +1,17 @@
 package de.lukasneugebauer.nextcloudcookbook.core.presentation
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -19,7 +22,9 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.navigation.compose.rememberNavController
 import com.ramcosta.composedestinations.DestinationsNavHost
+import com.ramcosta.composedestinations.animations.defaults.RootNavGraphDefaultAnimations
 import com.ramcosta.composedestinations.manualcomposablecalls.composable
+import com.ramcosta.composedestinations.rememberNavHostEngine
 import dagger.hilt.android.AndroidEntryPoint
 import de.lukasneugebauer.nextcloudcookbook.NavGraphs
 import de.lukasneugebauer.nextcloudcookbook.auth.presentation.splash.SplashScreen
@@ -33,6 +38,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.BottomB
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
 import de.lukasneugebauer.nextcloudcookbook.destinations.SplashScreenDestination
 import org.acra.ACRA
+import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -40,10 +46,13 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
+
         super.onCreate(savedInstanceState)
+
         setContent {
             val appState = AppState()
             val authState by viewModel.authState.collectAsState()
+            val intent by viewModel.intentState.collectAsState()
             val splashState by viewModel.splashState.collectAsState()
             val credentials: Credentials? by remember {
                 derivedStateOf {
@@ -70,25 +79,47 @@ class MainActivity : ComponentActivity() {
                 LocalAppState provides appState,
                 LocalCredentials provides credentials,
             ) {
-                NextcloudCookbookApp()
+                NextcloudCookbookApp(intent = intent)
             }
         }
+    }
+
+    override fun onResume() {
+        this.addOnNewIntentListener {
+            viewModel.setIntent(it)
+        }
+        super.onResume()
     }
 }
 
 @Composable
-fun NextcloudCookbookApp() {
+fun NextcloudCookbookApp(intent: Intent) {
     NextcloudCookbookTheme {
         val navController = rememberNavController()
+        val navHostEngine =
+            rememberNavHostEngine(
+                rootDefaultAnimations =
+                    RootNavGraphDefaultAnimations(
+                        enterTransition = { slideIntoContainer(towards = AnimatedContentTransitionScope.SlideDirection.End) },
+                        exitTransition = { slideOutOfContainer(towards = AnimatedContentTransitionScope.SlideDirection.Start) },
+                    ),
+            )
         val viewModelStoreOwner =
             checkNotNull(LocalViewModelStoreOwner.current) {
                 "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
             }
+
         navController.addOnDestinationChangedListener { _, destination, _ ->
             destination.route?.let {
                 ACRA.errorReporter.putCustomData("Event at ${System.currentTimeMillis()}", it)
             }
         }
+
+        LaunchedEffect(intent) {
+            Timber.d(navController.currentBackStackEntry.toString())
+            navController.handleDeepLink(intent)
+        }
+
         Scaffold(
             bottomBar = { BottomBar(navController = navController) },
         ) { innerPadding ->
@@ -98,6 +129,7 @@ fun NextcloudCookbookApp() {
                     Modifier
                         .padding(innerPadding)
                         .fillMaxSize(),
+                engine = navHostEngine,
                 navController = navController,
             ) {
                 composable(SplashScreenDestination) {

@@ -1,4 +1,4 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
@@ -6,11 +6,11 @@ buildscript {
         aboutlibs_version = '11.2.3'
         accompanist_version = '0.36.0'
         acra_version = '5.11.4'
-        compose_compiler_version = '1.5.14'
-        compose_destinations_version = '1.11.6'
+        compose_compiler_version = '1.5.15'
+        compose_destinations_version = '1.11.7'
         compose_settings_version = '1.0.3'
         hilt_version = '2.52'
-        kotlin_version = '1.9.24'
+        kotlin_version = '1.9.25'
         ksp_version = '1.0.20'
         retrofit_version = '2.11.0'
         store_version = '4.0.5'
@@ -20,7 +20,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.7.0'
+        classpath 'com.android.tools.build:gradle:8.7.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
 
@@ -34,20 +34,16 @@ plugins {
     id "com.mikepenz.aboutlibraries.plugin" version "$aboutlibs_version"
 }
 
-// https://stackoverflow.com/a/70217715
-// https://kotlinlang.org/docs/opt-in-requirements.html
 allprojects {
-    tasks.withType(KotlinCompile).configureEach {
-        kotlinOptions {
-            freeCompilerArgs += [
-                    "-opt-in=androidx.compose.animation.ExperimentalAnimationApi",
-                    "-opt-in=androidx.compose.foundation.layout.ExperimentalLayoutApi",
-                    "-opt-in=androidx.compose.material.ExperimentalMaterialApi",
-            ]
+    tasks.withType(KotlinJvmCompile.class).configureEach {
+        compilerOptions {
+            freeCompilerArgs.add("-opt-in=androidx.compose.animation.ExperimentalAnimationApi")
+            freeCompilerArgs.add("-opt-in=androidx.compose.foundation.layout.ExperimentalLayoutApi")
+            freeCompilerArgs.add("-opt-in=androidx.compose.material.ExperimentalMaterialApi")
         }
     }
 }
 
 tasks.register('clean', Delete) {
-    delete rootProject.buildDir
+    delete rootProject.layout.buildDirectory
 }

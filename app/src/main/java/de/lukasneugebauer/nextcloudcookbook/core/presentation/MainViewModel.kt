@@ -1,5 +1,6 @@
 package de.lukasneugebauer.nextcloudcookbook.core.presentation
 
+import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,12 +28,19 @@ class MainViewModel
         private val _authState = MutableStateFlow<AuthState>(AuthState.Unauthorized)
         val authState: StateFlow<AuthState> = _authState
 
+        private val _intentState = MutableStateFlow(Intent())
+        val intentState: StateFlow<Intent> = _intentState
+
         init {
             getLoginCredentials()
         }
 
         fun finishSplash() {
             _splashState.update { SplashState.Loaded }
+        }
+
+        fun setIntent(intent: Intent) {
+            _intentState.update { intent }
         }
 
         private fun getLoginCredentials() {
