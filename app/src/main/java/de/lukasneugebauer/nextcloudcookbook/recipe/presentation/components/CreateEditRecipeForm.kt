@@ -29,15 +29,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldColors
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.key
-import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
@@ -130,105 +125,95 @@ fun CreateEditRecipeForm(
                     .fillMaxWidth()
                     .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
                     .padding(bottom = dimensionResource(id = R.dimen.padding_m))
-            val textFieldColors =
-                TextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colorScheme.surface,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                    cursorColor = MaterialTheme.colorScheme.onSurface,
-                    focusedIndicatorColor = MaterialTheme.colorScheme.primary,
-                    unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface,
-                )
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.padding_m)))
-            CompositionLocalProvider(LocalTextFieldColors provides textFieldColors) {
-                Name(
-                    recipe = recipe,
-                    modifier = modifier,
-                    onNameChanged = onNameChanged,
-                )
-                Description(
-                    recipe = recipe,
-                    modifier = modifier,
-                    onDescriptionChanged = onDescriptionChanged,
-                )
-                Url(
-                    recipe = recipe,
-                    modifier = modifier,
-                    onUrlChanged = onUrlChanged,
-                )
-                ImageOrigin(
-                    recipe = recipe,
-                    modifier = modifier,
-                    onImageOriginChanged = onImageOriginChanged,
-                )
-                PrepTime(
-                    prepTime = prepTime,
-                    modifier = modifier,
-                    onPrepTimeChange = onPrepTimeChanged,
-                )
-                CookTime(
-                    cookTime = cookTime,
-                    modifier = modifier,
-                    onCookTimeChange = onCookTimeChanged,
-                )
-                TotalTime(
-                    totalTime = totalTime,
-                    modifier = modifier,
-                    onTotalTimeChange = onTotalTimeChanged,
-                )
-                Category(
-                    recipe = recipe,
-                    categories = categories,
-                    onCategoryChange = onCategoryChanged,
-                )
-                Keywords(
-                    recipe = recipe,
-                    keywords = keywords,
-                    onKeywordsChange = onKeywordsChanged,
-                )
-                Yield(
-                    recipe = recipe,
-                    modifier = modifier,
-                    onYieldChanged = onYieldChanged,
-                )
-                Ingredients(
-                    recipe = recipe,
-                    onIngredientChanged = onIngredientChanged,
-                    onIngredientDeleted = onIngredientDeleted,
-                    onAddIngredient = onAddIngredient,
-                    onSwapIngredient = onSwapIngredient,
-                )
-                Nutritions(
-                    recipe = recipe,
-                    modifier = modifier,
-                    onCaloriesChanged = onCaloriesChanged,
-                    onCarbohydrateContentChanged = onCarbohydrateContentChanged,
-                    onCholesterolContentChanged = onCholesterolContentChanged,
-                    onFatContentChanged = onFatContentChanged,
-                    onFiberContentChanged = onFiberContentChanged,
-                    onProteinContentChanged = onProteinContentChanged,
-                    onSaturatedFatContentChanged = onSaturatedFatContentChanged,
-                    onServingSizeChanged = onServingSizeChanged,
-                    onSodiumContentChanged = onSodiumContentChanged,
-                    onSugarContentChanged = onSugarContentChanged,
-                    onTransFatContentChanged = onTransFatContentChanged,
-                    onUnsaturatedFatContentChanged = onUnsaturatedFatContentChanged,
-                )
-                Tools(
-                    recipe = recipe,
-                    onToolChanged = onToolChanged,
-                    onToolDeleted = onToolDeleted,
-                    onAddTool = onAddTool,
-                    onSwapTool = onSwapTool,
-                )
-                Instructions(
-                    recipe = recipe,
-                    onInstructionChanged = onInstructionChanged,
-                    onInstructionDeleted = onInstructionDeleted,
-                    onAddInstruction = onAddInstruction,
-                    onSwapInstruction = onSwapInstruction,
-                )
-            }
+            Name(
+                recipe = recipe,
+                modifier = modifier,
+                onNameChanged = onNameChanged,
+            )
+            Description(
+                recipe = recipe,
+                modifier = modifier,
+                onDescriptionChanged = onDescriptionChanged,
+            )
+            Url(
+                recipe = recipe,
+                modifier = modifier,
+                onUrlChanged = onUrlChanged,
+            )
+            ImageOrigin(
+                recipe = recipe,
+                modifier = modifier,
+                onImageOriginChanged = onImageOriginChanged,
+            )
+            PrepTime(
+                prepTime = prepTime,
+                modifier = modifier,
+                onPrepTimeChange = onPrepTimeChanged,
+            )
+            CookTime(
+                cookTime = cookTime,
+                modifier = modifier,
+                onCookTimeChange = onCookTimeChanged,
+            )
+            TotalTime(
+                totalTime = totalTime,
+                modifier = modifier,
+                onTotalTimeChange = onTotalTimeChanged,
+            )
+            Category(
+                recipe = recipe,
+                categories = categories,
+                onCategoryChange = onCategoryChanged,
+            )
+            Keywords(
+                recipe = recipe,
+                keywords = keywords,
+                onKeywordsChange = onKeywordsChanged,
+            )
+            Yield(
+                recipe = recipe,
+                modifier = modifier,
+                onYieldChanged = onYieldChanged,
+            )
+            Ingredients(
+                recipe = recipe,
+                onIngredientChanged = onIngredientChanged,
+                onIngredientDeleted = onIngredientDeleted,
+                onAddIngredient = onAddIngredient,
+                onSwapIngredient = onSwapIngredient,
+            )
+            Nutritions(
+                recipe = recipe,
+                modifier = modifier,
+                onCaloriesChanged = onCaloriesChanged,
+                onCarbohydrateContentChanged = onCarbohydrateContentChanged,
+                onCholesterolContentChanged = onCholesterolContentChanged,
+                onFatContentChanged = onFatContentChanged,
+                onFiberContentChanged = onFiberContentChanged,
+                onProteinContentChanged = onProteinContentChanged,
+                onSaturatedFatContentChanged = onSaturatedFatContentChanged,
+                onServingSizeChanged = onServingSizeChanged,
+                onSodiumContentChanged = onSodiumContentChanged,
+                onSugarContentChanged = onSugarContentChanged,
+                onTransFatContentChanged = onTransFatContentChanged,
+                onUnsaturatedFatContentChanged = onUnsaturatedFatContentChanged,
+            )
+            Tools(
+                recipe = recipe,
+                onToolChanged = onToolChanged,
+                onToolDeleted = onToolDeleted,
+                onAddTool = onAddTool,
+                onSwapTool = onSwapTool,
+            )
+            Instructions(
+                recipe = recipe,
+                onInstructionChanged = onInstructionChanged,
+                onInstructionDeleted = onInstructionDeleted,
+                onAddInstruction = onAddInstruction,
+                onSwapInstruction = onSwapInstruction,
+            )
         }
     }
 }
@@ -264,13 +249,6 @@ private fun RecipeEditTopBar(
                 )
             }
         },
-        colors =
-            TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.surface,
-                titleContentColor = MaterialTheme.colorScheme.onSurface,
-                navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
-                actionIconContentColor = MaterialTheme.colorScheme.onSurface,
-            ),
     )
 }
 
@@ -281,7 +259,6 @@ private fun Name(
     onNameChanged: (name: String) -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
-    val textFieldColors = LocalTextFieldColors.current
 
     DefaultOutlinedTextField(
         value = recipe.name,
@@ -299,7 +276,6 @@ private fun Name(
                 },
             ),
         singleLine = true,
-        colors = textFieldColors,
     )
 }
 
@@ -309,14 +285,11 @@ private fun Description(
     modifier: Modifier,
     onDescriptionChanged: (description: String) -> Unit,
 ) {
-    val textFieldColors = LocalTextFieldColors.current
-
     DefaultOutlinedTextField(
         value = recipe.description,
         onValueChange = onDescriptionChanged,
         modifier = modifier,
         label = { Text(text = stringResource(R.string.recipe_description)) },
-        colors = textFieldColors,
     )
 }
 
@@ -327,7 +300,6 @@ private fun Url(
     onUrlChanged: (url: String) -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
-    val textFieldColors = LocalTextFieldColors.current
 
     DefaultOutlinedTextField(
         value = recipe.url,
@@ -345,7 +317,6 @@ private fun Url(
                 },
             ),
         singleLine = true,
-        colors = textFieldColors,
     )
 }
 
@@ -356,7 +327,6 @@ private fun ImageOrigin(
     onImageOriginChanged: (imageOrigin: String) -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
-    val textFieldColors = LocalTextFieldColors.current
 
     DefaultOutlinedTextField(
         value = recipe.imageOrigin,
@@ -374,7 +344,6 @@ private fun ImageOrigin(
                 },
             ),
         singleLine = true,
-        colors = textFieldColors,
     )
 }
 
@@ -427,7 +396,6 @@ private fun Category(
     onCategoryChange: (category: String) -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
-    val textFieldColors = LocalTextFieldColors.current
 
     DefaultOutlinedTextField(
         value = recipe.category,
@@ -448,7 +416,6 @@ private fun Category(
                 },
             ),
         singleLine = true,
-        colors = textFieldColors,
     )
 
     if (categories.isEmpty()) {
@@ -528,7 +495,6 @@ private fun Yield(
     onYieldChanged: (yield: String) -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
-    val textFieldColors = LocalTextFieldColors.current
 
     DefaultOutlinedTextField(
         value = recipe.yield.toString(),
@@ -547,7 +513,6 @@ private fun Yield(
                 },
             ),
         singleLine = true,
-        colors = textFieldColors,
     )
 }
 
@@ -560,7 +525,6 @@ private fun Ingredients(
     onSwapIngredient: (fromIndex: Int, toIndex: Int) -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
-    val textFieldColors = LocalTextFieldColors.current
 
     Text(
         text = stringResource(id = R.string.recipe_ingredients),
@@ -620,7 +584,6 @@ private fun Ingredients(
                             },
                         ),
                     singleLine = true,
-                    colors = textFieldColors,
                 )
             }
         }
@@ -741,7 +704,6 @@ private fun NutritionItem(
     onChange: (String) -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
-    val textFieldColors = LocalTextFieldColors.current
 
     DefaultOutlinedTextField(
         value = value ?: "",
@@ -772,7 +734,6 @@ private fun NutritionItem(
                 },
             ),
         singleLine = true,
-        colors = textFieldColors,
     )
 }
 
@@ -785,7 +746,6 @@ private fun Tools(
     onSwapTool: (fromIndex: Int, toIndex: Int) -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
-    val textFieldColors = LocalTextFieldColors.current
 
     Text(
         text = stringResource(id = R.string.recipe_tools),
@@ -844,7 +804,6 @@ private fun Tools(
                         },
                     ),
                 singleLine = true,
-                colors = textFieldColors,
             )
         }
     }
@@ -868,8 +827,6 @@ private fun Instructions(
     onAddInstruction: () -> Unit,
     onSwapInstruction: (fromIndex: Int, toIndex: Int) -> Unit,
 ) {
-    val textFieldColors = LocalTextFieldColors.current
-
     Text(
         text = stringResource(id = R.string.recipe_instructions),
         modifier = Modifier.padding(start = dimensionResource(R.dimen.padding_m)),
@@ -916,7 +873,6 @@ private fun Instructions(
                         )
                     }
                 },
-                colors = textFieldColors,
             )
         }
     }
@@ -1029,14 +985,12 @@ private fun CreateEditRecipeFormPreview() {
 @Composable
 private fun CategoryPreview() {
     NextcloudCookbookTheme {
-        CompositionLocalProvider(LocalTextFieldColors provides TextFieldDefaults.colors()) {
-            Column {
-                Category(
-                    recipe = MockedRecipe,
-                    categories = MockedCategories,
-                    onCategoryChange = {},
-                )
-            }
+        Column {
+            Category(
+                recipe = MockedRecipe,
+                categories = MockedCategories,
+                onCategoryChange = {},
+            )
         }
     }
 }
@@ -1045,14 +999,12 @@ private fun CategoryPreview() {
 @Composable
 private fun KeywordsPreview() {
     NextcloudCookbookTheme {
-        CompositionLocalProvider(LocalTextFieldColors provides TextFieldDefaults.colors()) {
-            Column {
-                Keywords(
-                    recipe = MockedRecipe,
-                    keywords = setOf("Lorem Ipsum", "Lorem", "Ipsum"),
-                    onKeywordsChange = {},
-                )
-            }
+        Column {
+            Keywords(
+                recipe = MockedRecipe,
+                keywords = setOf("Lorem Ipsum", "Lorem", "Ipsum"),
+                onKeywordsChange = {},
+            )
         }
     }
 }
@@ -1061,13 +1013,11 @@ private fun KeywordsPreview() {
 @Composable
 private fun YieldPreview() {
     NextcloudCookbookTheme {
-        CompositionLocalProvider(LocalTextFieldColors provides TextFieldDefaults.colors()) {
-            Yield(
-                recipe = MockedRecipe,
-                modifier = Modifier,
-                onYieldChanged = {},
-            )
-        }
+        Yield(
+            recipe = MockedRecipe,
+            modifier = Modifier,
+            onYieldChanged = {},
+        )
     }
 }
 
@@ -1075,16 +1025,14 @@ private fun YieldPreview() {
 @Composable
 private fun IngredientsPreview() {
     NextcloudCookbookTheme {
-        CompositionLocalProvider(LocalTextFieldColors provides TextFieldDefaults.colors()) {
-            Column {
-                Ingredients(
-                    recipe = MockedRecipe,
-                    onIngredientChanged = { _, _ -> },
-                    onIngredientDeleted = {},
-                    onAddIngredient = {},
-                    onSwapIngredient = { _, _ -> },
-                )
-            }
+        Column {
+            Ingredients(
+                recipe = MockedRecipe,
+                onIngredientChanged = { _, _ -> },
+                onIngredientDeleted = {},
+                onAddIngredient = {},
+                onSwapIngredient = { _, _ -> },
+            )
         }
     }
 }
@@ -1093,28 +1041,21 @@ private fun IngredientsPreview() {
 @Composable
 private fun NutritionsPreview() {
     NextcloudCookbookTheme {
-        CompositionLocalProvider(LocalTextFieldColors provides TextFieldDefaults.colors()) {
-            Nutritions(
-                recipe = MockedRecipe,
-                modifier = Modifier,
-                onCaloriesChanged = {},
-                onCarbohydrateContentChanged = {},
-                onCholesterolContentChanged = {},
-                onFatContentChanged = {},
-                onFiberContentChanged = {},
-                onProteinContentChanged = {},
-                onSaturatedFatContentChanged = {},
-                onServingSizeChanged = {},
-                onSodiumContentChanged = {},
-                onSugarContentChanged = {},
-                onTransFatContentChanged = {},
-                onUnsaturatedFatContentChanged = {},
-            )
-        }
+        Nutritions(
+            recipe = MockedRecipe,
+            modifier = Modifier,
+            onCaloriesChanged = {},
+            onCarbohydrateContentChanged = {},
+            onCholesterolContentChanged = {},
+            onFatContentChanged = {},
+            onFiberContentChanged = {},
+            onProteinContentChanged = {},
+            onSaturatedFatContentChanged = {},
+            onServingSizeChanged = {},
+            onSodiumContentChanged = {},
+            onSugarContentChanged = {},
+            onTransFatContentChanged = {},
+            onUnsaturatedFatContentChanged = {},
+        )
     }
 }
-
-val LocalTextFieldColors =
-    staticCompositionLocalOf<TextFieldColors> {
-        error("CompositionLocal LocalTextFieldColors not present")
-    }
