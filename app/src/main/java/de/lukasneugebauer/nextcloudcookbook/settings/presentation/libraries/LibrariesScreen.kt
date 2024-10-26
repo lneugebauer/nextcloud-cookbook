@@ -1,6 +1,5 @@
 package de.lukasneugebauer.nextcloudcookbook.settings.presentation.libraries
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -19,7 +18,6 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.HideBottomNavigation
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Destination
 @Composable
@@ -39,9 +37,7 @@ fun LibrariesScreen(navigator: DestinationsNavigator) {
                 },
             )
         },
-    ) {
-        Scaffold { innerPadding ->
-            LibrariesContainer(modifier = Modifier.padding(innerPadding))
-        }
+    ) { innerPadding ->
+        LibrariesContainer(modifier = Modifier.padding(innerPadding))
     }
 }
