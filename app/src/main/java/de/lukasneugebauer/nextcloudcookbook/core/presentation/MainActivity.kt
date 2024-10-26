@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Scaffold
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
@@ -40,9 +40,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
-
         super.onCreate(savedInstanceState)
-
         setContent {
             val appState = AppState()
             val authState by viewModel.authState.collectAsState()
@@ -86,13 +84,11 @@ fun NextcloudCookbookApp() {
             checkNotNull(LocalViewModelStoreOwner.current) {
                 "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
             }
-
         navController.addOnDestinationChangedListener { _, destination, _ ->
             destination.route?.let {
                 ACRA.errorReporter.putCustomData("Event at ${System.currentTimeMillis()}", it)
             }
         }
-
         Scaffold(
             bottomBar = { BottomBar(navController = navController) },
         ) { innerPadding ->

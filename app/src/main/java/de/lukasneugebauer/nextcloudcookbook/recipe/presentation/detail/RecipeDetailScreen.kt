@@ -24,20 +24,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
-import androidx.compose.material.Chip
-import androidx.compose.material.ChipDefaults
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.LocalContentColor
-import androidx.compose.material.LocalTextStyle
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Category
@@ -49,7 +35,20 @@ import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.outlined.Remove
-import androidx.compose.material.minimumInteractiveComponentSize
+import androidx.compose.material3.AssistChip
+import androidx.compose.material3.AssistChipDefaults
+import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -62,7 +61,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
@@ -85,7 +83,6 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Authori
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Gap
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.pluralResource
-import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
 import de.lukasneugebauer.nextcloudcookbook.core.util.getActivity
 import de.lukasneugebauer.nextcloudcookbook.core.util.notZero
@@ -169,11 +166,13 @@ fun RecipeDetailScreen(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = {
-                if (recipe.isNotEmpty()) {
-                    navigator.navigate(RecipeEditScreenDestination(recipe.id))
-                }
-            }) {
+            FloatingActionButton(
+                onClick = {
+                    if (recipe.isNotEmpty()) {
+                        navigator.navigate(RecipeEditScreenDestination(recipe.id))
+                    }
+                },
+            ) {
                 Icon(
                     imageVector = Icons.Default.Edit,
                     contentDescription = stringResource(id = R.string.common_edit),
@@ -238,6 +237,7 @@ private fun KeepScreenOn() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun TopBar(
     recipe: Recipe,
@@ -299,8 +299,6 @@ private fun TopBar(
                 }
             }
         },
-        backgroundColor = NcBlue700,
-        contentColor = Color.White,
     )
 }
 
@@ -310,24 +308,27 @@ private fun DropDownMenuItemOpenSource(
     recipeUrl: String,
 ) {
     if (recipeUrl.isNotBlank()) {
-        DropdownMenuItem(onClick = { Uri.parse(recipeUrl).openInBrowser(context) }) {
-            Text(text = stringResource(id = R.string.recipe_more_menu_share))
-        }
+        DropdownMenuItem(
+            onClick = { Uri.parse(recipeUrl).openInBrowser(context) },
+            text = { Text(stringResource(id = R.string.recipe_more_menu_share)) },
+        )
     }
 }
 
 @Composable
 private fun DropDownMenuItemEdit(onClick: () -> Unit) {
-    DropdownMenuItem(onClick) {
-        Text(text = stringResource(id = R.string.recipe_more_menu_edit))
-    }
+    DropdownMenuItem(
+        onClick = onClick,
+        text = { Text(text = stringResource(id = R.string.recipe_more_menu_edit)) },
+    )
 }
 
 @Composable
 private fun DropDownMenuItemDelete(onClick: () -> Unit) {
-    DropdownMenuItem(onClick = onClick) {
-        Text(text = stringResource(id = R.string.recipe_more_menu_delete))
-    }
+    DropdownMenuItem(
+        onClick = onClick,
+        text = { Text(text = stringResource(id = R.string.recipe_more_menu_delete)) },
+    )
 }
 
 @Composable
@@ -414,7 +415,7 @@ private fun Name(name: String) {
             Modifier
                 .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
                 .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
-        style = MaterialTheme.typography.h5,
+        style = MaterialTheme.typography.titleLarge,
     )
 }
 
@@ -432,16 +433,10 @@ private fun Keywords(
         horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_s)),
     ) {
         keywords.forEach {
-            Chip(
+            AssistChip(
                 onClick = { onClick.invoke(it) },
-                border = BorderStroke(2.dp, NcBlue700),
-                colors =
-                    ChipDefaults.chipColors(
-                        backgroundColor = Color.Transparent,
-                    ),
-            ) {
-                Text(text = it)
-            }
+                label = { Text(text = it) },
+            )
         }
     }
 }
@@ -543,7 +538,7 @@ private fun Category(category: String) {
         )
         Text(
             text = category,
-            style = MaterialTheme.typography.body1,
+            style = MaterialTheme.typography.bodyLarge,
         )
     }
 }
@@ -572,7 +567,7 @@ private fun Ingredients(
                     .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
                     .padding(bottom = dimensionResource(id = R.dimen.padding_s))
                     .weight(1f),
-            style = MaterialTheme.typography.h6,
+            style = MaterialTheme.typography.titleLarge,
         )
         IconButton(onClick = {
             clipboardManager.setText(
@@ -618,7 +613,7 @@ private fun Ingredients(
         Text(
             text = pluralResource(resId = R.plurals.recipe_servings, currentYield, currentYield),
             textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.body1,
+            style = MaterialTheme.typography.bodyLarge,
         )
         Button(onClick = onIncreaseYield) {
             Icon(
@@ -701,7 +696,7 @@ private fun NutritionItem(
                         top = dimensionResource(id = R.dimen.padding_xs),
                         bottom = dimensionResource(id = R.dimen.padding_xs),
                     ),
-            style = MaterialTheme.typography.body1,
+            style = MaterialTheme.typography.bodyLarge,
         )
     }
 }
@@ -714,7 +709,7 @@ private fun Nutrition(nutrition: Nutrition) {
             Modifier
                 .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
                 .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
-        style = MaterialTheme.typography.h6,
+        style = MaterialTheme.typography.titleLarge,
     )
     NutritionItem(
         label = R.string.recipe_nutrition_calories,
@@ -780,7 +775,7 @@ private fun Tools(
             Modifier
                 .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
                 .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
-        style = MaterialTheme.typography.h6,
+        style = MaterialTheme.typography.titleLarge,
     )
     MarkdownText(
         markdown = tools.joinToString(separator = ", "),
@@ -798,13 +793,14 @@ private fun Instructions(
     instructions: List<String>,
     onLinkClicked: (String) -> Unit,
 ) {
+    val enabledStates = remember(instructions) { instructions.map { mutableStateOf(false) } }
     Text(
         text = stringResource(R.string.recipe_instructions),
         modifier =
             Modifier
                 .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
                 .padding(bottom = dimensionResource(id = R.dimen.padding_s)),
-        style = MaterialTheme.typography.h6,
+        style = MaterialTheme.typography.titleLarge,
     )
     instructions.forEachIndexed { index, instruction ->
         Row(
@@ -816,20 +812,30 @@ private fun Instructions(
                         bottom = dimensionResource(id = R.dimen.padding_xs),
                     ),
         ) {
-            Chip(
-                onClick = { /*TODO: Add check functionality */ },
+            AssistChip(
+                onClick = {
+                    enabledStates[index].value = !enabledStates[index].value
+                },
                 modifier =
                     Modifier
                         .padding(end = dimensionResource(id = R.dimen.padding_xs)),
-                enabled = false,
-                border = BorderStroke(2.dp, NcBlue700),
+                enabled = true,
+                border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
                 colors =
-                    ChipDefaults.chipColors(
-                        backgroundColor = Color.Transparent,
+                    AssistChipDefaults.assistChipColors(
+                        containerColor =
+                            if (enabledStates[index].value) {
+                                MaterialTheme.colorScheme.primary
+                            } else {
+                                MaterialTheme.colorScheme.surface
+                            },
                     ),
-            ) {
-                Text(text = "${index + 1}", color = MaterialTheme.colors.onSurface)
-            }
+                label = {
+                    Text(
+                        text = "${index + 1}",
+                    )
+                },
+            )
             MarkdownText(
                 markdown = instruction,
                 modifier =

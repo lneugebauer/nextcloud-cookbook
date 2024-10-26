@@ -13,27 +13,28 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.AppBarDefaults
 import androidx.compose.material.ContentAlpha
-import androidx.compose.material.Divider
-import androidx.compose.material.FilterChip
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.ListItem
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.CloudDownload
+import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -69,7 +70,6 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.keyboardAsState
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.error.AbstractErrorScreen
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.error.NotFoundScreen
-import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
 import de.lukasneugebauer.nextcloudcookbook.destinations.DownloadRecipeScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeCreateScreenDestination
@@ -134,9 +134,11 @@ fun RecipeListScreenWrapper(
             }
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = {
-                navigator.navigate(RecipeCreateScreenDestination)
-            }) {
+            FloatingActionButton(
+                onClick = {
+                    navigator.navigate(RecipeCreateScreenDestination)
+                },
+            ) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = stringResource(id = R.string.common_add))
             }
         },
@@ -201,11 +203,12 @@ private fun RecipeListScreen(
                     keywords.forEach {
                         item {
                             FilterChip(
-                                selected = isKeywordSelected.invoke(it),
+                                selected = isKeywordSelected(it),
                                 onClick = { onKeywordClick.invoke(it) },
-                            ) {
-                                Text(text = it)
-                            }
+                                label = {
+                                    Text(text = it)
+                                },
+                            )
                         }
                     }
                 }
@@ -215,12 +218,10 @@ private fun RecipeListScreen(
                 itemsIndexed(recipePreviews) { index, recipePreview ->
                     ListItem(
                         modifier =
-                            Modifier.clickable(
-                                onClick = {
-                                    onClick.invoke(recipePreview.id)
-                                },
-                            ),
-                        icon = {
+                            Modifier.clickable {
+                                onClick(recipePreview.id)
+                            },
+                        leadingContent = {
                             AuthorizedImage(
                                 imageUrl = recipePreview.imageUrl,
                                 contentDescription = recipePreview.name,
@@ -230,18 +231,17 @@ private fun RecipeListScreen(
                                         .clip(MaterialTheme.shapes.medium),
                             )
                         },
-                        secondaryText = {
-                            Text(text = recipePreview.keywords.joinToString(separator = ", "))
-                        },
-                        singleLineSecondaryText = false,
-                        text = {
+                        headlineContent = {
                             Text(text = recipePreview.name)
+                        },
+                        supportingContent = {
+                            Text(
+                                text = recipePreview.keywords.joinToString(separator = ", "),
+                            )
                         },
                     )
                     if (index != recipePreviews.size - 1) {
-                        Divider(
-                            modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
-                        )
+                        HorizontalDivider(modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_m)))
                     } else {
                         Gap(size = dimensionResource(id = R.dimen.fab_offset))
                     }
@@ -251,6 +251,7 @@ private fun RecipeListScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun TopAppBar(
     categoryName: String?,
@@ -262,19 +263,16 @@ private fun TopAppBar(
 
     TopAppBar(
         title = { Text(text = title) },
-        navigationIcon =
-            if (categoryName == null) {
-                null
-            } else {
-                {
-                    IconButton(onClick = onBackClick) {
-                        Icon(
-                            Icons.AutoMirrored.Default.ArrowBack,
-                            contentDescription = stringResource(id = R.string.common_back),
-                        )
-                    }
+        navigationIcon = {
+            if (categoryName != null) {
+                IconButton(onClick = onBackClick) {
+                    Icon(
+                        Icons.AutoMirrored.Default.ArrowBack,
+                        contentDescription = stringResource(id = R.string.common_back),
+                    )
                 }
-            },
+            }
+        },
         actions = {
             IconButton(onClick = onImportClick) {
                 Icon(
@@ -289,8 +287,6 @@ private fun TopAppBar(
                 )
             }
         },
-        backgroundColor = NcBlue700,
-        contentColor = Color.White,
     )
 }
 
@@ -315,8 +311,6 @@ private fun SearchAppBar(
             Modifier
                 .fillMaxWidth()
                 .height(AppBarHeight),
-        color = MaterialTheme.colors.primary,
-        elevation = AppBarDefaults.TopAppBarElevation,
     ) {
         val layoutDirection = LocalLayoutDirection.current
         var textFieldValue by remember {
@@ -339,9 +333,8 @@ private fun SearchAppBar(
                     .focusRequester(focusRequester),
             placeholder = {
                 Text(
-                    modifier = Modifier.alpha(ContentAlpha.medium),
                     text = stringResource(R.string.common_search),
-                    color = MaterialTheme.colors.onPrimary,
+                    modifier = Modifier.alpha(ContentAlpha.medium),
                 )
             },
             leadingIcon = {
@@ -350,7 +343,6 @@ private fun SearchAppBar(
                         imageVector = Icons.Default.Search,
                         contentDescription = stringResource(R.string.common_search),
                         modifier = Modifier.alpha(ContentAlpha.medium),
-                        tint = MaterialTheme.colors.onPrimary,
                     )
                 }
             },
@@ -368,7 +360,6 @@ private fun SearchAppBar(
                     Icon(
                         imageVector = Icons.Default.Close,
                         contentDescription = stringResource(R.string.common_close),
-                        tint = MaterialTheme.colors.onPrimary,
                     )
                 }
             },
@@ -382,9 +373,9 @@ private fun SearchAppBar(
                 ),
             singleLine = true,
             colors =
-                TextFieldDefaults.textFieldColors(
-                    backgroundColor = Color.Transparent,
-                    cursorColor = MaterialTheme.colors.onPrimary,
+                TextFieldDefaults.colors(
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
                 ),
         )
     }

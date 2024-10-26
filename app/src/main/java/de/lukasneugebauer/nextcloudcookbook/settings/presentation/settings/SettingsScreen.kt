@@ -3,16 +3,14 @@ package de.lukasneugebauer.nextcloudcookbook.settings.presentation.settings
 import android.content.Context
 import android.content.SharedPreferences
 import android.net.Uri
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Logout
@@ -22,9 +20,17 @@ import androidx.compose.material.icons.outlined.BugReport
 import androidx.compose.material.icons.outlined.LightMode
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.Translate
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SwitchDefaults
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -38,7 +44,6 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import de.lukasneugebauer.nextcloudcookbook.BuildConfig
 import de.lukasneugebauer.nextcloudcookbook.R
-import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
 import de.lukasneugebauer.nextcloudcookbook.core.util.Constants.SHARED_PREFERENCES_KEY
 import de.lukasneugebauer.nextcloudcookbook.core.util.openInBrowser
 import de.lukasneugebauer.nextcloudcookbook.destinations.LibrariesScreenDestination
@@ -60,6 +65,8 @@ fun SettingsScreen(
 ) {
     Scaffold(
         topBar = { SettingsTopBar(onNavIconClick = { navigator.navigateUp() }) },
+        containerColor = MaterialTheme.colorScheme.surface,
+        contentColor = MaterialTheme.colorScheme.onSurface,
     ) { innerPadding ->
         SettingsContent(
             modifier =
@@ -82,6 +89,7 @@ fun SettingsScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsTopBar(onNavIconClick: () -> Unit) {
     TopAppBar(
@@ -94,8 +102,12 @@ fun SettingsTopBar(onNavIconClick: () -> Unit) {
                 )
             }
         },
-        backgroundColor = NcBlue700,
-        contentColor = Color.White,
+        colors =
+            TopAppBarDefaults.topAppBarColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+                titleContentColor = MaterialTheme.colorScheme.onSurface,
+                actionIconContentColor = MaterialTheme.colorScheme.onSurface,
+            ),
     )
 }
 
@@ -108,11 +120,17 @@ fun SettingsContent(
 ) {
     val context = LocalContext.current
 
-    Column(modifier = modifier) {
-        SettingsGroupGeneral(sharedPreferences)
-        SettingsGroupAccount(onLogoutClick)
-        SettingsGroupAbout(context, onLibrariesClick)
-        SettingsGroupContribution(context)
+    Box(
+        modifier =
+            modifier.fillMaxSize()
+                .background(MaterialTheme.colorScheme.surface),
+    ) {
+        Column(modifier = Modifier) {
+            SettingsGroupGeneral(sharedPreferences)
+            SettingsGroupAccount(onLogoutClick)
+            SettingsGroupAbout(context, onLibrariesClick)
+            SettingsGroupContribution(context)
+        }
     }
 }
 
@@ -125,8 +143,12 @@ fun SettingsGroupGeneral(sharedPreferences: SharedPreferences) {
             preferences = sharedPreferences,
         )
 
-    SettingsGroup(title = { Text(text = stringResource(R.string.settings_general)) }) {
+    SettingsGroup(
+        modifier = Modifier.background(MaterialTheme.colorScheme.surface),
+        title = { Text(text = stringResource(R.string.settings_general)) },
+    ) {
         SettingsSwitch(
+            modifier = Modifier.background(MaterialTheme.colorScheme.surface),
             state = stayAwakeState,
             icon = {
                 Icon(
@@ -137,14 +159,25 @@ fun SettingsGroupGeneral(sharedPreferences: SharedPreferences) {
             title = { Text(text = stringResource(R.string.settings_stay_awake)) },
             subtitle = { Text(text = stringResource(R.string.settings_stay_awake_on_recipe_screen)) },
             onCheckedChange = {},
+            switchColors =
+                SwitchDefaults.colors(
+                    checkedThumbColor = MaterialTheme.colorScheme.primary,
+                    uncheckedThumbColor = MaterialTheme.colorScheme.onSurface,
+                    checkedTrackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                    uncheckedTrackColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+                ),
         )
     }
 }
 
 @Composable
 fun SettingsGroupAccount(onLogoutClick: () -> Unit) {
-    SettingsGroup(title = { Text(text = stringResource(R.string.settings_account)) }) {
+    SettingsGroup(
+        modifier = Modifier.background(MaterialTheme.colorScheme.surface),
+        title = { Text(text = stringResource(R.string.settings_account)) },
+    ) {
         SettingsMenuLink(
+            modifier = Modifier.background(MaterialTheme.colorScheme.surface),
             icon = {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.Logout,
@@ -162,8 +195,12 @@ fun SettingsGroupAbout(
     context: Context,
     onLibrariesClick: () -> Unit,
 ) {
-    SettingsGroup(title = { Text(text = stringResource(id = R.string.common_about)) }) {
+    SettingsGroup(
+        modifier = Modifier.background(MaterialTheme.colorScheme.surface),
+        title = { Text(text = stringResource(id = R.string.common_about)) },
+    ) {
         SettingsMenuLink(
+            modifier = Modifier.background(MaterialTheme.colorScheme.surface),
             icon = {
                 Icon(
                     imageVector = Icons.Outlined.Lock,
@@ -174,12 +211,14 @@ fun SettingsGroupAbout(
             onClick = { Uri.parse(PRIVACY_URL).openInBrowser(context) },
         )
         SettingsMenuLink(
+            modifier = Modifier.background(MaterialTheme.colorScheme.surface),
             icon = {},
             title = { Text(text = stringResource(R.string.settings_license)) },
             subtitle = { Text(text = stringResource(R.string.settings_mit_license)) },
             onClick = { Uri.parse(LICENSE_URL).openInBrowser(context) },
         )
         SettingsMenuLink(
+            modifier = Modifier.background(MaterialTheme.colorScheme.surface),
             icon = {
                 Icon(
                     imageVector = Icons.Default.Gavel,
@@ -190,6 +229,7 @@ fun SettingsGroupAbout(
             onClick = onLibrariesClick,
         )
         SettingsMenuLink(
+            modifier = Modifier.background(MaterialTheme.colorScheme.surface),
             icon = {},
             title = { Text(text = stringResource(R.string.settings_version)) },
             subtitle = {
@@ -209,8 +249,12 @@ fun SettingsGroupAbout(
 
 @Composable
 fun SettingsGroupContribution(context: Context) {
-    SettingsGroup(title = { Text(text = stringResource(R.string.settings_contribution)) }) {
+    SettingsGroup(
+        modifier = Modifier.background(MaterialTheme.colorScheme.surface),
+        title = { Text(text = stringResource(R.string.settings_contribution)) },
+    ) {
         SettingsMenuLink(
+            modifier = Modifier.background(MaterialTheme.colorScheme.surface),
             icon = {
                 Icon(
                     imageVector = Icons.Default.Code,
@@ -222,6 +266,7 @@ fun SettingsGroupContribution(context: Context) {
             onClick = { Uri.parse(GITHUB_URL).openInBrowser(context) },
         )
         SettingsMenuLink(
+            modifier = Modifier.background(MaterialTheme.colorScheme.surface),
             icon = {
                 Icon(
                     imageVector = Icons.Outlined.Translate,
@@ -232,6 +277,7 @@ fun SettingsGroupContribution(context: Context) {
             onClick = { Uri.parse(WEBLATE_URL).openInBrowser(context) },
         )
         SettingsMenuLink(
+            modifier = Modifier.background(MaterialTheme.colorScheme.surface),
             icon = {
                 Icon(
                     imageVector = Icons.Outlined.BugReport,
@@ -256,7 +302,7 @@ fun SettingsContentPreview() {
     val sharedPreferences =
         LocalContext.current.getSharedPreferences(SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
     SettingsContent(
-        modifier = Modifier,
+        modifier = Modifier.background(MaterialTheme.colorScheme.primary),
         onLibrariesClick = {},
         onLogoutClick = {},
         sharedPreferences = sharedPreferences,

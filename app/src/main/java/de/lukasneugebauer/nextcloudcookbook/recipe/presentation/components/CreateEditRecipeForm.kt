@@ -1,30 +1,21 @@
 package de.lukasneugebauer.nextcloudcookbook.recipe.presentation.components
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Chip
-import androidx.compose.material.ChipDefaults
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TextFieldColors
-import androidx.compose.material.TextFieldDefaults
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
@@ -32,6 +23,17 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.DragHandle
 import androidx.compose.material.icons.filled.Save
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SuggestionChip
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldColors
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -40,7 +42,6 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -48,16 +49,14 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.dokar.chiptextfield.Chip
-import com.dokar.chiptextfield.OutlinedChipTextField
+import com.dokar.chiptextfield.m3.OutlinedChipTextField
 import com.dokar.chiptextfield.rememberChipTextFieldState
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.category.domain.model.Category
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.DefaultButton
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.DefaultOutlinedTextField
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Gap
-import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NcBlue700
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.DurationComponents
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Recipe
@@ -112,7 +111,6 @@ fun CreateEditRecipeForm(
     onSaveClick: () -> Unit,
 ) {
     val scrollState = rememberScrollState()
-
     Scaffold(
         topBar = {
             RecipeEditTopBar(
@@ -134,14 +132,15 @@ fun CreateEditRecipeForm(
                     .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
                     .padding(bottom = dimensionResource(id = R.dimen.padding_m))
             val textFieldColors =
-                TextFieldDefaults.outlinedTextFieldColors(
-                    textColor = MaterialTheme.colors.onBackground,
-                    cursorColor = MaterialTheme.colors.onBackground,
-                    focusedBorderColor = MaterialTheme.colors.primary,
-                    unfocusedBorderColor = MaterialTheme.colors.primary,
+                TextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.surface,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                    cursorColor = MaterialTheme.colorScheme.onSurface,
+                    focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                    unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface,
                 )
 
-            Gap(size = dimensionResource(id = R.dimen.padding_m))
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.padding_m)))
             CompositionLocalProvider(LocalTextFieldColors provides textFieldColors) {
                 Name(
                     recipe = recipe,
@@ -235,6 +234,7 @@ fun CreateEditRecipeForm(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun RecipeEditTopBar(
     title: String,
@@ -252,7 +252,7 @@ private fun RecipeEditTopBar(
         navigationIcon = {
             IconButton(onClick = onNavIconClick) {
                 Icon(
-                    Icons.AutoMirrored.Default.ArrowBack,
+                    Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = stringResource(id = R.string.common_back),
                 )
             }
@@ -265,8 +265,13 @@ private fun RecipeEditTopBar(
                 )
             }
         },
-        backgroundColor = MaterialTheme.colors.primary,
-        contentColor = MaterialTheme.colors.onPrimary,
+        colors =
+            TopAppBarDefaults.topAppBarColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+                titleContentColor = MaterialTheme.colorScheme.onSurface,
+                navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
+                actionIconContentColor = MaterialTheme.colorScheme.onSurface,
+            ),
     )
 }
 
@@ -380,27 +385,11 @@ private fun PrepTime(
     modifier: Modifier,
     onPrepTimeChange: (time: DurationComponents) -> Unit,
 ) {
-    val focusManager = LocalFocusManager.current
-    val textFieldColors = LocalTextFieldColors.current
-
-    TimeTextField(
+    TimeInput(
         time = prepTime,
         onTimeChange = onPrepTimeChange,
         label = R.string.recipe_prep_time,
         modifier = modifier,
-        colors = textFieldColors,
-        hoursKeyboardActions =
-            KeyboardActions(
-                onNext = {
-                    focusManager.moveFocus(FocusDirection.Next)
-                },
-            ),
-        minutesKeyboardActions =
-            KeyboardActions(
-                onNext = {
-                    focusManager.moveFocus(FocusDirection.Next)
-                },
-            ),
     )
 }
 
@@ -410,27 +399,11 @@ private fun CookTime(
     modifier: Modifier,
     onCookTimeChange: (time: DurationComponents) -> Unit,
 ) {
-    val focusManager = LocalFocusManager.current
-    val textFieldColors = LocalTextFieldColors.current
-
-    TimeTextField(
+    TimeInput(
         time = cookTime,
         onTimeChange = onCookTimeChange,
         label = R.string.recipe_cook_time,
         modifier = modifier,
-        colors = textFieldColors,
-        hoursKeyboardActions =
-            KeyboardActions(
-                onNext = {
-                    focusManager.moveFocus(FocusDirection.Next)
-                },
-            ),
-        minutesKeyboardActions =
-            KeyboardActions(
-                onNext = {
-                    focusManager.moveFocus(FocusDirection.Next)
-                },
-            ),
     )
 }
 
@@ -440,27 +413,11 @@ private fun TotalTime(
     modifier: Modifier,
     onTotalTimeChange: (time: DurationComponents) -> Unit,
 ) {
-    val focusManager = LocalFocusManager.current
-    val textFieldColors = LocalTextFieldColors.current
-
-    TimeTextField(
+    TimeInput(
         time = totalTime,
         onTimeChange = onTotalTimeChange,
         label = R.string.recipe_total_time,
         modifier = modifier,
-        colors = textFieldColors,
-        hoursKeyboardActions =
-            KeyboardActions(
-                onNext = {
-                    focusManager.moveFocus(FocusDirection.Next)
-                },
-            ),
-        minutesKeyboardActions =
-            KeyboardActions(
-                onNext = {
-                    focusManager.moveFocus(FocusDirection.Next)
-                },
-            ),
     )
 }
 
@@ -505,16 +462,12 @@ private fun Category(
         ) {
             categories.forEach {
                 item {
-                    Chip(
+                    SuggestionChip(
                         onClick = { onCategoryChange.invoke(it.name) },
-                        border = BorderStroke(2.dp, NcBlue700),
-                        colors =
-                            ChipDefaults.chipColors(
-                                backgroundColor = Color.Transparent,
-                            ),
-                    ) {
-                        Text(text = it.name)
-                    }
+                        label = {
+                            Text(text = it.name)
+                        },
+                    )
                 }
             }
         }
@@ -527,8 +480,6 @@ private fun Keywords(
     keywords: Set<String>,
     onKeywordsChange: (keywords: Set<String>) -> Unit,
 ) {
-    val textFieldColors = LocalTextFieldColors.current
-
     val state =
         rememberChipTextFieldState(
             chips = recipe.keywords.map { Chip(text = it) },
@@ -540,16 +491,12 @@ private fun Keywords(
 
     OutlinedChipTextField(
         state = state,
-        onSubmit = ::Chip,
         modifier =
             Modifier
                 .fillMaxWidth()
                 .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
+        onSubmit = ::Chip,
         label = { Text(text = "Keywords") },
-        onChipClick = {
-            Timber.d("$it clicked")
-        },
-        colors = textFieldColors,
     )
 
     if (keywords.isEmpty()) {
@@ -563,16 +510,12 @@ private fun Keywords(
             keywords.filter { keyword -> !state.chips.any { it.text == keyword } }
                 .forEach {
                     item {
-                        Chip(
+                        SuggestionChip(
                             onClick = { state.addChip(Chip(text = it)) },
-                            border = BorderStroke(2.dp, NcBlue700),
-                            colors =
-                                ChipDefaults.chipColors(
-                                    backgroundColor = Color.Transparent,
-                                ),
-                        ) {
-                            Text(text = it)
-                        }
+                            label = {
+                                Text(text = it)
+                            },
+                        )
                     }
                 }
         }
@@ -623,7 +566,7 @@ private fun Ingredients(
     Text(
         text = stringResource(id = R.string.recipe_ingredients),
         modifier = Modifier.padding(start = dimensionResource(R.dimen.padding_m)),
-        style = MaterialTheme.typography.h6,
+        style = MaterialTheme.typography.headlineSmall,
     )
     ReorderableColumn(
         list = recipe.ingredients,
@@ -720,7 +663,7 @@ private fun Nutritions(
     Column(modifier = modifier) {
         Text(
             text = stringResource(id = R.string.recipe_nutrition),
-            style = MaterialTheme.typography.h6,
+            style = MaterialTheme.typography.headlineSmall,
         )
         NutritionItem(
             value = recipe.nutrition?.calories,
@@ -853,7 +796,7 @@ private fun Tools(
     Text(
         text = stringResource(id = R.string.recipe_tools),
         modifier = Modifier.padding(start = dimensionResource(R.dimen.padding_m)),
-        style = MaterialTheme.typography.h6,
+        style = MaterialTheme.typography.headlineSmall,
     )
     ReorderableColumn(
         list = recipe.tools,
@@ -1102,7 +1045,7 @@ private fun CreateEditRecipeFormPreview() {
 @Composable
 private fun CategoryPreview() {
     NextcloudCookbookTheme {
-        CompositionLocalProvider(LocalTextFieldColors provides TextFieldDefaults.outlinedTextFieldColors()) {
+        CompositionLocalProvider(LocalTextFieldColors provides TextFieldDefaults.colors()) {
             Column {
                 Category(
                     recipe = MockedRecipe,
@@ -1118,7 +1061,7 @@ private fun CategoryPreview() {
 @Composable
 private fun KeywordsPreview() {
     NextcloudCookbookTheme {
-        CompositionLocalProvider(LocalTextFieldColors provides TextFieldDefaults.outlinedTextFieldColors()) {
+        CompositionLocalProvider(LocalTextFieldColors provides TextFieldDefaults.colors()) {
             Column {
                 Keywords(
                     recipe = MockedRecipe,
@@ -1134,7 +1077,7 @@ private fun KeywordsPreview() {
 @Composable
 private fun YieldPreview() {
     NextcloudCookbookTheme {
-        CompositionLocalProvider(LocalTextFieldColors provides TextFieldDefaults.outlinedTextFieldColors()) {
+        CompositionLocalProvider(LocalTextFieldColors provides TextFieldDefaults.colors()) {
             Yield(
                 recipe = MockedRecipe,
                 modifier = Modifier,
@@ -1148,7 +1091,7 @@ private fun YieldPreview() {
 @Composable
 private fun IngredientsPreview() {
     NextcloudCookbookTheme {
-        CompositionLocalProvider(LocalTextFieldColors provides TextFieldDefaults.outlinedTextFieldColors()) {
+        CompositionLocalProvider(LocalTextFieldColors provides TextFieldDefaults.colors()) {
             Column {
                 Ingredients(
                     recipe = MockedRecipe,
@@ -1166,7 +1109,7 @@ private fun IngredientsPreview() {
 @Composable
 private fun NutritionsPreview() {
     NextcloudCookbookTheme {
-        CompositionLocalProvider(LocalTextFieldColors provides TextFieldDefaults.outlinedTextFieldColors()) {
+        CompositionLocalProvider(LocalTextFieldColors provides TextFieldDefaults.colors()) {
             Nutritions(
                 recipe = MockedRecipe,
                 modifier = Modifier,
