@@ -44,8 +44,11 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.minimumInteractiveComponentSize
@@ -74,6 +77,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.colintheshots.twain.MarkdownText
@@ -450,6 +454,7 @@ private fun Description(description: String) {
                 .fillMaxWidth()
                 .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
                 .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
+        style = LocalTextStyle.current.copy(color = LocalContentColor.current),
     )
 }
 
@@ -667,6 +672,7 @@ private fun Ingredients(
                         .fillMaxWidth()
                         .minimumInteractiveComponentSize()
                         .padding(end = dimensionResource(id = R.dimen.padding_m)),
+                style = LocalTextStyle.current.copy(color = LocalContentColor.current),
             )
         }
     }
@@ -777,6 +783,7 @@ private fun Tools(tools: List<String>) {
             Modifier
                 .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
                 .padding(bottom = dimensionResource(id = R.dimen.padding_l)),
+        style = LocalTextStyle.current.copy(color = LocalContentColor.current),
     )
 }
 
@@ -831,6 +838,7 @@ private fun Instructions(instructions: List<String>) {
                     Modifier
                         .padding(bottom = dimensionResource(id = R.dimen.padding_s))
                         .fillMaxWidth(),
+                style = LocalTextStyle.current.copy(color = LocalContentColor.current),
             )
         }
     }
@@ -845,6 +853,28 @@ private fun KeywordsPreview() {
         }
     NextcloudCookbookTheme {
         Keywords(keywords = keywords, onClick = {})
+    }
+}
+
+@PreviewLightDark
+@Composable
+private fun DescriptionPreview() {
+    NextcloudCookbookTheme {
+        Surface {
+            Description(
+                description =
+                    """
+                    Some description
+                    
+                    _with_ rich text
+                    
+                    - a
+                    - list
+                    
+                    and [some links](http://example.com).
+                    """.trimIndent(),
+            )
+        }
     }
 }
 
