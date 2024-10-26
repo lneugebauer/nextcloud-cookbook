@@ -32,10 +32,10 @@ fun AbstractErrorScreen(
         content = { innerPadding ->
             Column(
                 modifier =
-                modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-                    .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
+                    modifier
+                        .fillMaxSize()
+                        .padding(innerPadding)
+                        .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
             ) {
@@ -43,9 +43,9 @@ fun AbstractErrorScreen(
                     imageVector = icon,
                     contentDescription = iconContentDescription?.asString(),
                     modifier =
-                    Modifier
-                        .size(dimensionResource(id = R.dimen.error_icon_size))
-                        .padding(bottom = dimensionResource(id = R.dimen.padding_s)),
+                        Modifier
+                            .size(dimensionResource(id = R.dimen.error_icon_size))
+                            .padding(bottom = dimensionResource(id = R.dimen.padding_s)),
                     tint = MaterialTheme.colorScheme.error,
                 )
                 Text(
@@ -53,7 +53,7 @@ fun AbstractErrorScreen(
                     style = MaterialTheme.typography.titleLarge,
                 )
             }
-        }
+        },
     )
 }
 
