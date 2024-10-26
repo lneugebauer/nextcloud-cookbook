@@ -20,7 +20,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.CloudDownload
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
@@ -212,7 +211,7 @@ private fun RecipeListScreen(
                         }
                     }
                 }
-                Divider()
+                HorizontalDivider()
             }
             LazyColumn {
                 itemsIndexed(recipePreviews) { index, recipePreview ->

@@ -1,7 +1,7 @@
 package de.lukasneugebauer.nextcloudcookbook.recipe.presentation.components
 
 import androidx.annotation.StringRes
-gapaimport androidx.compose.foundation.background
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -41,6 +41,7 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -627,11 +628,6 @@ private fun Ingredients(
     DefaultButton(
         onClick = onAddIngredient,
         modifier = Modifier.padding(all = dimensionResource(R.dimen.padding_m)),
-        colors =
-            ButtonDefaults.buttonColors(
-                backgroundColor = NcBlue700,
-                contentColor = Color.White,
-            ),
     ) {
         Icon(
             imageVector = Icons.Default.Add,
@@ -855,11 +851,6 @@ private fun Tools(
     DefaultButton(
         onClick = onAddTool,
         modifier = Modifier.padding(all = dimensionResource(R.dimen.padding_m)),
-        colors =
-            ButtonDefaults.buttonColors(
-                backgroundColor = NcBlue700,
-                contentColor = Color.White,
-            ),
     ) {
         Icon(
             imageVector = Icons.Default.Add,
@@ -882,7 +873,7 @@ private fun Instructions(
     Text(
         text = stringResource(id = R.string.recipe_instructions),
         modifier = Modifier.padding(start = dimensionResource(R.dimen.padding_m)),
-        style = MaterialTheme.typography.h6,
+        style = MaterialTheme.typography.headlineSmall,
     )
     ReorderableColumn(
         list = recipe.instructions,
@@ -932,11 +923,6 @@ private fun Instructions(
     DefaultButton(
         onClick = onAddInstruction,
         modifier = Modifier.padding(all = dimensionResource(R.dimen.padding_m)),
-        colors =
-            ButtonDefaults.buttonColors(
-                backgroundColor = NcBlue700,
-                contentColor = Color.White,
-            ),
     ) {
         Icon(
             imageVector = Icons.Default.Add,
