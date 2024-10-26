@@ -11,10 +11,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -63,10 +61,7 @@ fun DownloadRecipeScreen(
                     url = url,
                     onDownloadClick = { viewModel.importRecipe() },
                     onUrlChange = { viewModel.updateUrl(it) },
-                    modifier =
-                        Modifier
-                            .padding(innerPadding)
-                            .padding(top = dimensionResource(id = R.dimen.padding_m)),
+                    modifier = Modifier.padding(innerPadding),
                 )
             }
             is DownloadRecipeScreenState.Error -> {
@@ -75,10 +70,7 @@ fun DownloadRecipeScreen(
                     url = errorState.url,
                     onDownloadClick = { viewModel.importRecipe() },
                     onUrlChange = { viewModel.updateUrl(it) },
-                    modifier =
-                        Modifier
-                            .padding(innerPadding)
-                            .padding(top = dimensionResource(id = R.dimen.padding_m)),
+                    modifier = Modifier.padding(innerPadding),
                     error = errorState.uiText,
                 )
             }
@@ -115,12 +107,8 @@ private fun DownloadRecipeScreen(
                 Modifier
                     .fillMaxWidth()
                     .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
-                    .padding(bottom = dimensionResource(id = R.dimen.padding_xs)),
-            label = {
-                Text(
-                    text = stringResource(R.string.download_recipe_url),
-                )
-            },
+                    .padding(bottom = dimensionResource(id = R.dimen.padding_s)),
+            label = { Text(text = stringResource(R.string.download_recipe_url)) },
             errorText = error?.asString(),
             keyboardOptions =
                 KeyboardOptions.Default.copy(
@@ -128,17 +116,9 @@ private fun DownloadRecipeScreen(
                 ),
             keyboardActions =
                 KeyboardActions(
-                    onDone = { },
+                    onDone = { onDownloadClick.invoke() },
                 ),
             singleLine = true,
-            colors =
-                TextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colorScheme.surface,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                    cursorColor = MaterialTheme.colorScheme.onSurface,
-                    focusedIndicatorColor = MaterialTheme.colorScheme.primary,
-                    unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface,
-                ),
         )
         Button(
             onClick = onDownloadClick,
