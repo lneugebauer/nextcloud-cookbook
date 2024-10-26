@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="recipe_instruction_add">Добавить инструкцию</string>
     <string name="error_http_400">400 Неправильный запрос</string>
     <string name="error_http_404">404 Не найдено</string>
@@ -129,4 +129,10 @@
     <string name="download_recipe">Скачать рецепт</string>
     <string name="download_recipe_url">Ссылка на рецепт</string>
     <string name="recipe_import_from_url">Импортировать рецепт по ссылке</string>
+    <plurals name="recipe_ingredients_copied">
+        <item quantity="one" tools:ignore="ImpliedQuantity">Ингредиент скопирован</item>
+        <item quantity="few">Ингредиенты скопированы</item>
+        <item quantity="many">Ингредиенты скопированы</item>
+        <item quantity="other">Ингредиенты скопированы</item>
+    </plurals>
 </resources>

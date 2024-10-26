@@ -15,6 +15,7 @@
     <string name="common_no">Nein</string>
     <string name="common_password">Passwort</string>
     <string name="common_recipes">Rezepte</string>
+    <string name="common_reorder">Neu ordnen</string>
     <string name="common_save">Speichern</string>
     <string name="common_search">Suchen</string>
     <string name="common_settings">Einstellungen</string>

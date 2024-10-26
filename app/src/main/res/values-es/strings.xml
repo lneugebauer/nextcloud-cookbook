@@ -127,4 +127,9 @@
     <string name="common_download">Descargar</string>
     <string name="download_recipe">Descargar receta</string>
     <string name="download_recipe_url">URL de la receta</string>
+    <plurals name="recipe_ingredients_copied">
+        <item quantity="one">Ingrediente copiado</item>
+        <item quantity="many">Ingredientes copiados</item>
+        <item quantity="other">Ingredientes copiados</item>
+    </plurals>
 </resources>

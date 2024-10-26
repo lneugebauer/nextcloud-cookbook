@@ -9,7 +9,7 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipePreviewDto
 import kotlinx.coroutines.flow.Flow
 
 interface RecipeRepository {
-    fun getRecipePreviews(): Flow<StoreResponse<List<RecipePreviewDto>>>
+    fun getRecipePreviewsFlow(): Flow<StoreResponse<List<RecipePreviewDto>>>
 
     fun getRecipePreviewsByCategory(categoryName: String): Flow<StoreResponse<List<RecipePreviewDto>>>
 

@@ -14,7 +14,7 @@ class GetAllKeywordsUseCase
         operator fun invoke(filterByCategory: String? = null): Flow<Set<String>> {
             val recipePreviewsFlow =
                 if (filterByCategory.isNullOrBlank()) {
-                    recipeRepository.getRecipePreviews()
+                    recipeRepository.getRecipePreviewsFlow()
                 } else {
                     recipeRepository.getRecipePreviewsByCategory(filterByCategory)
                 }

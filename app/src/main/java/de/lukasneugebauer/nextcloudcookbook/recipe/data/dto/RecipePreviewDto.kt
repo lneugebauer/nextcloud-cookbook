@@ -25,7 +25,7 @@ data class RecipePreviewDto(
         RecipePreview(
             id = recipeId.toInt(),
             name = name,
-            keywords = keywords?.split(",") ?: emptyList(),
+            keywords = keywords?.split(",")?.toSet() ?: emptySet(),
             category = category ?: "",
             imageUrl = imageUrl ?: "",
             createdAt = dateCreated ?: "",

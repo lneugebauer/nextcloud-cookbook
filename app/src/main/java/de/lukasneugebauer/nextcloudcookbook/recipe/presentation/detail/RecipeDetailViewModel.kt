@@ -11,11 +11,16 @@ import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
 import de.lukasneugebauer.nextcloudcookbook.core.util.asUiText
 import de.lukasneugebauer.nextcloudcookbook.core.util.notZero
+import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipePreviewDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.YieldCalculator
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Recipe
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.repository.RecipeRepository
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.RecipeDetailState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -46,43 +51,51 @@ class RecipeDetailViewModel
 
         private fun getRecipe(id: Int) {
             _state.value = _state.value.copy(loading = true)
-            viewModelScope.launch {
-                recipeRepository.getRecipeFlow(id).collect { recipeResponse ->
-                    when (recipeResponse) {
-                        is StoreResponse.Loading -> _state.value = _state.value.copy(loading = true)
-                        is StoreResponse.Data -> {
-                            val recipe = recipeResponse.value.toRecipe()
-                            _state.value =
-                                _state.value.copy(
-                                    calculatedIngredients =
-                                        yieldCalculator.recalculateIngredients(
-                                            recipe.ingredients,
-                                            recipe.yield,
-                                            recipe.yield,
-                                        ),
-                                    currentYield = recipe.yield,
-                                    data = recipe,
-                                    loading = false,
-                                )
-                        }
-
-                        is StoreResponse.NoNewData -> _state.value = _state.value.copy(loading = false)
-                        is StoreResponse.Error.Exception ->
-                            _state.value =
-                                _state.value.copy(
-                                    error = recipeResponse.errorMessageOrNull()?.asUiText(),
-                                    loading = false,
-                                )
-
-                        is StoreResponse.Error.Message ->
-                            _state.value =
-                                _state.value.copy(
-                                    error = recipeResponse.message.asUiText(),
-                                    loading = false,
-                                )
+            combine(
+                recipeRepository.getRecipeFlow(id),
+                recipeRepository.getRecipePreviewsFlow(),
+            ) { recipeResponse, recipePreviewsResponse ->
+                val recipePreviewDtos =
+                    when (recipePreviewsResponse) {
+                        is StoreResponse.Data -> recipePreviewsResponse.dataOrNull()
+                        else -> null
                     }
+                Pair(recipeResponse, recipePreviewDtos)
+            }.onEach { (recipeResponse, recipePreviewDtos) ->
+                when (recipeResponse) {
+                    is StoreResponse.Loading -> _state.value = _state.value.copy(loading = true)
+                    is StoreResponse.Data -> {
+                        val recipe = replaceRecipeShortLinks(recipeResponse.value.toRecipe(), recipePreviewDtos)
+                        _state.value =
+                            _state.value.copy(
+                                calculatedIngredients =
+                                    yieldCalculator.recalculateIngredients(
+                                        recipe.ingredients,
+                                        recipe.yield,
+                                        recipe.yield,
+                                    ),
+                                currentYield = recipe.yield,
+                                data = recipe,
+                                loading = false,
+                            )
+                    }
+
+                    is StoreResponse.NoNewData -> _state.value = _state.value.copy(loading = false)
+                    is StoreResponse.Error.Exception ->
+                        _state.value =
+                            _state.value.copy(
+                                error = recipeResponse.errorMessageOrNull()?.asUiText(),
+                                loading = false,
+                            )
+
+                    is StoreResponse.Error.Message ->
+                        _state.value =
+                            _state.value.copy(
+                                error = recipeResponse.message.asUiText(),
+                                loading = false,
+                            )
                 }
-            }
+            }.launchIn(viewModelScope)
         }
 
         fun increaseYield() {
@@ -193,5 +206,66 @@ class RecipeDetailViewModel
                     }
                 }
             }
+        }
+
+        private fun replaceRecipeShortLinks(
+            recipe: Recipe,
+            recipePreviewDtos: List<RecipePreviewDto>?,
+        ): Recipe {
+            fun replace(text: String): String {
+                return RECIPE_SHORT_URL_REGEX.replace(text) { matchResult ->
+                    val (id) = matchResult.destructured
+
+                    val recipePreviewDto =
+                        recipePreviewDtos?.firstOrNull { recipePreviewDto ->
+                            recipePreviewDto.recipeId == id
+                        }
+
+                    if (recipePreviewDto?.name?.isNotBlank() == true) {
+                        "[${recipePreviewDto.name} (#r/$id)](#/recipe/$id)"
+                    } else {
+                        "[#r/$id](#/recipe/$id)"
+                    }
+                }
+            }
+
+            val newDescription = replace(recipe.description)
+
+            val newTools =
+                recipe.tools.map { tool ->
+                    replace(tool)
+                }
+
+            val newIngredients =
+                recipe.ingredients.map { ingredient ->
+                    replace(ingredient)
+                }
+
+            val newInstructions =
+                recipe.instructions.map { instruction ->
+                    replace(instruction)
+                }
+
+            return recipe.copy(
+                description = newDescription,
+                tools = newTools,
+                ingredients = newIngredients,
+                instructions = newInstructions,
+            )
+        }
+
+        fun getRecipeIdFromInstructionLink(url: String): Int? {
+            val matchResult = RECIPE_URL_REGEX.matchEntire(url)
+            if (matchResult != null) {
+                val (id) = matchResult.destructured
+                return id.toIntOrNull()
+            }
+
+            return null
+        }
+
+        companion object {
+            val RECIPE_SHORT_URL_REGEX = Regex("""#r/(\d+)""")
+            val RECIPE_URL_REGEX = Regex("""#/recipe/(\d+)""")
         }
     }

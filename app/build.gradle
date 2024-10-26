@@ -37,8 +37,8 @@ android {
         applicationId "de.lukasneugebauer.nextcloudcookbook"
         minSdk 24
         targetSdk 34
-        versionCode 45
-        versionName "0.21.1"
+        versionCode 48
+        versionName "0.22.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -164,6 +164,8 @@ dependencies {
     implementation "ch.acra:acra-dialog:$acra_version"
 
     implementation 'com.github.jeziellago:compose-markdown:0.5.4'
+
+    implementation 'sh.calvin.reorderable:reorderable:2.4.0'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.2.1'

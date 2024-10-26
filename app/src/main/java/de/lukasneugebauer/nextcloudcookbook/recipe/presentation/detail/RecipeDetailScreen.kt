@@ -87,6 +87,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.Nextcloud
 import de.lukasneugebauer.nextcloudcookbook.core.util.getActivity
 import de.lukasneugebauer.nextcloudcookbook.core.util.notZero
 import de.lukasneugebauer.nextcloudcookbook.core.util.openInBrowser
+import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeDetailScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeEditScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeListWithArgumentsScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Nutrition
@@ -213,6 +214,11 @@ fun RecipeDetailScreen(
                 onResetYield = {
                     viewModel.resetYield()
                 },
+                onLinkClicked = { url ->
+                    viewModel.getRecipeIdFromInstructionLink(url)?.let { id ->
+                        navigator.navigate(RecipeDetailScreenDestination(id))
+                    }
+                },
             )
         }
     }
@@ -335,6 +341,7 @@ private fun Content(
     onIncreaseYield: () -> Unit,
     onKeywordClick: (keyword: String) -> Unit,
     onResetYield: () -> Unit,
+    onLinkClicked: (String) -> Unit,
 ) {
     Column(
         modifier = modifier,
@@ -345,7 +352,7 @@ private fun Content(
             Keywords(keywords = recipe.keywords, onClick = onKeywordClick)
         }
         if (recipe.description.isNotBlank()) {
-            Description(recipe.description)
+            Description(description = recipe.description, onLinkClicked = onLinkClicked)
         }
         if (recipe.prepTime?.notZero() == true ||
             recipe.cookTime?.notZero() == true ||
@@ -364,16 +371,20 @@ private fun Content(
                 onResetYield,
                 currentYield,
                 recipe.yield != currentYield,
+                onLinkClicked,
             )
         }
         if (recipe.nutrition != null) {
             Nutrition(recipe.nutrition)
         }
         if (recipe.tools.isNotEmpty()) {
-            Tools(recipe.tools)
+            Tools(tools = recipe.tools, onLinkClicked = onLinkClicked)
         }
         if (recipe.instructions.isNotEmpty()) {
-            Instructions(recipe.instructions)
+            Instructions(
+                instructions = recipe.instructions,
+                onLinkClicked = onLinkClicked,
+            )
         }
         Gap(size = dimensionResource(id = R.dimen.padding_s))
         Gap(size = dimensionResource(id = R.dimen.fab_offset))
@@ -431,7 +442,10 @@ private fun Keywords(
 }
 
 @Composable
-private fun Description(description: String) {
+private fun Description(
+    description: String,
+    onLinkClicked: (String) -> Unit,
+) {
     MarkdownText(
         markdown = description,
         modifier =
@@ -439,6 +453,8 @@ private fun Description(description: String) {
                 .fillMaxWidth()
                 .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
                 .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
+        style = LocalTextStyle.current.copy(color = LocalContentColor.current),
+        onLinkClicked = onLinkClicked,
     )
 }
 
@@ -536,6 +552,7 @@ private fun Ingredients(
     onResetYield: () -> Unit,
     currentYield: Int,
     showResetButton: Boolean,
+    onLinkClicked: (String) -> Unit,
 ) {
     val clipboardManager = LocalClipboardManager.current
     val context = LocalContext.current
@@ -562,12 +579,18 @@ private fun Ingredients(
             if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
                 Toast.makeText(
                     context,
-                    context.resources.getQuantityString(R.plurals.recipe_ingredients_copied, ingredients.size),
+                    context.resources.getQuantityString(
+                        R.plurals.recipe_ingredients_copied,
+                        ingredients.size,
+                    ),
                     Toast.LENGTH_SHORT,
                 ).show()
             }
         }) {
-            Icon(imageVector = Icons.Outlined.ContentCopy, contentDescription = stringResource(R.string.recipe_ingredients_copy))
+            Icon(
+                imageVector = Icons.Outlined.ContentCopy,
+                contentDescription = stringResource(R.string.recipe_ingredients_copy),
+            )
         }
     }
     Row(
@@ -582,7 +605,10 @@ private fun Ingredients(
             onClick = onDecreaseYield,
             enabled = currentYield > 1,
         ) {
-            Icon(imageVector = Icons.Outlined.Remove, contentDescription = stringResource(id = R.string.recipe_servings_decrease))
+            Icon(
+                imageVector = Icons.Outlined.Remove,
+                contentDescription = stringResource(id = R.string.recipe_servings_decrease),
+            )
         }
         Text(
             text = pluralResource(resId = R.plurals.recipe_servings, currentYield, currentYield),
@@ -590,11 +616,17 @@ private fun Ingredients(
             style = MaterialTheme.typography.bodyLarge,
         )
         Button(onClick = onIncreaseYield) {
-            Icon(imageVector = Icons.Outlined.Add, contentDescription = stringResource(id = R.string.recipe_servings_increase))
+            Icon(
+                imageVector = Icons.Outlined.Add,
+                contentDescription = stringResource(id = R.string.recipe_servings_increase),
+            )
         }
         if (showResetButton) {
             Button(onClick = onResetYield) {
-                Icon(imageVector = Icons.Outlined.Refresh, contentDescription = stringResource(id = R.string.recipe_servings_reset))
+                Icon(
+                    imageVector = Icons.Outlined.Refresh,
+                    contentDescription = stringResource(id = R.string.recipe_servings_reset),
+                )
             }
         }
     }
@@ -618,11 +650,16 @@ private fun Ingredients(
                                 },
                             )
                             if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
-                                Toast.makeText(
-                                    context,
-                                    context.resources.getQuantityString(R.plurals.recipe_ingredients_copied, 1),
-                                    Toast.LENGTH_SHORT,
-                                ).show()
+                                Toast
+                                    .makeText(
+                                        context,
+                                        context.resources.getQuantityString(
+                                            R.plurals.recipe_ingredients_copied,
+                                            1,
+                                        ),
+                                        Toast.LENGTH_SHORT,
+                                    )
+                                    .show()
                             }
                         },
                         onClick = {
@@ -632,6 +669,8 @@ private fun Ingredients(
                     .fillMaxWidth()
                     .minimumInteractiveComponentSize()
                     .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
+            style = LocalTextStyle.current.copy(color = LocalContentColor.current),
+            onLinkClicked = onLinkClicked,
         )
     }
     Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_m)))
@@ -726,7 +765,10 @@ private fun Nutrition(nutrition: Nutrition) {
 }
 
 @Composable
-private fun Tools(tools: List<String>) {
+private fun Tools(
+    tools: List<String>,
+    onLinkClicked: (String) -> Unit,
+) {
     Text(
         text = stringResource(R.string.recipe_tools),
         modifier =
@@ -741,11 +783,16 @@ private fun Tools(tools: List<String>) {
             Modifier
                 .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
                 .padding(bottom = dimensionResource(id = R.dimen.padding_l)),
+        style = LocalTextStyle.current.copy(color = LocalContentColor.current),
+        onLinkClicked = onLinkClicked,
     )
 }
 
 @Composable
-private fun Instructions(instructions: List<String>) {
+private fun Instructions(
+    instructions: List<String>,
+    onLinkClicked: (String) -> Unit,
+) {
     val enabledStates = remember(instructions) { instructions.map { mutableStateOf(false) } }
     Text(
         text = stringResource(R.string.recipe_instructions),
@@ -795,6 +842,8 @@ private fun Instructions(instructions: List<String>) {
                     Modifier
                         .padding(bottom = dimensionResource(id = R.dimen.padding_s))
                         .fillMaxWidth(),
+                style = LocalTextStyle.current.copy(color = LocalContentColor.current),
+                onLinkClicked = onLinkClicked,
             )
         }
     }
@@ -833,7 +882,7 @@ private fun InstructionsPreview() {
         }
     NextcloudCookbookTheme {
         Column {
-            Instructions(instructions = instructions)
+            Instructions(instructions = instructions, onLinkClicked = {})
         }
     }
 }
@@ -885,6 +934,7 @@ private fun ContentPreview() {
             onIncreaseYield = {},
             onKeywordClick = {},
             onResetYield = {},
+            onLinkClicked = {},
         )
     }
 }

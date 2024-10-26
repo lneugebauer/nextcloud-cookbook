@@ -5,6 +5,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -18,6 +21,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.DragHandle
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -33,7 +37,9 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.key
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
@@ -54,6 +60,8 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Gap
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.DurationComponents
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Recipe
+import sh.calvin.reorderable.ReorderableColumn
+import timber.log.Timber
 import java.time.Duration
 
 @Composable
@@ -79,6 +87,7 @@ fun CreateEditRecipeForm(
     onIngredientChanged: (index: Int, ingredient: String) -> Unit,
     onIngredientDeleted: (index: Int) -> Unit,
     onAddIngredient: () -> Unit,
+    onSwapIngredient: (fromIndex: Int, toIndex: Int) -> Unit,
     onCaloriesChanged: (calories: String) -> Unit,
     onCarbohydrateContentChanged: (carbohydrateContent: String) -> Unit,
     onCholesterolContentChanged: (cholesterolContent: String) -> Unit,
@@ -94,9 +103,11 @@ fun CreateEditRecipeForm(
     onToolChanged: (index: Int, tool: String) -> Unit,
     onToolDeleted: (index: Int) -> Unit,
     onAddTool: () -> Unit,
+    onSwapTool: (fromIndex: Int, toIndex: Int) -> Unit,
     onInstructionChanged: (index: Int, instruction: String) -> Unit,
     onInstructionDeleted: (index: Int) -> Unit,
     onAddInstruction: () -> Unit,
+    onSwapInstruction: (fromIndex: Int, toIndex: Int) -> Unit,
     onSaveClick: () -> Unit,
 ) {
     val scrollState = rememberScrollState()
@@ -183,10 +194,10 @@ fun CreateEditRecipeForm(
                 )
                 Ingredients(
                     recipe = recipe,
-                    modifier = modifier,
                     onIngredientChanged = onIngredientChanged,
                     onIngredientDeleted = onIngredientDeleted,
                     onAddIngredient = onAddIngredient,
+                    onSwapIngredient = onSwapIngredient,
                 )
                 Nutritions(
                     recipe = recipe,
@@ -206,17 +217,17 @@ fun CreateEditRecipeForm(
                 )
                 Tools(
                     recipe = recipe,
-                    modifier = modifier,
                     onToolChanged = onToolChanged,
                     onToolDeleted = onToolDeleted,
                     onAddTool = onAddTool,
+                    onSwapTool = onSwapTool,
                 )
                 Instructions(
                     recipe = recipe,
-                    modifier = modifier,
                     onInstructionChanged = onInstructionChanged,
                     onInstructionDeleted = onInstructionDeleted,
                     onAddInstruction = onAddInstruction,
+                    onSwapInstruction = onSwapInstruction,
                 )
             }
         }
@@ -544,59 +555,91 @@ private fun Yield(
 @Composable
 private fun Ingredients(
     recipe: Recipe,
-    modifier: Modifier,
     onIngredientChanged: (index: Int, ingredient: String) -> Unit,
     onIngredientDeleted: (index: Int) -> Unit,
     onAddIngredient: () -> Unit,
+    onSwapIngredient: (fromIndex: Int, toIndex: Int) -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
     val textFieldColors = LocalTextFieldColors.current
 
-    Column(modifier = modifier) {
-        Text(
-            text = stringResource(id = R.string.recipe_ingredients),
-            style = MaterialTheme.typography.headlineSmall,
-        )
-        recipe.ingredients.forEachIndexed { index, ingredient ->
-            DefaultOutlinedTextField(
-                value = ingredient,
-                onValueChange = { onIngredientChanged.invoke(index, it) },
+    Text(
+        text = stringResource(id = R.string.recipe_ingredients),
+        modifier = Modifier.padding(start = dimensionResource(R.dimen.padding_m)),
+        style = MaterialTheme.typography.headlineSmall,
+    )
+    ReorderableColumn(
+        list = recipe.ingredients,
+        onSettle = { fromIndex, toIndex ->
+            onSwapIngredient.invoke(fromIndex, toIndex)
+        },
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_m)),
+    ) { index, ingredient, isDragging ->
+        key(ingredient.hashCode()) {
+            Row(
                 modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
-                label = { Text(text = stringResource(id = R.string.recipe_ingredient) + " ${index + 1}") },
-                trailingIcon = {
-                    IconButton(onClick = { onIngredientDeleted.invoke(index) }) {
-                        Icon(
-                            imageVector = Icons.Default.Delete,
-                            contentDescription = stringResource(R.string.recipe_ingredient_delete),
-                        )
-                    }
-                },
-                keyboardOptions =
-                    KeyboardOptions.Default.copy(
-                        imeAction = ImeAction.Next,
-                    ),
-                keyboardActions =
-                    KeyboardActions(
-                        onNext = {
-                            focusManager.moveFocus(FocusDirection.Down)
-                        },
-                    ),
-                singleLine = true,
-                colors = textFieldColors,
-            )
+                    if (isDragging) {
+                        Modifier.background(color = Color.Yellow.copy(alpha = 0.5f))
+                    } else {
+                        Modifier
+                    },
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                IconButton(
+                    modifier = Modifier.draggableHandle(),
+                    onClick = {},
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.DragHandle,
+                        contentDescription = stringResource(R.string.common_reorder),
+                    )
+                }
+                DefaultOutlinedTextField(
+                    value = ingredient,
+                    onValueChange = { onIngredientChanged.invoke(index, it) },
+                    modifier =
+                        Modifier
+                            .padding(end = dimensionResource(R.dimen.padding_m))
+                            .fillMaxWidth(),
+                    label = { Text(text = stringResource(id = R.string.recipe_ingredient) + " ${index + 1}") },
+                    trailingIcon = {
+                        IconButton(onClick = { onIngredientDeleted.invoke(index) }) {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = stringResource(R.string.recipe_ingredient_delete),
+                            )
+                        }
+                    },
+                    keyboardOptions =
+                        KeyboardOptions.Default.copy(
+                            imeAction = ImeAction.Next,
+                        ),
+                    keyboardActions =
+                        KeyboardActions(
+                            onNext = {
+                                focusManager.moveFocus(FocusDirection.Down)
+                            },
+                        ),
+                    singleLine = true,
+                    colors = textFieldColors,
+                )
+            }
         }
-        DefaultButton(
-            onClick = onAddIngredient,
-        ) {
-            Icon(
-                imageVector = Icons.Default.Add,
-                contentDescription = stringResource(R.string.recipe_ingredient_add),
-            )
-            Text(text = stringResource(R.string.recipe_ingredient_add))
-        }
+    }
+    DefaultButton(
+        onClick = onAddIngredient,
+        modifier = Modifier.padding(all = dimensionResource(R.dimen.padding_m)),
+        colors =
+            ButtonDefaults.buttonColors(
+                backgroundColor = NcBlue700,
+                contentColor = Color.White,
+            ),
+    ) {
+        Icon(
+            imageVector = Icons.Default.Add,
+            contentDescription = stringResource(R.string.recipe_ingredient_add),
+        )
+        Text(text = stringResource(R.string.recipe_ingredient_add))
     }
 }
 
@@ -742,27 +785,51 @@ private fun NutritionItem(
 @Composable
 private fun Tools(
     recipe: Recipe,
-    modifier: Modifier,
     onToolChanged: (index: Int, tool: String) -> Unit,
     onToolDeleted: (index: Int) -> Unit,
     onAddTool: () -> Unit,
+    onSwapTool: (fromIndex: Int, toIndex: Int) -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
     val textFieldColors = LocalTextFieldColors.current
 
-    Column(modifier = modifier) {
-        Text(
-            text = stringResource(id = R.string.recipe_tools),
-            style = MaterialTheme.typography.headlineSmall,
-        )
-        recipe.tools.forEachIndexed { index, tool ->
+    Text(
+        text = stringResource(id = R.string.recipe_tools),
+        modifier = Modifier.padding(start = dimensionResource(R.dimen.padding_m)),
+        style = MaterialTheme.typography.headlineSmall,
+    )
+    ReorderableColumn(
+        list = recipe.tools,
+        onSettle = { fromIndex, toIndex ->
+            onSwapTool.invoke(fromIndex, toIndex)
+        },
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_m)),
+    ) { index, tool, isDragging ->
+        Row(
+            modifier =
+                if (isDragging) {
+                    Modifier.background(color = Color.Yellow.copy(alpha = 0.5f))
+                } else {
+                    Modifier
+                },
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            IconButton(
+                modifier = Modifier.draggableHandle(),
+                onClick = {},
+            ) {
+                Icon(
+                    imageVector = Icons.Default.DragHandle,
+                    contentDescription = stringResource(R.string.common_reorder),
+                )
+            }
             DefaultOutlinedTextField(
                 value = tool,
                 onValueChange = { onToolChanged.invoke(index, it) },
                 modifier =
                     Modifier
                         .fillMaxWidth()
-                        .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
+                        .padding(end = dimensionResource(R.dimen.padding_m)),
                 label = { Text(text = stringResource(id = R.string.recipe_tool) + " ${index + 1}") },
                 trailingIcon = {
                     IconButton(onClick = { onToolDeleted.invoke(index) }) {
@@ -786,41 +853,71 @@ private fun Tools(
                 colors = textFieldColors,
             )
         }
-        DefaultButton(
-            onClick = onAddTool,
-        ) {
-            Icon(
-                imageVector = Icons.Default.Add,
-                contentDescription = stringResource(R.string.recipe_tool_add),
-            )
-            Text(text = stringResource(R.string.recipe_tool_add))
-        }
+    }
+    DefaultButton(
+        onClick = onAddTool,
+        modifier = Modifier.padding(all = dimensionResource(R.dimen.padding_m)),
+        colors =
+            ButtonDefaults.buttonColors(
+                backgroundColor = NcBlue700,
+                contentColor = Color.White,
+            ),
+    ) {
+        Icon(
+            imageVector = Icons.Default.Add,
+            contentDescription = stringResource(R.string.recipe_tool_add),
+        )
+        Text(text = stringResource(R.string.recipe_tool_add))
     }
 }
 
 @Composable
 private fun Instructions(
     recipe: Recipe,
-    modifier: Modifier,
     onInstructionChanged: (index: Int, instruction: String) -> Unit,
     onInstructionDeleted: (index: Int) -> Unit,
     onAddInstruction: () -> Unit,
+    onSwapInstruction: (fromIndex: Int, toIndex: Int) -> Unit,
 ) {
     val textFieldColors = LocalTextFieldColors.current
 
-    Column(modifier = modifier) {
-        Text(
-            text = stringResource(id = R.string.recipe_instructions),
-            style = MaterialTheme.typography.headlineSmall,
-        )
-        recipe.instructions.forEachIndexed { index, instruction ->
+    Text(
+        text = stringResource(id = R.string.recipe_instructions),
+        modifier = Modifier.padding(start = dimensionResource(R.dimen.padding_m)),
+        style = MaterialTheme.typography.h6,
+    )
+    ReorderableColumn(
+        list = recipe.instructions,
+        onSettle = { fromIndex, toIndex ->
+            onSwapInstruction.invoke(fromIndex, toIndex)
+        },
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_m)),
+    ) { index, instruction, isDragging ->
+        Row(
+            modifier =
+                if (isDragging) {
+                    Modifier.background(color = Color.Yellow.copy(alpha = 0.5f))
+                } else {
+                    Modifier
+                },
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            IconButton(
+                modifier = Modifier.draggableHandle(),
+                onClick = {},
+            ) {
+                Icon(
+                    imageVector = Icons.Default.DragHandle,
+                    contentDescription = stringResource(R.string.common_reorder),
+                )
+            }
             DefaultOutlinedTextField(
                 value = instruction,
                 onValueChange = { onInstructionChanged.invoke(index, it) },
                 modifier =
                     Modifier
                         .fillMaxWidth()
-                        .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
+                        .padding(end = dimensionResource(R.dimen.padding_m)),
                 label = { Text(text = stringResource(id = R.string.recipe_instruction) + " ${index + 1}") },
                 trailingIcon = {
                     IconButton(onClick = { onInstructionDeleted.invoke(index) }) {
@@ -833,15 +930,21 @@ private fun Instructions(
                 colors = textFieldColors,
             )
         }
-        DefaultButton(
-            onClick = onAddInstruction,
-        ) {
-            Icon(
-                imageVector = Icons.Default.Add,
-                contentDescription = stringResource(R.string.recipe_instruction_add),
-            )
-            Text(text = stringResource(R.string.recipe_instruction_add))
-        }
+    }
+    DefaultButton(
+        onClick = onAddInstruction,
+        modifier = Modifier.padding(all = dimensionResource(R.dimen.padding_m)),
+        colors =
+            ButtonDefaults.buttonColors(
+                backgroundColor = NcBlue700,
+                contentColor = Color.White,
+            ),
+    ) {
+        Icon(
+            imageVector = Icons.Default.Add,
+            contentDescription = stringResource(R.string.recipe_instruction_add),
+        )
+        Text(text = stringResource(R.string.recipe_instruction_add))
     }
 }
 
@@ -912,6 +1015,7 @@ private fun CreateEditRecipeFormPreview() {
             onIngredientChanged = { _, _ -> },
             onIngredientDeleted = {},
             onAddIngredient = {},
+            onSwapIngredient = { _, _ -> },
             onCaloriesChanged = {},
             onCarbohydrateContentChanged = {},
             onCholesterolContentChanged = {},
@@ -927,9 +1031,11 @@ private fun CreateEditRecipeFormPreview() {
             onToolChanged = { _, _ -> },
             onToolDeleted = {},
             onAddTool = {},
+            onSwapTool = { _, _ -> },
             onInstructionChanged = { _, _ -> },
             onInstructionDeleted = {},
             onAddInstruction = {},
+            onSwapInstruction = { _, _ -> },
             onSaveClick = {},
         )
     }
@@ -989,10 +1095,10 @@ private fun IngredientsPreview() {
             Column {
                 Ingredients(
                     recipe = MockedRecipe,
-                    modifier = Modifier,
                     onIngredientChanged = { _, _ -> },
                     onIngredientDeleted = {},
                     onAddIngredient = {},
+                    onSwapIngredient = { _, _ -> },
                 )
             }
         }

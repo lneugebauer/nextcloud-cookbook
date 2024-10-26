@@ -20,6 +20,9 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
+import java.lang.IndexOutOfBoundsException
+import java.util.Collections
 
 abstract class RecipeCreateEditViewModel(
     private val categoryRepository: CategoryRepository,
@@ -195,6 +198,21 @@ abstract class RecipeCreateEditViewModel(
         }
     }
 
+    fun swapIngredient(
+        fromIndex: Int,
+        toIndex: Int,
+    ) {
+        _uiState.value.ifSuccess {
+            val ingredients = recipeDto.recipeIngredient.toMutableList()
+            try {
+                Collections.swap(ingredients, fromIndex, toIndex)
+                recipeDto = recipeDto.copy(recipeIngredient = ingredients)
+            } catch (e: IndexOutOfBoundsException) {
+                Timber.e(e.stackTraceToString())
+            }
+        }
+    }
+
     fun changeCalories(newCalories: String) {
         val newNutrition =
             recipeDto.nutrition?.copy(calories = newCalories)
@@ -306,6 +324,21 @@ abstract class RecipeCreateEditViewModel(
         }
     }
 
+    fun swapTool(
+        fromIndex: Int,
+        toIndex: Int,
+    ) {
+        _uiState.value.ifSuccess {
+            val tools = recipeDto.tool.toMutableList()
+            try {
+                Collections.swap(tools, fromIndex, toIndex)
+                recipeDto = recipeDto.copy(tool = tools)
+            } catch (e: IndexOutOfBoundsException) {
+                Timber.e(e.stackTraceToString())
+            }
+        }
+    }
+
     fun changeInstruction(
         index: Int,
         newInstruction: String,
@@ -330,6 +363,21 @@ abstract class RecipeCreateEditViewModel(
             val instructions = recipeDto.recipeInstructions.toMutableList()
             instructions.add("")
             recipeDto = recipeDto.copy(recipeInstructions = instructions)
+        }
+    }
+
+    fun swapInstruction(
+        fromIndex: Int,
+        toIndex: Int,
+    ) {
+        _uiState.value.ifSuccess {
+            val instructions = recipeDto.recipeInstructions.toMutableList()
+            try {
+                Collections.swap(instructions, fromIndex, toIndex)
+                recipeDto = recipeDto.copy(recipeInstructions = instructions)
+            } catch (e: IndexOutOfBoundsException) {
+                Timber.e(e.stackTraceToString())
+            }
         }
     }
 
