@@ -1,20 +1,20 @@
-Visualizzate tutte le ricette memorizzate nell'istanza Nextcloud.
+Visualizzate tutte le ricette memorizzate nella vostra istanza Nextcloud.
 
 Il codice sorgente è disponibile su GitHub all'indirizzo https://github.com/lneugebauer/nextcloud-cookbook/. Segnalate bug, proposte di miglioramento e richieste di funzionalità.
 
-Attuale:
+Funzionalità attuali:
 - Elenco di tutte le ricette
 - Elenco di tutte le ricette per categoria
-- Visualizza la ricetta
-- Lo schermo rimane acceso nella schermata delle ricette
+- Visualizzare le ricette
+- Si può impostare lo schermo per rimanere sempre acceso quando si visualizza una ricetta
 - Impostazioni
-- Modifica ricetta
-- Aggiungi ricetta
+- Modifica ricette
+- Aggiungi ricette
 - Importazione di una ricetta tramite URL
 
-Pianificato:
+Funzionalità in fase di sviluppo:
 - Utilizzo offline
 - Accesso singolo tramite l'app Nextcloud Files
 - Accesso tramite codice QR
 
-Per utilizzare questa applicazione è necessario un server Nextcloud accessibile pubblicamente con l'ultima app Ricettario.
+Per utilizzare questa applicazione è necessario un server Nextcloud accessibile pubblicamente con l'ultima versione della app Ricettario installata.
