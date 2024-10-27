@@ -47,9 +47,11 @@ fun BottomBar(navController: NavController) {
                 NavigationBarItem(
                     selected = selected == destination,
                     onClick = {
-                        selected = destination
-                        destinationsNavigator.navigate(destination.direction) {
-                            launchSingleTop = true
+                        if (selected != destination) {
+                            selected = destination
+                            destinationsNavigator.navigate(destination.direction) {
+                                launchSingleTop = true
+                            }
                         }
                     },
                     icon = {

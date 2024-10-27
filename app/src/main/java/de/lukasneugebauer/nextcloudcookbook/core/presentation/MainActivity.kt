@@ -6,6 +6,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -100,8 +103,10 @@ fun NextcloudCookbookApp(intent: Intent) {
             rememberNavHostEngine(
                 rootDefaultAnimations =
                     RootNavGraphDefaultAnimations(
-                        enterTransition = { slideIntoContainer(towards = AnimatedContentTransitionScope.SlideDirection.End) },
-                        exitTransition = { slideOutOfContainer(towards = AnimatedContentTransitionScope.SlideDirection.Start) },
+                        enterTransition = { slideIntoContainer(towards = AnimatedContentTransitionScope.SlideDirection.Up) },
+                        exitTransition = { slideOutOfContainer(towards = AnimatedContentTransitionScope.SlideDirection.Down) },
+                        popEnterTransition = { fadeIn(animationSpec = tween(500)) },
+                        popExitTransition = { fadeOut(animationSpec = tween(500)) },
                     ),
             )
         val viewModelStoreOwner =
