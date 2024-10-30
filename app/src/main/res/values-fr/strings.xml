@@ -131,7 +131,7 @@
     <plurals name="recipe_ingredients_copied">
         <item quantity="one">Ingrédient copié</item>
         <item quantity="many">Ingrédients copiés</item>
-        <item quantity="other"/>
+        <item quantity="other"></item>
     </plurals>
     <string name="common_ascending">Ascendant</string>
     <string name="common_descending">Descendant</string>
