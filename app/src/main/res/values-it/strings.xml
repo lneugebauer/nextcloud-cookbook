@@ -103,7 +103,7 @@
     <plurals name="recipe_ingredients_copied">
         <item quantity="one">Ingrediente copiato</item>
         <item quantity="many">Ingredienti copiati</item>
-        <item quantity="other">%1$d ingredienti copiati</item>
+        <item quantity="other">ingredienti copiati</item>
     </plurals>
     <string name="recipe_ingredients_copy">Copia ingredienti negli appunti</string>
     <string name="recipe_instruction_delete">Rimuovi istruzioni</string>
