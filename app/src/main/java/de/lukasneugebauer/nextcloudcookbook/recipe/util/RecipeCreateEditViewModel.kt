@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.lang.IndexOutOfBoundsException
+import java.lang.UnsupportedOperationException
 import java.util.Collections
 
 abstract class RecipeCreateEditViewModel(
@@ -205,9 +205,13 @@ abstract class RecipeCreateEditViewModel(
         _uiState.value.ifSuccess {
             val ingredients = recipeDto.recipeIngredient.toMutableList()
             try {
-                Collections.swap(ingredients, fromIndex, toIndex)
+                if (fromIndex <= toIndex) {
+                    Collections.rotate(ingredients.subList(fromIndex, toIndex + 1), -1)
+                } else {
+                    Collections.rotate(ingredients.subList(toIndex, fromIndex + 1), 1)
+                }
                 recipeDto = recipeDto.copy(recipeIngredient = ingredients)
-            } catch (e: IndexOutOfBoundsException) {
+            } catch (e: UnsupportedOperationException) {
                 Timber.e(e.stackTraceToString())
             }
         }
@@ -331,9 +335,13 @@ abstract class RecipeCreateEditViewModel(
         _uiState.value.ifSuccess {
             val tools = recipeDto.tool.toMutableList()
             try {
-                Collections.swap(tools, fromIndex, toIndex)
+                if (fromIndex <= toIndex) {
+                    Collections.rotate(tools.subList(fromIndex, toIndex + 1), -1)
+                } else {
+                    Collections.rotate(tools.subList(toIndex, fromIndex + 1), 1)
+                }
                 recipeDto = recipeDto.copy(tool = tools)
-            } catch (e: IndexOutOfBoundsException) {
+            } catch (e: UnsupportedOperationException) {
                 Timber.e(e.stackTraceToString())
             }
         }
@@ -373,9 +381,13 @@ abstract class RecipeCreateEditViewModel(
         _uiState.value.ifSuccess {
             val instructions = recipeDto.recipeInstructions.toMutableList()
             try {
-                Collections.swap(instructions, fromIndex, toIndex)
+                if (fromIndex <= toIndex) {
+                    Collections.rotate(instructions.subList(fromIndex, toIndex + 1), -1)
+                } else {
+                    Collections.rotate(instructions.subList(toIndex, fromIndex + 1), 1)
+                }
                 recipeDto = recipeDto.copy(recipeInstructions = instructions)
-            } catch (e: IndexOutOfBoundsException) {
+            } catch (e: UnsupportedOperationException) {
                 Timber.e(e.stackTraceToString())
             }
         }
