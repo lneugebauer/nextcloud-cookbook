@@ -1,7 +1,10 @@
 package de.lukasneugebauer.nextcloudcookbook.recipe.data.dto
 
 import com.google.gson.annotations.SerializedName
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Ingredient
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Instruction
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Recipe
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Tool
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.parseAsDuration
 import java.util.Collections.emptyList
 
@@ -60,9 +63,9 @@ data class RecipeDto(
             cookTime = cookTime.parseAsDuration(),
             totalTime = totalTime.parseAsDuration(),
             nutrition = nutrition?.toNutrition(),
-            tools = tool,
-            ingredients = recipeIngredient,
-            instructions = recipeInstructions,
+            tools = tool.mapIndexed { index, tool -> Tool(id = index, value = tool) },
+            ingredients = recipeIngredient.mapIndexed { index, ingredient -> Ingredient(id = index, value = ingredient) },
+            instructions = recipeInstructions.mapIndexed { index, instruction -> Instruction(id = index, value = instruction) },
             createdAt = dateCreated ?: "",
             modifiedAt = dateModified ?: "",
         )

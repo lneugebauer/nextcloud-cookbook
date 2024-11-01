@@ -53,7 +53,10 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Default
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Gap
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.DurationComponents
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Ingredient
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Instruction
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Recipe
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Tool
 import sh.calvin.reorderable.ReorderableColumn
 import java.time.Duration
 
@@ -536,7 +539,7 @@ private fun Ingredients(
         },
         verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_m)),
     ) { index, ingredient, isDragging ->
-        key(ingredient.hashCode()) {
+        key(ingredient.id) {
             Row(
                 modifier =
                     if (isDragging) {
@@ -556,7 +559,7 @@ private fun Ingredients(
                     )
                 }
                 DefaultOutlinedTextField(
-                    value = ingredient,
+                    value = ingredient.value,
                     onValueChange = { onIngredientChanged.invoke(index, it) },
                     modifier =
                         Modifier
@@ -757,52 +760,54 @@ private fun Tools(
         },
         verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_m)),
     ) { index, tool, isDragging ->
-        Row(
-            modifier =
-                if (isDragging) {
-                    Modifier.background(color = Color.Yellow.copy(alpha = 0.5f))
-                } else {
-                    Modifier
-                },
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            IconButton(
-                modifier = Modifier.draggableHandle(),
-                onClick = {},
+        key(tool.id) {
+            Row(
+                modifier =
+                    if (isDragging) {
+                        Modifier.background(color = Color.Yellow.copy(alpha = 0.5f))
+                    } else {
+                        Modifier
+                    },
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                Icon(
-                    imageVector = Icons.Default.DragHandle,
-                    contentDescription = stringResource(R.string.common_reorder),
+                IconButton(
+                    modifier = Modifier.draggableHandle(),
+                    onClick = {},
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.DragHandle,
+                        contentDescription = stringResource(R.string.common_reorder),
+                    )
+                }
+                DefaultOutlinedTextField(
+                    value = tool.value,
+                    onValueChange = { onToolChanged.invoke(index, it) },
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(end = dimensionResource(R.dimen.padding_m)),
+                    label = { Text(text = stringResource(id = R.string.recipe_tool) + " ${index + 1}") },
+                    trailingIcon = {
+                        IconButton(onClick = { onToolDeleted.invoke(index) }) {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = stringResource(R.string.recipe_tool_delete),
+                            )
+                        }
+                    },
+                    keyboardOptions =
+                        KeyboardOptions.Default.copy(
+                            imeAction = ImeAction.Next,
+                        ),
+                    keyboardActions =
+                        KeyboardActions(
+                            onNext = {
+                                focusManager.moveFocus(FocusDirection.Down)
+                            },
+                        ),
+                    singleLine = true,
                 )
             }
-            DefaultOutlinedTextField(
-                value = tool,
-                onValueChange = { onToolChanged.invoke(index, it) },
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(end = dimensionResource(R.dimen.padding_m)),
-                label = { Text(text = stringResource(id = R.string.recipe_tool) + " ${index + 1}") },
-                trailingIcon = {
-                    IconButton(onClick = { onToolDeleted.invoke(index) }) {
-                        Icon(
-                            imageVector = Icons.Default.Delete,
-                            contentDescription = stringResource(R.string.recipe_tool_delete),
-                        )
-                    }
-                },
-                keyboardOptions =
-                    KeyboardOptions.Default.copy(
-                        imeAction = ImeAction.Next,
-                    ),
-                keyboardActions =
-                    KeyboardActions(
-                        onNext = {
-                            focusManager.moveFocus(FocusDirection.Down)
-                        },
-                    ),
-                singleLine = true,
-            )
         }
     }
     DefaultButton(
@@ -837,41 +842,43 @@ private fun Instructions(
         },
         verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_m)),
     ) { index, instruction, isDragging ->
-        Row(
-            modifier =
-                if (isDragging) {
-                    Modifier.background(color = Color.Yellow.copy(alpha = 0.5f))
-                } else {
-                    Modifier
-                },
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            IconButton(
-                modifier = Modifier.draggableHandle(),
-                onClick = {},
+        key(instruction.id) {
+            Row(
+                modifier =
+                    if (isDragging) {
+                        Modifier.background(color = Color.Yellow.copy(alpha = 0.5f))
+                    } else {
+                        Modifier
+                    },
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                Icon(
-                    imageVector = Icons.Default.DragHandle,
-                    contentDescription = stringResource(R.string.common_reorder),
+                IconButton(
+                    modifier = Modifier.draggableHandle(),
+                    onClick = {},
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.DragHandle,
+                        contentDescription = stringResource(R.string.common_reorder),
+                    )
+                }
+                DefaultOutlinedTextField(
+                    value = instruction.value,
+                    onValueChange = { onInstructionChanged.invoke(index, it) },
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(end = dimensionResource(R.dimen.padding_m)),
+                    label = { Text(text = stringResource(id = R.string.recipe_instruction) + " ${index + 1}") },
+                    trailingIcon = {
+                        IconButton(onClick = { onInstructionDeleted.invoke(index) }) {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = stringResource(R.string.recipe_instruction_delete),
+                            )
+                        }
+                    },
                 )
             }
-            DefaultOutlinedTextField(
-                value = instruction,
-                onValueChange = { onInstructionChanged.invoke(index, it) },
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(end = dimensionResource(R.dimen.padding_m)),
-                label = { Text(text = stringResource(id = R.string.recipe_instruction) + " ${index + 1}") },
-                trailingIcon = {
-                    IconButton(onClick = { onInstructionDeleted.invoke(index) }) {
-                        Icon(
-                            imageVector = Icons.Default.Delete,
-                            contentDescription = stringResource(R.string.recipe_instruction_delete),
-                        )
-                    }
-                },
-            )
         }
     }
     DefaultButton(
@@ -903,19 +910,23 @@ private val MockedRecipe =
         nutrition = null,
         tools =
             List(1) {
-                "Lorem ipsum"
+                Tool(id = it, value = "Lorem ipsum")
             },
         ingredients =
             List(2) {
-                "Lorem ipsum"
+                Ingredient(id = it, value = "Lorem ipsum")
             },
         instructions =
             List(1) {
-                """Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
+                Instruction(
+                    id = it,
+                    value =
+                        """Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
                     |tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At
                     |vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren,
                     |no sea takimata sanctus est Lorem ipsum dolor sit amet.
-                """.trimMargin()
+                        """.trimMargin(),
+                )
             },
         createdAt = "",
         modifiedAt = "",

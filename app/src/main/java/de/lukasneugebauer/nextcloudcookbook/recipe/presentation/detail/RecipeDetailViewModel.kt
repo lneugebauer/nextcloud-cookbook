@@ -70,7 +70,7 @@ class RecipeDetailViewModel
                             _state.value.copy(
                                 calculatedIngredients =
                                     yieldCalculator.recalculateIngredients(
-                                        recipe.ingredients,
+                                        recipe.ingredients.map { it.value },
                                         recipe.yield,
                                         recipe.yield,
                                     ),
@@ -120,7 +120,7 @@ class RecipeDetailViewModel
                 _state.value.copy(
                     calculatedIngredients =
                         yieldCalculator.recalculateIngredients(
-                            recipe.ingredients,
+                            recipe.ingredients.map { it.value },
                             currentYield,
                             recipe.yield,
                         ),
@@ -237,17 +237,17 @@ class RecipeDetailViewModel
 
             val newTools =
                 recipe.tools.map { tool ->
-                    replace(tool)
+                    tool.copy(value = replace(tool.value))
                 }
 
             val newIngredients =
                 recipe.ingredients.map { ingredient ->
-                    replace(ingredient)
+                    ingredient.copy(value = replace(ingredient.value))
                 }
 
             val newInstructions =
                 recipe.instructions.map { instruction ->
-                    replace(instruction)
+                    instruction.copy(value = replace(instruction.value))
                 }
 
             return recipe.copy(

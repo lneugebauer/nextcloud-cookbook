@@ -16,9 +16,9 @@ data class Recipe(
     val cookTime: Duration?,
     val totalTime: Duration?,
     val nutrition: Nutrition?,
-    val tools: List<String>,
-    val ingredients: List<String>,
-    val instructions: List<String>,
+    val tools: List<Tool>,
+    val ingredients: List<Ingredient>,
+    val instructions: List<Instruction>,
     // TODO: 19.08.21 Change createdAt and modifiedAt to date fields.
     val createdAt: String,
     val modifiedAt: String,

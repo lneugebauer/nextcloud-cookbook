@@ -96,8 +96,11 @@ import de.lukasneugebauer.nextcloudcookbook.core.util.notZero
 import de.lukasneugebauer.nextcloudcookbook.core.util.openInBrowser
 import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeEditScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeListWithArgumentsScreenDestination
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Ingredient
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Instruction
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Nutrition
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Recipe
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Tool
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.emptyRecipe
 import java.time.Duration
 
@@ -373,7 +376,7 @@ private fun Content(
         }
         if (recipe.ingredients.isNotEmpty()) {
             Ingredients(
-                calculatedIngredients.ifEmpty { recipe.ingredients },
+                calculatedIngredients.ifEmpty { recipe.ingredients.map { it.value } },
                 onDecreaseYield,
                 onIncreaseYield,
                 onResetYield,
@@ -774,7 +777,7 @@ private fun Nutrition(nutrition: Nutrition) {
 }
 
 @Composable
-private fun Tools(tools: List<String>) {
+private fun Tools(tools: List<Tool>) {
     Text(
         text = stringResource(R.string.recipe_tools),
         modifier =
@@ -785,7 +788,7 @@ private fun Tools(tools: List<String>) {
     )
     with(LocalDensity.current) {
         MarkdownText(
-            markdown = tools.joinToString(separator = ", "),
+            markdown = tools.joinToString(separator = ", ") { tool -> tool.value },
             modifier =
                 Modifier
                     .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
@@ -797,7 +800,7 @@ private fun Tools(tools: List<String>) {
 }
 
 @Composable
-private fun Instructions(instructions: List<String>) {
+private fun Instructions(instructions: List<Instruction>) {
     val enabledStates = remember(instructions) { instructions.map { mutableStateOf(false) } }
     Text(
         text = stringResource(R.string.recipe_instructions),
@@ -843,7 +846,7 @@ private fun Instructions(instructions: List<String>) {
             )
             with(LocalDensity.current) {
                 MarkdownText(
-                    markdown = instruction,
+                    markdown = instruction.value,
                     modifier =
                         Modifier
                             .padding(bottom = dimensionResource(id = R.dimen.padding_s))
@@ -908,7 +911,7 @@ private fun InstructionsPreview() {
                 """.trimMargin()
             val loremIpsumList = loremIpsum.split(" ")
             val stringArray = loremIpsumList.take((it + 1) * (it + 1))
-            stringArray.joinToString(" ")
+            Instruction(id = it, value = stringArray.joinToString(" "))
         }
     NextcloudCookbookTheme {
         Column {
@@ -937,20 +940,24 @@ private fun ContentPreview() {
             nutrition = null,
             tools =
                 List(1) {
-                    "Lorem ipsum"
+                    Tool(id = it, value = "Lorem ipsum")
                 },
             ingredients =
                 List(2) {
-                    "Lorem ipsum"
+                    Ingredient(id = it, value = "Lorem ipsum")
                 },
             instructions =
                 List(1) {
-                    """Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy
+                    Instruction(
+                        id = it,
+                        value =
+                            """Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy
                         |eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam
                         |voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet
                         |clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit
                         |amet.
-                    """.trimMargin()
+                            """.trimMargin(),
+                    )
                 },
             createdAt = "",
             modifiedAt = "",
