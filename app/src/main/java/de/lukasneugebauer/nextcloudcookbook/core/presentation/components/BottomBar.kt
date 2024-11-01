@@ -47,11 +47,9 @@ fun BottomBar(navController: NavController) {
                 NavigationBarItem(
                     selected = selected == destination,
                     onClick = {
-                        if (selected != destination) {
-                            selected = destination
-                            destinationsNavigator.navigate(destination.direction) {
-                                launchSingleTop = true
-                            }
+                        selected = destination
+                        destinationsNavigator.navigate(destination.direction) {
+                            launchSingleTop = true
                         }
                     },
                     icon = {
@@ -60,6 +58,7 @@ fun BottomBar(navController: NavController) {
                             contentDescription = stringResource(destination.label),
                         )
                     },
+                    enabled = selected != destination,
                     label = { Text(stringResource(destination.label)) },
                 )
             }
