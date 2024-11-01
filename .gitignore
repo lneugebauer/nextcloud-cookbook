@@ -46,12 +46,15 @@ captures/
 .idea/**/workspace.xml
 .idea/**/tasks.xml
 .idea/**/usage.statistics.xml
+.idea/**/caches
 .idea/**/dictionaries
 .idea/**/shelf
 .idea/**/deploymentTargetDropDown.xml
 .idea/**/deploymentTargetSelector.xml
 .idea/**/misc.xml
 .idea/**/other.xml
+.idea/**/runConfigurations.xml
+.idea/**/php.xml
 
 # AWS User-specific
 .idea/**/aws.xml
