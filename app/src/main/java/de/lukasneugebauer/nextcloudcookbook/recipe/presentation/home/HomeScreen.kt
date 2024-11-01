@@ -11,7 +11,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MediumTopAppBar
@@ -48,7 +47,6 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.HomeScreenDataRe
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.HomeScreenState
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.RecipeConstants.MORE_BUTTON_THRESHOLD
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Destination
 @Composable
 fun HomeScreen(
@@ -136,7 +134,6 @@ fun HomeScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(
     onSettingsIconClick: () -> Unit,
@@ -184,7 +181,6 @@ fun SingleItem(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 private fun TopBarPreview() {

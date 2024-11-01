@@ -3,7 +3,6 @@ package de.lukasneugebauer.nextcloudcookbook.settings.presentation.libraries
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -18,7 +17,6 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.HideBottomNavigation
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Destination
 @Composable
 fun LibrariesScreen(navigator: DestinationsNavigator) {
