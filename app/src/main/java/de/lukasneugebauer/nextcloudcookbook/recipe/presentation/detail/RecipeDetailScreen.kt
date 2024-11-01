@@ -66,6 +66,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -76,6 +77,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewFontScale
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -445,15 +447,18 @@ private fun Keywords(
 
 @Composable
 private fun Description(description: String) {
-    MarkdownText(
-        markdown = description,
-        modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
-                .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
-        style = LocalTextStyle.current.copy(color = LocalContentColor.current),
-    )
+    with(LocalDensity.current) {
+        MarkdownText(
+            markdown = description,
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
+                    .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
+            fontSize = LocalTextStyle.current.fontSize * this.fontScale,
+            style = LocalTextStyle.current.copy(color = LocalContentColor.current),
+        )
+    }
 }
 
 @Composable
@@ -634,16 +639,17 @@ private fun Ingredients(
                 checked = checked,
                 onCheckedChange = { checked = !checked },
             )
-            MarkdownText(
-                markdown =
-                    if (checked) {
-                        "~~$ingredient~~"
-                    } else {
-                        ingredient
-                    },
+            with(LocalDensity.current) {
+                MarkdownText(
+                    markdown =
+                        if (checked) {
+                            "~~$ingredient~~"
+                        } else {
+                            ingredient
+                        },
 // TODO: Add some way to copy single ingredient
-                modifier =
-                    Modifier
+                    modifier =
+                        Modifier
 //                        .combinedClickable(
 //                            onLongClick = {
 //                                clipboardManager.setText(
@@ -667,11 +673,13 @@ private fun Ingredients(
 //                            },
 //                            onClick = {},
 //                        )
-                        .fillMaxWidth()
-                        .minimumInteractiveComponentSize()
-                        .padding(end = dimensionResource(id = R.dimen.padding_m)),
-                style = LocalTextStyle.current.copy(color = LocalContentColor.current),
-            )
+                            .fillMaxWidth()
+                            .minimumInteractiveComponentSize()
+                            .padding(end = dimensionResource(id = R.dimen.padding_m)),
+                    fontSize = LocalTextStyle.current.fontSize * this.fontScale,
+                    style = LocalTextStyle.current.copy(color = LocalContentColor.current),
+                )
+            }
         }
     }
     Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_m)))
@@ -775,14 +783,17 @@ private fun Tools(tools: List<String>) {
                 .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
         style = MaterialTheme.typography.titleLarge,
     )
-    MarkdownText(
-        markdown = tools.joinToString(separator = ", "),
-        modifier =
-            Modifier
-                .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
-                .padding(bottom = dimensionResource(id = R.dimen.padding_l)),
-        style = LocalTextStyle.current.copy(color = LocalContentColor.current),
-    )
+    with(LocalDensity.current) {
+        MarkdownText(
+            markdown = tools.joinToString(separator = ", "),
+            modifier =
+                Modifier
+                    .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
+                    .padding(bottom = dimensionResource(id = R.dimen.padding_l)),
+            fontSize = LocalTextStyle.current.fontSize * this.fontScale,
+            style = LocalTextStyle.current.copy(color = LocalContentColor.current),
+        )
+    }
 }
 
 @Composable
@@ -830,14 +841,17 @@ private fun Instructions(instructions: List<String>) {
                     )
                 },
             )
-            MarkdownText(
-                markdown = instruction,
-                modifier =
-                    Modifier
-                        .padding(bottom = dimensionResource(id = R.dimen.padding_s))
-                        .fillMaxWidth(),
-                style = LocalTextStyle.current.copy(color = LocalContentColor.current),
-            )
+            with(LocalDensity.current) {
+                MarkdownText(
+                    markdown = instruction,
+                    modifier =
+                        Modifier
+                            .padding(bottom = dimensionResource(id = R.dimen.padding_s))
+                            .fillMaxWidth(),
+                    fontSize = LocalTextStyle.current.fontSize * this.fontScale,
+                    style = LocalTextStyle.current.copy(color = LocalContentColor.current),
+                )
+            }
         }
     }
 }
@@ -855,6 +869,7 @@ private fun KeywordsPreview() {
 }
 
 @PreviewLightDark
+@PreviewFontScale
 @Composable
 private fun DescriptionPreview() {
     NextcloudCookbookTheme {
