@@ -23,11 +23,13 @@ Steps to reproduce the behavior:
 **Screenshots**
 <!-- If applicable, add screenshots to help explain your problem. -->
 
-**Smartphone:**
+**Environment:**
 <!-- Please complete the following information. -->
  - Device: [e.g. Pixel 7]
  - OS: [e.g. Android 13]
- - Version [e.g. 22]
+ - App version: [e.g. 0.22.0]
+ - Cookbook version: [e.g. 0.11.2]
+ - Nextcloud version: [e.g. 29.0.5]
 
 **Additional context**
 <!-- Add any other context about the problem here. -->
