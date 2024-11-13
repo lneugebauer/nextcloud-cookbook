@@ -1,0 +1,13 @@
+- Migrate to Material 3
+- Add Basque translation
+- Add Estonian translation
+- Update Czech translation
+- Update Spanish translation
+- Update Chinese (Simplified) translation
+- Update Italian translation
+- Update Galician translation
+- Update Dutch translation
+- Update Russian translation
+- Update French translation
+- Fix editing hiding keyboard issue
+- Fix recipe data reordering issue

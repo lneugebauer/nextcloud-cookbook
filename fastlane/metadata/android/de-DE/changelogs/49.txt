@@ -1,0 +1,13 @@
+- Zu Material 3 migriert
+- Baskische Übersetzung hinzugefügt
+- Estnische Übersetzung hinzugefügt
+- Tschechische Übersetzung aktualisiert
+- Spanische Übersetzung aktualisiert
+- Chinesische (vereinfacht) Übersetzung aktualisiert
+- Italienische Übersetzung aktualisiert
+- Galicische Übersetzung aktualisiert
+- Niederländische Übersetzung aktualisiert
+- Russischen Übersetzung aktualisiert
+- Französische Übersetzung aktualisiert
+- Tastaturfehler behoben
+- Sortieren von Rezeptdaten behoben
