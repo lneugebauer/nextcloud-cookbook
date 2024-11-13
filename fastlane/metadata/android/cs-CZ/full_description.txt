@@ -10,11 +10,11 @@ Aktuální funkce:
 - Nastavení
 - Úprava receptu
 - Přidání receptu
+- Import receptu z URL
 
 Plánované funkce:
 - Použití offline
 - Jednotné přihlášení prostřednictvím aplikace Nextcloud
 - Přihlášení QR kódem
-- Import receptu z URL
 
 Pro použití této aplikace potřebujete veřejně přístupný Nextcloud server s aktuální aplikací recepty.

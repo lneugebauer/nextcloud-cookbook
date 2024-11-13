@@ -135,4 +135,5 @@
         <item quantity="many">Ингредиенты скопированы</item>
         <item quantity="other">Ингредиенты скопированы</item>
     </plurals>
+    <string name="common_reorder">Расстановка</string>
 </resources>

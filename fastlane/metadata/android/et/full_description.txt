@@ -1,0 +1,20 @@
+Vaata kõiki oma retsepte oma Nextcloudi serveris.
+
+Lähtekood on GitHubis lehel https://github.com/lneugebauer/nextcloud-cookbook/. Vigadest, kohendustest ja täiendustest palun anna teada GitHubis.
+
+Hetkel toimib:
+- Retseptide loend
+- Retseptide loend kategooriate kaupa
+- Retseptivaade
+- Retseptivaates nutiseadme lukustuse keelamine
+- Seadistused
+- Retsepti muutmine
+- Retsepti lisamine
+- Retsepti importimine võrguaadressilt
+
+Plaanitud:
+- Kasutus vallasrežiimis
+- Sisselogimine ühtse autentimisega Nextcloud Files rakendusest
+- Sisselogimine QR-koodiga
+
+Selle rakenduse kasutamiseks on vajalik avalik Nextcloudi server, kuhu on paigaldatud kokaraamatu rakenduse viimane versioon.

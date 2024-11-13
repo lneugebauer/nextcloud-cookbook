@@ -5,7 +5,7 @@
     <string name="common_close">Chiudi</string>
     <string name="common_back">Indietro</string>
     <string name="common_categories">Categorie</string>
-    <string name="common_edit">Edita</string>
+    <string name="common_edit">Modifica</string>
     <string name="common_home">Home</string>
     <string name="common_hours">Ore</string>
     <string name="error_eof">Errore nella fine del file</string>
@@ -65,7 +65,7 @@
     <string name="recipe_import_from_url">Importa ricetta da URL</string>
     <string name="recipe_ingredient_add">Aggiungi ingrediente</string>
     <string name="recipe_duration">%1$d min</string>
-    <string name="recipe_edit">Edita ricetta</string>
+    <string name="recipe_edit">Modifica ricetta</string>
     <string name="recipe_name">Nome</string>
     <string name="recipe_new">Nuova ricetta</string>
     <string name="recipe_tool_add">Aggiungi strumento</string>
@@ -103,18 +103,18 @@
     <plurals name="recipe_ingredients_copied">
         <item quantity="one">Ingrediente copiato</item>
         <item quantity="many">Ingredienti copiati</item>
-        <item quantity="other">%1$d ingredienti copiati</item>
+        <item quantity="other">ingredienti copiati</item>
     </plurals>
     <string name="recipe_ingredients_copy">Copia ingredienti negli appunti</string>
     <string name="recipe_instruction_delete">Rimuovi istruzioni</string>
     <string name="recipe_instructions">Istruzioni</string>
     <string name="recipe_instruction">Istruzione</string>
-    <string name="recipe_more_menu_edit">Edita</string>
+    <string name="recipe_more_menu_edit">Modifica</string>
     <string name="recipe_more_menu_share">Pagina originale</string>
     <string name="recipe_nutrition">Informazioni nutrizionali</string>
     <string name="recipe_nutrition_protein">Proteine</string>
     <string name="recipe_nutrition_saturated_fat">Grassi saturi</string>
-    <string name="recipe_nutrition_serving_size">Grandezza porzione</string>
+    <string name="recipe_nutrition_serving_size">Quantità porzione</string>
     <string name="recipe_nutrition_sodium">Sodio</string>
     <string name="recipe_nutrition_sugar">Zucchero</string>
     <string name="recipe_nutrition_trans_fat">Grassi trans-insaturi</string>
@@ -132,4 +132,5 @@
     <string name="common_password">Password</string>
     <string name="common_minutes">Minuti</string>
     <string name="common_more">Altro</string>
+    <string name="common_reorder">Riordina</string>
 </resources>

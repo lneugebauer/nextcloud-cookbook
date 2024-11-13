@@ -127,4 +127,10 @@
     <string name="recipe_total_time">Total</string>
     <string name="recipe_tool">Ustensile</string>
     <string name="settings_hosted_on_github">Ce projet est hébergé sur GitHub</string>
+    <string name="common_reorder">Réorganiser</string>
+    <plurals name="recipe_ingredients_copied">
+        <item quantity="one">Ingrédient copié</item>
+        <item quantity="many">Ingrédients copiés</item>
+        <item quantity="other"></item>
+    </plurals>
 </resources>
