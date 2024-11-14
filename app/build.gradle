@@ -90,9 +90,6 @@ android {
         }
     }
     namespace 'de.lukasneugebauer.nextcloudcookbook'
-    lint {
-        disable 'MissingTranslation'
-    }
     dependenciesInfo {
         includeInApk = false
     }

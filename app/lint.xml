@@ -11,4 +11,5 @@
         <ignore path="src/main/res/values-lt" />
         <ignore path="src/main/res/values-sk" />
     </issue>
+    <issue id="MissingTranslation" severity="ignore" />
 </lint>
