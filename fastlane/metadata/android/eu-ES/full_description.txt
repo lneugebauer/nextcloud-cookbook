@@ -1,0 +1,20 @@
+Ikusi zure Nextcloud instantzian gordetako errezeta guztiak.
+
+Iturri kodea GitHuben topa daiteke https://github.com/lneugebauer/nextcloud-cookbook/ helbidean. Helarazi akatsak, hobekuntza proposamenak eta ezaugarri eskaerak bertara.
+
+Gaur egun:
+- Errezeta guztiak zerrendatu
+- Errezeta guztiak zerrendatu kategorien arabera
+- Ikusi errezeta
+- Mantendu pantaila piztuta errezetan
+- Settings
+- Edit recipe
+- Add recipe
+- Import recipe via URL
+
+Planned:
+- Offline usage
+- Single sign-on through the Nextcloud Files app
+- Login via QR-code
+
+A publicly accessible Nextcloud server with the latest cookbook app is required to use this app.
