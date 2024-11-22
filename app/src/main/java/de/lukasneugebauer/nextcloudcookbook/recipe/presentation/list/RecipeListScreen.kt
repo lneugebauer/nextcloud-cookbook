@@ -18,8 +18,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.CloudDownload
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
@@ -72,6 +75,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.Nextcloud
 import de.lukasneugebauer.nextcloudcookbook.destinations.DownloadRecipeScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeCreateScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeDetailScreenDestination
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipeListScreenOrder
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipePreview
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.RecipeListScreenState
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.SearchAppBarState
@@ -126,6 +130,7 @@ fun RecipeListScreenWrapper(
                             },
                         onBackClick = { navigator.navigateUp() },
                         onImportClick = { navigator.navigate(DownloadRecipeScreenDestination) },
+                        onReorder = { viewModel.updateOrder(it) },
                         onSearchClick = { viewModel.toggleSearchAppBarVisibility() },
                     )
                 }
@@ -137,7 +142,10 @@ fun RecipeListScreenWrapper(
                     navigator.navigate(RecipeCreateScreenDestination)
                 },
             ) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = stringResource(id = R.string.common_add))
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = stringResource(id = R.string.common_add),
+                )
             }
         },
     ) { innerPadding ->
@@ -239,7 +247,15 @@ private fun RecipeListScreen(
                         },
                     )
                     if (index != recipePreviews.size - 1) {
-                        HorizontalDivider(modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_m)))
+                        HorizontalDivider(
+                            modifier =
+                                Modifier.padding(
+                                    horizontal =
+                                        dimensionResource(
+                                            id = R.dimen.padding_m,
+                                        ),
+                                ),
+                        )
                     } else {
                         Gap(size = dimensionResource(id = R.dimen.fab_offset))
                     }
@@ -254,8 +270,10 @@ private fun TopAppBar(
     categoryName: String?,
     onBackClick: () -> Unit,
     onImportClick: () -> Unit,
+    onReorder: (RecipeListScreenOrder) -> Unit,
     onSearchClick: () -> Unit,
 ) {
+    var expanded by remember { mutableStateOf(false) }
     val title = categoryName ?: stringResource(id = R.string.common_recipes)
 
     TopAppBar(
@@ -282,6 +300,59 @@ private fun TopAppBar(
                     Icons.Default.Search,
                     contentDescription = stringResource(id = R.string.common_share),
                 )
+            }
+            IconButton(onClick = { expanded = true }) {
+                Icon(
+                    Icons.Default.MoreVert,
+                    contentDescription = "Order",
+                )
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false },
+                ) {
+                    DropdownMenuItem(
+                        text = { Text(text = "Alpha ASC") },
+                        onClick = {
+                            onReorder(RecipeListScreenOrder.ALPHABETICAL_ASC)
+                            expanded = false
+                        },
+                    )
+                    DropdownMenuItem(
+                        text = { Text(text = "Alpha DESC") },
+                        onClick = {
+                            onReorder(RecipeListScreenOrder.ALPHABETICAL_DESC)
+                            expanded = false
+                        },
+                    )
+                    DropdownMenuItem(
+                        text = { Text(text = "Created ASC") },
+                        onClick = {
+                            onReorder(RecipeListScreenOrder.CREATED_ASC)
+                            expanded = false
+                        },
+                    )
+                    DropdownMenuItem(
+                        text = { Text(text = "Created DESC") },
+                        onClick = {
+                            onReorder(RecipeListScreenOrder.CREATED_DESC)
+                            expanded = false
+                        },
+                    )
+                    DropdownMenuItem(
+                        text = { Text(text = "Modified ASC") },
+                        onClick = {
+                            onReorder(RecipeListScreenOrder.MODIFIED_ASC)
+                            expanded = false
+                        },
+                    )
+                    DropdownMenuItem(
+                        text = { Text(text = "Modified DESC") },
+                        onClick = {
+                            onReorder(RecipeListScreenOrder.MODIFIED_DESC)
+                            expanded = false
+                        },
+                    )
+                }
             }
         },
     )
@@ -413,6 +484,7 @@ private fun TopAppBarPreview() {
             categoryName = null,
             onBackClick = {},
             onImportClick = {},
+            onReorder = {},
             onSearchClick = {},
         )
     }
@@ -426,6 +498,7 @@ private fun TopAppBarWithCategoryNamePreview() {
             categoryName = "Lorem ipsum",
             onBackClick = {},
             onImportClick = {},
+            onReorder = {},
             onSearchClick = {},
         )
     }

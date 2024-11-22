@@ -9,9 +9,12 @@ import com.dropbox.android.external.store4.StoreResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipeListScreenFlowData
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipeListScreenOrder
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.repository.RecipeRepository
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.RecipeListScreenState
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.SearchAppBarState
+import de.lukasneugebauer.nextcloudcookbook.recipe.util.RecipeConstants.DATE_TIME_FORMATTER
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.RecipeConstants.UNCATEGORIZED_RECIPE
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,6 +22,9 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
+import timber.log.Timber
+import java.time.ZonedDateTime
+import java.time.format.DateTimeParseException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -41,6 +47,9 @@ class RecipeListViewModel
         private val _selectedKeywordsState = MutableStateFlow(emptyList<String>())
         val selectedKeywordsState = _selectedKeywordsState.asStateFlow()
 
+        @Suppress("ktlint:standard:property-naming")
+        private val _orderState = MutableStateFlow(RecipeListScreenOrder.CREATED_ASC)
+
         private val categoryName: String? = savedStateHandle["categoryName"]
 
         init {
@@ -59,7 +68,7 @@ class RecipeListViewModel
         }
 
         fun updateSearchQuery(query: String) {
-            _searchQueryState.value = query
+            _searchQueryState.update { query }
         }
 
         fun toggleKeyword(keyword: String) {
@@ -76,6 +85,10 @@ class RecipeListViewModel
             }
         }
 
+        fun updateOrder(order: RecipeListScreenOrder) {
+            _orderState.update { order }
+        }
+
         private fun getRecipePreviews() {
             // Fetch all recipes to list uncategorized recipes.
             val recipePreviewsFlow =
@@ -89,10 +102,11 @@ class RecipeListViewModel
                 recipePreviewsFlow,
                 _searchQueryState,
                 _selectedKeywordsState,
-            ) { recipePreviewsResponse, query, selectedKeywords ->
-                Triple(recipePreviewsResponse, query, selectedKeywords)
+                _orderState,
+            ) { recipePreviewsResponse, query, selectedKeywords, order ->
+                RecipeListScreenFlowData(recipePreviewsResponse, query, selectedKeywords, order)
             }
-                .onEach { (recipePreviewsResponse, query, selectedKeywords) ->
+                .onEach { (recipePreviewsResponse, query, selectedKeywords, order) ->
                     when (recipePreviewsResponse) {
                         is StoreResponse.Loading -> _uiState.update { RecipeListScreenState.Initial }
                         is StoreResponse.Data ->
@@ -121,8 +135,54 @@ class RecipeListViewModel
                                     recipePreviewsResponse.value.map { it.toRecipePreview() }
                                         .flatMap { it.keywords }.toSortedSet()
 
+                                val sortedRecipePreviews =
+                                    when (order) {
+                                        RecipeListScreenOrder.ALPHABETICAL_ASC -> recipePreviews
+                                        RecipeListScreenOrder.ALPHABETICAL_DESC -> recipePreviews.asReversed()
+                                        RecipeListScreenOrder.CREATED_ASC ->
+                                            recipePreviews.sortedBy {
+                                                try {
+                                                    val parsed = ZonedDateTime.parse(it.createdAt, DATE_TIME_FORMATTER)
+                                                    parsed.toEpochSecond()
+                                                } catch (e: DateTimeParseException) {
+                                                    Timber.e(e)
+                                                    0L
+                                                }
+                                            }
+                                        RecipeListScreenOrder.CREATED_DESC ->
+                                            recipePreviews.sortedByDescending {
+                                                try {
+                                                    val parsed = ZonedDateTime.parse(it.createdAt, DATE_TIME_FORMATTER)
+                                                    parsed.toEpochSecond()
+                                                } catch (e: DateTimeParseException) {
+                                                    Timber.e(e)
+                                                    0L
+                                                }
+                                            }
+                                        RecipeListScreenOrder.MODIFIED_ASC ->
+                                            recipePreviews.sortedBy {
+                                                try {
+                                                    val parsed = ZonedDateTime.parse(it.modifiedAt, DATE_TIME_FORMATTER)
+                                                    parsed.toEpochSecond()
+                                                } catch (e: DateTimeParseException) {
+                                                    Timber.e(e)
+                                                    0L
+                                                }
+                                            }
+                                        RecipeListScreenOrder.MODIFIED_DESC ->
+                                            recipePreviews.sortedByDescending {
+                                                try {
+                                                    val parsed = ZonedDateTime.parse(it.modifiedAt, DATE_TIME_FORMATTER)
+                                                    parsed.toEpochSecond()
+                                                } catch (e: DateTimeParseException) {
+                                                    Timber.e(e)
+                                                    0L
+                                                }
+                                            }
+                                    }
+
                                 RecipeListScreenState.Loaded(
-                                    recipePreviews = recipePreviews,
+                                    recipePreviews = sortedRecipePreviews,
                                     keywords = keywords,
                                 )
                             }
