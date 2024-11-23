@@ -3,9 +3,11 @@
     <string name="app_name">Kochbuch</string>
     <string name="common_about">Über</string>
     <string name="common_add">Hinzufügen</string>
+    <string name="common_ascending">Aufsteigend</string>
     <string name="common_back">Zurück</string>
     <string name="common_categories">Kategorien</string>
     <string name="common_close">Schließen</string>
+    <string name="common_descending">Absteigend</string>
     <string name="common_download">Herunterladen</string>
     <string name="common_edit">Bearbeiten</string>
     <string name="common_home">Start</string>
@@ -55,8 +57,10 @@
     <string name="login">Anmelden</string>
     <string name="login_manual">Manuell anmelden</string>
     <string name="login_root_address">Nextcloud Adresse</string>
+    <string name="recipe_alphabetical">Alphabetisch</string>
     <string name="recipe_category">Kategorie</string>
     <string name="recipe_cook_time">Kochen</string>
+    <string name="recipe_created_at">Erstellungsdatum</string>
     <string name="recipe_description">Beschreibung</string>
     <string name="recipe_duration">%1$d Min.</string>
     <string name="recipe_edit">Rezept bearbeiten</string>
@@ -79,6 +83,7 @@
     <string name="recipe_instruction_delete">Zubereitungsschritt löschen</string>
     <string name="recipe_instructions">Zubereitung</string>
     <string name="recipe_instruction">Zubereitungsschritt</string>
+    <string name="recipe_modified_at">Bearbeitungsdatum</string>
     <string name="recipe_more_menu_delete">Löschen</string>
     <string name="recipe_more_menu_edit">Bearbeiten</string>
     <string name="recipe_more_menu_share">Quelle öffnen</string>

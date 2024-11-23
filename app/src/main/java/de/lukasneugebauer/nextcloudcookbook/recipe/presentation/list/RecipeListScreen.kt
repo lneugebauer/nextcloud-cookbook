@@ -1,5 +1,6 @@
 package de.lukasneugebauer.nextcloudcookbook.recipe.presentation.list
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,9 +17,11 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.CloudDownload
 import androidx.compose.material3.DropdownMenu
@@ -303,50 +306,50 @@ private fun TopAppBar(
             }
             IconButton(onClick = { expanded = true }) {
                 Icon(
-                    Icons.Default.MoreVert,
+                    Icons.AutoMirrored.Filled.Sort,
                     contentDescription = "Order",
                 )
                 DropdownMenu(
                     expanded = expanded,
                     onDismissRequest = { expanded = false },
                 ) {
-                    DropdownMenuItem(
-                        text = { Text(text = "Alpha ASC") },
+                    AscendingDropdownMenuItem(
+                        text = R.string.recipe_alphabetical,
                         onClick = {
                             onReorder(RecipeListScreenOrder.ALPHABETICAL_ASC)
                             expanded = false
                         },
                     )
-                    DropdownMenuItem(
-                        text = { Text(text = "Alpha DESC") },
+                    DescendingDropdownMenuItem(
+                        text = R.string.recipe_alphabetical,
                         onClick = {
                             onReorder(RecipeListScreenOrder.ALPHABETICAL_DESC)
                             expanded = false
                         },
                     )
-                    DropdownMenuItem(
-                        text = { Text(text = "Created ASC") },
+                    AscendingDropdownMenuItem(
+                        text = R.string.recipe_created_at,
                         onClick = {
                             onReorder(RecipeListScreenOrder.CREATED_ASC)
                             expanded = false
                         },
                     )
-                    DropdownMenuItem(
-                        text = { Text(text = "Created DESC") },
+                    DescendingDropdownMenuItem(
+                        text = R.string.recipe_created_at,
                         onClick = {
                             onReorder(RecipeListScreenOrder.CREATED_DESC)
                             expanded = false
                         },
                     )
-                    DropdownMenuItem(
-                        text = { Text(text = "Modified ASC") },
+                    AscendingDropdownMenuItem(
+                        text = R.string.recipe_modified_at,
                         onClick = {
                             onReorder(RecipeListScreenOrder.MODIFIED_ASC)
                             expanded = false
                         },
                     )
-                    DropdownMenuItem(
-                        text = { Text(text = "Modified DESC") },
+                    DescendingDropdownMenuItem(
+                        text = R.string.recipe_modified_at,
                         onClick = {
                             onReorder(RecipeListScreenOrder.MODIFIED_DESC)
                             expanded = false
@@ -354,6 +357,40 @@ private fun TopAppBar(
                     )
                 }
             }
+        },
+    )
+}
+
+@Composable
+private fun AscendingDropdownMenuItem(
+    @StringRes text: Int,
+    onClick: () -> Unit,
+) {
+    DropdownMenuItem(
+        text = { Text(text = stringResource(id = text)) },
+        onClick = onClick,
+        leadingIcon = {
+            Icon(
+                Icons.Default.ArrowDropUp,
+                contentDescription = stringResource(id = R.string.common_ascending),
+            )
+        },
+    )
+}
+
+@Composable
+private fun DescendingDropdownMenuItem(
+    @StringRes text: Int,
+    onClick: () -> Unit,
+) {
+    DropdownMenuItem(
+        text = { Text(text = stringResource(id = text)) },
+        onClick = onClick,
+        leadingIcon = {
+            Icon(
+                Icons.Default.ArrowDropDown,
+                contentDescription = stringResource(id = R.string.common_descending),
+            )
         },
     )
 }

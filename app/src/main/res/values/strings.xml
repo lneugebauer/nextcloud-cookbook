@@ -3,9 +3,11 @@
     <string name="app_name">Cookbook</string>
     <string name="common_about">About</string>
     <string name="common_add">Add</string>
+    <string name="common_ascending">Ascending</string>
     <string name="common_back">Back</string>
     <string name="common_categories">Categories</string>
     <string name="common_close">Close</string>
+    <string name="common_descending">Descending</string>
     <string name="common_download">Download</string>
     <string name="common_edit">Edit</string>
     <string name="common_home">Home</string>
@@ -56,8 +58,10 @@
     <string name="login_example_url" translatable="false">https://cloud.example.tld</string>
     <string name="login_manual">Manual sign in</string>
     <string name="login_root_address">Nextcloud root address</string>
+    <string name="recipe_alphabetical">Alphabetical</string>
     <string name="recipe_category">Category</string>
     <string name="recipe_cook_time">Cooking</string>
+    <string name="recipe_created_at">Creation date</string>
     <string name="recipe_description">Description</string>
     <string name="recipe_duration">%1$d min</string>
     <string name="recipe_edit">Edit recipe</string>
@@ -80,6 +84,7 @@
     <string name="recipe_instruction_delete">Delete instruction</string>
     <string name="recipe_instructions">Instructions</string>
     <string name="recipe_instruction">Instruction</string>
+    <string name="recipe_modified_at">Modification date</string>
     <string name="recipe_more_menu_delete">Delete</string>
     <string name="recipe_more_menu_edit">Edit</string>
     <string name="recipe_more_menu_share">Open source</string>
