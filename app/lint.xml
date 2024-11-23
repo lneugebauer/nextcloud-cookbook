@@ -3,6 +3,7 @@
     <issue id="ImpliedQuantity" severity="error">
         <ignore path="src/main/res/values-fr" />
         <ignore path="src/main/res/values-ru" />
+        <ignore path="src/main/res/values-uk" />
     </issue>
     <!-- FIXME: Disable the MissingQuantity check until https://github.com/WeblateOrg/weblate/issues/7520 gets fixed -->
     <issue id="MissingQuantity" severity="error">
