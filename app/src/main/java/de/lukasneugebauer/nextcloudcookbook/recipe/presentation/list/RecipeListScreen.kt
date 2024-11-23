@@ -1,5 +1,6 @@
 package de.lukasneugebauer.nextcloudcookbook.recipe.presentation.list
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,10 +17,15 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.CloudDownload
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
@@ -72,6 +78,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.Nextcloud
 import de.lukasneugebauer.nextcloudcookbook.destinations.DownloadRecipeScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeCreateScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeDetailScreenDestination
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipeListScreenOrder
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipePreview
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.RecipeListScreenState
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.SearchAppBarState
@@ -126,6 +133,7 @@ fun RecipeListScreenWrapper(
                             },
                         onBackClick = { navigator.navigateUp() },
                         onImportClick = { navigator.navigate(DownloadRecipeScreenDestination) },
+                        onReorder = { viewModel.updateOrder(it) },
                         onSearchClick = { viewModel.toggleSearchAppBarVisibility() },
                     )
                 }
@@ -137,7 +145,10 @@ fun RecipeListScreenWrapper(
                     navigator.navigate(RecipeCreateScreenDestination)
                 },
             ) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = stringResource(id = R.string.common_add))
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = stringResource(id = R.string.common_add),
+                )
             }
         },
     ) { innerPadding ->
@@ -239,7 +250,15 @@ private fun RecipeListScreen(
                         },
                     )
                     if (index != recipePreviews.size - 1) {
-                        HorizontalDivider(modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_m)))
+                        HorizontalDivider(
+                            modifier =
+                                Modifier.padding(
+                                    horizontal =
+                                        dimensionResource(
+                                            id = R.dimen.padding_m,
+                                        ),
+                                ),
+                        )
                     } else {
                         Gap(size = dimensionResource(id = R.dimen.fab_offset))
                     }
@@ -254,8 +273,10 @@ private fun TopAppBar(
     categoryName: String?,
     onBackClick: () -> Unit,
     onImportClick: () -> Unit,
+    onReorder: (RecipeListScreenOrder) -> Unit,
     onSearchClick: () -> Unit,
 ) {
+    var expanded by remember { mutableStateOf(false) }
     val title = categoryName ?: stringResource(id = R.string.common_recipes)
 
     TopAppBar(
@@ -283,6 +304,93 @@ private fun TopAppBar(
                     contentDescription = stringResource(id = R.string.common_share),
                 )
             }
+            IconButton(onClick = { expanded = true }) {
+                Icon(
+                    Icons.AutoMirrored.Filled.Sort,
+                    contentDescription = "Order",
+                )
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false },
+                ) {
+                    AscendingDropdownMenuItem(
+                        text = R.string.recipe_alphabetical,
+                        onClick = {
+                            onReorder(RecipeListScreenOrder.ALPHABETICAL_ASC)
+                            expanded = false
+                        },
+                    )
+                    DescendingDropdownMenuItem(
+                        text = R.string.recipe_alphabetical,
+                        onClick = {
+                            onReorder(RecipeListScreenOrder.ALPHABETICAL_DESC)
+                            expanded = false
+                        },
+                    )
+                    AscendingDropdownMenuItem(
+                        text = R.string.recipe_created_at,
+                        onClick = {
+                            onReorder(RecipeListScreenOrder.CREATED_ASC)
+                            expanded = false
+                        },
+                    )
+                    DescendingDropdownMenuItem(
+                        text = R.string.recipe_created_at,
+                        onClick = {
+                            onReorder(RecipeListScreenOrder.CREATED_DESC)
+                            expanded = false
+                        },
+                    )
+                    AscendingDropdownMenuItem(
+                        text = R.string.recipe_modified_at,
+                        onClick = {
+                            onReorder(RecipeListScreenOrder.MODIFIED_ASC)
+                            expanded = false
+                        },
+                    )
+                    DescendingDropdownMenuItem(
+                        text = R.string.recipe_modified_at,
+                        onClick = {
+                            onReorder(RecipeListScreenOrder.MODIFIED_DESC)
+                            expanded = false
+                        },
+                    )
+                }
+            }
+        },
+    )
+}
+
+@Composable
+private fun AscendingDropdownMenuItem(
+    @StringRes text: Int,
+    onClick: () -> Unit,
+) {
+    DropdownMenuItem(
+        text = { Text(text = stringResource(id = text)) },
+        onClick = onClick,
+        leadingIcon = {
+            Icon(
+                Icons.Default.ArrowDropUp,
+                contentDescription = stringResource(id = R.string.common_ascending),
+            )
+        },
+    )
+}
+
+@Composable
+private fun DescendingDropdownMenuItem(
+    @StringRes text: Int,
+    onClick: () -> Unit,
+) {
+    DropdownMenuItem(
+        text = { Text(text = stringResource(id = text)) },
+        onClick = onClick,
+        leadingIcon = {
+            Icon(
+                Icons.Default.ArrowDropDown,
+                contentDescription = stringResource(id = R.string.common_descending),
+            )
         },
     )
 }
@@ -413,6 +521,7 @@ private fun TopAppBarPreview() {
             categoryName = null,
             onBackClick = {},
             onImportClick = {},
+            onReorder = {},
             onSearchClick = {},
         )
     }
@@ -426,6 +535,7 @@ private fun TopAppBarWithCategoryNamePreview() {
             categoryName = "Lorem ipsum",
             onBackClick = {},
             onImportClick = {},
+            onReorder = {},
             onSearchClick = {},
         )
     }
