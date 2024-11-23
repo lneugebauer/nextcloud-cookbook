@@ -119,7 +119,7 @@
     <string name="settings_contribution">Contribution</string>
     <string name="settings_general">General</string>
     <string name="settings_hosted_on_github">This project is hosted on GitHub</string>
-    <string name="settings_issues" translatable="false">Issues</string>
+    <string name="settings_issues">Issues</string>
     <string name="settings_license">License</string>
     <string name="settings_logout">Log out</string>
     <string name="settings_mit_license">MIT License</string>

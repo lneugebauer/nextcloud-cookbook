@@ -118,6 +118,7 @@
     <string name="settings_contribution">Mitmachen</string>
     <string name="settings_general">Allgemein</string>
     <string name="settings_hosted_on_github">Dieses Projekt wird auf GitHub gehostet</string>
+    <string name="settings_issues">Probleme</string>
     <string name="settings_license">Lizenz</string>
     <string name="settings_logout">Abmelden</string>
     <string name="settings_mit_license">MIT Lizenz</string>
