@@ -1,2 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="common_about">Rólunk</string>
+    <string name="common_ascending">Növekvő</string>
+    <string name="common_back">Vissza</string>
+    <string name="common_categories">Kategóriák</string>
+    <string name="common_close">Bezár</string>
+    <string name="common_download">Letöltés</string>
+    <string name="common_edit">Szerkeszt</string>
+    <string name="common_home">Kezdőlap</string>
+    <string name="common_hours">Óra</string>
+    <string name="common_minutes">Perc</string>
+    <string name="common_more">Bővebben</string>
+    <string name="common_no">Nem</string>
+    <string name="common_password">Jelszó</string>
+    <string name="common_reorder">Átrendezés</string>
+    <string name="common_save">Mentés</string>
+    <string name="common_search">Keresés</string>
+    <string name="common_settings">Beállítások</string>
+    <string name="common_share">Megosztás</string>
+    <string name="common_username">Felhasználónév</string>
+    <string name="common_yes">Igen</string>
+    <string name="download_recipe">Recept letöltése</string>
+    <string name="error_authentication_failed">Nem sikerült a hitelesítés</string>
+    <string name="error_api_not_initialized">Az API nincs inicializálva</string>
+    <string name="error_empty_password">Kérjük, adjon meg egy jelszót</string>
+    <string name="error_empty_url">Kérjük, adjon meg egy URL-t</string>
+    <string name="error_empty_username">Kérjük, adjon meg egy felhasználónevet</string>
+    <string name="error_eof">Hiba a fájl végén</string>
+    <string name="error_http_400">400 Hibás kérés</string>
+    <string name="error_http_401">401 Nincs hitelesítve</string>
+    <string name="error_http_403">403 Hozzáférés megtagadva</string>
+    <string name="error_http_404">404 Nem található</string>
+    <string name="error_http_500">500 Belső szerverhiba</string>
+    <string name="error_http_503">503 Szolgáltatás nem elérhető</string>
+    <string name="error_http_unknown">Ismeretlen HTTP hiba</string>
+    <string name="app_name">Szakácskönyv</string>
+    <string name="common_add">Hozzáadás</string>
+    <string name="common_descending">Csökkenő</string>
+    <string name="common_recipes">Receptek</string>
+    <string name="dialog_crash_report_text">Hoppá, a Nextcloud szakácskönyv épp most omlott össze. Szeretne egy összeomlási jelentést küldeni a fejlesztőknek?</string>
+    <string name="download_recipe_url">Recept URL</string>
+    <string name="error_http_405">405 Metódus nem engedélyezett</string>
+</resources>
