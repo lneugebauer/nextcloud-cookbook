@@ -133,4 +133,10 @@
         <item quantity="other">Ingredientes copiados</item>
     </plurals>
     <string name="common_reorder">Reordenar</string>
+    <string name="common_ascending">Ascendente</string>
+    <string name="recipe_created_at">Fecha de creación</string>
+    <string name="recipe_modified_at">Fecha de modificación</string>
+    <string name="settings_issues">Problemas</string>
+    <string name="common_descending">Descendente</string>
+    <string name="recipe_alphabetical">Alfabético</string>
 </resources>

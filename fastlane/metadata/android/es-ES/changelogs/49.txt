@@ -1,0 +1,13 @@
+- Migrar a Material 3
+- Añadir traducción al euskera
+- Añadir traducción al estonio
+- Actualizar la traducción al checo
+- Actualizar la traducción al español
+- Actualizar la traducción de chino (simplificado)
+- Actualizar traducción de italiano
+- Actualizar traducción de gallego
+- Actualizar traducción holandés
+- Actualizar traducción de ruso
+- Actualización de la traducción al francés
+- Corregir problema de teclado oculto
+- Corregir problema de reordenación de datos de recetas
