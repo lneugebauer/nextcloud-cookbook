@@ -95,7 +95,7 @@
     <string name="settings_hosted_on_github">Dette prosjektet vertstjenes på GitHub</string>
     <string name="recipe_instruction">Instruks</string>
     <string name="recipe_cook_time">Koketid</string>
-    <string name="dialog_crash_report_text">Nextcloud-kokeboksprogrammet krasjet. Vil du sende en rapport til utviklerne\?</string>
+    <string name="dialog_crash_report_text">Nextcloud-kokeboksprogrammet krasjet. Vil du sende en rapport til utviklerne?</string>
     <string name="common_no">Nei</string>
     <string name="common_yes">Ja</string>
 </resources>

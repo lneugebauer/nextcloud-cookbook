@@ -1,0 +1,20 @@
+Ikusi zure Nextcloud instantzian gordetako errezeta guztiak.
+
+Iturri kodea GitHuben topa daiteke https://github.com/lneugebauer/nextcloud-cookbook/ helbidean. Helarazi akatsak, hobekuntza proposamenak eta ezaugarri eskaerak bertara.
+
+Gaur egungo ezaugarriak:
+- Errezeta guztiak zerrendatu
+- Errezeta guztiak zerrendatu kategorien arabera
+- Ikusi errezeta
+- Mantendu pantaila piztuta errezetan
+- Ezarpenak
+- Editatu errezeta
+- Gehitu errezeta
+- Inportatu errezeta URLtikL
+
+Planifikauttako ezaugarriak:
+- Offline erabilpena
+- Identifikazio bakarra Nextcloud fitxategiak aplikazioarekin (Single sign-on)
+- QR kode bidezko identifikazioa
+
+Errezeta-liburua instalatua duen Nextcloud instantzia publiko bat behar da aplikazio hau erabiltzeko.

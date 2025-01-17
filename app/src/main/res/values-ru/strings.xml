@@ -4,7 +4,7 @@
     <string name="error_http_400">400 Неправильный запрос</string>
     <string name="error_http_404">404 Не найдено</string>
     <string name="login_root_address">Корневой адрес Nextcloud</string>
-    <string name="recipe_edit">Редактировать рецепт</string>
+    <string name="recipe_edit">Править рецепт</string>
     <string name="settings_account">Учётная запись</string>
     <string name="common_settings">Настройки</string>
     <string name="common_recipes">Рецепты</string>
@@ -60,7 +60,7 @@
         <item quantity="other">Ингредиенты для %1$d порций</item>
     </plurals>
     <string name="recipe_image_url">Ссылка на изображение</string>
-    <string name="dialog_crash_report_text">Упс.. Похоже, Книга рецептов Nextcloud вылетела. Хотите отправить отчёт об этом вылете разработчикам\?</string>
+    <string name="dialog_crash_report_text">Упс.. Похоже, Книга рецептов Nextcloud вылетела. Хотите отправить отчёт об этом вылете разработчикам?</string>
     <string name="error_authentication_failed">Аутентификация не удалась</string>
     <string name="recipe_url">Ссылка</string>
     <string name="common_minutes">минут</string>
@@ -136,4 +136,10 @@
         <item quantity="other">Ингредиенты скопированы</item>
     </plurals>
     <string name="common_reorder">Расстановка</string>
+    <string name="common_ascending">По возрастанию</string>
+    <string name="common_descending">По убыванию</string>
+    <string name="recipe_modified_at">Дата изменения</string>
+    <string name="settings_issues">Вопросы</string>
+    <string name="recipe_created_at">Дата добавления</string>
+    <string name="recipe_alphabetical">По названию</string>
 </resources>

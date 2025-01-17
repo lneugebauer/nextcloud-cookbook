@@ -129,4 +129,11 @@
     <string name="download_recipe">Завантажити рецепт</string>
     <string name="download_recipe_url">URL-адреса рецепту</string>
     <string name="recipe_import_from_url">Імпорт рецепта з URL-адреси</string>
+    <string name="common_reorder">Повторне замовлення</string>
+    <plurals name="recipe_ingredients_copied">
+        <item quantity="one">Скопійований інгредієнт</item>
+        <item quantity="few">Скопійованих інгредієнта</item>
+        <item quantity="many">Скопійованих інгредієнтів</item>
+        <item quantity="other">Скопійованих інгредієнтів</item>
+    </plurals>
 </resources>
