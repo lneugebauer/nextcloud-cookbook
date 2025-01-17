@@ -5,7 +5,7 @@ plugins {
     id 'dagger.hilt.android.plugin'
     id 'kotlin-android'
     id 'kotlin-kapt'
-    id "org.jlleitschuh.gradle.ktlint" version "12.1.1"
+    id "org.jlleitschuh.gradle.ktlint" version "12.1.2"
 }
 
 def keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -15,7 +15,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    compileSdk 34
+    compileSdk 35
     if (keystoreProperties.containsKey('storeFile')) {
         signingConfigs {
             upload {
@@ -36,7 +36,7 @@ android {
     defaultConfig {
         applicationId "de.lukasneugebauer.nextcloudcookbook"
         minSdk 24
-        targetSdk 34
+        targetSdk 35
         versionCode 49
         versionName "0.23.0"
 
@@ -108,18 +108,18 @@ kotlin {
 
 dependencies {
 
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.3'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.4'
 
-    implementation 'androidx.core:core-ktx:1.13.1'
+    implementation 'androidx.core:core-ktx:1.15.0'
     implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7'
     implementation 'androidx.hilt:hilt-navigation-compose:1.2.0'
-    implementation 'androidx.activity:activity-compose:1.9.3'
+    implementation 'androidx.activity:activity-compose:1.10.0'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.8.7'
-    implementation 'androidx.datastore:datastore-preferences:1.1.1'
+    implementation 'androidx.datastore:datastore-preferences:1.1.2'
     implementation 'androidx.core:core-splashscreen:1.0.1'
 
-    implementation platform('androidx.compose:compose-bom:2024.11.00')
+    implementation platform('androidx.compose:compose-bom:2025.01.00')
     implementation 'androidx.compose.ui:ui'
     implementation 'androidx.compose.ui:ui-tooling-preview'
 
@@ -164,12 +164,12 @@ dependencies {
 
     implementation 'com.colintheshots:twain:0.3.2'
 
-    implementation 'sh.calvin.reorderable:reorderable:2.4.0'
+    implementation 'sh.calvin.reorderable:reorderable:2.4.3'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.2.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
-    androidTestImplementation 'androidx.compose.ui:ui-test-junit4:1.7.5'
+    androidTestImplementation 'androidx.compose.ui:ui-test-junit4:1.7.6'
 
     debugImplementation 'androidx.compose.ui:ui-tooling'
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.14'
