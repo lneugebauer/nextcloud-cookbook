@@ -136,4 +136,5 @@
     <string name="recipe_nutrition_unsaturated_fat">Umættet fedt</string>
     <string name="recipe_more_menu_delete">Slet</string>
     <string name="settings_where_to_report_issues">Du kan rapportere fejl, forbedringsforslag og funktionsanmodninger på GitHub-problemsporeren</string>
+    <string name="login_example_url" translatable="false"></string>
 </resources>
