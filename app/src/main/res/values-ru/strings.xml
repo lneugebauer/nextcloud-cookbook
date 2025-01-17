@@ -142,4 +142,5 @@
     <string name="settings_issues">Вопросы</string>
     <string name="recipe_created_at">Дата добавления</string>
     <string name="recipe_alphabetical">По названию</string>
+    <string name="login_example_url" translatable="false"></string>
 </resources>
