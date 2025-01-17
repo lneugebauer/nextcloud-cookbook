@@ -82,7 +82,7 @@
     <string name="recipe_tools">Narzędzia</string>
     <string name="recipe_tool">Narzędzie</string>
     <string name="recipe_total_time">Łącznie</string>
-    <string name="recipe_uncategorised">Przepisy bez  kategorii</string>
+    <string name="recipe_uncategorised">Przepisy bez kategorii</string>
     <string name="recipe_url">URL</string>
     <string name="recipe_yield">Porcja</string>
     <string name="settings_account">Konto</string>
@@ -113,4 +113,34 @@
     <string name="recipe_nutrition_sodium">Sód</string>
     <string name="recipe_nutrition_sugar">Cukier</string>
     <string name="recipe_nutrition_trans_fat">Tłuszcze trans</string>
+    <string name="settings_translate"></string>
+    <string name="common_reorder"></string>
+    <string name="login_example_url" translatable="false"></string>
+    <plurals name="recipe_servings">
+        <item quantity="one"></item>
+        <item quantity="few"></item>
+        <item quantity="many"></item>
+        <item quantity="other"></item>
+    </plurals>
+    <string name="recipe_servings_decrease"></string>
+    <string name="common_descending"></string>
+    <string name="common_ascending"></string>
+    <string name="download_recipe_url"></string>
+    <string name="download_recipe"></string>
+    <string name="recipe_alphabetical"></string>
+    <string name="recipe_created_at"></string>
+    <string name="recipe_import_from_url"></string>
+    <string name="recipe_modified_at"></string>
+    <string name="recipe_servings_reset"></string>
+    <string name="recipe_servings_increase"></string>
+    <string name="settings_issues"></string>
+    <string name="common_add"></string>
+    <string name="recipe_ingredients_copy"></string>
+    <plurals name="recipe_ingredients_copied">
+        <item quantity="one"></item>
+        <item quantity="few"></item>
+        <item quantity="many"></item>
+        <item quantity="other"></item>
+    </plurals>
+    <string name="common_download"></string>
 </resources>
