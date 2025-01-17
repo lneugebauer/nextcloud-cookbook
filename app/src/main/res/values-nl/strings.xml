@@ -135,4 +135,6 @@
     <string name="recipe_alphabetical">Alfabetisch</string>
     <string name="recipe_created_at">Aanmaakdatum</string>
     <string name="recipe_modified_at">Wijzigingsdatum</string>
+    <string name="login_example_url" translatable="false"></string>
+    <string name="settings_issues"></string>
 </resources>
