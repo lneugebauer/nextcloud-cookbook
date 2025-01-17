@@ -139,4 +139,5 @@
     <string name="recipe_created_at">Date de création</string>
     <string name="recipe_modified_at">Date de modification</string>
     <string name="settings_issues">Problèmes</string>
+    <string name="login_example_url" translatable="false"></string>
 </resources>
