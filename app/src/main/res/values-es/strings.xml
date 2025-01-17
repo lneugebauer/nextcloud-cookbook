@@ -139,5 +139,4 @@
     <string name="settings_issues">Problemas</string>
     <string name="common_descending">Descendente</string>
     <string name="recipe_alphabetical">Alfabético</string>
-    <string name="login_example_url" translatable="false"></string>
 </resources>

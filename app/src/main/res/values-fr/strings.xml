@@ -131,7 +131,7 @@
     <plurals name="recipe_ingredients_copied">
         <item quantity="one">Ingrédient copié</item>
         <item quantity="many">Ingrédients copiés</item>
-        <item quantity="other"></item>
+        <item quantity="other"/>
     </plurals>
     <string name="common_ascending">Ascendant</string>
     <string name="common_descending">Descendant</string>
@@ -139,5 +139,4 @@
     <string name="recipe_created_at">Date de création</string>
     <string name="recipe_modified_at">Date de modification</string>
     <string name="settings_issues">Problèmes</string>
-    <string name="login_example_url" translatable="false"></string>
 </resources>

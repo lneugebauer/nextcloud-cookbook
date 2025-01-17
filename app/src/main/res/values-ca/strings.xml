@@ -138,6 +138,4 @@
     <string name="error_http_503">503 Servei no disponible</string>
     <string name="error_ssl_handshake">Error de certificat</string>
     <string name="home_recommendation">Recomanació</string>
-    <string name="dialog_crash_report_text"></string>
-    <string name="login_example_url" translatable="false"></string>
 </resources>

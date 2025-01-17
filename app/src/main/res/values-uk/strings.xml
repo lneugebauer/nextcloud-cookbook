@@ -136,11 +136,4 @@
         <item quantity="many">Скопійованих інгредієнтів</item>
         <item quantity="other">Скопійованих інгредієнтів</item>
     </plurals>
-    <string name="login_example_url" translatable="false"></string>
-    <string name="settings_issues"></string>
-    <string name="common_ascending"></string>
-    <string name="common_descending"></string>
-    <string name="recipe_alphabetical"></string>
-    <string name="recipe_modified_at"></string>
-    <string name="recipe_created_at"></string>
 </resources>

@@ -98,43 +98,4 @@
     <string name="dialog_crash_report_text">Nextcloud-kokeboksprogrammet krasjet. Vil du sende en rapport til utviklerne?</string>
     <string name="common_no">Nei</string>
     <string name="common_yes">Ja</string>
-    <string name="settings_translate"></string>
-    <string name="common_reorder"></string>
-    <string name="recipe_nutrition_saturated_fat"></string>
-    <string name="recipe_nutrition_sugar"></string>
-    <string name="recipe_servings_decrease"></string>
-    <string name="recipe_servings_increase"></string>
-    <string name="common_ascending"></string>
-    <string name="login_example_url" translatable="false"></string>
-    <string name="recipe_alphabetical"></string>
-    <string name="recipe_import_from_url"></string>
-    <plurals name="recipe_ingredients_copied">
-        <item quantity="one"></item>
-        <item quantity="other"></item>
-    </plurals>
-    <string name="recipe_modified_at"></string>
-    <string name="recipe_nutrition_fiber"></string>
-    <string name="recipe_nutrition_cholesterol"></string>
-    <string name="recipe_nutrition_calories"></string>
-    <string name="recipe_nutrition_protein"></string>
-    <string name="settings_issues"></string>
-    <string name="common_add"></string>
-    <string name="download_recipe"></string>
-    <string name="download_recipe_url"></string>
-    <string name="recipe_ingredients_copy"></string>
-    <string name="recipe_nutrition_unsaturated_fat"></string>
-    <string name="recipe_servings_reset"></string>
-    <plurals name="recipe_servings">
-        <item quantity="one"></item>
-        <item quantity="other"></item>
-    </plurals>
-    <string name="recipe_created_at"></string>
-    <string name="recipe_nutrition_serving_size"></string>
-    <string name="common_descending"></string>
-    <string name="common_download"></string>
-    <string name="recipe_nutrition"></string>
-    <string name="recipe_nutrition_trans_fat"></string>
-    <string name="recipe_nutrition_sodium"></string>
-    <string name="recipe_nutrition_fat_total"></string>
-    <string name="recipe_nutrition_carbohydrate"></string>
 </resources>

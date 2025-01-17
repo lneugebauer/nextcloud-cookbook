@@ -129,12 +129,4 @@
         <item quantity="one">Malzeme kopyalandı</item>
         <item quantity="other">Malzemeler kopyalandı</item>
     </plurals>
-    <string name="common_descending"></string>
-    <string name="common_ascending"></string>
-    <string name="common_reorder"></string>
-    <string name="recipe_created_at"></string>
-    <string name="login_example_url" translatable="false"></string>
-    <string name="settings_issues"></string>
-    <string name="recipe_modified_at"></string>
-    <string name="recipe_alphabetical"></string>
 </resources>

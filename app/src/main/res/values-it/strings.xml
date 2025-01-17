@@ -139,5 +139,4 @@
     <string name="common_ascending">Crescente</string>
     <string name="common_descending">Decrescente</string>
     <string name="settings_issues">Segnalazioni</string>
-    <string name="login_example_url" translatable="false"></string>
 </resources>
