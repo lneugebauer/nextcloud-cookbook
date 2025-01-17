@@ -1,0 +1,5 @@
+- Add option to reorder recipe list
+- Add Hungarian translations
+- Add Catalan translations
+- Add Danish translations
+- Update translations

@@ -1,0 +1,5 @@
+- Option zum Sortieren der Rezeptliste hinzugefügt
+- Ungarische Übersetzung hinzugefügt
+- Katalanische Übersetzung hinzugefügt
+- Dänische Übersetzung hinzugefügt
+- Übersetzungen aktualisiert
