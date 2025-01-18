@@ -136,7 +136,7 @@
     <string name="settings_issues">Chyby a nedostatky</string>
     <string name="common_descending">Sestupně</string>
     <string name="common_ascending">Vzestupně</string>
-    <string name="recipe_created_at">Podle času vytvoření</string>
-    <string name="recipe_modified_at">Podle času modifikace</string>
-    <string name="recipe_alphabetical">Abecedně</string>
+    <string name="recipe_created_at">Datum a čas vytvoření</string>
+    <string name="recipe_modified_at">Datum a čas modifikace</string>
+    <string name="recipe_alphabetical">Název</string>
 </resources>
