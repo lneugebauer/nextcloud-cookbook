@@ -132,7 +132,7 @@
     <string name="settings_where_to_report_issues">Akatsak, hobetze-proposamenak eta ezaugarri eskaerak egin ditzakezu GitHub-en auzien jarraitzailean</string>
     <string name="settings_issues">Auziak</string>
     <string name="common_ascending">Gorantz</string>
-    <string name="recipe_alphabetical">Alfabetikoki</string>
+    <string name="recipe_alphabetical">Izena</string>
     <string name="recipe_modified_at">Aldatze data</string>
     <string name="common_descending">Beherantz</string>
     <string name="recipe_created_at">Sortze data</string>
