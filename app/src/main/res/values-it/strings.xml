@@ -134,7 +134,7 @@
     <string name="common_more">Altro</string>
     <string name="common_reorder">Riordina</string>
     <string name="recipe_modified_at">Data modifica</string>
-    <string name="recipe_alphabetical">Alfabetico</string>
+    <string name="recipe_alphabetical">Nome</string>
     <string name="recipe_created_at">Data creazione</string>
     <string name="common_ascending">Crescente</string>
     <string name="common_descending">Decrescente</string>
