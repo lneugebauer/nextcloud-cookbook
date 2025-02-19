@@ -115,4 +115,10 @@ platform :android do
     bundle
     playstore
   end
+
+  desc "Generate screenshots"
+  lane :screenshots do
+    gradle(task: "assembleDebug assembleAndroidTest")
+    screengrab
+  end
 end

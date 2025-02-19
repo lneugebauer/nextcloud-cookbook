@@ -19,6 +19,9 @@
       "app:ktlint:format": [
         "bundler exec fastlane ktlintFormat"
       ],
+      "app:screenshots": [
+        "bundler exec fastlane screenshots"
+      ],
       "app:deploy": [
         "bundler exec fastlane deploy"
       ],
