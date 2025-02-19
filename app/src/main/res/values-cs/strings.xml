@@ -133,4 +133,10 @@
         <item quantity="few">Zkopírované ingredience</item>
         <item quantity="other">Zkopírovaná ingredience</item>
     </plurals>
+    <string name="settings_issues">Chyby a nedostatky</string>
+    <string name="common_descending">Sestupně</string>
+    <string name="common_ascending">Vzestupně</string>
+    <string name="recipe_created_at">Datum a čas vytvoření</string>
+    <string name="recipe_modified_at">Datum a čas modifikace</string>
+    <string name="recipe_alphabetical">Název</string>
 </resources>

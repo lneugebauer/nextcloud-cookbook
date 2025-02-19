@@ -130,7 +130,7 @@
         <item quantity="other">Ingredientes copiados</item>
     </plurals>
     <string name="common_reorder">Reordenar</string>
-    <string name="recipe_alphabetical">Alfabética</string>
+    <string name="recipe_alphabetical">Nome</string>
     <string name="settings_issues">Incidencias</string>
     <string name="common_ascending">Ascendente</string>
     <string name="common_descending">Descendente</string>
