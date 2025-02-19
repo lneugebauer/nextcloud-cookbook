@@ -1,9 +1,9 @@
 {
   "$schema": "https://raw.githubusercontent.com/jetpack-io/devbox/0.10.1/.schema/devbox.schema.json",
   "packages": [
-    "ruby@latest",
     "jdk@17",
-    "nodejs@latest"
+    "nodejs@22",
+    "ruby@3"
   ],
   "shell": {
     "scripts": {
