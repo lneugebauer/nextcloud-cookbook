@@ -3,7 +3,7 @@
   "packages": [
     "jdk@17",
     "nodejs@22",
-    "ruby@3"
+    "ruby@3.3"
   ],
   "shell": {
     "scripts": {
@@ -18,6 +18,9 @@
       ],
       "app:ktlint:format": [
         "bundler exec fastlane ktlintFormat"
+      ],
+      "app:screenshots": [
+        "bundler exec fastlane screenshots"
       ],
       "app:deploy": [
         "bundler exec fastlane deploy"
