@@ -3,7 +3,7 @@
   "packages": [
     "jdk@17",
     "nodejs@22",
-    "ruby@3"
+    "ruby@3.3"
   ],
   "shell": {
     "scripts": {
