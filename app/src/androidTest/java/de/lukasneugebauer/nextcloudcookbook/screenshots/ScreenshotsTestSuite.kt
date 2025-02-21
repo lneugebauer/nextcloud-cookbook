@@ -1,4 +1,4 @@
-package de.lukasneugebauer.nextcloudcookbook
+package de.lukasneugebauer.nextcloudcookbook.screenshots
 
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
@@ -9,7 +9,6 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 import de.lukasneugebauer.nextcloudcookbook.auth.presentation.login.LoginScreen
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
-import de.lukasneugebauer.nextcloudcookbook.recipe.presentation.home.HomeScreen
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -22,8 +21,7 @@ import tools.fastlane.screengrab.cleanstatusbar.IconVisibility
 import tools.fastlane.screengrab.cleanstatusbar.MobileDataType
 
 @RunWith(AndroidJUnit4::class)
-class ScreenshotsMakingSuite {
-
+class ScreenshotsTestSuite {
     private val uiDevice
         get() = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
 
@@ -58,17 +56,17 @@ class ScreenshotsMakingSuite {
                 onClearError = {},
                 onLoginClick = {},
                 onShowManualLoginClick = {},
-                onManualLoginClick = { _, _, _ -> }
+                onManualLoginClick = { _, _, _ -> },
             )
         }
     }
 
     private fun makeScreenshotOf(
         screenshotName: String,
-        content: @Composable () -> Unit
+        content: @Composable () -> Unit,
     ) {
         composeTestRule.activityRule.scenario.onActivity(
-            ComponentActivity::enableEdgeToEdge
+            ComponentActivity::enableEdgeToEdge,
         )
 
         composeTestRule.setContent {
