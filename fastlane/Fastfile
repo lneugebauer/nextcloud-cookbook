@@ -118,7 +118,7 @@ platform :android do
 
   desc "Generate screenshots"
   lane :screenshots do
-    gradle(task: "assembleDebug assembleAndroidTest")
+    gradle(task: "clean assembleDebug assembleAndroidTest")
     screengrab
   end
 end
