@@ -132,7 +132,7 @@
     <string name="recipe_total_time">Kokku</string>
     <string name="common_ascending">Kasvavalt</string>
     <string name="common_descending">Kahanevalt</string>
-    <string name="recipe_alphabetical">Tähestikuliselt</string>
+    <string name="recipe_alphabetical">Nime alusel</string>
     <string name="recipe_created_at">Loomise kuupäev</string>
     <string name="recipe_modified_at">Muutmise kuupäev</string>
     <string name="settings_issues">Täiendused ja vead</string>
