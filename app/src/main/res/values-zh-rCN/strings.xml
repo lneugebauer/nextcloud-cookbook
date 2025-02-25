@@ -5,10 +5,10 @@
     <string name="common_recipes">食谱</string>
     <string name="common_save">保存</string>
     <string name="common_settings">设置</string>
-    <string name="download_recipe_url">食譜 URL</string>
-    <string name="error_authentication_failed">驗證失敗</string>
+    <string name="download_recipe_url">食谱 URL</string>
+    <string name="error_authentication_failed">身份验证失败</string>
     <string name="error_api_not_initialized">API 未初始化</string>
-    <string name="error_empty_password">請輸入密碼</string>
+    <string name="error_empty_password">请输入密码</string>
     <string name="error_empty_username">请输入用户名</string>
     <string name="error_eof">文件结尾错误</string>
     <string name="error_http_403">403 已禁止</string>
