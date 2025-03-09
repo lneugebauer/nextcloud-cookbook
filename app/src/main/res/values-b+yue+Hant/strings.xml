@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="common_password">密碼</string>
+    <string name="common_settings">設置</string>
+    <string name="common_about">關於</string>
+    <string name="common_categories">分類</string>
+    <string name="common_close">關閉</string>
+    <string name="common_download">下載</string>
+    <string name="common_edit">編輯</string>
+    <string name="common_home">主頁</string>
+    <string name="common_more">更多</string>
+    <string name="app_name">食譜</string>
+    <string name="common_add">添加</string>
+    <string name="common_back">返回</string>
+    <string name="common_hours">小時</string>
+    <string name="common_minutes">分鐘</string>
+    <string name="common_no">不</string>
+    <string name="common_recipes">食譜</string>
+    <string name="common_save">保存</string>
+    <string name="common_share">分享</string>
+    <string name="common_username">用户名</string>
+    <string name="common_yes">是</string>
+</resources>
