@@ -86,7 +86,7 @@
     <string name="recipe_cook_time">சமையல்</string>
     <string name="recipe_created_at">உருவாக்கும் தேதி</string>
     <string name="recipe_description">விவரம்</string>
-    <string name="recipe_duration">%$ 1 டி மணித்துளி</string>
+    <string name="recipe_duration">%1$d டி மணித்துளி</string>
     <string name="recipe_edit">செய்முறையைத் திருத்து</string>
     <string name="recipe_image_url">பட முகவரி</string>
     <string name="recipe_import_from_url">முகவரி இலிருந்து செய்முறையை இறக்குமதி செய்யுங்கள்</string>
