@@ -3,24 +3,24 @@
   "packages": [
     "jdk@17",
     "nodejs@22",
-    "ruby@3"
+    "ruby@3.3"
   ],
   "shell": {
     "scripts": {
       "app:init": [
-        "bundler install"
+        "bundle install"
       ],
       "app:lint": [
-        "bundler exec fastlane lint"
+        "bundle exec fastlane lint"
       ],
       "app:ktlint": [
-        "bundler exec fastlane ktlint"
+        "bundle exec fastlane ktlint"
       ],
       "app:ktlint:format": [
-        "bundler exec fastlane ktlintFormat"
+        "bundle exec fastlane ktlintFormat"
       ],
       "app:deploy": [
-        "bundler exec fastlane deploy"
+        "bundle exec fastlane deploy"
       ],
       "docs:init": [
         "npm install"
