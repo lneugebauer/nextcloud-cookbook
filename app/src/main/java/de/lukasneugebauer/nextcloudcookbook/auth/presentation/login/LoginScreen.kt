@@ -152,7 +152,7 @@ fun LoginScreen(
 }
 
 @Composable
-private fun LoginScreen(
+fun LoginScreen(
     showManualLogin: Boolean,
     usernameError: UiText?,
     passwordError: UiText?,
