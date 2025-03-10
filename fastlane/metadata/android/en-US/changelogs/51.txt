@@ -1,0 +1,4 @@
+- Fix UI issues
+- Add Tamil translations
+- Add Cantonese translations
+- Update translations

@@ -1,0 +1,4 @@
+- UI-Probleme behoben
+- Tamilische Übersetzungen hinzugefügt
+- Kantonesische Übersetzungen hinzugefügt
+- Übersetzungen aktualisiert
