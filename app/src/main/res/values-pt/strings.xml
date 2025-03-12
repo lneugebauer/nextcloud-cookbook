@@ -1,2 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="common_share">Partilhar</string>
+    <string name="common_ascending">Ascendente</string>
+    <string name="common_username">Utilizador</string>
+    <string name="common_recipes">Receitas</string>
+    <string name="common_add">Adicionar</string>
+    <string name="common_back">Retroceder</string>
+    <string name="common_categories">Categorias</string>
+    <string name="common_close">Fechar</string>
+    <string name="common_descending">Descendente</string>
+    <string name="common_download">Descarregar</string>
+    <string name="common_edit">Editar</string>
+    <string name="common_hours">Horas</string>
+    <string name="common_minutes">Minutos</string>
+    <string name="common_more">Mais</string>
+    <string name="common_no">Não</string>
+    <string name="common_password">Palavra-passe</string>
+    <string name="common_reorder">Reorganizar</string>
+    <string name="common_yes">Sim</string>
+    <string name="common_about">Sobre</string>
+    <string name="common_save">Guardar</string>
+    <string name="common_search">Procurar</string>
+    <string name="common_settings">Definições</string>
+</resources>
