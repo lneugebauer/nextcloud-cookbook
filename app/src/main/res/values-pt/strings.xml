@@ -72,20 +72,20 @@
     <plurals name="recipe_ingredients_servings">
         <item quantity="one">Ingredientes para %1$d porção</item>
         <item quantity="many">Ingredientes para %1$d porções</item>
-        <item quantity="other">n != 1</item>
+        <item quantity="other">Ingredientes para %1$d porções</item>
     </plurals>
     <string name="recipe_nutrition_calories">Energia</string>
     <string name="recipe_nutrition_fiber">Fibra</string>
     <string name="recipe_nutrition_protein">Proteína</string>
-    <string name="recipe_nutrition_saturated_fat">Gordura saturada</string>
-    <string name="recipe_nutrition_fat_total">Gordura total</string>
+    <string name="recipe_nutrition_saturated_fat">Lípidos saturados</string>
+    <string name="recipe_nutrition_fat_total">Lípidos</string>
     <string name="recipe_nutrition_sodium">Sódio</string>
     <string name="recipe_nutrition_sugar">Açúcar</string>
     <string name="recipe_nutrition_serving_size">Tamanho da porção</string>
     <string name="error_http_503">503 Serviço Indisponível</string>
     <string name="recipe_more_menu_edit">Editar</string>
     <string name="error_http_401">404 Não Autorizado</string>
-    <string name="recipe_nutrition_unsaturated_fat">Gordura insaturada</string>
+    <string name="recipe_nutrition_unsaturated_fat">Lípidos insaturados</string>
     <string name="recipe_modified_at">Data de modificação</string>
     <string name="recipe_instruction">Instrução</string>
     <string name="recipe_prep_time">Preparação</string>
@@ -105,7 +105,7 @@
     <string name="error_http_unknown">Erro de HTTP desconhecido</string>
     <string name="recipe_instructions">Instruções</string>
     <string name="settings_hosted_on_github">Este projeto está hospedado no GitHub</string>
-    <string name="recipe_nutrition_trans_fat">Gordura trans</string>
+    <string name="recipe_nutrition_trans_fat">Lípidos trans</string>
     <string name="recipe_nutrition_cholesterol">Colesterol</string>
     <string name="recipe_source">Fonte</string>
     <string name="recipe_yield">Rendimento</string>
@@ -115,12 +115,12 @@
     <string name="settings_source_code">Adquirir código fonte</string>
     <string name="recipe_servings_reset">Redefinir porções</string>
     <string name="settings_stay_awake_on_recipe_screen">Manter ecrã ligado na janela da receita</string>
-    <string name="recipe_tool_add">Adicionar ferramenta</string>
+    <string name="recipe_tool_add">Adicionar utensílio</string>
     <string name="settings_oss_licenses">Bibliotecas de código aberto</string>
-    <string name="recipe_tool_delete">Apagar ferramenta</string>
-    <string name="recipe_tools">Ferramentas</string>
+    <string name="recipe_tool_delete">Apagar utensílio</string>
+    <string name="recipe_tools">Utensílios</string>
     <string name="settings_version_number">versão %1$s (%2$d)</string>
-    <string name="recipe_tool">Ferramenta</string>
+    <string name="recipe_tool">Utensílio</string>
     <string name="recipe_total_time">Total</string>
     <string name="settings_where_to_report_issues">Podes reportar erros, propor melhorias e fazer pedidos de funcionalidades no rastreador de problemas do Github</string>
     <string name="recipe_uncategorised">Receitas sem categoria</string>
@@ -137,6 +137,6 @@
     <plurals name="recipe_servings">
         <item quantity="one">%1$d Porção</item>
         <item quantity="many">%1$d Porções</item>
-        <item quantity="other">n != 1</item>
+        <item quantity="other">%1$d Porções</item>
     </plurals>
 </resources>
