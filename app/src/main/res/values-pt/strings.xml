@@ -77,15 +77,15 @@
     <string name="recipe_nutrition_calories">Energia</string>
     <string name="recipe_nutrition_fiber">Fibra</string>
     <string name="recipe_nutrition_protein">Proteína</string>
-    <string name="recipe_nutrition_saturated_fat">Lípidos saturados</string>
-    <string name="recipe_nutrition_fat_total">Lípidos</string>
+    <string name="recipe_nutrition_saturated_fat">Gordura Saturada</string>
+    <string name="recipe_nutrition_fat_total">Total de Gorduras</string>
     <string name="recipe_nutrition_sodium">Sódio</string>
     <string name="recipe_nutrition_sugar">Açúcar</string>
     <string name="recipe_nutrition_serving_size">Tamanho da porção</string>
     <string name="error_http_503">503 Serviço Indisponível</string>
     <string name="recipe_more_menu_edit">Editar</string>
     <string name="error_http_401">404 Não Autorizado</string>
-    <string name="recipe_nutrition_unsaturated_fat">Lípidos insaturados</string>
+    <string name="recipe_nutrition_unsaturated_fat">Gordura Insaturada</string>
     <string name="recipe_modified_at">Data de modificação</string>
     <string name="recipe_instruction">Instrução</string>
     <string name="recipe_prep_time">Preparação</string>
@@ -105,7 +105,7 @@
     <string name="error_http_unknown">Erro de HTTP desconhecido</string>
     <string name="recipe_instructions">Instruções</string>
     <string name="settings_hosted_on_github">Este projeto está hospedado no GitHub</string>
-    <string name="recipe_nutrition_trans_fat">Lípidos trans</string>
+    <string name="recipe_nutrition_trans_fat">Gordura Trans</string>
     <string name="recipe_nutrition_cholesterol">Colesterol</string>
     <string name="recipe_source">Fonte</string>
     <string name="recipe_yield">Rendimento</string>
