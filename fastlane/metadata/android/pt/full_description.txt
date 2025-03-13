@@ -1,0 +1,20 @@
+Vê todas as tuas receitas guardadas na tua instância do Nextcloud.
+
+O código-fonte está no GitHub em https://github.com/lneugebauer/nextcloud-cookbook/. É lá que deves reportar erros, sugerir melhorias e pedir novas funcionalidades.
+
+Funcionalidades atuais:
+- Listar todas as receitas
+- Ver receitas por categoria
+- Ver uma receita
+- Manter o ecrã ligado enquanto vês uma receita
+- Ajustar definições
+- Editar receitas
+- Adicionar novas receitas
+- Importar receitas através de um URL
+
+Planeadas:
+- Uso offline
+- Autenticação única com a app Nextcloud Ficheiros
+- Login através de código QR
+
+Para usares esta app, precisas de um servidor Nextcloud publicamente acessível com a versão mais recente da app Livro de Receitas (Cookbook).
