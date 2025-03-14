@@ -9,13 +9,12 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 import de.lukasneugebauer.nextcloudcookbook.auth.presentation.login.LoginScreen
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
-import org.junit.After
-import org.junit.Before
+import org.junit.AfterClass
+import org.junit.BeforeClass
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import tools.fastlane.screengrab.Screengrab
-import tools.fastlane.screengrab.cleanstatusbar.BluetoothState
 import tools.fastlane.screengrab.cleanstatusbar.CleanStatusBar
 import tools.fastlane.screengrab.cleanstatusbar.IconVisibility
 import tools.fastlane.screengrab.cleanstatusbar.MobileDataType
@@ -27,23 +26,6 @@ class ScreenshotsTestSuite {
 
     @get:Rule
     val composeTestRule = createAndroidComposeRule<ComponentActivity>()
-
-    @Before
-    fun setUp() {
-        CleanStatusBar()
-            .setBluetoothState(BluetoothState.DISCONNECTED)
-            .setMobileNetworkDataType(MobileDataType.LTE)
-            .setWifiVisibility(IconVisibility.HIDE)
-            .setShowNotifications(false)
-            .setClock("0900")
-            .setBatteryLevel(100)
-            .enable()
-    }
-
-    @After
-    fun tearDown() {
-        CleanStatusBar.disable()
-    }
 
     @Test
     fun loginScreen() {
@@ -76,5 +58,24 @@ class ScreenshotsTestSuite {
         uiDevice.waitForIdle()
 
         Screengrab.screenshot(screenshotName)
+    }
+
+    companion object {
+        @JvmStatic
+        @BeforeClass
+        fun beforeAll() {
+            CleanStatusBar()
+                .setMobileNetworkDataType(MobileDataType.LTE)
+                .setMobileNetworkLevel(4)
+                .setWifiVisibility(IconVisibility.HIDE)
+                .setClock("0900")
+                .enable()
+        }
+
+        @JvmStatic
+        @AfterClass
+        fun afterAll() {
+            CleanStatusBar.disable()
+        }
     }
 }
