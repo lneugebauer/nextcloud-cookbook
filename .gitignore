@@ -129,6 +129,7 @@ freeline_project_description.json
 fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots
+fastlane/metadata/android/screenshots.html
 fastlane/test_output
 fastlane/README.md
 vendor/
