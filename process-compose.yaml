@@ -1,0 +1,10 @@
+version: "0.5"
+
+processes:
+  docs:init:
+    command: "devbox run docs:init"
+  docs:dev:
+    command: "devbox run docs:dev"
+    depends_on:
+      docs:init:
+        condition: process_completed_successfully
