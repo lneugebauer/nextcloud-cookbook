@@ -207,7 +207,7 @@ fun RecipeDetailScreen(
             }
         }
         if (recipe.isNotEmpty() && state.error == null && !state.loading) {
-            Content(
+            RecipeDetailContent(
                 recipe = recipe,
                 modifier =
                     Modifier
@@ -344,7 +344,7 @@ private fun DropDownMenuItemDelete(onClick: () -> Unit) {
 }
 
 @Composable
-private fun Content(
+fun RecipeDetailContent(
     recipe: Recipe,
     modifier: Modifier = Modifier,
     calculatedIngredients: List<String>,
@@ -963,7 +963,7 @@ private fun ContentPreview() {
             modifiedAt = "",
         )
     NextcloudCookbookTheme {
-        Content(
+        RecipeDetailContent(
             recipe = recipe,
             calculatedIngredients = emptyList(),
             currentYield = 2,
