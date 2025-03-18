@@ -92,7 +92,7 @@
     <string name="recipe_instruction_add">Adicionar instrução</string>
     <string name="recipe_servings_increase">Adicionar porção</string>
     <string name="error_http_500">500 Erro interno de servidor</string>
-    <string name="recipe_more_menu_share">Código aberto</string>
+    <string name="recipe_more_menu_share">Abrir Fonte</string>
     <string name="recipe_nutrition">Informação nutricional</string>
     <string name="recipe_instruction_delete">Apagar instrução</string>
     <string name="error_http_405">405 Método não permitido</string>
