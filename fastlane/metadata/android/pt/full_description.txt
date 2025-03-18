@@ -4,12 +4,12 @@ O código-fonte está no GitHub em https://github.com/lneugebauer/nextcloud-cook
 
 Funcionalidades atuais:
 - Listar todas as receitas
-- Ver receitas por categoria
+- Listar todas as receitas por categoria
 - Ver uma receita
 - Manter o ecrã ligado enquanto vês uma receita
-- Ajustar definições
+- Definições
 - Editar receitas
-- Adicionar novas receitas
+- Adicionar receitas
 - Importar receitas através de um URL
 
 Planeadas:
@@ -17,4 +17,4 @@ Planeadas:
 - Autenticação única com a app Nextcloud Ficheiros
 - Login através de código QR
 
-Para usares esta app, precisas de um servidor Nextcloud publicamente acessível com a versão mais recente da app Livro de Receitas (Cookbook).
+É necessário um servidor Nextcloud publicamente acessível com a versão mais recente da app Livro de Receitas (Cookbook) para usares esta app.
