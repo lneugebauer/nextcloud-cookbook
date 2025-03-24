@@ -21,7 +21,7 @@ import javax.inject.Singleton
 
 typealias RecipePreviewsByCategoryStore = Store<String, List<RecipePreviewDto>>
 typealias RecipePreviewsStore = Store<Any, List<RecipePreviewDto>>
-typealias RecipeStore = Store<Int, RecipeDto>
+typealias RecipeStore = Store<String, RecipeDto>
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -63,7 +63,7 @@ object RecipeModule {
     fun provideRecipeStore(apiProvider: ApiProvider): RecipeStore {
         return StoreBuilder
             .from(
-                Fetcher.of { recipeId: Int ->
+                Fetcher.of { recipeId: String ->
                     apiProvider.getNcCookbookApi()?.getRecipe(recipeId)
                         ?: throw NullPointerException("Nextcloud Cookbook API is null.")
                 },

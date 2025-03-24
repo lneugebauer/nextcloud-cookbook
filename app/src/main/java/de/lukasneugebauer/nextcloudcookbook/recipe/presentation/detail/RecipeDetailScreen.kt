@@ -114,7 +114,7 @@ import java.time.Duration
 @Composable
 fun RecipeDetailScreen(
     navigator: DestinationsNavigator,
-    @Suppress("UNUSED_PARAMETER") recipeId: Int,
+    @Suppress("UNUSED_PARAMETER") recipeId: String,
     viewModel: RecipeDetailViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
@@ -925,7 +925,7 @@ private fun InstructionsPreview() {
 private fun ContentPreview() {
     val recipe =
         Recipe(
-            id = 1,
+            id = "1",
             name = "Lorem ipsum",
             description = "Lorem ipsum dolor sit amet",
             url = "https://www.example.com",

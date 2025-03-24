@@ -46,14 +46,14 @@ class RecipeRepositoryImpl
                 ),
             )
 
-        override fun getRecipeFlow(id: Int): Flow<StoreReadResponse<RecipeDto>> =
+        override fun getRecipeFlow(id: String): Flow<StoreReadResponse<RecipeDto>> =
             recipeStore.stream(
                 StoreReadRequest.cached(key = id, refresh = false),
             )
 
-        override suspend fun getRecipe(id: Int): RecipeDto = recipeStore.get(id)
+        override suspend fun getRecipe(id: String): RecipeDto = recipeStore.get(id)
 
-        override suspend fun createRecipe(recipe: RecipeDto): Resource<Int> {
+        override suspend fun createRecipe(recipe: RecipeDto): Resource<String> {
             return withContext(ioDispatcher) {
                 val api =
                     apiProvider.getNcCookbookApi()
@@ -86,7 +86,7 @@ class RecipeRepositoryImpl
         }
 
         override suspend fun deleteRecipe(
-            id: Int,
+            id: String,
             categoryName: String,
         ): SimpleResource {
             return withContext(ioDispatcher) {
@@ -122,7 +122,7 @@ class RecipeRepositoryImpl
 
         @OptIn(ExperimentalStoreApi::class)
         private suspend fun refreshCaches(
-            id: Int,
+            id: String,
             categoryName: String,
             deleted: Boolean = false,
         ) {

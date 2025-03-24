@@ -41,7 +41,7 @@ class RecipeDetailViewModel
             get() = preferencesManager.getStayAwake()
 
         init {
-            val id: Int? = savedStateHandle["recipeId"]
+            val id: String? = savedStateHandle["recipeId"]
             if (id == null) {
                 _state.update { it.copy(error = UiText.StringResource(R.string.error_recipe_id_missing)) }
             } else {
@@ -49,7 +49,7 @@ class RecipeDetailViewModel
             }
         }
 
-        private fun getRecipe(id: Int) {
+        private fun getRecipe(id: String) {
             _state.value = _state.value.copy(loading = true)
             combine(
                 recipeRepository.getRecipeFlow(id),
@@ -192,7 +192,7 @@ class RecipeDetailViewModel
         }
 
         fun deleteRecipe(
-            id: Int,
+            id: String,
             categoryName: String,
         ) {
             viewModelScope.launch {
@@ -219,7 +219,7 @@ class RecipeDetailViewModel
                     if (shortId.isNotBlank()) {
                         val recipePreviewDto =
                             recipePreviewDtos?.firstOrNull { recipePreviewDto ->
-                                recipePreviewDto.recipeId == shortId
+                                recipePreviewDto.id == shortId
                             }
 
                         if (recipePreviewDto?.name?.isNotBlank() == true) {

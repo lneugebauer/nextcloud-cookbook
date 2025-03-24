@@ -89,7 +89,7 @@ import kotlin.random.Random.Default.nextInt
 @Composable
 fun RecipeListScreen(
     navigator: DestinationsNavigator,
-    resultRecipient: ResultRecipient<RecipeCreateScreenDestination, Int>,
+    resultRecipient: ResultRecipient<RecipeCreateScreenDestination, String>,
     viewModel: RecipeListViewModel = hiltViewModel(),
 ) {
     RecipeListScreenWrapper(
@@ -104,7 +104,7 @@ fun RecipeListScreen(
 fun RecipeListScreenWrapper(
     navigator: DestinationsNavigator,
     categoryName: String?,
-    resultRecipient: ResultRecipient<RecipeCreateScreenDestination, Int>,
+    resultRecipient: ResultRecipient<RecipeCreateScreenDestination, String>,
     viewModel: RecipeListViewModel,
 ) {
     val uiState by viewModel.state.collectAsState()
@@ -197,7 +197,7 @@ private fun RecipeListScreen(
     keywords: Set<String>,
     isKeywordSelected: (keyword: String) -> Boolean,
     modifier: Modifier = Modifier,
-    onClick: (Int) -> Unit,
+    onClick: (String) -> Unit,
     onKeywordClick: (keyword: String) -> Unit,
 ) {
     if (recipePreviews.isEmpty()) {
@@ -492,7 +492,7 @@ private fun RecipeListPreview() {
     val recipePreviews =
         List(10) { id ->
             RecipePreview(
-                id = id,
+                id = "r_$id",
                 name = "Recipe $id",
                 keywords = List(nextInt(0, 5)) { "Keyword $it" }.toSet(),
                 category = "",

@@ -4,7 +4,7 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Recipe
 
 fun emptyRecipe(): Recipe =
     Recipe(
-        id = 0,
+        id = "0",
         name = "",
         description = "",
         url = "",

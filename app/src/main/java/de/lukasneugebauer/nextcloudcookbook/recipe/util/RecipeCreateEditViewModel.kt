@@ -90,7 +90,7 @@ abstract class RecipeCreateEditViewModel(
         getCategories()
         getKeywords()
 
-        val recipeId: Int? = savedStateHandle["recipeId"]
+        val recipeId: String? = savedStateHandle["recipeId"]
         recipeId?.let {
             getRecipe(it)
         } ?: run {
@@ -418,7 +418,7 @@ abstract class RecipeCreateEditViewModel(
         }
     }
 
-    private fun getRecipe(id: Int) {
+    private fun getRecipe(id: String) {
         viewModelScope.launch {
             recipeDto =
                 recipeRepository.getRecipe(id).also { dto ->

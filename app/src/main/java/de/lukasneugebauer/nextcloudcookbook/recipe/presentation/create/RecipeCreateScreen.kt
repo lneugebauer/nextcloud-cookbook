@@ -18,7 +18,7 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.presentation.components.Creat
 @Composable
 fun RecipeCreateScreen(
     navigator: DestinationsNavigator,
-    resultNavigator: ResultBackNavigator<Int>,
+    resultNavigator: ResultBackNavigator<String>,
     viewModel: RecipeCreateViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()

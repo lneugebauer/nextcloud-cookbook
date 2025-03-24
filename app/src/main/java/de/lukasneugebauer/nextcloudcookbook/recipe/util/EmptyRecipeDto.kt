@@ -4,7 +4,7 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipeDto
 
 fun emptyRecipeDto(): RecipeDto =
     RecipeDto(
-        id = 0,
+        id = "0",
         name = "",
         description = "",
         url = "",

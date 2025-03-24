@@ -13,7 +13,7 @@ fun RecipeListWithArgumentsScreen(
     navigator: DestinationsNavigator,
     categoryName: String?,
     @Suppress("UNUSED_PARAMETER") keyword: String?,
-    resultRecipient: ResultRecipient<RecipeCreateScreenDestination, Int>,
+    resultRecipient: ResultRecipient<RecipeCreateScreenDestination, String>,
     viewModel: RecipeListViewModel = hiltViewModel(),
 ) {
     RecipeListScreenWrapper(

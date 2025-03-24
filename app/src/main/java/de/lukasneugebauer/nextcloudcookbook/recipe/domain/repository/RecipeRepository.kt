@@ -13,16 +13,16 @@ interface RecipeRepository {
 
     fun getRecipePreviewsByCategory(categoryName: String): Flow<StoreReadResponse<List<RecipePreviewDto>>>
 
-    fun getRecipeFlow(id: Int): Flow<StoreReadResponse<RecipeDto>>
+    fun getRecipeFlow(id: String): Flow<StoreReadResponse<RecipeDto>>
 
-    suspend fun getRecipe(id: Int): RecipeDto
+    suspend fun getRecipe(id: String): RecipeDto
 
-    suspend fun createRecipe(recipe: RecipeDto): Resource<Int>
+    suspend fun createRecipe(recipe: RecipeDto): Resource<String>
 
     suspend fun updateRecipe(recipe: RecipeDto): SimpleResource
 
     suspend fun deleteRecipe(
-        id: Int,
+        id: String,
         categoryName: String,
     ): SimpleResource
 

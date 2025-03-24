@@ -7,7 +7,7 @@ sealed interface DownloadRecipeScreenState {
 
     data class Loading(val url: String) : DownloadRecipeScreenState
 
-    data class Loaded(val id: Int) : DownloadRecipeScreenState
+    data class Loaded(val id: String) : DownloadRecipeScreenState
 
     data class Error(val url: String, val uiText: UiText) : DownloadRecipeScreenState
 }
