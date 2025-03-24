@@ -6,7 +6,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.category.domain.repository.CategoryRepository
 import de.lukasneugebauer.nextcloudcookbook.category.domain.state.CategoryListScreenState
-import de.lukasneugebauer.nextcloudcookbook.category.domain.state.CategoryListScreenState.*
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText.DynamicString
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText.StringResource
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,16 +23,16 @@ class CategoryListViewModel
         categoryRepository: CategoryRepository,
     ) : ViewModel() {
         private val _uiState =
-            MutableStateFlow<CategoryListScreenState>(Initial)
+            MutableStateFlow<CategoryListScreenState>(CategoryListScreenState.Initial)
         val uiState = _uiState.asStateFlow()
 
         init {
             categoryRepository.getCategories().onEach { categoriesResponse ->
                 when (categoriesResponse) {
-                    is StoreReadResponse.Loading -> _uiState.update { Initial }
+                    is StoreReadResponse.Loading -> _uiState.update { CategoryListScreenState.Initial }
                     is StoreReadResponse.Data ->
                         _uiState.update {
-                            Loaded(
+                            CategoryListScreenState.Loaded(
                                 categoriesResponse.value
                                     .filter { it.recipeCount > 0 }
                                     .map { it.toCategory() },
@@ -47,7 +46,7 @@ class CategoryListViewModel
                             categoriesResponse.errorMessageOrNull()
                                 ?.let { DynamicString(it) }
                                 ?: run { StringResource(R.string.error_unknown) }
-                        _uiState.update { Error(message) }
+                        _uiState.update { CategoryListScreenState.Error(message) }
                     }
                 }
             }.launchIn(viewModelScope)
