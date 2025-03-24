@@ -5,7 +5,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dropbox.android.external.store4.StoreResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
@@ -21,6 +20,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
+import org.mobilenativefoundation.store.store5.StoreReadResponse
 import timber.log.Timber
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -109,8 +109,8 @@ class RecipeListViewModel
             }
                 .onEach { (recipePreviewsResponse, query, selectedKeywords, order) ->
                     when (recipePreviewsResponse) {
-                        is StoreResponse.Loading -> _uiState.update { RecipeListScreenState.Initial }
-                        is StoreResponse.Data ->
+                        is StoreReadResponse.Loading -> _uiState.update { RecipeListScreenState.Initial }
+                        is StoreReadResponse.Data ->
                             _uiState.update {
                                 val recipePreviews =
                                     recipePreviewsResponse.value
@@ -211,8 +211,8 @@ class RecipeListViewModel
                                 )
                             }
 
-                        is StoreResponse.NoNewData -> Unit
-                        is StoreResponse.Error -> {
+                        is StoreReadResponse.NoNewData -> Unit
+                        is StoreReadResponse.Error -> {
                             val message =
                                 recipePreviewsResponse.errorMessageOrNull()
                                     ?.let { UiText.DynamicString(it) }

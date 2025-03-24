@@ -1,13 +1,12 @@
 package de.lukasneugebauer.nextcloudcookbook.core.domain.usecase
 
-import com.dropbox.android.external.store4.ExperimentalStoreApi
 import de.lukasneugebauer.nextcloudcookbook.di.CategoriesStore
 import de.lukasneugebauer.nextcloudcookbook.di.RecipePreviewsByCategoryStore
 import de.lukasneugebauer.nextcloudcookbook.di.RecipePreviewsStore
 import de.lukasneugebauer.nextcloudcookbook.di.RecipeStore
+import org.mobilenativefoundation.store.store5.ExperimentalStoreApi
 import javax.inject.Inject
 
-@OptIn(ExperimentalStoreApi::class)
 class ClearAllStoresUseCase
     @Inject
     constructor(
@@ -16,6 +15,7 @@ class ClearAllStoresUseCase
         private val recipePreviewsStore: RecipePreviewsStore,
         private val recipeStore: RecipeStore,
     ) {
+        @OptIn(ExperimentalStoreApi::class)
         suspend operator fun invoke() {
             listOf(
                 categoriesStore,
@@ -23,7 +23,7 @@ class ClearAllStoresUseCase
                 recipePreviewsStore,
                 recipeStore,
             ).forEach { store ->
-                store.clearAll()
+                store.clear()
             }
         }
     }

@@ -1,9 +1,5 @@
 package de.lukasneugebauer.nextcloudcookbook.recipe.data.repository
 
-import com.dropbox.android.external.store4.StoreRequest
-import com.dropbox.android.external.store4.StoreResponse
-import com.dropbox.android.external.store4.fresh
-import com.dropbox.android.external.store4.get
 import com.haroldadmin.cnradapter.NetworkResponse
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.domain.repository.BaseRepository
@@ -23,6 +19,11 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.util.emptyRecipeDto
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
+import org.mobilenativefoundation.store.store5.ExperimentalStoreApi
+import org.mobilenativefoundation.store.store5.StoreReadRequest
+import org.mobilenativefoundation.store.store5.StoreReadResponse
+import org.mobilenativefoundation.store.store5.impl.extensions.fresh
+import org.mobilenativefoundation.store.store5.impl.extensions.get
 import javax.inject.Inject
 
 class RecipeRepositoryImpl
@@ -34,20 +35,20 @@ class RecipeRepositoryImpl
         private val recipePreviewsStore: RecipePreviewsStore,
         private val recipeStore: RecipeStore,
     ) : RecipeRepository, BaseRepository() {
-        override fun getRecipePreviewsFlow(): Flow<StoreResponse<List<RecipePreviewDto>>> =
-            recipePreviewsStore.stream(StoreRequest.cached(key = Unit, refresh = false))
+        override fun getRecipePreviewsFlow(): Flow<StoreReadResponse<List<RecipePreviewDto>>> =
+            recipePreviewsStore.stream(StoreReadRequest.cached(key = Unit, refresh = false))
 
-        override fun getRecipePreviewsByCategory(categoryName: String): Flow<StoreResponse<List<RecipePreviewDto>>> =
+        override fun getRecipePreviewsByCategory(categoryName: String): Flow<StoreReadResponse<List<RecipePreviewDto>>> =
             recipePreviewsByCategoryStore.stream(
-                StoreRequest.cached(
+                StoreReadRequest.cached(
                     key = categoryName,
                     refresh = false,
                 ),
             )
 
-        override fun getRecipeFlow(id: Int): Flow<StoreResponse<RecipeDto>> =
+        override fun getRecipeFlow(id: Int): Flow<StoreReadResponse<RecipeDto>> =
             recipeStore.stream(
-                StoreRequest.cached(key = id, refresh = false),
+                StoreReadRequest.cached(key = id, refresh = false),
             )
 
         override suspend fun getRecipe(id: Int): RecipeDto = recipeStore.get(id)
@@ -119,6 +120,7 @@ class RecipeRepositoryImpl
             }
         }
 
+        @OptIn(ExperimentalStoreApi::class)
         private suspend fun refreshCaches(
             id: Int,
             categoryName: String,
@@ -129,7 +131,8 @@ class RecipeRepositoryImpl
             }
             recipePreviewsStore.fresh(Unit)
             if (deleted) {
-                recipeStore.clear(id)
+                // FIXME: Only clear specific recipe. Something like recipeStore.clear(key = id)
+                recipeStore.clear()
             } else if (id != emptyRecipeDto().id) {
                 recipeStore.fresh(id)
             }
