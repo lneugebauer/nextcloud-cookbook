@@ -3,6 +3,7 @@ package de.lukasneugebauer.nextcloudcookbook.settings.presentation.settings
 import android.content.Context
 import android.content.SharedPreferences
 import android.net.Uri
+import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -40,14 +41,15 @@ import com.alorma.compose.settings.ui.SettingsGroup
 import com.alorma.compose.settings.ui.SettingsMenuLink
 import com.alorma.compose.settings.ui.SettingsSwitch
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.generated.destinations.LibrariesScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.LoginScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.SplashScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import de.lukasneugebauer.nextcloudcookbook.BuildConfig
 import de.lukasneugebauer.nextcloudcookbook.R
+import de.lukasneugebauer.nextcloudcookbook.core.presentation.MainGraph
 import de.lukasneugebauer.nextcloudcookbook.core.util.Constants.SHARED_PREFERENCES_KEY
 import de.lukasneugebauer.nextcloudcookbook.core.util.openInBrowser
-import de.lukasneugebauer.nextcloudcookbook.destinations.LibrariesScreenDestination
-import de.lukasneugebauer.nextcloudcookbook.destinations.LoginScreenDestination
-import de.lukasneugebauer.nextcloudcookbook.destinations.SplashScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.settings.util.SettingsConstants.GITHUB_ISSUES_URL
 import de.lukasneugebauer.nextcloudcookbook.settings.util.SettingsConstants.GITHUB_URL
 import de.lukasneugebauer.nextcloudcookbook.settings.util.SettingsConstants.LICENSE_URL
@@ -56,9 +58,9 @@ import de.lukasneugebauer.nextcloudcookbook.settings.util.SettingsConstants.STAY
 import de.lukasneugebauer.nextcloudcookbook.settings.util.SettingsConstants.STAY_AWAKE_KEY
 import de.lukasneugebauer.nextcloudcookbook.settings.util.SettingsConstants.WEBLATE_URL
 
-@Destination
+@Destination<MainGraph>
 @Composable
-fun SettingsScreen(
+fun AnimatedVisibilityScope.SettingsScreen(
     navigator: DestinationsNavigator,
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {

@@ -7,7 +7,7 @@ buildscript {
         accompanist_version = '0.37.2'
         acra_version = '5.12.0'
         compose_compiler_version = '1.5.15'
-        compose_destinations_version = '1.11.9'
+        compose_destinations_version = '2.1.0'
         compose_settings_version = '1.0.3'
         hilt_version = '2.56'
         koil_version = '3.1.0'
@@ -21,9 +21,9 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.9.0'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.android.tools.build:gradle:8.9.1'
         classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -32,7 +32,7 @@ buildscript {
 
 plugins {
     id 'com.google.devtools.ksp' version "$kotlin_version-$ksp_version"
-    id "com.mikepenz.aboutlibraries.plugin" version "$aboutlibs_version"
+    id 'com.mikepenz.aboutlibraries.plugin' version "$aboutlibs_version"
 }
 
 allprojects {

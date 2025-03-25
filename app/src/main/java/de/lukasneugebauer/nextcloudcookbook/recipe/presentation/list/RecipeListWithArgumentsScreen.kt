@@ -1,15 +1,17 @@
 package de.lukasneugebauer.nextcloudcookbook.recipe.presentation.list
 
+import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.generated.destinations.RecipeCreateScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.ResultRecipient
-import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeCreateScreenDestination
+import de.lukasneugebauer.nextcloudcookbook.core.presentation.MainGraph
 
-@Destination
+@Destination<MainGraph>
 @Composable
-fun RecipeListWithArgumentsScreen(
+fun AnimatedVisibilityScope.RecipeListWithArgumentsScreen(
     navigator: DestinationsNavigator,
     categoryName: String?,
     @Suppress("UNUSED_PARAMETER") keyword: String?,

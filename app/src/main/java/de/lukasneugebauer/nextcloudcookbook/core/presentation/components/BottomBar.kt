@@ -17,13 +17,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
+import com.ramcosta.composedestinations.generated.destinations.CategoryListScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.HomeScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.RecipeListScreenDestination
 import com.ramcosta.composedestinations.spec.DirectionDestinationSpec
 import com.ramcosta.composedestinations.utils.rememberDestinationsNavigator
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.domain.state.LocalAppState
-import de.lukasneugebauer.nextcloudcookbook.destinations.CategoryListScreenDestination
-import de.lukasneugebauer.nextcloudcookbook.destinations.HomeScreenDestination
-import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeListScreenDestination
 
 enum class BottomBarDestination(
     val direction: DirectionDestinationSpec,

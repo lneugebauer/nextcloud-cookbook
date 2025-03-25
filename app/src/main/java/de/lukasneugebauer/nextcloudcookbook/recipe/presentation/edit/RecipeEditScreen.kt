@@ -1,5 +1,6 @@
 package de.lukasneugebauer.nextcloudcookbook.recipe.presentation.edit
 
+import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -9,14 +10,15 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.ResultBackNavigator
 import de.lukasneugebauer.nextcloudcookbook.R
+import de.lukasneugebauer.nextcloudcookbook.core.presentation.MainGraph
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.HideBottomNavigation
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.RecipeCreateEditState
 import de.lukasneugebauer.nextcloudcookbook.recipe.presentation.components.CreateEditRecipeForm
 
-@Destination
+@Destination<MainGraph>
 @Composable
-fun RecipeEditScreen(
+fun AnimatedVisibilityScope.RecipeEditScreen(
     navigator: DestinationsNavigator,
     @Suppress("UNUSED_PARAMETER") recipeId: String,
     resultNavigator: ResultBackNavigator<Boolean>,

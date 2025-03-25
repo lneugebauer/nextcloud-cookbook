@@ -1,6 +1,7 @@
 package de.lukasneugebauer.nextcloudcookbook.recipe.presentation.list
 
 import androidx.annotation.StringRes
+import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -63,10 +64,14 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.generated.destinations.DownloadRecipeScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.RecipeCreateScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.RecipeDetailScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultRecipient
 import de.lukasneugebauer.nextcloudcookbook.R
+import de.lukasneugebauer.nextcloudcookbook.core.presentation.MainGraph
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.AuthorizedImage
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Gap
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.HideBottomNavigation
@@ -75,9 +80,6 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.keyboar
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.error.AbstractErrorScreen
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.error.NotFoundScreen
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
-import de.lukasneugebauer.nextcloudcookbook.destinations.DownloadRecipeScreenDestination
-import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeCreateScreenDestination
-import de.lukasneugebauer.nextcloudcookbook.destinations.RecipeDetailScreenDestination
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipeListScreenOrder
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipePreview
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.RecipeListScreenState
@@ -85,9 +87,9 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.SearchAppBarStat
 import kotlin.random.Random.Default.nextBoolean
 import kotlin.random.Random.Default.nextInt
 
-@Destination
+@Destination<MainGraph>
 @Composable
-fun RecipeListScreen(
+fun AnimatedVisibilityScope.RecipeListScreen(
     navigator: DestinationsNavigator,
     resultRecipient: ResultRecipient<RecipeCreateScreenDestination, String>,
     viewModel: RecipeListViewModel = hiltViewModel(),

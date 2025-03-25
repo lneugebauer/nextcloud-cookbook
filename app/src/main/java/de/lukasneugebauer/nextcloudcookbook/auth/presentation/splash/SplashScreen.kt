@@ -7,17 +7,16 @@ import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.RootNavGraph
+import com.ramcosta.composedestinations.generated.destinations.HomeScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.LoginScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.SplashScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import de.lukasneugebauer.nextcloudcookbook.auth.domain.state.SplashScreenState
+import de.lukasneugebauer.nextcloudcookbook.core.presentation.MainGraph
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.MainViewModel
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.HideBottomNavigation
-import de.lukasneugebauer.nextcloudcookbook.destinations.HomeScreenDestination
-import de.lukasneugebauer.nextcloudcookbook.destinations.LoginScreenDestination
-import de.lukasneugebauer.nextcloudcookbook.destinations.SplashScreenDestination
 
-@RootNavGraph(start = true)
-@Destination
+@Destination<MainGraph>(start = true)
 @Composable
 fun SplashScreen(
     navigator: DestinationsNavigator,

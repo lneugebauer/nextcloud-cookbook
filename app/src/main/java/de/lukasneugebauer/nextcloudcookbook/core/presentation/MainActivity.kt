@@ -7,6 +7,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -25,13 +27,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.compose.rememberNavController
 import com.ramcosta.composedestinations.DestinationsNavHost
-import com.ramcosta.composedestinations.animations.defaults.RootNavGraphDefaultAnimations
+import com.ramcosta.composedestinations.animations.NavHostAnimatedDestinationStyle
+import com.ramcosta.composedestinations.annotation.NavHostGraph
+import com.ramcosta.composedestinations.generated.destinations.SplashScreenDestination
+import com.ramcosta.composedestinations.generated.navgraphs.MainNavGraph
 import com.ramcosta.composedestinations.manualcomposablecalls.composable
-import com.ramcosta.composedestinations.rememberNavHostEngine
 import dagger.hilt.android.AndroidEntryPoint
-import de.lukasneugebauer.nextcloudcookbook.NavGraphs
 import de.lukasneugebauer.nextcloudcookbook.auth.presentation.splash.SplashScreen
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.Credentials
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.LocalCredentials
@@ -41,7 +45,6 @@ import de.lukasneugebauer.nextcloudcookbook.core.domain.state.LocalAppState
 import de.lukasneugebauer.nextcloudcookbook.core.domain.state.SplashState
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.BottomBar
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
-import de.lukasneugebauer.nextcloudcookbook.destinations.SplashScreenDestination
 import org.acra.ACRA
 import timber.log.Timber
 
@@ -103,16 +106,7 @@ class MainActivity : ComponentActivity() {
 fun NextcloudCookbookApp(intent: Intent) {
     NextcloudCookbookTheme {
         val navController = rememberNavController()
-        val navHostEngine =
-            rememberNavHostEngine(
-                rootDefaultAnimations =
-                    RootNavGraphDefaultAnimations(
-                        enterTransition = { slideIntoContainer(towards = AnimatedContentTransitionScope.SlideDirection.Up) },
-                        exitTransition = { slideOutOfContainer(towards = AnimatedContentTransitionScope.SlideDirection.Down) },
-                        popEnterTransition = { fadeIn(animationSpec = tween(500)) },
-                        popExitTransition = { fadeOut(animationSpec = tween(500)) },
-                    ),
-            )
+
         val viewModelStoreOwner =
             checkNotNull(LocalViewModelStoreOwner.current) {
                 "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
@@ -133,13 +127,12 @@ fun NextcloudCookbookApp(intent: Intent) {
             bottomBar = { BottomBar(navController = navController) },
         ) { innerPadding ->
             DestinationsNavHost(
-                navGraph = NavGraphs.root,
+                navGraph = MainNavGraph,
                 modifier =
                     Modifier
                         .safeDrawingPadding()
                         .padding(innerPadding)
                         .fillMaxSize(),
-                engine = navHostEngine,
                 navController = navController,
             ) {
                 composable(SplashScreenDestination) {
@@ -153,3 +146,26 @@ fun NextcloudCookbookApp(intent: Intent) {
         }
     }
 }
+
+object DefaultTransitions : NavHostAnimatedDestinationStyle() {
+    override val enterTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition = {
+        slideIntoContainer(towards = AnimatedContentTransitionScope.SlideDirection.Up)
+    }
+
+    override val exitTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition = {
+        slideOutOfContainer(towards = AnimatedContentTransitionScope.SlideDirection.Down)
+    }
+
+    override val popEnterTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition = {
+        fadeIn(animationSpec = tween(500))
+    }
+
+    override val popExitTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition = {
+        fadeOut(animationSpec = tween(500))
+    }
+}
+
+@NavHostGraph(
+    defaultTransitions = DefaultTransitions::class,
+)
+annotation class MainGraph
