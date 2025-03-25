@@ -1,8 +1,11 @@
 package de.lukasneugebauer.nextcloudcookbook.di
 
+import android.content.Context
+import coil3.imageLoader
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import de.lukasneugebauer.nextcloudcookbook.core.util.IoDispatcher
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.YieldCalculatorImpl
@@ -75,6 +78,7 @@ object RecipeModule {
     @Singleton
     fun provideRecipeRepository(
         apiProvider: ApiProvider,
+        @ApplicationContext context: Context,
         @IoDispatcher ioDispatcher: CoroutineDispatcher,
         recipesByCategoryStore: RecipePreviewsByCategoryStore,
         recipePreviewsStore: RecipePreviewsStore,
@@ -82,6 +86,7 @@ object RecipeModule {
     ): RecipeRepository =
         RecipeRepositoryImpl(
             apiProvider,
+            context.imageLoader,
             ioDispatcher,
             recipesByCategoryStore,
             recipePreviewsStore,

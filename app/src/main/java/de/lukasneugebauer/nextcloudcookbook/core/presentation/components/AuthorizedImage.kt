@@ -39,13 +39,17 @@ fun AuthorizedImage(
             .set("Authorization", credentials?.basic ?: "")
             .build()
 
+    val imageRequest =
+        ImageRequest.Builder(context)
+            .data(fullImageUrl)
+            .httpHeaders(headers)
+            .crossfade(true)
+            .memoryCacheKey(key = imageUrl)
+            .diskCacheKey(key = imageUrl)
+            .build()
+
     SubcomposeAsyncImage(
-        model =
-            ImageRequest.Builder(context)
-                .data(fullImageUrl)
-                .httpHeaders(headers)
-                .crossfade(true)
-                .build(),
+        model = imageRequest,
         contentDescription = contentDescription,
         contentScale = ContentScale.Crop,
         modifier = modifier,

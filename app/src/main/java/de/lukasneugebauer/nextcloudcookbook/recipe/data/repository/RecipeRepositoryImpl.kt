@@ -1,5 +1,7 @@
 package de.lukasneugebauer.nextcloudcookbook.recipe.data.repository
 
+import coil3.ImageLoader
+import coil3.memory.MemoryCache
 import com.haroldadmin.cnradapter.NetworkResponse
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.domain.repository.BaseRepository
@@ -18,6 +20,7 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.domain.repository.RecipeRepos
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.emptyRecipeDto
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import org.mobilenativefoundation.store.store5.ExperimentalStoreApi
 import org.mobilenativefoundation.store.store5.StoreReadRequest
@@ -30,6 +33,7 @@ class RecipeRepositoryImpl
     @Inject
     constructor(
         private val apiProvider: ApiProvider,
+        private val imageLoader: ImageLoader,
         @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
         private val recipePreviewsByCategoryStore: RecipePreviewsByCategoryStore,
         private val recipePreviewsStore: RecipePreviewsStore,
@@ -76,7 +80,22 @@ class RecipeRepositoryImpl
                         ?: return@withContext Resource.Error(message = UiText.StringResource(R.string.error_api_not_initialized))
 
                 try {
+                    val currentRecipe = getRecipe(id = recipe.id)
+
                     api.updateRecipe(id = recipe.id, recipe = recipe)
+                    if (recipe.image != currentRecipe.image && !recipe.imageUrl.isNullOrBlank()) {
+                        refreshImageCache(cacheKey = recipe.imageUrl)
+
+                        getRecipePreviewsFlow()
+                            .first()
+                            .dataOrNull()
+                            ?.firstOrNull { it.id == recipe.id }
+                            ?.imageUrl
+                            ?.let { imageUrl ->
+                                refreshImageCache(cacheKey = imageUrl)
+                            }
+                    }
+
                     refreshCaches(id = recipe.id, categoryName = recipe.recipeCategory)
                     Resource.Success(Unit)
                 } catch (e: Exception) {
@@ -118,6 +137,11 @@ class RecipeRepositoryImpl
                     is NetworkResponse.Error -> handleResponseError(response.error, response.body?.msg)
                 }
             }
+        }
+
+        private fun refreshImageCache(cacheKey: String) {
+            imageLoader.memoryCache?.remove(MemoryCache.Key(cacheKey))
+            imageLoader.diskCache?.remove(cacheKey)
         }
 
         @OptIn(ExperimentalStoreApi::class)
