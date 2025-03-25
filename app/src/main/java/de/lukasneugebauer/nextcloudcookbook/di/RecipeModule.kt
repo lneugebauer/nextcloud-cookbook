@@ -1,11 +1,11 @@
 package de.lukasneugebauer.nextcloudcookbook.di
 
-import com.dropbox.android.external.store4.Fetcher
-import com.dropbox.android.external.store4.Store
-import com.dropbox.android.external.store4.StoreBuilder
+import android.content.Context
+import coil3.imageLoader
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import de.lukasneugebauer.nextcloudcookbook.core.util.IoDispatcher
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.YieldCalculatorImpl
@@ -17,11 +17,14 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.domain.repository.RecipeRepos
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import org.mobilenativefoundation.store.store5.Fetcher
+import org.mobilenativefoundation.store.store5.Store
+import org.mobilenativefoundation.store.store5.StoreBuilder
 import javax.inject.Singleton
 
 typealias RecipePreviewsByCategoryStore = Store<String, List<RecipePreviewDto>>
 typealias RecipePreviewsStore = Store<Any, List<RecipePreviewDto>>
-typealias RecipeStore = Store<Int, RecipeDto>
+typealias RecipeStore = Store<String, RecipeDto>
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -63,7 +66,7 @@ object RecipeModule {
     fun provideRecipeStore(apiProvider: ApiProvider): RecipeStore {
         return StoreBuilder
             .from(
-                Fetcher.of { recipeId: Int ->
+                Fetcher.of { recipeId: String ->
                     apiProvider.getNcCookbookApi()?.getRecipe(recipeId)
                         ?: throw NullPointerException("Nextcloud Cookbook API is null.")
                 },
@@ -75,6 +78,7 @@ object RecipeModule {
     @Singleton
     fun provideRecipeRepository(
         apiProvider: ApiProvider,
+        @ApplicationContext context: Context,
         @IoDispatcher ioDispatcher: CoroutineDispatcher,
         recipesByCategoryStore: RecipePreviewsByCategoryStore,
         recipePreviewsStore: RecipePreviewsStore,
@@ -82,6 +86,7 @@ object RecipeModule {
     ): RecipeRepository =
         RecipeRepositoryImpl(
             apiProvider,
+            context.imageLoader,
             ioDispatcher,
             recipesByCategoryStore,
             recipePreviewsStore,

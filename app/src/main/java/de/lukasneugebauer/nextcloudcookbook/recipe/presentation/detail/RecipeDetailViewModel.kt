@@ -3,7 +3,6 @@ package de.lukasneugebauer.nextcloudcookbook.recipe.presentation.detail
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dropbox.android.external.store4.StoreResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
@@ -23,6 +22,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.mobilenativefoundation.store.store5.StoreReadResponse
 import javax.inject.Inject
 
 @HiltViewModel
@@ -41,7 +41,7 @@ class RecipeDetailViewModel
             get() = preferencesManager.getStayAwake()
 
         init {
-            val id: Int? = savedStateHandle["recipeId"]
+            val id: String? = savedStateHandle["recipeId"]
             if (id == null) {
                 _state.update { it.copy(error = UiText.StringResource(R.string.error_recipe_id_missing)) }
             } else {
@@ -49,7 +49,7 @@ class RecipeDetailViewModel
             }
         }
 
-        private fun getRecipe(id: Int) {
+        private fun getRecipe(id: String) {
             _state.value = _state.value.copy(loading = true)
             combine(
                 recipeRepository.getRecipeFlow(id),
@@ -57,14 +57,14 @@ class RecipeDetailViewModel
             ) { recipeResponse, recipePreviewsResponse ->
                 val recipePreviewDtos =
                     when (recipePreviewsResponse) {
-                        is StoreResponse.Data -> recipePreviewsResponse.dataOrNull()
+                        is StoreReadResponse.Data -> recipePreviewsResponse.dataOrNull()
                         else -> null
                     }
                 Pair(recipeResponse, recipePreviewDtos)
             }.onEach { (recipeResponse, recipePreviewDtos) ->
                 when (recipeResponse) {
-                    is StoreResponse.Loading -> _state.value = _state.value.copy(loading = true)
-                    is StoreResponse.Data -> {
+                    is StoreReadResponse.Loading -> _state.value = _state.value.copy(loading = true)
+                    is StoreReadResponse.Data -> {
                         val recipe = enrichRecipeLinks(recipeResponse.value.toRecipe(), recipePreviewDtos)
                         _state.value =
                             _state.value.copy(
@@ -80,15 +80,15 @@ class RecipeDetailViewModel
                             )
                     }
 
-                    is StoreResponse.NoNewData -> _state.value = _state.value.copy(loading = false)
-                    is StoreResponse.Error.Exception ->
+                    is StoreReadResponse.NoNewData -> _state.value = _state.value.copy(loading = false)
+                    is StoreReadResponse.Error.Exception ->
                         _state.value =
                             _state.value.copy(
                                 error = recipeResponse.errorMessageOrNull()?.asUiText(),
                                 loading = false,
                             )
 
-                    is StoreResponse.Error.Message ->
+                    is StoreReadResponse.Error.Message ->
                         _state.value =
                             _state.value.copy(
                                 error = recipeResponse.message.asUiText(),
@@ -192,7 +192,7 @@ class RecipeDetailViewModel
         }
 
         fun deleteRecipe(
-            id: Int,
+            id: String,
             categoryName: String,
         ) {
             viewModelScope.launch {
@@ -219,7 +219,7 @@ class RecipeDetailViewModel
                     if (shortId.isNotBlank()) {
                         val recipePreviewDto =
                             recipePreviewDtos?.firstOrNull { recipePreviewDto ->
-                                recipePreviewDto.recipeId == shortId
+                                recipePreviewDto.id == shortId
                             }
 
                         if (recipePreviewDto?.name?.isNotBlank() == true) {

@@ -1,6 +1,5 @@
 package de.lukasneugebauer.nextcloudcookbook.recipe.domain.usecase
 
-import com.dropbox.android.external.store4.get
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.RecipeOfTheDay
@@ -16,6 +15,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import org.mobilenativefoundation.store.store5.impl.extensions.get
 import timber.log.Timber
 import java.time.LocalDateTime
 import javax.inject.Inject

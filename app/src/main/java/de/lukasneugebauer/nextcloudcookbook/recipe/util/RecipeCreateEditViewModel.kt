@@ -3,7 +3,6 @@ package de.lukasneugebauer.nextcloudcookbook.recipe.util
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dropbox.android.external.store4.StoreResponse
 import de.lukasneugebauer.nextcloudcookbook.category.domain.model.Category
 import de.lukasneugebauer.nextcloudcookbook.category.domain.repository.CategoryRepository
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.NutritionDto
@@ -20,6 +19,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.mobilenativefoundation.store.store5.StoreReadResponse
 import timber.log.Timber
 import java.lang.UnsupportedOperationException
 import java.util.Collections
@@ -90,7 +90,7 @@ abstract class RecipeCreateEditViewModel(
         getCategories()
         getKeywords()
 
-        val recipeId: Int? = savedStateHandle["recipeId"]
+        val recipeId: String? = savedStateHandle["recipeId"]
         recipeId?.let {
             getRecipe(it)
         } ?: run {
@@ -396,7 +396,7 @@ abstract class RecipeCreateEditViewModel(
     private fun getCategories() {
         categoryRepository.getCategories().onEach { categoriesResponse ->
             when (categoriesResponse) {
-                is StoreResponse.Data ->
+                is StoreReadResponse.Data ->
                     categories =
                         categoriesResponse.value
                             .filter { it.recipeCount > 0 }
@@ -418,7 +418,7 @@ abstract class RecipeCreateEditViewModel(
         }
     }
 
-    private fun getRecipe(id: Int) {
+    private fun getRecipe(id: String) {
         viewModelScope.launch {
             recipeDto =
                 recipeRepository.getRecipe(id).also { dto ->

@@ -1,9 +1,7 @@
 package de.lukasneugebauer.nextcloudcookbook.recipe.data.repository
 
-import com.dropbox.android.external.store4.StoreRequest
-import com.dropbox.android.external.store4.StoreResponse
-import com.dropbox.android.external.store4.fresh
-import com.dropbox.android.external.store4.get
+import coil3.ImageLoader
+import coil3.memory.MemoryCache
 import com.haroldadmin.cnradapter.NetworkResponse
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.domain.repository.BaseRepository
@@ -22,37 +20,44 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.domain.repository.RecipeRepos
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.emptyRecipeDto
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
+import org.mobilenativefoundation.store.store5.ExperimentalStoreApi
+import org.mobilenativefoundation.store.store5.StoreReadRequest
+import org.mobilenativefoundation.store.store5.StoreReadResponse
+import org.mobilenativefoundation.store.store5.impl.extensions.fresh
+import org.mobilenativefoundation.store.store5.impl.extensions.get
 import javax.inject.Inject
 
 class RecipeRepositoryImpl
     @Inject
     constructor(
         private val apiProvider: ApiProvider,
+        private val imageLoader: ImageLoader,
         @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
         private val recipePreviewsByCategoryStore: RecipePreviewsByCategoryStore,
         private val recipePreviewsStore: RecipePreviewsStore,
         private val recipeStore: RecipeStore,
     ) : RecipeRepository, BaseRepository() {
-        override fun getRecipePreviewsFlow(): Flow<StoreResponse<List<RecipePreviewDto>>> =
-            recipePreviewsStore.stream(StoreRequest.cached(key = Unit, refresh = false))
+        override fun getRecipePreviewsFlow(): Flow<StoreReadResponse<List<RecipePreviewDto>>> =
+            recipePreviewsStore.stream(StoreReadRequest.cached(key = Unit, refresh = false))
 
-        override fun getRecipePreviewsByCategory(categoryName: String): Flow<StoreResponse<List<RecipePreviewDto>>> =
+        override fun getRecipePreviewsByCategory(categoryName: String): Flow<StoreReadResponse<List<RecipePreviewDto>>> =
             recipePreviewsByCategoryStore.stream(
-                StoreRequest.cached(
+                StoreReadRequest.cached(
                     key = categoryName,
                     refresh = false,
                 ),
             )
 
-        override fun getRecipeFlow(id: Int): Flow<StoreResponse<RecipeDto>> =
+        override fun getRecipeFlow(id: String): Flow<StoreReadResponse<RecipeDto>> =
             recipeStore.stream(
-                StoreRequest.cached(key = id, refresh = false),
+                StoreReadRequest.cached(key = id, refresh = false),
             )
 
-        override suspend fun getRecipe(id: Int): RecipeDto = recipeStore.get(id)
+        override suspend fun getRecipe(id: String): RecipeDto = recipeStore.get(id)
 
-        override suspend fun createRecipe(recipe: RecipeDto): Resource<Int> {
+        override suspend fun createRecipe(recipe: RecipeDto): Resource<String> {
             return withContext(ioDispatcher) {
                 val api =
                     apiProvider.getNcCookbookApi()
@@ -75,7 +80,22 @@ class RecipeRepositoryImpl
                         ?: return@withContext Resource.Error(message = UiText.StringResource(R.string.error_api_not_initialized))
 
                 try {
+                    val currentRecipe = getRecipe(id = recipe.id)
+
                     api.updateRecipe(id = recipe.id, recipe = recipe)
+                    if (recipe.image != currentRecipe.image && !recipe.imageUrl.isNullOrBlank()) {
+                        refreshImageCache(cacheKey = recipe.imageUrl)
+
+                        getRecipePreviewsFlow()
+                            .first()
+                            .dataOrNull()
+                            ?.firstOrNull { it.id == recipe.id }
+                            ?.imageUrl
+                            ?.let { imageUrl ->
+                                refreshImageCache(cacheKey = imageUrl)
+                            }
+                    }
+
                     refreshCaches(id = recipe.id, categoryName = recipe.recipeCategory)
                     Resource.Success(Unit)
                 } catch (e: Exception) {
@@ -85,7 +105,7 @@ class RecipeRepositoryImpl
         }
 
         override suspend fun deleteRecipe(
-            id: Int,
+            id: String,
             categoryName: String,
         ): SimpleResource {
             return withContext(ioDispatcher) {
@@ -119,8 +139,14 @@ class RecipeRepositoryImpl
             }
         }
 
+        private fun refreshImageCache(cacheKey: String) {
+            imageLoader.memoryCache?.remove(MemoryCache.Key(cacheKey))
+            imageLoader.diskCache?.remove(cacheKey)
+        }
+
+        @OptIn(ExperimentalStoreApi::class)
         private suspend fun refreshCaches(
-            id: Int,
+            id: String,
             categoryName: String,
             deleted: Boolean = false,
         ) {
@@ -129,7 +155,8 @@ class RecipeRepositoryImpl
             }
             recipePreviewsStore.fresh(Unit)
             if (deleted) {
-                recipeStore.clear(id)
+                // FIXME: Only clear specific recipe. Something like recipeStore.clear(key = id)
+                recipeStore.clear()
             } else if (id != emptyRecipeDto().id) {
                 recipeStore.fresh(id)
             }

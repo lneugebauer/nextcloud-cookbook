@@ -4,8 +4,8 @@ import com.google.gson.annotations.SerializedName
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipePreview
 
 data class RecipePreviewDto(
-    @SerializedName("recipe_id")
-    val recipeId: String,
+    @SerializedName("id")
+    val id: String,
     @SerializedName("name")
     val name: String,
     @SerializedName("keywords")
@@ -23,7 +23,7 @@ data class RecipePreviewDto(
 ) {
     fun toRecipePreview() =
         RecipePreview(
-            id = recipeId.toInt(),
+            id = id,
             name = name,
             keywords = keywords?.split(",")?.toSet() ?: emptySet(),
             category = category ?: "",

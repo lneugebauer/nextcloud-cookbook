@@ -1,28 +1,28 @@
 package de.lukasneugebauer.nextcloudcookbook.recipe.domain.repository
 
-import com.dropbox.android.external.store4.StoreResponse
 import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import de.lukasneugebauer.nextcloudcookbook.core.util.SimpleResource
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.ImportUrlDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipeDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipePreviewDto
 import kotlinx.coroutines.flow.Flow
+import org.mobilenativefoundation.store.store5.StoreReadResponse
 
 interface RecipeRepository {
-    fun getRecipePreviewsFlow(): Flow<StoreResponse<List<RecipePreviewDto>>>
+    fun getRecipePreviewsFlow(): Flow<StoreReadResponse<List<RecipePreviewDto>>>
 
-    fun getRecipePreviewsByCategory(categoryName: String): Flow<StoreResponse<List<RecipePreviewDto>>>
+    fun getRecipePreviewsByCategory(categoryName: String): Flow<StoreReadResponse<List<RecipePreviewDto>>>
 
-    fun getRecipeFlow(id: Int): Flow<StoreResponse<RecipeDto>>
+    fun getRecipeFlow(id: String): Flow<StoreReadResponse<RecipeDto>>
 
-    suspend fun getRecipe(id: Int): RecipeDto
+    suspend fun getRecipe(id: String): RecipeDto
 
-    suspend fun createRecipe(recipe: RecipeDto): Resource<Int>
+    suspend fun createRecipe(recipe: RecipeDto): Resource<String>
 
     suspend fun updateRecipe(recipe: RecipeDto): SimpleResource
 
     suspend fun deleteRecipe(
-        id: Int,
+        id: String,
         categoryName: String,
     ): SimpleResource
 

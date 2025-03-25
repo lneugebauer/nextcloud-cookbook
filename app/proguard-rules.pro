@@ -52,3 +52,6 @@
 -dontwarn javax.lang.model.util.SimpleAnnotationValueVisitor8
 -dontwarn javax.lang.model.util.SimpleElementVisitor8
 -dontwarn javax.lang.model.util.SimpleTypeVisitor8
+
+# Add missing rule til https://github.com/coil-kt/coil/pull/2885 has been released
+-dontwarn coil3.PlatformContext

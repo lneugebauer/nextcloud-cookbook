@@ -51,23 +51,23 @@ interface NcCookbookApi {
 
     @GET("$FULL_PATH/recipes/{id}")
     suspend fun getRecipe(
-        @Path("id") id: Int,
+        @Path("id") id: String,
     ): RecipeDto
 
     @POST("$FULL_PATH/recipes")
     suspend fun createRecipe(
         @Body recipe: RecipeDto,
-    ): Int
+    ): String
 
     @PUT("$FULL_PATH/recipes/{id}")
     suspend fun updateRecipe(
-        @Path("id") id: Int,
+        @Path("id") id: String,
         @Body recipe: RecipeDto,
-    ): Int
+    ): String
 
     @DELETE("$FULL_PATH/recipes/{id}")
     suspend fun deleteRecipe(
-        @Path("id") id: Int,
+        @Path("id") id: String,
     ): NetworkResponse<String, ErrorResponse>
 
     @POST("$FULL_PATH/import")

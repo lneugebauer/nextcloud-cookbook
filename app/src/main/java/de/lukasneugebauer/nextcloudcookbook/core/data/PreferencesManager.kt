@@ -2,7 +2,7 @@ package de.lukasneugebauer.nextcloudcookbook.core.data
 
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.datastore.core.DataStore
+import androidx.datastore.core.DataMigration
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
@@ -17,6 +17,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.util.Constants.DEFAULT_RECIPE_O
 import de.lukasneugebauer.nextcloudcookbook.settings.util.SettingsConstants.STAY_AWAKE_DEFAULT
 import de.lukasneugebauer.nextcloudcookbook.settings.util.SettingsConstants.STAY_AWAKE_KEY
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import timber.log.Timber
 import java.io.IOException
@@ -26,7 +27,46 @@ import java.time.ZoneOffset
 import javax.inject.Inject
 import javax.inject.Singleton
 
-val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "app")
+@Deprecated(
+    message = "Old datastore",
+    replaceWith = ReplaceWith("context.dataStore54"),
+)
+val Context.dataStore by preferencesDataStore(name = "app")
+val Context.dataStore54 by preferencesDataStore(
+    name = "app_54",
+    produceMigrations = { context ->
+        listOf(
+            object : DataMigration<Preferences> {
+                override suspend fun cleanUp() {
+                    context.dataStore.edit { it.clear() }
+                }
+
+                override suspend fun migrate(currentData: Preferences): Preferences {
+                    val oldData = context.dataStore.data.first().asMap()
+                    val currentMutablePrefs = currentData.toMutablePreferences()
+
+                    oldData.forEach { (key, value) ->
+                        when (value) {
+                            is String -> currentMutablePrefs[stringPreferencesKey(key.name)] = value
+                            is Int -> {
+                                if (key.name == "recipe_of_the_day_id") {
+                                    currentMutablePrefs[stringPreferencesKey(key.name)] = value.toString()
+                                } else {
+                                    currentMutablePrefs[intPreferencesKey(key.name)] = value
+                                }
+                            }
+                            is Long -> currentMutablePrefs[longPreferencesKey(key.name)] = value
+                        }
+                    }
+
+                    return currentMutablePrefs.toPreferences()
+                }
+
+                override suspend fun shouldMigrate(currentData: Preferences) = true
+            },
+        )
+    },
+)
 
 @Singleton
 class PreferencesManager
@@ -40,12 +80,12 @@ class PreferencesManager
             val NC_USERNAME = stringPreferencesKey("nc_username")
             val NC_TOKEN = stringPreferencesKey("nc_token")
             val NC_URL = stringPreferencesKey("nc_url")
-            val RECIPE_OF_THE_DAY_ID = intPreferencesKey("recipe_of_the_day_id")
+            val RECIPE_OF_THE_DAY_ID = stringPreferencesKey("recipe_of_the_day_id")
             val RECIPE_OF_THE_DAY_UPDATED_AT = longPreferencesKey("recipe_of_the_day_updated_at")
         }
 
         val preferencesFlow =
-            context.dataStore.data
+            context.dataStore54.data
                 .catch { exception ->
                     if (exception is IOException) {
                         Timber.e(exception)
@@ -90,7 +130,7 @@ class PreferencesManager
         }
 
         suspend fun updateNextcloudAccount(ncAccount: NcAccount) =
-            context.dataStore.edit { preferences ->
+            context.dataStore54.edit { preferences ->
                 preferences[PreferencesKeys.NC_NAME] = ncAccount.name
                 preferences[PreferencesKeys.NC_USERNAME] = ncAccount.username
                 preferences[PreferencesKeys.NC_TOKEN] = ncAccount.token
@@ -98,14 +138,14 @@ class PreferencesManager
             }
 
         suspend fun updateRecipeOfTheDay(recipeOfTheDay: RecipeOfTheDay) =
-            context.dataStore.edit { preferences ->
+            context.dataStore54.edit { preferences ->
                 preferences[PreferencesKeys.RECIPE_OF_THE_DAY_ID] = recipeOfTheDay.id
                 preferences[PreferencesKeys.RECIPE_OF_THE_DAY_UPDATED_AT] =
                     recipeOfTheDay.updatedAt.toEpochSecond(ZoneOffset.UTC)
             }
 
         suspend fun clearPreferences() {
-            context.dataStore.edit { it.clear() }
+            context.dataStore54.edit { it.clear() }
             sharedPreferences.edit().clear().apply()
         }
     }

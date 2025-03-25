@@ -10,7 +10,7 @@ import java.util.Collections.emptyList
 
 data class RecipeDto(
     @SerializedName("id")
-    val id: Int,
+    val id: String,
     @SerializedName("name")
     val name: String,
     @SerializedName("description")

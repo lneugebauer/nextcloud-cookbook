@@ -1,9 +1,9 @@
 package de.lukasneugebauer.nextcloudcookbook.recipe.domain.usecase
 
-import com.dropbox.android.external.store4.StoreResponse
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.repository.RecipeRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapNotNull
+import org.mobilenativefoundation.store.store5.StoreReadResponse
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -21,7 +21,7 @@ class GetAllKeywordsUseCase
 
             return recipePreviewsFlow.mapNotNull { recipePreviewsResponse ->
                 when (recipePreviewsResponse) {
-                    is StoreResponse.Data -> {
+                    is StoreReadResponse.Data -> {
                         recipePreviewsResponse.value
                             .flatMap { it.toRecipePreview().keywords }
                             .toSet()

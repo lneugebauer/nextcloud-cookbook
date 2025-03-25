@@ -3,7 +3,7 @@ package de.lukasneugebauer.nextcloudcookbook.recipe.domain.model
 import java.time.Duration
 
 data class Recipe(
-    val id: Int,
+    val id: String,
     val name: String,
     val description: String,
     val url: String,
@@ -24,10 +24,10 @@ data class Recipe(
     val modifiedAt: String,
 ) {
     fun isEmpty(): Boolean {
-        return this.id == 0
+        return this.id == "0"
     }
 
     fun isNotEmpty(): Boolean {
-        return this.id != 0
+        return this.id != "0"
     }
 }

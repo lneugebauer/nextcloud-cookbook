@@ -895,7 +895,7 @@ private fun Instructions(
 
 private val MockedRecipe =
     Recipe(
-        id = 1,
+        id = "1",
         name = "Lorem ipsum",
         description = "Lorem ipsum dolor sit amet",
         url = "https://www.example.com",
