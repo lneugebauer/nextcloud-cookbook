@@ -160,3 +160,6 @@ docs/**/cache/
 docs/**/dist/
 docs/.idea
 node_modules/
+
+# Kotlin
+.kotlin/
