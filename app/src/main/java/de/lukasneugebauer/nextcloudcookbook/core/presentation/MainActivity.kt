@@ -12,9 +12,11 @@ import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -103,7 +105,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun NextcloudCookbookApp(intent: Intent) {
+fun NextcloudCookbookApp(intent: Intent?) {
     NextcloudCookbookTheme {
         val navController = rememberNavController()
 
@@ -124,15 +126,16 @@ fun NextcloudCookbookApp(intent: Intent) {
         }
 
         Scaffold(
+            contentWindowInsets = WindowInsets.safeDrawing,
             bottomBar = { BottomBar(navController = navController) },
         ) { innerPadding ->
             DestinationsNavHost(
                 navGraph = MainNavGraph,
                 modifier =
                     Modifier
-                        .safeDrawingPadding()
+                        .fillMaxSize()
                         .padding(innerPadding)
-                        .fillMaxSize(),
+                        .consumeWindowInsets(WindowInsets.safeDrawing),
                 navController = navController,
             ) {
                 composable(SplashScreenDestination) {
