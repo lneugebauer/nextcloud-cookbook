@@ -105,7 +105,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun NextcloudCookbookApp(intent: Intent) {
+fun NextcloudCookbookApp(intent: Intent?) {
     NextcloudCookbookTheme {
         val navController = rememberNavController()
 
