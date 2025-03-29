@@ -212,7 +212,7 @@ fun AnimatedVisibilityScope.RecipeDetailScreen(
                 recipe = recipe,
                 modifier =
                     Modifier
-                        .padding(paddingValues = innerPadding)
+                        .padding(innerPadding)
                         .verticalScroll(rememberScrollState()),
                 calculatedIngredients = state.calculatedIngredients,
                 currentYield = state.currentYield,
