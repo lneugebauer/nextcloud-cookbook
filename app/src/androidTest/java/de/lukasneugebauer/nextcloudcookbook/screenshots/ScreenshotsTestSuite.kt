@@ -15,6 +15,7 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Recipe
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Tool
 import de.lukasneugebauer.nextcloudcookbook.recipe.presentation.detail.RecipeDetailContent
 import org.junit.AfterClass
+import org.junit.Assume
 import org.junit.BeforeClass
 import org.junit.Rule
 import org.junit.Test
@@ -32,6 +33,14 @@ class ScreenshotsTestSuite {
 
     @get:Rule
     val composeTestRule = createAndroidComposeRule<ComponentActivity>()
+
+    init {
+        val iSFastlane = InstrumentationRegistry.getArguments().getString("fastlane-screenshots")
+        Assume.assumeTrue(
+            "This test suite should run only with 'fastlane screenshots'",
+            "true" == iSFastlane,
+        )
+    }
 
     @Test
     fun loginScreen() {
