@@ -31,22 +31,18 @@ To install through [Obtainium](https://github.com/ImranR98/Obtainium/tree/main?t
 ## Screenshots
 <table>
     <tr>
+        <td>Phone</td>
         <td><img src="fastlane/metadata/android/en-US/images/phoneScreenshots/1.png" alt="Phone screenshot 1"></td>
         <td><img src="fastlane/metadata/android/en-US/images/phoneScreenshots/2.png" alt="Phone screenshot 2"></td>
         <td><img src="fastlane/metadata/android/en-US/images/phoneScreenshots/3.png" alt="Phone screenshot 3"></td>
         <td><img src="fastlane/metadata/android/en-US/images/phoneScreenshots/4.png" alt="Phone screenshot 4"></td>
     </tr>
     <tr>
-        <td><img src="fastlane/metadata/android/en-US/images/sevenInchScreenshots/1.png" alt="Seven inch screenshot 1"></td>
-        <td><img src="fastlane/metadata/android/en-US/images/sevenInchScreenshots/2.png" alt="Seven inch screenshot 2"></td>
-        <td><img src="fastlane/metadata/android/en-US/images/sevenInchScreenshots/3.png" alt="Seven inch screenshot 3"></td>
-        <td><img src="fastlane/metadata/android/en-US/images/sevenInchScreenshots/4.png" alt="Seven inch screenshot 4"></td>
-    </tr>
-    <tr>
-        <td><img src="fastlane/metadata/android/en-US/images/tenInchScreenshots/1.png" alt="Ten inch screenshot 1"></td>
-        <td><img src="fastlane/metadata/android/en-US/images/tenInchScreenshots/2.png" alt="Ten inch screenshot 2"></td>
-        <td><img src="fastlane/metadata/android/en-US/images/tenInchScreenshots/3.png" alt="Ten inch screenshot 3"></td>
-        <td><img src="fastlane/metadata/android/en-US/images/tenInchScreenshots/4.png" alt="Ten inch screenshot 4"></td>
+        <td>Tablet</td>
+        <td><img src="fastlane/metadata/android/en-US/images/tenInchScreenshots/1.png" alt="Tablet screenshot 1"></td>
+        <td><img src="fastlane/metadata/android/en-US/images/tenInchScreenshots/2.png" alt="Tablet screenshot 2"></td>
+        <td><img src="fastlane/metadata/android/en-US/images/tenInchScreenshots/3.png" alt="Tablet screenshot 3"></td>
+        <td><img src="fastlane/metadata/android/en-US/images/tenInchScreenshots/4.png" alt="Tablet screenshot 4"></td>
     </tr>
 </table>
 
