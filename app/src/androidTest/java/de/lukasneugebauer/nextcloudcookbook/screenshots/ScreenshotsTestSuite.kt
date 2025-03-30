@@ -49,7 +49,7 @@ class ScreenshotsTestSuite {
 
     @Test
     fun loginScreen() {
-        makeScreenshotOf("login") {
+        makeScreenshotOf("1") {
             LoginScreen(
                 showManualLogin = false,
                 usernameError = null,
@@ -65,7 +65,7 @@ class ScreenshotsTestSuite {
 
     @Test
     fun manualLoginScreen() {
-        makeScreenshotOf("manual-login") {
+        makeScreenshotOf("2") {
             LoginScreen(
                 showManualLogin = true,
                 usernameError = null,
@@ -81,7 +81,7 @@ class ScreenshotsTestSuite {
 
     @Test
     fun homeScreen() {
-        makeScreenshotOf("home") {
+        makeScreenshotOf("3") {
             val recipes =
                 listOf(
                     RECIPE_PREVIEW,
@@ -115,7 +115,7 @@ class ScreenshotsTestSuite {
 
     @Test
     fun detailScreen() {
-        makeScreenshotOf("detail") {
+        makeScreenshotOf("4") {
             // TODO: Overwrite AuthorizedImage composable to be able to show a static image from sample data directory
             RecipeDetailContent(
                 recipe = RECIPE,

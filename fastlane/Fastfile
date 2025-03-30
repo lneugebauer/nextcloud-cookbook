@@ -119,6 +119,9 @@ platform :android do
   desc "Generate screenshots"
   lane :screenshots do
     gradle(task: "assembleDebug assembleAndroidTest")
-    screengrab
+    # TODO: Use github matrix to create devices and/or start/stop devices with shell scripts to get rid of specific_device parameter
+    screengrab(device_type: "phone", specific_device: "emulator-5554")
+    screengrab(device_type: "sevenInch", specific_device: "emulator-5558")
+    screengrab(device_type: "tenInch", specific_device: "emulator-5556")
   end
 end
