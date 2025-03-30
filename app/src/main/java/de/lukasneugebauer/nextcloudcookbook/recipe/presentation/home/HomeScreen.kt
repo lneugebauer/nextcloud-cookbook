@@ -56,84 +56,25 @@ fun AnimatedVisibilityScope.HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
-    Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        topBar = {
-            TopBar(
-                onSettingsIconClick = { navigator.navigate(SettingsScreenDestination()) },
-                scrollBehavior = scrollBehavior,
+    HomeScreen(
+        uiState = uiState,
+        onSettingsIconClick = { navigator.navigate(SettingsScreenDestination()) },
+        onHeadlineClick = { categoryName ->
+            navigator.navigate(
+                RecipeListWithArgumentsScreenDestination(
+                    categoryName = categoryName,
+                    keyword = null,
+                ),
             )
         },
-    ) { innerPadding ->
-        when (uiState) {
-            HomeScreenState.Initial -> Loader()
-            is HomeScreenState.Loaded -> {
-                val homeScreenData = (uiState as HomeScreenState.Loaded).data
-                if (homeScreenData.isEmpty()) {
-                    NotFoundScreen()
-                } else {
-                    LazyColumn(
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(innerPadding),
-                        contentPadding =
-                            PaddingValues(
-                                top = dimensionResource(id = R.dimen.padding_s),
-                                bottom = dimensionResource(id = R.dimen.padding_m),
-                            ),
-                        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_s)),
-                    ) {
-                        items(homeScreenData) { item ->
-                            when (item) {
-                                is HomeScreenDataResult.Row -> {
-                                    Headline(
-                                        text = item.headline,
-                                        clickable = item.recipes.size > MORE_BUTTON_THRESHOLD,
-                                    ) {
-                                        navigator.navigate(
-                                            RecipeListWithArgumentsScreenDestination(
-                                                categoryName = item.headline,
-                                                keyword = null,
-                                            ),
-                                        )
-                                    }
-                                    RowContainer(
-                                        data =
-                                            item.recipes.map {
-                                                RowContent(it.name, it.imageUrl) {
-                                                    navigator.navigate(
-                                                        RecipeDetailScreenDestination(
-                                                            recipeId = it.id,
-                                                        ),
-                                                    )
-                                                }
-                                            },
-                                    )
-                                }
-
-                                is HomeScreenDataResult.Single -> {
-                                    Headline(
-                                        text = stringResource(id = item.headline),
-                                        clickable = false,
-                                        onClick = {},
-                                    )
-                                    SingleItem(
-                                        name = item.recipe.name,
-                                        imageUrl = item.recipe.imageUrl,
-                                    ) {
-                                        navigator.navigate(RecipeDetailScreenDestination(recipeId = item.recipe.id))
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            is HomeScreenState.Error -> UnknownErrorScreen()
-        }
-    }
+        onRecipeClick = { recipeId ->
+            navigator.navigate(
+                RecipeDetailScreenDestination(
+                    recipeId = recipeId,
+                ),
+            )
+        },
+    )
 }
 
 @Composable
@@ -160,7 +101,83 @@ fun TopBar(
 }
 
 @Composable
-fun SingleItem(
+fun HomeScreen(
+    uiState: HomeScreenState,
+    onSettingsIconClick: () -> Unit,
+    onHeadlineClick: (categoryName: String) -> Unit,
+    onRecipeClick: (recipeId: String) -> Unit,
+) {
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+    Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            TopBar(
+                onSettingsIconClick = onSettingsIconClick,
+                scrollBehavior = scrollBehavior,
+            )
+        },
+    ) { innerPadding ->
+        when (uiState) {
+            HomeScreenState.Initial -> Loader()
+            is HomeScreenState.Loaded -> {
+                val homeScreenData = uiState.data
+                if (homeScreenData.isEmpty()) {
+                    NotFoundScreen()
+                } else {
+                    LazyColumn(
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(innerPadding),
+                        contentPadding =
+                            PaddingValues(
+                                top = dimensionResource(id = R.dimen.padding_s),
+                                bottom = dimensionResource(id = R.dimen.padding_m),
+                            ),
+                        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_s)),
+                    ) {
+                        items(homeScreenData) { item ->
+                            when (item) {
+                                is HomeScreenDataResult.Row -> {
+                                    Headline(
+                                        text = item.headline,
+                                        clickable = item.recipes.size > MORE_BUTTON_THRESHOLD,
+                                        onClick = { onHeadlineClick.invoke(item.headline) },
+                                    )
+                                    RowContainer(
+                                        data =
+                                            item.recipes.map {
+                                                RowContent(name = it.name, imageUrl = it.imageUrl, onClick = {
+                                                    onRecipeClick.invoke(it.id)
+                                                })
+                                            },
+                                    )
+                                }
+
+                                is HomeScreenDataResult.Single -> {
+                                    Headline(
+                                        text = stringResource(id = item.headline),
+                                        clickable = false,
+                                        onClick = {},
+                                    )
+                                    SingleItem(
+                                        name = item.recipe.name,
+                                        imageUrl = item.recipe.imageUrl,
+                                        onClick = { onRecipeClick.invoke(item.recipe.id) },
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            is HomeScreenState.Error -> UnknownErrorScreen()
+        }
+    }
+}
+
+@Composable
+private fun SingleItem(
     name: String,
     imageUrl: String,
     onClick: () -> Unit,

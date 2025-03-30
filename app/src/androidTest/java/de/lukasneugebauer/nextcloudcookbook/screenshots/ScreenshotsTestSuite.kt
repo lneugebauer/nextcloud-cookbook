@@ -7,13 +7,18 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
+import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.auth.presentation.login.LoginScreen
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.HomeScreenDataResult
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Ingredient
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Instruction
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Recipe
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipePreview
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Tool
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.HomeScreenState
 import de.lukasneugebauer.nextcloudcookbook.recipe.presentation.detail.RecipeDetailContent
+import de.lukasneugebauer.nextcloudcookbook.recipe.presentation.home.HomeScreen
 import org.junit.AfterClass
 import org.junit.Assume
 import org.junit.BeforeClass
@@ -77,14 +82,41 @@ class ScreenshotsTestSuite {
     @Test
     fun homeScreen() {
         makeScreenshotOf("home") {
-            TODO("Create home screen content composable that can easily be filled with preview data")
+            val recipes =
+                listOf(
+                    RECIPE_PREVIEW,
+                    RECIPE_PREVIEW,
+                    RECIPE_PREVIEW,
+                )
+            val data =
+                listOf(
+                    HomeScreenDataResult.Single(
+                        headline = R.string.home_recommendation,
+                        recipe = RECIPE,
+                    ),
+                    HomeScreenDataResult.Row(
+                        headline = "Dinner",
+                        recipes = recipes,
+                    ),
+                    HomeScreenDataResult.Row(
+                        headline = "Breakfast",
+                        recipes = recipes,
+                    ),
+                )
+            val uiState = HomeScreenState.Loaded(data = data)
+            HomeScreen(
+                uiState = uiState,
+                onSettingsIconClick = {},
+                onHeadlineClick = {},
+                onRecipeClick = {},
+            )
         }
     }
 
     @Test
     fun detailScreen() {
         makeScreenshotOf("detail") {
-            TODO("Overwrite AuthorizedImage composable to be able to show a static image from sample data directory")
+            // TODO: Overwrite AuthorizedImage composable to be able to show a static image from sample data directory
             RecipeDetailContent(
                 recipe = RECIPE,
                 calculatedIngredients = emptyList(),
@@ -117,7 +149,7 @@ class ScreenshotsTestSuite {
     companion object {
         val RECIPE =
             Recipe(
-                id = 1,
+                id = "1",
                 name = "Lorem ipsum",
                 description = "Lorem ipsum dolor sit amet",
                 url = "https://www.example.com",
@@ -151,6 +183,17 @@ class ScreenshotsTestSuite {
                                 """.trimMargin(),
                         )
                     },
+                createdAt = "",
+                modifiedAt = "",
+            )
+
+        val RECIPE_PREVIEW =
+            RecipePreview(
+                id = "1",
+                name = "Lorem ipsum",
+                keywords = emptySet<String>(),
+                category = "Lorem ipsum",
+                imageUrl = "/apps/cookbook/recipes/1/image?size=full",
                 createdAt = "",
                 modifiedAt = "",
             )
