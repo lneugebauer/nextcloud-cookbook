@@ -3,6 +3,8 @@ package de.lukasneugebauer.nextcloudcookbook.screenshots
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -85,6 +87,9 @@ class ScreenshotsTestSuite {
             val recipes =
                 listOf(
                     RECIPE_PREVIEW,
+                    RECIPE_PREVIEW.copy(imageUrl = "eaters_collective_12ehc6fxpyg_unsplash"),
+                    RECIPE_PREVIEW.copy(imageUrl = "ella_olsson_2ixtgsgfi_s_unsplash"),
+                    RECIPE_PREVIEW,
                     RECIPE_PREVIEW,
                     RECIPE_PREVIEW,
                 )
@@ -138,7 +143,11 @@ class ScreenshotsTestSuite {
         )
 
         composeTestRule.setContent {
-            NextcloudCookbookTheme(content = content)
+            NextcloudCookbookTheme {
+                CompositionLocalProvider(LocalInspectionMode provides true) {
+                    content()
+                }
+            }
         }
 
         uiDevice.waitForIdle()
@@ -154,7 +163,7 @@ class ScreenshotsTestSuite {
                 description = "Lorem ipsum dolor sit amet",
                 url = "https://www.example.com",
                 imageOrigin = "https://www.example.com/image.jpg",
-                imageUrl = "/apps/cookbook/recipes/1/image?size=full",
+                imageUrl = "aurelien_lemasson_theobald_x00czbt4dfk_unsplash",
                 category = "Lorem ipsum",
                 keywords = emptyList(),
                 yield = 2,
@@ -193,7 +202,7 @@ class ScreenshotsTestSuite {
                 name = "Lorem ipsum",
                 keywords = emptySet<String>(),
                 category = "Lorem ipsum",
-                imageUrl = "/apps/cookbook/recipes/1/image?size=full",
+                imageUrl = "aurelien_lemasson_theobald_x00czbt4dfk_unsplash",
                 createdAt = "",
                 modifiedAt = "",
             )

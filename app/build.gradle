@@ -141,8 +141,8 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp'
     implementation 'com.squareup.okhttp3:logging-interceptor'
 
-    implementation "io.coil-kt.coil3:coil-compose:$koil_version"
-    implementation "io.coil-kt.coil3:coil-network-okhttp:$koil_version"
+    implementation "io.coil-kt.coil3:coil-compose:$coil_version"
+    implementation "io.coil-kt.coil3:coil-network-okhttp:$coil_version"
 
     implementation "org.mobilenativefoundation.store:store5:$store_version"
 
