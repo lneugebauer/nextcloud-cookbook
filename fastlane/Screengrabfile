@@ -1,0 +1,12 @@
+app_package_name('de.lukasneugebauer.nextcloudcookbook.debug')
+use_tests_in_packages(['de.lukasneugebauer.nextcloudcookbook.screenshots'])
+
+app_apk_path('app/build/outputs/apk/full/debug/app-full-debug.apk')
+tests_apk_path('app/build/outputs/apk/androidTest/full/debug/app-full-debug-androidTest.apk')
+
+locales(['en-US'])
+
+clear_previous_screenshots(true)
+use_timestamp_suffix(false)
+
+launch_arguments('fastlane-screenshots true')

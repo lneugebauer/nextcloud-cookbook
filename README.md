@@ -31,12 +31,25 @@ To install through [Obtainium](https://github.com/ImranR98/Obtainium/tree/main?t
 ## Screenshots
 <table>
     <tr>
-        <td><img src="fastlane/metadata/android/en-US/images/phoneScreenshots/1_en-US.png" alt="Phone screenshot 1"></td>
-        <td><img src="fastlane/metadata/android/en-US/images/phoneScreenshots/2_en-US.png" alt="Phone screenshot 2"></td>
-        <td><img src="fastlane/metadata/android/en-US/images/phoneScreenshots/3_en-US.png" alt="Phone screenshot 3"></td>
-        <td><img src="fastlane/metadata/android/en-US/images/phoneScreenshots/4_en-US.png" alt="Phone screenshot 4"></td>
+        <td>Phone</td>
+        <td><img src="fastlane/metadata/android/en-US/images/phoneScreenshots/1.png" alt="Phone screenshot 1"></td>
+        <td><img src="fastlane/metadata/android/en-US/images/phoneScreenshots/2.png" alt="Phone screenshot 2"></td>
+        <td><img src="fastlane/metadata/android/en-US/images/phoneScreenshots/3.png" alt="Phone screenshot 3"></td>
+        <td><img src="fastlane/metadata/android/en-US/images/phoneScreenshots/4.png" alt="Phone screenshot 4"></td>
+    </tr>
+    <tr>
+        <td>Tablet</td>
+        <td><img src="fastlane/metadata/android/en-US/images/tenInchScreenshots/1.png" alt="Tablet screenshot 1"></td>
+        <td><img src="fastlane/metadata/android/en-US/images/tenInchScreenshots/2.png" alt="Tablet screenshot 2"></td>
+        <td><img src="fastlane/metadata/android/en-US/images/tenInchScreenshots/3.png" alt="Tablet screenshot 3"></td>
+        <td><img src="fastlane/metadata/android/en-US/images/tenInchScreenshots/4.png" alt="Tablet screenshot 4"></td>
     </tr>
 </table>
+
+*Photo by [Eaters Collective](https://unsplash.com/@eaterscollective?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash) on [Unsplash](https://unsplash.com/photos/pesto-pasta-with-sliced-tomatoes-served-on-white-ceramic-plate-12eHC6FxPyg?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash)*  
+*Photo by [Ella Olsson](https://unsplash.com/@ellaolsson?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash) on [Unsplash](https://unsplash.com/photos/assorted-fruits-and-vegetable-on-brown-wooden-chopping-board-2IxTgsgFi-s?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash)*  
+*Photo by [Marcin Andrzejewski](https://unsplash.com/@marcinandrzejewskipl?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash) on [Unsplash](https://unsplash.com/photos/fried-chicken-on-white-ceramic-plate-LTlniUw9xWE?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash)*  
+*Photo by [Aurélien Lemasson-Théobald](https://unsplash.com/@aurel__lens?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash) on [Unsplash](https://unsplash.com/photos/round-cooked-pizza-x00CzBt4Dfk?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash)*  
 
 ## Features :rocket:
 

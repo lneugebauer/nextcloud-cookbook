@@ -28,8 +28,8 @@ class MainViewModel
         private val _authState = MutableStateFlow<AuthState>(AuthState.Unauthorized)
         val authState: StateFlow<AuthState> = _authState
 
-        private val _intentState = MutableStateFlow(Intent())
-        val intentState: StateFlow<Intent> = _intentState
+        private val _intentState = MutableStateFlow<Intent?>(null)
+        val intentState: StateFlow<Intent?> = _intentState
 
         init {
             getLoginCredentials()
