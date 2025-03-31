@@ -1,0 +1,2 @@
+- Fehler beim Aktualisieren des Rezeptbildes behoben
+- Abhängigkeiten aktualisiert
