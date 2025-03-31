@@ -95,6 +95,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Gap
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.pluralResource
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
+import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
 import de.lukasneugebauer.nextcloudcookbook.core.util.getActivity
 import de.lukasneugebauer.nextcloudcookbook.core.util.notZero
 import de.lukasneugebauer.nextcloudcookbook.core.util.openInBrowser
@@ -105,6 +106,7 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Recipe
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Tool
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.emptyRecipe
 import java.time.Duration
+import kotlin.collections.ifEmpty
 
 @Destination<MainGraph>(
     deepLinks = [
@@ -133,109 +135,81 @@ fun AnimatedVisibilityScope.RecipeDetailScreen(
         }
     }
 
-    Scaffold(
-        topBar = {
-            TopBar(
-                recipe = recipe,
-                onNavIconClick = {
-                    if (!navigator.popBackStack()) {
-                        (context as? Activity)?.finish()
-                    }
-                },
-                onEditClick = {
-                    if (recipe.isNotEmpty()) {
-                        navigator.navigate(RecipeEditScreenDestination(recipe.id))
-                    }
-                },
-                onDeleteClick = {
-                    if (recipe.isNotEmpty()) {
-                        viewModel.deleteRecipe(
-                            recipe.id,
-                            recipe.category,
-                        )
-                    }
-                },
-                shareText =
-                    viewModel.getShareText(
-                        sourceTitle = stringResource(id = R.string.recipe_source),
-                        prepTime = { duration ->
-                            context.getString(R.string.recipe_prep_time)
-                                .plus(": ")
-                                .plus(context.getString(R.string.recipe_duration, duration))
-                        },
-                        cookTime = { duration ->
-                            context.getString(R.string.recipe_cook_time)
-                                .plus(": ")
-                                .plus(context.getString(R.string.recipe_duration, duration))
-                        },
-                        totalTime = { duration ->
-                            context.getString(R.string.recipe_total_time)
-                                .plus(": ")
-                                .plus(context.getString(R.string.recipe_duration, duration))
-                        },
-                        ingredientsTitle =
-                            pluralResource(
-                                R.plurals.recipe_ingredients_servings,
-                                recipe.yield,
-                                recipe.yield,
-                            ),
-                        toolsTitle = stringResource(id = R.string.recipe_tools),
-                        instructionsTitle = stringResource(id = R.string.recipe_instructions),
-                    ),
-            )
+    RecipeDetailContent(
+        recipe = recipe,
+        calculatedIngredients = state.calculatedIngredients,
+        currentYield = state.currentYield,
+        onDecreaseYield = {
+            viewModel.decreaseYield()
         },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    if (recipe.isNotEmpty()) {
-                        navigator.navigate(RecipeEditScreenDestination(recipe.id))
-                    }
-                },
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Edit,
-                    contentDescription = stringResource(id = R.string.common_edit),
+        onIncreaseYield = {
+            viewModel.increaseYield()
+        },
+        onNavIconClick = {
+            if (!navigator.popBackStack()) {
+                (context as? Activity)?.finish()
+            }
+        },
+        onEditClick = {
+            if (recipe.isNotEmpty()) {
+                navigator.navigate(RecipeEditScreenDestination(recipe.id))
+            }
+        },
+        onDeleteClick = {
+            if (recipe.isNotEmpty()) {
+                viewModel.deleteRecipe(
+                    recipe.id,
+                    recipe.category,
                 )
             }
         },
-    ) { innerPadding ->
-        if (state.loading) {
-            Loader()
-        }
-        errorMessage?.let {
-            if (!state.loading) {
-                Text(text = it.asString())
+        shareText =
+            viewModel.getShareText(
+                sourceTitle = stringResource(id = R.string.recipe_source),
+                prepTime = { duration ->
+                    context.getString(R.string.recipe_prep_time)
+                        .plus(": ")
+                        .plus(context.getString(R.string.recipe_duration, duration))
+                },
+                cookTime = { duration ->
+                    context.getString(R.string.recipe_cook_time)
+                        .plus(": ")
+                        .plus(context.getString(R.string.recipe_duration, duration))
+                },
+                totalTime = { duration ->
+                    context.getString(R.string.recipe_total_time)
+                        .plus(": ")
+                        .plus(context.getString(R.string.recipe_duration, duration))
+                },
+                ingredientsTitle =
+                    pluralResource(
+                        R.plurals.recipe_ingredients_servings,
+                        recipe.yield,
+                        recipe.yield,
+                    ),
+                toolsTitle = stringResource(id = R.string.recipe_tools),
+                instructionsTitle = stringResource(id = R.string.recipe_instructions),
+            ),
+        onFabClick = {
+            if (recipe.isNotEmpty()) {
+                navigator.navigate(RecipeEditScreenDestination(recipe.id))
             }
-        }
-        if (recipe.isNotEmpty() && state.error == null && !state.loading) {
-            RecipeDetailContent(
-                recipe = recipe,
-                modifier =
-                    Modifier
-                        .padding(innerPadding)
-                        .verticalScroll(rememberScrollState()),
-                calculatedIngredients = state.calculatedIngredients,
-                currentYield = state.currentYield,
-                onDecreaseYield = {
-                    viewModel.decreaseYield()
-                },
-                onIncreaseYield = {
-                    viewModel.increaseYield()
-                },
-                onKeywordClick = {
-                    navigator.navigate(
-                        RecipeListWithArgumentsScreenDestination(
-                            categoryName = null,
-                            keyword = it,
-                        ),
-                    )
-                },
-                onResetYield = {
-                    viewModel.resetYield()
-                },
+        },
+        loading = state.loading,
+        errorMessage = errorMessage,
+        error = state.error,
+        onKeywordClick = {
+            navigator.navigate(
+                RecipeListWithArgumentsScreenDestination(
+                    categoryName = null,
+                    keyword = it,
+                ),
             )
-        }
-    }
+        },
+        onResetYield = {
+            viewModel.resetYield()
+        },
+    )
 }
 
 @Composable
@@ -347,55 +321,97 @@ private fun DropDownMenuItemDelete(onClick: () -> Unit) {
 @Composable
 fun RecipeDetailContent(
     recipe: Recipe,
-    modifier: Modifier = Modifier,
     calculatedIngredients: List<String>,
     currentYield: Int,
     onDecreaseYield: () -> Unit,
     onIncreaseYield: () -> Unit,
+    onNavIconClick: () -> Unit,
+    onEditClick: () -> Unit,
+    onDeleteClick: () -> Unit,
+    shareText: String,
+    onFabClick: () -> Unit,
+    loading: Boolean,
+    errorMessage: UiText?,
+    error: UiText?,
     onKeywordClick: (keyword: String) -> Unit,
     onResetYield: () -> Unit,
 ) {
-    Column(
-        modifier = modifier,
-    ) {
-        Image(recipe.imageUrl, recipe.name)
-        Name(recipe.name)
-        if (recipe.keywords.isNotEmpty()) {
-            Keywords(keywords = recipe.keywords, onClick = onKeywordClick)
-        }
-        if (recipe.description.isNotBlank()) {
-            Description(description = recipe.description)
-        }
-        if (recipe.prepTime?.notZero() == true ||
-            recipe.cookTime?.notZero() == true ||
-            recipe.totalTime?.notZero() == true
-        ) {
-            Meta(recipe.prepTime, recipe.cookTime, recipe.totalTime)
-        }
-        if (recipe.category.isNotEmpty()) {
-            Category(category = recipe.category)
-        }
-        if (recipe.ingredients.isNotEmpty()) {
-            Ingredients(
-                calculatedIngredients.ifEmpty { recipe.ingredients.map { it.value } },
-                onDecreaseYield,
-                onIncreaseYield,
-                onResetYield,
-                currentYield,
-                recipe.yield != currentYield,
+    Scaffold(
+        topBar = {
+            TopBar(
+                recipe = recipe,
+                onNavIconClick = onNavIconClick,
+                onEditClick = onEditClick,
+                onDeleteClick = onDeleteClick,
+                shareText = shareText,
             )
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = onFabClick,
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Edit,
+                    contentDescription = stringResource(id = R.string.common_edit),
+                )
+            }
+        },
+    ) { innerPadding ->
+        if (loading) {
+            Loader()
         }
-        if (recipe.nutrition != null) {
-            Nutrition(recipe.nutrition)
+        errorMessage?.let {
+            if (!loading) {
+                Text(text = it.asString())
+            }
         }
-        if (recipe.tools.isNotEmpty()) {
-            Tools(tools = recipe.tools)
+        if (recipe.isNotEmpty() && error == null && !loading) {
+            Column(
+                modifier =
+                    Modifier
+                        .padding(innerPadding)
+                        .verticalScroll(rememberScrollState()),
+            ) {
+                Image(recipe.imageUrl, recipe.name)
+                Name(recipe.name)
+                if (recipe.keywords.isNotEmpty()) {
+                    Keywords(keywords = recipe.keywords, onClick = onKeywordClick)
+                }
+                if (recipe.description.isNotBlank()) {
+                    Description(description = recipe.description)
+                }
+                if (recipe.prepTime?.notZero() == true ||
+                    recipe.cookTime?.notZero() == true ||
+                    recipe.totalTime?.notZero() == true
+                ) {
+                    Meta(recipe.prepTime, recipe.cookTime, recipe.totalTime)
+                }
+                if (recipe.category.isNotEmpty()) {
+                    Category(category = recipe.category)
+                }
+                if (recipe.ingredients.isNotEmpty()) {
+                    Ingredients(
+                        calculatedIngredients.ifEmpty { recipe.ingredients.map { it.value } },
+                        onDecreaseYield,
+                        onIncreaseYield,
+                        onResetYield,
+                        currentYield,
+                        recipe.yield != currentYield,
+                    )
+                }
+                if (recipe.nutrition != null) {
+                    Nutrition(recipe.nutrition)
+                }
+                if (recipe.tools.isNotEmpty()) {
+                    Tools(tools = recipe.tools)
+                }
+                if (recipe.instructions.isNotEmpty()) {
+                    Instructions(instructions = recipe.instructions)
+                }
+                Gap(size = dimensionResource(id = R.dimen.padding_s))
+                Gap(size = dimensionResource(id = R.dimen.fab_offset))
+            }
         }
-        if (recipe.instructions.isNotEmpty()) {
-            Instructions(instructions = recipe.instructions)
-        }
-        Gap(size = dimensionResource(id = R.dimen.padding_s))
-        Gap(size = dimensionResource(id = R.dimen.fab_offset))
     }
 }
 
@@ -970,6 +986,14 @@ private fun ContentPreview() {
             currentYield = 2,
             onDecreaseYield = {},
             onIncreaseYield = {},
+            onNavIconClick = {},
+            onEditClick = {},
+            onDeleteClick = {},
+            shareText = "",
+            onFabClick = {},
+            loading = false,
+            errorMessage = null,
+            error = null,
             onKeywordClick = {},
             onResetYield = {},
         )

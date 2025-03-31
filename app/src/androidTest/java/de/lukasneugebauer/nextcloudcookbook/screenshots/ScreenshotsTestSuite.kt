@@ -123,9 +123,17 @@ class ScreenshotsTestSuite {
             RecipeDetailContent(
                 recipe = RECIPE,
                 calculatedIngredients = emptyList(),
-                currentYield = 2,
+                currentYield = RECIPE.yield,
                 onDecreaseYield = {},
                 onIncreaseYield = {},
+                onNavIconClick = {},
+                onEditClick = {},
+                onDeleteClick = {},
+                shareText = "",
+                onFabClick = {},
+                loading = false,
+                errorMessage = null,
+                error = null,
                 onKeywordClick = {},
                 onResetYield = {},
             )
