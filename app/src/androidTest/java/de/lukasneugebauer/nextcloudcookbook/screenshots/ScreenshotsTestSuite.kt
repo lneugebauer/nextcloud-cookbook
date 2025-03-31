@@ -84,15 +84,6 @@ class ScreenshotsTestSuite {
     @Test
     fun homeScreen() {
         makeScreenshotOf("3") {
-            val recipes =
-                listOf(
-                    RECIPE_PREVIEW,
-                    RECIPE_PREVIEW.copy(imageUrl = "eaters_collective_12ehc6fxpyg_unsplash"),
-                    RECIPE_PREVIEW.copy(imageUrl = "ella_olsson_2ixtgsgfi_s_unsplash"),
-                    RECIPE_PREVIEW,
-                    RECIPE_PREVIEW,
-                    RECIPE_PREVIEW,
-                )
             val data =
                 listOf(
                     HomeScreenDataResult.Single(
@@ -101,11 +92,19 @@ class ScreenshotsTestSuite {
                     ),
                     HomeScreenDataResult.Row(
                         headline = "Dinner",
-                        recipes = recipes,
+                        recipes =
+                            listOf(
+                                RECIPE_PREVIEW.copy(name = "Pizza", imageUrl = "aurelien_lemasson_theobald_x00czbt4dfk_unsplash"),
+                                RECIPE_PREVIEW.copy(name = "Pasta", imageUrl = "eaters_collective_12ehc6fxpyg_unsplash"),
+                                RECIPE_PREVIEW.copy(name = "Fried chicken", imageUrl = "marcin_andrzejewski_ltlniuw9xwe_unsplash"),
+                            ),
                     ),
                     HomeScreenDataResult.Row(
                         headline = "Breakfast",
-                        recipes = recipes,
+                        recipes =
+                            listOf(
+                                RECIPE_PREVIEW.copy(name = "Sandwich", imageUrl = "ella_olsson_2ixtgsgfi_s_unsplash"),
+                            ),
                     ),
                 )
             val uiState = HomeScreenState.Loaded(data = data)
@@ -121,7 +120,6 @@ class ScreenshotsTestSuite {
     @Test
     fun detailScreen() {
         makeScreenshotOf("4") {
-            // TODO: Overwrite AuthorizedImage composable to be able to show a static image from sample data directory
             RecipeDetailContent(
                 recipe = RECIPE,
                 calculatedIngredients = emptyList(),
@@ -159,26 +157,36 @@ class ScreenshotsTestSuite {
         val RECIPE =
             Recipe(
                 id = "1",
-                name = "Lorem ipsum",
-                description = "Lorem ipsum dolor sit amet",
+                name = "Pizza",
+                description = "The most delicious pizza in the world",
                 url = "https://www.example.com",
                 imageOrigin = "https://www.example.com/image.jpg",
                 imageUrl = "aurelien_lemasson_theobald_x00czbt4dfk_unsplash",
-                category = "Lorem ipsum",
-                keywords = emptyList(),
-                yield = 2,
-                prepTime = null,
-                cookTime = Duration.parse("PT0H35M0S"),
-                totalTime = Duration.parse("PT1H50M0S"),
+                category = "Dinner",
+                keywords = listOf("Pizza", "Italian", "Homemade"),
+                yield = 4,
+                prepTime = Duration.parse("PT1H00M0S"),
+                cookTime = Duration.parse("PT0H10M0S"),
+                totalTime = Duration.parse("PT2H10M0S"),
                 nutrition = null,
                 tools =
                     List(1) {
                         Tool(id = it, value = "Lorem ipsum")
                     },
                 ingredients =
-                    List(2) {
-                        Ingredient(id = it, value = "Lorem ipsum")
-                    },
+                    listOf(
+                        Ingredient(id = 1, value = "## Dough"),
+                        Ingredient(id = 2, value = "1000 g flour"),
+                        Ingredient(id = 3, value = "650 ml room temperature water"),
+                        Ingredient(id = 4, value = "20 g salt"),
+                        Ingredient(id = 5, value = "3 g active dry yeast"),
+                        Ingredient(id = 5, value = "## Sauce"),
+                        Ingredient(id = 5, value = "1 can tomatoes"),
+                        Ingredient(id = 5, value = "2 gloves garlic"),
+                        Ingredient(id = 5, value = "2 tbsp olive oil"),
+                        Ingredient(id = 5, value = "3 g salt"),
+                        Ingredient(id = 5, value = "fresh basil"),
+                    ),
                 instructions =
                     List(1) {
                         Instruction(
@@ -202,7 +210,7 @@ class ScreenshotsTestSuite {
                 name = "Lorem ipsum",
                 keywords = emptySet<String>(),
                 category = "Lorem ipsum",
-                imageUrl = "aurelien_lemasson_theobald_x00czbt4dfk_unsplash",
+                imageUrl = "",
                 createdAt = "",
                 modifiedAt = "",
             )

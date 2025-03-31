@@ -48,7 +48,8 @@ To install through [Obtainium](https://github.com/ImranR98/Obtainium/tree/main?t
 
 *Photo by [Eaters Collective](https://unsplash.com/@eaterscollective?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash) on [Unsplash](https://unsplash.com/photos/pesto-pasta-with-sliced-tomatoes-served-on-white-ceramic-plate-12eHC6FxPyg?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash)*  
 *Photo by [Ella Olsson](https://unsplash.com/@ellaolsson?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash) on [Unsplash](https://unsplash.com/photos/assorted-fruits-and-vegetable-on-brown-wooden-chopping-board-2IxTgsgFi-s?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash)*  
-*Photo by [Aurélien Lemasson-Théobald](https://unsplash.com/@aurel__lens?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash) on [Unsplash](https://unsplash.com/photos/round-cooked-pizza-x00CzBt4Dfk?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash)*
+*Photo by [Marcin Andrzejewski](https://unsplash.com/@marcinandrzejewskipl?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash) on [Unsplash](https://unsplash.com/photos/fried-chicken-on-white-ceramic-plate-LTlniUw9xWE?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash)*  
+*Photo by [Aurélien Lemasson-Théobald](https://unsplash.com/@aurel__lens?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash) on [Unsplash](https://unsplash.com/photos/round-cooked-pizza-x00CzBt4Dfk?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash)*  
 
 ## Features :rocket:
 
