@@ -1,1 +1,1 @@
-View all your recipes stored in your Nextcloud instance.
+உங்கள் நெக்ஸ்ட்க்ளவுட் சர்வரில் சேமித்துள்ள சமையல் குறிப்புகளை காணலாம்.
