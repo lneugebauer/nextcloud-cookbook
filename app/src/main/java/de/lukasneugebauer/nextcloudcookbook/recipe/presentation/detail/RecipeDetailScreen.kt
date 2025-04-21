@@ -652,7 +652,8 @@ private fun Ingredients(
     }
     ingredients.forEach { ingredient ->
         var checked by rememberSaveable { mutableStateOf(false) }
-        val modifier = Modifier
+        val modifier =
+            Modifier
 // TODO: Add some way to copy single ingredient
 //                        .combinedClickable(
 //                            onLongClick = {
