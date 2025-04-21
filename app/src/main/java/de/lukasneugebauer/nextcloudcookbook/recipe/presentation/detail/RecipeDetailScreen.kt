@@ -3,7 +3,6 @@ package de.lukasneugebauer.nextcloudcookbook.recipe.presentation.detail
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.view.WindowManager
 import android.widget.Toast
@@ -81,6 +80,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewFontScale
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.colintheshots.twain.MarkdownText
 import com.ramcosta.composedestinations.annotation.Destination
@@ -295,7 +295,7 @@ private fun DropDownMenuItemOpenSource(
 ) {
     if (recipeUrl.isNotBlank()) {
         DropdownMenuItem(
-            onClick = { Uri.parse(recipeUrl).openInBrowser(context) },
+            onClick = { recipeUrl.toUri().openInBrowser(context) },
             text = { Text(stringResource(id = R.string.recipe_more_menu_share)) },
         )
     }
