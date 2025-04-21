@@ -354,11 +354,11 @@ private fun PrepTime(
     modifier: Modifier,
     onPrepTimeChange: (time: DurationComponents) -> Unit,
 ) {
-    TimeInputTextField(
+    TimeTextField(
         time = prepTime,
-        modifier = modifier,
-        label = R.string.recipe_prep_time,
         onTimeChange = onPrepTimeChange,
+        label = R.string.recipe_prep_time,
+        modifier = modifier,
     )
 }
 
@@ -368,11 +368,11 @@ private fun CookTime(
     modifier: Modifier,
     onCookTimeChange: (time: DurationComponents) -> Unit,
 ) {
-    TimeInputTextField(
+    TimeTextField(
         time = cookTime,
-        modifier = modifier,
-        label = R.string.recipe_cook_time,
         onTimeChange = onCookTimeChange,
+        label = R.string.recipe_cook_time,
+        modifier = modifier,
     )
 }
 
@@ -382,11 +382,11 @@ private fun TotalTime(
     modifier: Modifier,
     onTotalTimeChange: (time: DurationComponents) -> Unit,
 ) {
-    TimeInputTextField(
+    TimeTextField(
         time = totalTime,
-        modifier = modifier,
-        label = R.string.recipe_total_time,
         onTimeChange = onTotalTimeChange,
+        label = R.string.recipe_total_time,
+        modifier = modifier,
     )
 }
 
