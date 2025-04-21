@@ -106,7 +106,6 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Recipe
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Tool
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.emptyRecipe
 import java.time.Duration
-import kotlin.collections.ifEmpty
 
 @Destination<MainGraph>(
     deepLinks = [
@@ -653,23 +652,8 @@ private fun Ingredients(
     }
     ingredients.forEach { ingredient ->
         var checked by rememberSaveable { mutableStateOf(false) }
-
-        Row {
-            Checkbox(
-                checked = checked,
-                onCheckedChange = { checked = !checked },
-            )
-            with(LocalDensity.current) {
-                MarkdownText(
-                    markdown =
-                        if (checked) {
-                            "~~$ingredient~~"
-                        } else {
-                            ingredient
-                        },
+        val modifier = Modifier
 // TODO: Add some way to copy single ingredient
-                    modifier =
-                        Modifier
 //                        .combinedClickable(
 //                            onLongClick = {
 //                                clipboardManager.setText(
@@ -693,9 +677,31 @@ private fun Ingredients(
 //                            },
 //                            onClick = {},
 //                        )
-                            .fillMaxWidth()
-                            .minimumInteractiveComponentSize()
-                            .padding(end = dimensionResource(id = R.dimen.padding_m)),
+                .fillMaxWidth()
+                .minimumInteractiveComponentSize()
+                .padding(end = dimensionResource(id = R.dimen.padding_m))
+
+        Row {
+            if (!ingredient.startsWith("##")) {
+                Checkbox(
+                    checked = checked,
+                    onCheckedChange = { checked = !checked },
+                )
+            }
+            with(LocalDensity.current) {
+                MarkdownText(
+                    markdown =
+                        if (checked) {
+                            "~~$ingredient~~"
+                        } else {
+                            ingredient
+                        },
+                    modifier =
+                        if (ingredient.startsWith("##")) {
+                            modifier.then(Modifier.padding(start = dimensionResource(id = R.dimen.padding_m)))
+                        } else {
+                            modifier
+                        },
                     fontSize = LocalTextStyle.current.fontSize * this.fontScale,
                     style = LocalTextStyle.current.copy(color = LocalContentColor.current),
                 )
