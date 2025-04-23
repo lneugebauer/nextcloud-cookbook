@@ -2,6 +2,7 @@
 <lint>
     <issue id="ImpliedQuantity" severity="error">
         <ignore path="src/main/res/values-fr" />
+        <ignore path="src/main/res/values-pt" />
         <ignore path="src/main/res/values-ru" />
         <ignore path="src/main/res/values-uk" />
     </issue>
