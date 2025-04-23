@@ -1,0 +1,6 @@
+- Add Thai translation
+- Add Portuguese translation
+- Fix time input greater than 24 hours
+- Fix ingredient headline formatting
+- Fix incompatibility with older Cookbook versions
+- Update translations

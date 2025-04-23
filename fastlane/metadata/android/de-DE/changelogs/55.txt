@@ -1,0 +1,6 @@
+- Thailändische Übersetzung hinzugefügt
+- Portugiesische Übersetzung hinzugefügt
+- Zeitangaben von mehr als 24 Stunden korrigiert
+- Formatierung der Überschriften von Zutaten korrigiert
+- Inkompatibilität mit älteren Kochbuch-Versionen behoben
+- Übersetzungen aktualisiert
