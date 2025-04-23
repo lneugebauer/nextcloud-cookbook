@@ -141,5 +141,5 @@
     <string name="recipe_modified_at">Дата изменения</string>
     <string name="settings_issues">Вопросы</string>
     <string name="recipe_created_at">Дата добавления</string>
-    <string name="recipe_alphabetical">По названию</string>
+    <string name="recipe_alphabetical">Название</string>
 </resources>
