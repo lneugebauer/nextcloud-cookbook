@@ -16,6 +16,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import com.ramcosta.composedestinations.generated.destinations.CategoryListScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.HomeScreenDestination
@@ -24,6 +25,7 @@ import com.ramcosta.composedestinations.spec.DirectionDestinationSpec
 import com.ramcosta.composedestinations.utils.rememberDestinationsNavigator
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.domain.state.LocalAppState
+import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
 
 enum class BottomBarDestination(
     val direction: DirectionDestinationSpec,
@@ -42,26 +44,45 @@ fun BottomBar(navController: NavController) {
     var selected by rememberSaveable { mutableStateOf(BottomBarDestination.Home) }
 
     if (appState.isBottomBarVisible) {
-        NavigationBar {
-            BottomBarDestination.entries.forEach { destination ->
-                NavigationBarItem(
-                    selected = selected == destination,
-                    onClick = {
-                        selected = destination
-                        destinationsNavigator.navigate(destination.direction) {
-                            launchSingleTop = true
-                        }
-                    },
-                    icon = {
-                        Icon(
-                            imageVector = destination.icon,
-                            contentDescription = stringResource(destination.label),
-                        )
-                    },
-                    enabled = selected != destination,
-                    label = { Text(stringResource(destination.label)) },
-                )
-            }
+        BottomBarContent(
+            selected = selected,
+            onClick = { destination ->
+                selected = destination
+                destinationsNavigator.navigate(destination.direction) {
+                    launchSingleTop = true
+                }
+            },
+        )
+    }
+}
+
+@Composable
+fun BottomBarContent(
+    selected: BottomBarDestination,
+    onClick: (destination: BottomBarDestination) -> Unit,
+) {
+    NavigationBar {
+        BottomBarDestination.entries.forEach { destination ->
+            NavigationBarItem(
+                selected = selected == destination,
+                onClick = { onClick.invoke(destination) },
+                icon = {
+                    Icon(
+                        imageVector = destination.icon,
+                        contentDescription = stringResource(destination.label),
+                    )
+                },
+                enabled = selected != destination,
+                label = { Text(stringResource(destination.label)) },
+            )
         }
+    }
+}
+
+@Preview
+@Composable
+private fun BottomBarContentPreview() {
+    NextcloudCookbookTheme {
+        BottomBarContent(selected = BottomBarDestination.Home, onClick = {})
     }
 }

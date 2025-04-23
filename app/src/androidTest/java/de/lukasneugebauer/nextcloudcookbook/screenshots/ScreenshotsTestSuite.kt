@@ -1,7 +1,9 @@
 package de.lukasneugebauer.nextcloudcookbook.screenshots
 
+import android.annotation.SuppressLint
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.LocalInspectionMode
@@ -11,6 +13,8 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.auth.presentation.login.LoginScreen
+import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.BottomBarContent
+import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.BottomBarDestination
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.HomeScreenDataResult
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Ingredient
@@ -81,6 +85,7 @@ class ScreenshotsTestSuite {
         }
     }
 
+    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     @Test
     fun homeScreen() {
         makeScreenshotOf("3") {
@@ -108,35 +113,48 @@ class ScreenshotsTestSuite {
                     ),
                 )
             val uiState = HomeScreenState.Loaded(data = data)
-            HomeScreen(
-                uiState = uiState,
-                onSettingsIconClick = {},
-                onHeadlineClick = {},
-                onRecipeClick = {},
-            )
+            Scaffold(
+                bottomBar = {
+                    BottomBarContent(selected = BottomBarDestination.Home, onClick = {})
+                },
+            ) { _ ->
+                HomeScreen(
+                    uiState = uiState,
+                    onSettingsIconClick = {},
+                    onHeadlineClick = {},
+                    onRecipeClick = {},
+                )
+            }
         }
     }
 
+    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     @Test
     fun detailScreen() {
         makeScreenshotOf("4") {
-            RecipeDetailContent(
-                recipe = RECIPE,
-                calculatedIngredients = emptyList(),
-                currentYield = RECIPE.yield,
-                onDecreaseYield = {},
-                onIncreaseYield = {},
-                onNavIconClick = {},
-                onEditClick = {},
-                onDeleteClick = {},
-                shareText = "",
-                onFabClick = {},
-                loading = false,
-                errorMessage = null,
-                error = null,
-                onKeywordClick = {},
-                onResetYield = {},
-            )
+            Scaffold(
+                bottomBar = {
+                    BottomBarContent(selected = BottomBarDestination.Recipes, onClick = {})
+                },
+            ) { _ ->
+                RecipeDetailContent(
+                    recipe = RECIPE,
+                    calculatedIngredients = emptyList(),
+                    currentYield = RECIPE.yield,
+                    onDecreaseYield = {},
+                    onIncreaseYield = {},
+                    onNavIconClick = {},
+                    onEditClick = {},
+                    onDeleteClick = {},
+                    shareText = "",
+                    onFabClick = {},
+                    loading = false,
+                    errorMessage = null,
+                    error = null,
+                    onKeywordClick = {},
+                    onResetYield = {},
+                )
+            }
         }
     }
 
