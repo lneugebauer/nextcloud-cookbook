@@ -148,9 +148,6 @@ dependencies {
 
     implementation 'com.jakewharton.timber:timber:5.0.1'
 
-    implementation "com.github.alorma:compose-settings-ui-m3:$compose_settings_version"
-    implementation "com.github.alorma:compose-settings-storage-preferences:$compose_settings_version"
-
     implementation "io.github.raamcosta.compose-destinations:core:$compose_destinations_version"
     ksp "io.github.raamcosta.compose-destinations:ksp:$compose_destinations_version"
 
