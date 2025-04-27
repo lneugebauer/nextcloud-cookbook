@@ -55,6 +55,25 @@ import payPalBadge from './assets/images/donate_with_paypal.svg';
 
 To install through [Obtainium](https://github.com/ImranR98/Obtainium/tree/main?tab=readme-ov-file#installation), simply go to "Add App" and paste the URL of this repository as the source URL: `https://github.com/lneugebauer/nextcloud-cookbook`.
 
+## Screenshots
+
+<table>
+    <tr>
+        <td>Phone</td>
+        <td><img src="./assets/images/phoneScreenshots/1.png" alt="Phone screenshot 1"></td>
+        <td><img src="./assets/images/phoneScreenshots/2.png" alt="Phone screenshot 2"></td>
+        <td><img src="./assets/images/phoneScreenshots/3.png" alt="Phone screenshot 3"></td>
+        <td><img src="./assets/images/phoneScreenshots/4.png" alt="Phone screenshot 4"></td>
+    </tr>
+    <tr>
+        <td>Tablet</td>
+        <td><img src="./assets/images/tenInchScreenshots/1.png" alt="Tablet screenshot 1"></td>
+        <td><img src="./assets/images/tenInchScreenshots/2.png" alt="Tablet screenshot 2"></td>
+        <td><img src="./assets/images/tenInchScreenshots/3.png" alt="Tablet screenshot 3"></td>
+        <td><img src="./assets/images/tenInchScreenshots/4.png" alt="Tablet screenshot 4"></td>
+    </tr>
+</table>
+
 ## Features :rocket:
 
 - List all recipes
