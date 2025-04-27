@@ -55,6 +55,26 @@ import payPalBadge from './assets/images/donate_with_paypal.svg';
 
 To install through [Obtainium](https://github.com/ImranR98/Obtainium/tree/main?tab=readme-ov-file#installation), simply go to "Add App" and paste the URL of this repository as the source URL: `https://github.com/lneugebauer/nextcloud-cookbook`.
 
+## Donate
+
+<NCDonationBadges>
+    <NCBadge
+        alt="Donate using Liberapay"
+        event-name="donate-using-liberapay-button"
+        link="https://liberapay.com/lneugebauer/donate"
+        size="small"
+        src="https://liberapay.com/assets/widgets/donate.svg"
+    />
+    <NCBadge
+        alt="Donate using PayPal"
+        event-name="donate-using-paypal-button"
+        link="https://www.paypal.com/donate/?hosted_button_id=ECDNN8PS3SSMQ"
+        size="small"
+        :src="payPalBadge"
+    />
+    <iframe src="https://github.com/sponsors/lneugebauer/button" title="Sponsor lneugebauer" height="32" width="114" style="border: 0; border-radius: 6px;"></iframe>
+</NCDonationBadges>
+
 ## Screenshots
 
 <table>
@@ -90,26 +110,6 @@ To install through [Obtainium](https://github.com/ImranR98/Obtainium/tree/main?t
 - Offline usage
 - Single Sign On through Nextcloud Files app
 - Login via QR-Code
-
-## Donate
-
-<NCDonationBadges>
-    <NCBadge
-        alt="Donate using Liberapay"
-        event-name="donate-using-liberapay-button"
-        link="https://liberapay.com/lneugebauer/donate"
-        size="small"
-        src="https://liberapay.com/assets/widgets/donate.svg"
-    />
-    <NCBadge
-        alt="Donate using PayPal"
-        event-name="donate-using-paypal-button"
-        link="https://www.paypal.com/donate/?hosted_button_id=ECDNN8PS3SSMQ"
-        size="small"
-        :src="payPalBadge"
-    />
-    <iframe src="https://github.com/sponsors/lneugebauer/button" title="Sponsor lneugebauer" height="32" width="114" style="border: 0; border-radius: 6px;"></iframe>
-</NCDonationBadges>
 
 
 ## Translations :earth_africa:
