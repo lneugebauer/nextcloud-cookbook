@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Logout
@@ -145,6 +147,7 @@ fun SettingsContent(
         modifier =
             Modifier
                 .fillMaxSize()
+                .verticalScroll(state = rememberScrollState())
                 .then(modifier),
     ) {
         SettingsGroupGeneral(isStayAwake = isStayAwake, onStayAwakeChange = onStayAwakeChange)
@@ -342,7 +345,7 @@ fun ColumnScope.SettingsGroupContribution(
 
 @Preview(showBackground = true)
 @Composable
-private fun SettingsContent2Preview() {
+private fun SettingsContentPreview() {
     NextcloudCookbookTheme {
         SettingsContent(
             isStayAwake = false,
