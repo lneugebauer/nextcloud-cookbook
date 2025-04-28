@@ -2,6 +2,7 @@ package de.lukasneugebauer.nextcloudcookbook.core.data
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.core.content.edit
 import androidx.datastore.core.DataMigration
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -129,6 +130,10 @@ class PreferencesManager
             return sharedPreferences.getBoolean(STAY_AWAKE_KEY, STAY_AWAKE_DEFAULT)
         }
 
+        fun setStayAwake(isStayAwake: Boolean) {
+            sharedPreferences.edit { putBoolean(STAY_AWAKE_KEY, isStayAwake) }
+        }
+
         suspend fun updateNextcloudAccount(ncAccount: NcAccount) =
             context.dataStore54.edit { preferences ->
                 preferences[PreferencesKeys.NC_NAME] = ncAccount.name
@@ -146,6 +151,6 @@ class PreferencesManager
 
         suspend fun clearPreferences() {
             context.dataStore54.edit { it.clear() }
-            sharedPreferences.edit().clear().apply()
+            sharedPreferences.edit { clear() }
         }
     }
