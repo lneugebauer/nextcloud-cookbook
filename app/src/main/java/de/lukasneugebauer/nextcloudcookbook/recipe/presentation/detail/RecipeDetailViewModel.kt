@@ -9,8 +9,8 @@ import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
 import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
 import de.lukasneugebauer.nextcloudcookbook.core.util.asUiText
-import de.lukasneugebauer.nextcloudcookbook.core.util.notZero
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipePreviewDto
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.RecipeFormatter
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.YieldCalculator
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Recipe
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.repository.RecipeRepository
@@ -30,6 +30,7 @@ class RecipeDetailViewModel
     @Inject
     constructor(
         private val preferencesManager: PreferencesManager,
+        private val recipeFormatter: RecipeFormatter,
         private val recipeRepository: RecipeRepository,
         savedStateHandle: SavedStateHandle,
         private val yieldCalculator: YieldCalculator,
@@ -128,67 +129,11 @@ class RecipeDetailViewModel
                 )
         }
 
-        fun getShareText(
-            sourceTitle: String,
-            prepTime: (duration: Long) -> String,
-            cookTime: (duration: Long) -> String,
-            totalTime: (duration: Long) -> String,
-            ingredientsTitle: String,
-            toolsTitle: String,
-            instructionsTitle: String,
-        ): String {
-            val recipe = _state.value.data ?: return ""
-
-            var textToShare = "${recipe.name}\n\n"
-            if (recipe.description.isNotBlank()) {
-                textToShare += "${recipe.description}\n\n"
+        fun getShareText(): String {
+            _state.value.data?.let {
+                return recipeFormatter.format(it)
             }
-
-            if (recipe.url.isNotBlank()) {
-                textToShare += "$sourceTitle: ${recipe.url}\n\n"
-            }
-
-            if (recipe.prepTime?.notZero() == true) {
-                textToShare += "${prepTime(recipe.prepTime.toMinutes())}\n"
-            }
-            if (recipe.cookTime?.notZero() == true) {
-                textToShare += "${cookTime(recipe.cookTime.toMinutes())}\n"
-            }
-            if (recipe.totalTime?.notZero() == true) {
-                textToShare += "${totalTime(recipe.totalTime.toMinutes())}\n"
-            }
-            if (recipe.prepTime?.notZero() == true ||
-                recipe.cookTime?.notZero() == true ||
-                recipe.totalTime?.notZero() == true
-            ) {
-                textToShare += "\n"
-            }
-
-            if (recipe.ingredients.isNotEmpty()) {
-                textToShare += "$ingredientsTitle\n"
-                recipe.ingredients.forEachIndexed { index, ingredient ->
-                    textToShare += "• $ingredient\n"
-                    if (recipe.ingredients.size - 1 == index) textToShare += "\n"
-                }
-            }
-
-            if (recipe.tools.isNotEmpty()) {
-                textToShare += "$toolsTitle\n"
-                recipe.tools.forEachIndexed { index, tool ->
-                    textToShare += "• $tool\n"
-                    if (recipe.tools.size - 1 == index) textToShare += "\n"
-                }
-            }
-
-            if (recipe.instructions.isNotEmpty()) {
-                textToShare += "$instructionsTitle\n"
-                recipe.instructions.forEachIndexed { index, instruction ->
-                    textToShare += "${index + 1}.) $instruction"
-                    if (recipe.tools.size - 1 != index) textToShare += "\n\n"
-                }
-            }
-
-            return textToShare
+            return ""
         }
 
         fun deleteRecipe(

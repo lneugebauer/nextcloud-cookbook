@@ -162,33 +162,7 @@ fun AnimatedVisibilityScope.RecipeDetailScreen(
                 )
             }
         },
-        shareText =
-            viewModel.getShareText(
-                sourceTitle = stringResource(id = R.string.recipe_source),
-                prepTime = { duration ->
-                    context.getString(R.string.recipe_prep_time)
-                        .plus(": ")
-                        .plus(context.getString(R.string.recipe_duration, duration))
-                },
-                cookTime = { duration ->
-                    context.getString(R.string.recipe_cook_time)
-                        .plus(": ")
-                        .plus(context.getString(R.string.recipe_duration, duration))
-                },
-                totalTime = { duration ->
-                    context.getString(R.string.recipe_total_time)
-                        .plus(": ")
-                        .plus(context.getString(R.string.recipe_duration, duration))
-                },
-                ingredientsTitle =
-                    pluralResource(
-                        R.plurals.recipe_ingredients_servings,
-                        recipe.yield,
-                        recipe.yield,
-                    ),
-                toolsTitle = stringResource(id = R.string.recipe_tools),
-                instructionsTitle = stringResource(id = R.string.recipe_instructions),
-            ),
+        shareText = viewModel.getShareText(),
         onFabClick = {
             if (recipe.isNotEmpty()) {
                 navigator.navigate(RecipeEditScreenDestination(recipe.id))

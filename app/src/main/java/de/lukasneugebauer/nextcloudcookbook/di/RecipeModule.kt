@@ -8,10 +8,12 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import de.lukasneugebauer.nextcloudcookbook.core.util.IoDispatcher
+import de.lukasneugebauer.nextcloudcookbook.recipe.data.RecipeFormatterImpl
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.YieldCalculatorImpl
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipeDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipePreviewDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.repository.RecipeRepositoryImpl
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.RecipeFormatter
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.YieldCalculator
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.repository.RecipeRepository
 import kotlinx.coroutines.CoroutineDispatcher
@@ -92,6 +94,12 @@ object RecipeModule {
             recipePreviewsStore,
             recipeStore,
         )
+
+    @Provides
+    @Singleton
+    fun provideRecipeFormatter(
+        @ApplicationContext context: Context,
+    ): RecipeFormatter = RecipeFormatterImpl(resources = context.resources)
 
     @Provides
     @Singleton
