@@ -57,7 +57,7 @@
     <string name="settings_translate">Aider à la traduction</string>
     <string name="settings_version_number">version %1$s (%2$d)</string>
     <string name="settings_version">Application Nextcloud Cookbook</string>
-    <string name="app_name">Livre de recettes</string>
+    <string name="app_name">Livre de cuisine</string>
     <string name="common_about">À propos</string>
     <string name="common_back">Retour</string>
     <string name="common_categories">Catégories</string>
@@ -131,11 +131,11 @@
     <plurals name="recipe_ingredients_copied">
         <item quantity="one">Ingrédient copié</item>
         <item quantity="many">Ingrédients copiés</item>
-        <item quantity="other"/>
+        <item quantity="other">Ingrédients copiés</item>
     </plurals>
     <string name="common_ascending">Ascendant</string>
     <string name="common_descending">Descendant</string>
-    <string name="recipe_alphabetical">Alphabétique</string>
+    <string name="recipe_alphabetical">Nom</string>
     <string name="recipe_created_at">Date de création</string>
     <string name="recipe_modified_at">Date de modification</string>
     <string name="settings_issues">Problèmes</string>
