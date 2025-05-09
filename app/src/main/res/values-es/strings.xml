@@ -116,9 +116,9 @@
     <string name="recipe_servings_decrease">Eliminar parte</string>
     <string name="recipe_servings_increase">Añadir parte</string>
     <plurals name="recipe_servings">
-        <item quantity="one">Sirviendo %1$d</item>
-        <item quantity="many">Sirviendo %1$d</item>
-        <item quantity="other">Sirviendo %1$d</item>
+        <item quantity="one">%1$d ración</item>
+        <item quantity="many">%1$d raciones</item>
+        <item quantity="other">%1$d raciones</item>
     </plurals>
     <string name="recipe_servings_reset">Restablecer parte</string>
     <string name="recipe_ingredients_copy">Copiar ingredientes al portapapeles</string>
@@ -138,5 +138,5 @@
     <string name="recipe_modified_at">Fecha de modificación</string>
     <string name="settings_issues">Problemas</string>
     <string name="common_descending">Descendente</string>
-    <string name="recipe_alphabetical">Alfabético</string>
+    <string name="recipe_alphabetical">Nombre</string>
 </resources>
