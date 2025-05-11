@@ -4,7 +4,9 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.view.View
 import android.view.WindowManager
+import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibilityScope
@@ -628,30 +630,6 @@ private fun Ingredients(
         var checked by rememberSaveable { mutableStateOf(false) }
         val modifier =
             Modifier
-// TODO: Add some way to copy single ingredient
-//                        .combinedClickable(
-//                            onLongClick = {
-//                                clipboardManager.setText(
-//                                    buildAnnotatedString {
-//                                        append(ingredient)
-//                                        toAnnotatedString()
-//                                    },
-//                                )
-//                                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
-//                                    Toast
-//                                        .makeText(
-//                                            context,
-//                                            context.resources.getQuantityString(
-//                                                R.plurals.recipe_ingredients_copied,
-//                                                1,
-//                                            ),
-//                                            Toast.LENGTH_SHORT,
-//                                        )
-//                                        .show()
-//                                }
-//                            },
-//                            onClick = {},
-//                        )
                 .fillMaxWidth()
                 .minimumInteractiveComponentSize()
                 .padding(end = dimensionResource(id = R.dimen.padding_m))
@@ -663,6 +641,7 @@ private fun Ingredients(
                     onCheckedChange = { checked = !checked },
                 )
             }
+            val textViewId = View.generateViewId()
             with(LocalDensity.current) {
                 MarkdownText(
                     markdown =
@@ -679,7 +658,33 @@ private fun Ingredients(
                         },
                     fontSize = LocalTextStyle.current.fontSize * this.fontScale,
                     style = LocalTextStyle.current.copy(color = LocalContentColor.current),
+                    viewId = textViewId,
                 )
+            }
+            LaunchedEffect(Unit) {
+                context.getActivity()?.findViewById<TextView>(textViewId)?.setOnLongClickListener {
+                    clipboardManager.setText(
+                        buildAnnotatedString {
+                            append(ingredient)
+                            toAnnotatedString()
+                        },
+                    )
+
+                    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
+                        Toast
+                            .makeText(
+                                context,
+                                context.resources.getQuantityString(
+                                    R.plurals.recipe_ingredients_copied,
+                                    1,
+                                ),
+                                Toast.LENGTH_SHORT,
+                            )
+                            .show()
+                    }
+
+                    true
+                }
             }
         }
     }

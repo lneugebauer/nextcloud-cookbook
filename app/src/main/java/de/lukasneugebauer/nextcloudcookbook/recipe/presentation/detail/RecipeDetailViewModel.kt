@@ -132,12 +132,15 @@ class RecipeDetailViewModel
 
         fun getShareText(): String {
             _state.value.data?.let {
-                return recipeFormatter.format(it.copy(
-                    yield = _state.value.currentYield,
-                    ingredients = _state.value.calculatedIngredients.mapIndexed { index, ingredient ->
-                        Ingredient(id = index, value = ingredient)
-                    }
-                ))
+                return recipeFormatter.format(
+                    it.copy(
+                        yield = _state.value.currentYield,
+                        ingredients =
+                            _state.value.calculatedIngredients.mapIndexed { index, ingredient ->
+                                Ingredient(id = index, value = ingredient)
+                            },
+                    ),
+                )
             }
             return ""
         }
