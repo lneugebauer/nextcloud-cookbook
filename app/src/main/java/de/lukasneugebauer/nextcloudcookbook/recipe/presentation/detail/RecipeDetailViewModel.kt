@@ -12,6 +12,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.util.asUiText
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipePreviewDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.RecipeFormatter
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.YieldCalculator
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Ingredient
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Recipe
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.repository.RecipeRepository
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.RecipeDetailState
@@ -131,7 +132,12 @@ class RecipeDetailViewModel
 
         fun getShareText(): String {
             _state.value.data?.let {
-                return recipeFormatter.format(it)
+                return recipeFormatter.format(it.copy(
+                    yield = _state.value.currentYield,
+                    ingredients = _state.value.calculatedIngredients.mapIndexed { index, ingredient ->
+                        Ingredient(id = index, value = ingredient)
+                    }
+                ))
             }
             return ""
         }
