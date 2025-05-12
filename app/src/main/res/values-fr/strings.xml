@@ -108,7 +108,7 @@
         <item quantity="other">Ingrédients pour %1$d portions</item>
     </plurals>
     <string name="recipe_ingredient">Ingrédient</string>
-    <string name="recipe_more_menu_share">Code ouvert</string>
+    <string name="recipe_more_menu_share">Consulter la source</string>
     <string name="recipe_new">Nouvelle recette</string>
     <string name="recipe_nutrition">Informations nutritionnelles</string>
     <string name="recipe_nutrition_carbohydrate">Glucides</string>
