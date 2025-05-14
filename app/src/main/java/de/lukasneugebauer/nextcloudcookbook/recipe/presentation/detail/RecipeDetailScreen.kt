@@ -641,7 +641,7 @@ private fun Ingredients(
                     onCheckedChange = { checked = !checked },
                 )
             }
-            val textViewId = View.generateViewId()
+            val textViewId = remember { View.generateViewId() }
             with(LocalDensity.current) {
                 MarkdownText(
                     markdown =
