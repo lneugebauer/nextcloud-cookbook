@@ -11,6 +11,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,6 +21,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Checkbox
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.SwipeableDefaults
@@ -165,6 +167,7 @@ fun LoginScreen(
     onManualLoginClick: (username: String, password: String, url: String) -> Unit,
 ) {
     var url: String by rememberSaveable { mutableStateOf("") }
+    var allowSelfSignedCertificates: Boolean by rememberSaveable { mutableStateOf(false) }
     Column(
         modifier =
             Modifier
@@ -217,7 +220,16 @@ fun LoginScreen(
                 ),
             singleLine = true,
         )
-        Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_s)))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Checkbox(
+                checked = allowSelfSignedCertificates,
+                onCheckedChange = { allowSelfSignedCertificates = it },
+            )
+            Text(text = stringResource(R.string.login_allow_self_signed_certificates))
+        }
         DefaultButton(
             onClick = { onLoginClick.invoke(url) },
             modifier =
@@ -237,7 +249,7 @@ fun LoginScreen(
             ManualLoginForm(
                 usernameError = usernameError,
                 passwordError = passwordError,
-                urlError = urlError,
+                url = url,
                 onClearError = onClearError,
                 onManualLoginClick = onManualLoginClick,
             )
@@ -249,7 +261,7 @@ fun LoginScreen(
 private fun ManualLoginForm(
     usernameError: UiText?,
     passwordError: UiText?,
-    urlError: UiText?,
+    url: String,
     onClearError: () -> Unit,
     onManualLoginClick: (username: String, password: String, url: String) -> Unit,
 ) {
@@ -257,7 +269,6 @@ private fun ManualLoginForm(
     var username: String by rememberSaveable { mutableStateOf("") }
     var password: String by rememberSaveable { mutableStateOf("") }
     var passwordVisibility by rememberSaveable { mutableStateOf(false) }
-    var url: String by rememberSaveable { mutableStateOf("") }
     DefaultOutlinedTextField(
         value = username,
         onValueChange = {
@@ -330,40 +341,6 @@ private fun ManualLoginForm(
         singleLine = true,
     )
     Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_s)))
-    DefaultOutlinedTextField(
-        value = url,
-        onValueChange = {
-            url = it
-            onClearError.invoke()
-        },
-        modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
-        label = {
-            Text(
-                text = stringResource(R.string.login_root_address),
-            )
-        },
-        placeholder = {
-            Text(
-                text = stringResource(R.string.login_example_url),
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
-            )
-        },
-        errorText = urlError?.asString(),
-        keyboardOptions =
-            KeyboardOptions.Default.copy(
-                imeAction = ImeAction.Done,
-            ),
-        keyboardActions =
-            KeyboardActions(
-                onDone = {
-                    onManualLoginClick(username, password, url)
-                },
-            ),
-        singleLine = true,
-    )
     Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_s)))
     DefaultButton(
         onClick = { onManualLoginClick(username, password, url) },
@@ -441,5 +418,21 @@ private fun LoginScreenPreview() {
 private fun LoginScreenDarkModePreview() {
     NextcloudCookbookTheme {
         LoginScreen(false, null, null, null, {}, {}, {}, { _, _, _ -> })
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ManualLoginFormPreview() {
+    NextcloudCookbookTheme {
+        Column {
+            ManualLoginForm(
+                usernameError = null,
+                passwordError = null,
+                url = "",
+                onClearError = {},
+                onManualLoginClick = { _, _, _ -> },
+            )
+        }
     }
 }
