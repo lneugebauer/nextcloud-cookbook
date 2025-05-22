@@ -135,4 +135,5 @@
     <string name="error_http_401">401 Uautorisert</string>
     <string name="error_ssl_handshake">Sertifikatfeil</string>
     <string name="recipe_description">Beskriving</string>
+    <string name="common_reorder">Bestill på nytt</string>
 </resources>
