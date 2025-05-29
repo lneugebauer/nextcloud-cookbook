@@ -1,0 +1,20 @@
+Visualitzi totes les receptes emmagatzemades a la teva instància del Nextcloud.
+
+El codi font es pot trobar a GitHub a https://github.com/lneugebauer/nextcloud-cookbook/. Informa d'errors, propostes de millora i sol·licituds de funcions allà.
+
+Actual:
+- Llistar totes les receptes
+- Llistar totes les receptes per categoria
+- Visualitzar la recepta
+- Mantenir-se despert a la pantalla de receptes
+- Configuració
+- Editar la recepta
+- Afegir recepta
+- Importar la recepta mitjançant URL
+
+Planificat:
+- Ús fora de línia
+- Inici de sessió únic a través de l'aplicació Fitxers del Nextcloud
+- Iniciar sessió mitjançant codi QR
+
+Es requereix un servidor del Nextcloud d'accés públic amb l'última aplicació de llibres de cuina per utilitzar aquesta aplicació.
