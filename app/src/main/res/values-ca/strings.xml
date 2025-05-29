@@ -44,7 +44,7 @@
     <string name="login">Inici de sessió</string>
     <string name="login_manual">Inici de sessió manual</string>
     <string name="login_root_address">Carpeta arrel del Nextcloud</string>
-    <string name="recipe_alphabetical">Alfabètic</string>
+    <string name="recipe_alphabetical">Nom</string>
     <string name="recipe_category">Categoria</string>
     <string name="recipe_cook_time">Cuinant</string>
     <string name="recipe_created_at">Data de creació</string>
@@ -138,4 +138,5 @@
     <string name="error_http_503">503 Servei no disponible</string>
     <string name="error_ssl_handshake">Error de certificat</string>
     <string name="home_recommendation">Recomanació</string>
+    <string name="dialog_crash_report_text">Ups, el Nextcloud Cookbook acaba de fallar. Voleu enviar un informe d\'error als desenvolupadors?</string>
 </resources>
