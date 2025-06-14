@@ -15,7 +15,7 @@ import javax.inject.Inject
 class StartScreenViewModel
     @Inject
     constructor() : ViewModel() {
-        private val _uiState = MutableStateFlow<StartScreenState>(StartScreenState.Initial)
+        private val _uiState = MutableStateFlow<StartScreenState>(StartScreenState.Loaded(url = ""))
         val uiState = _uiState.asStateFlow()
 
         fun onUrlChange(newUrl: String) {
@@ -55,6 +55,20 @@ class StartScreenViewModel
                 _uiState.update {
                     StartScreenState.ManualLogin(url = currentUrl, allowSelfSignedCertificates = allowSelfSignedCertificates)
                 }
+            }
+        }
+
+        fun onNavigate() {
+            when (_uiState.value) {
+                is StartScreenState.WebViewLogin -> {
+                    val data = (_uiState.value as StartScreenState.WebViewLogin)
+                    _uiState.update { StartScreenState.Loaded(url = data.url, allowSelfSignedCertificates = data.allowSelfSignedCertificates) }
+                }
+                is StartScreenState.ManualLogin -> {
+                    val data = (_uiState.value as StartScreenState.ManualLogin)
+                    _uiState.update { StartScreenState.Loaded(url = data.url, allowSelfSignedCertificates = data.allowSelfSignedCertificates) }
+                }
+                else -> Unit
             }
         }
 

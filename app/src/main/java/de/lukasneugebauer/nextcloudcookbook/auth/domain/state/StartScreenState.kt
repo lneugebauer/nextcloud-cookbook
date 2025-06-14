@@ -3,8 +3,6 @@ package de.lukasneugebauer.nextcloudcookbook.auth.domain.state
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
 
 sealed interface StartScreenState {
-    object Initial : StartScreenState
-
     data class Loaded(
         val url: String,
         val allowSelfSignedCertificates: Boolean = false,

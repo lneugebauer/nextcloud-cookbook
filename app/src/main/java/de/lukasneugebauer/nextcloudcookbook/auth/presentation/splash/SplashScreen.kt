@@ -8,8 +8,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.generated.destinations.HomeScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.LoginScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.SplashScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.StartScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import de.lukasneugebauer.nextcloudcookbook.auth.domain.state.SplashScreenState
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.MainGraph
@@ -40,7 +40,7 @@ fun SplashScreen(
             }
             SplashScreenState.Unauthorized -> {
                 mainViewModel.finishSplash()
-                navigator.navigate(LoginScreenDestination) {
+                navigator.navigate(StartScreenDestination) {
                     popUpTo(SplashScreenDestination) {
                         inclusive = true
                     }

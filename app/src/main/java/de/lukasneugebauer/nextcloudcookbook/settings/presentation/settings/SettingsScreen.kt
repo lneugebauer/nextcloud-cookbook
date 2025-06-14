@@ -43,8 +43,8 @@ import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.generated.destinations.LibrariesScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.LoginScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.SplashScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.StartScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import de.lukasneugebauer.nextcloudcookbook.BuildConfig
 import de.lukasneugebauer.nextcloudcookbook.R
@@ -95,7 +95,7 @@ fun AnimatedVisibilityScope.SettingsScreen(
                     },
                     onLogoutClick = {
                         viewModel.logout {
-                            navigator.navigate(LoginScreenDestination) {
+                            navigator.navigate(StartScreenDestination) {
                                 popUpTo(SplashScreenDestination) {
                                     inclusive = true
                                 }
