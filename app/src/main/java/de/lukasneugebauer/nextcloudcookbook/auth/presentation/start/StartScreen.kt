@@ -20,6 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -32,6 +33,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.generated.destinations.WebViewScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.auth.domain.state.StartScreenState
@@ -47,7 +49,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
 
 @Destination<MainGraph>
 @Composable
-fun AnimatedVisibilityScope.LoginScreen(
+fun AnimatedVisibilityScope.StartScreen(
     navigator: DestinationsNavigator,
     viewModel: StartScreenViewModel = hiltViewModel(),
 ) {
@@ -55,9 +57,35 @@ fun AnimatedVisibilityScope.LoginScreen(
 
     HideBottomNavigation()
 
+    LaunchedEffect(uiState) {
+        when (uiState) {
+            is StartScreenState.WebViewLogin -> {
+                val data = (uiState as StartScreenState.WebViewLogin)
+                viewModel.onNavigate()
+                navigator.navigate(
+                    WebViewScreenDestination(
+                        url = data.url,
+                        allowSelfSignedCertificates = data.allowSelfSignedCertificates
+                    )
+                )
+            }
+            is StartScreenState.ManualLogin -> {
+                val data = (uiState as StartScreenState.ManualLogin)
+                viewModel.onNavigate()
+                navigator.navigate(
+                    WebViewScreenDestination(
+                        url = data.url,
+                        allowSelfSignedCertificates = data.allowSelfSignedCertificates
+                    )
+                )
+            }
+            else -> Unit
+        }
+    }
+
     Scaffold { innerPadding ->
         when (uiState) {
-            StartScreenState.Initial, is StartScreenState.WebViewLogin, is StartScreenState.ManualLogin -> {
+            is StartScreenState.WebViewLogin, is StartScreenState.ManualLogin -> {
                 Loader(modifier = Modifier.padding(innerPadding))
             }
             is StartScreenState.Loaded -> {
@@ -171,7 +199,7 @@ fun StartLayout(
 
 @Preview
 @Composable
-fun StartLayoutPreview() {
+private fun StartLayoutPreview() {
     NextcloudCookbookTheme {
         StartLayout(
             url = "",
