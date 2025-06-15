@@ -4,6 +4,7 @@ import android.util.Patterns.WEB_URL
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.lukasneugebauer.nextcloudcookbook.R
+import de.lukasneugebauer.nextcloudcookbook.auth.domain.state.StartScreenSignInEvent
 import de.lukasneugebauer.nextcloudcookbook.auth.domain.state.StartScreenState
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +16,7 @@ import javax.inject.Inject
 class StartScreenViewModel
     @Inject
     constructor() : ViewModel() {
-        private val _uiState = MutableStateFlow<StartScreenState>(StartScreenState.Loaded(url = ""))
+        private val _uiState = MutableStateFlow<StartScreenState>(StartScreenState.Loaded())
         val uiState = _uiState.asStateFlow()
 
         fun onUrlChange(newUrl: String) {
@@ -38,42 +39,31 @@ class StartScreenViewModel
             }
         }
 
-        fun onWebViewLoginClick() {
-            val currentUrl = (_uiState.value as? StartScreenState.Loaded)?.url
-            val allowSelfSignedCertificates = (_uiState.value as? StartScreenState.Loaded)?.allowSelfSignedCertificates == true
-            if (currentUrl != null && isValidUrl(url = currentUrl)) {
+        fun onLoginClick(event: StartScreenSignInEvent) {
+            if (isValidUrl()) {
                 _uiState.update {
-                    StartScreenState.WebViewLogin(url = currentUrl, allowSelfSignedCertificates = allowSelfSignedCertificates)
-                }
-            }
-        }
-
-        fun onManualLoginClick() {
-            val currentUrl = (_uiState.value as? StartScreenState.Loaded)?.url
-            val allowSelfSignedCertificates = (_uiState.value as? StartScreenState.Loaded)?.allowSelfSignedCertificates == true
-            if (currentUrl != null && isValidUrl(url = currentUrl)) {
-                _uiState.update {
-                    StartScreenState.ManualLogin(url = currentUrl, allowSelfSignedCertificates = allowSelfSignedCertificates)
+                    if (it is StartScreenState.Loaded) {
+                        it.copy(event = event)
+                    } else {
+                        it
+                    }
                 }
             }
         }
 
         fun onNavigate() {
-            when (_uiState.value) {
-                is StartScreenState.WebViewLogin -> {
-                    val data = (_uiState.value as StartScreenState.WebViewLogin)
-                    _uiState.update { StartScreenState.Loaded(url = data.url, allowSelfSignedCertificates = data.allowSelfSignedCertificates) }
+            _uiState.update {
+                if (it is StartScreenState.Loaded) {
+                    it.copy(event = null)
+                } else {
+                    it
                 }
-                is StartScreenState.ManualLogin -> {
-                    val data = (_uiState.value as StartScreenState.ManualLogin)
-                    _uiState.update { StartScreenState.Loaded(url = data.url, allowSelfSignedCertificates = data.allowSelfSignedCertificates) }
-                }
-                else -> Unit
             }
         }
 
-        private fun isValidUrl(url: String): Boolean {
-            if (url.isBlank()) {
+        private fun isValidUrl(): Boolean {
+            val url = (_uiState.value as? StartScreenState.Loaded)?.url
+            if (url.isNullOrBlank()) {
                 _uiState.update {
                     if (it is StartScreenState.Loaded) {
                         it.copy(urlError = UiText.StringResource(R.string.error_empty_url))
