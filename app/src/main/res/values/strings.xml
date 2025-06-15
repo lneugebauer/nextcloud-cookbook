@@ -60,6 +60,7 @@
     <string name="login">Sign in</string>
     <string name="login_allow_self_signed_certificates">Allow self-signed certificates</string>
     <string name="login_example_url" translatable="false">https://cloud.example.tld</string>
+    <string name="login_instance_hint">Please enter your login details for %1$s.</string>
     <string name="login_manual">Manual sign in</string>
     <string name="login_nextcloud_logo">Nextcloud logo</string>
     <string name="login_root_address">Nextcloud root address</string>

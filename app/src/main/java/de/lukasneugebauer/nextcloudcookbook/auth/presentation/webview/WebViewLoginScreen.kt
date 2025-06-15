@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -37,19 +35,19 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.error.AbstractErro
 
 @Destination<MainGraph>
 @Composable
-fun AnimatedVisibilityScope.WebViewScreen(
+fun AnimatedVisibilityScope.WebViewLoginScreen(
     navigator: DestinationsNavigator,
     url: String,
     allowSelfSignedCertificates: Boolean,
-    viewModel: WebViewViewModel = hiltViewModel(),
+    viewModel: WebViewLoginViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
     HideBottomNavigation()
 
     LaunchedEffect(uiState) {
-        if (uiState is WebViewScreenState.Authorized) {
-            navigator.navigate(HomeScreenDestination()) {
+        if (uiState is WebViewScreenState.Authenticated) {
+            navigator.navigate(HomeScreenDestination) {
                 popUpTo(StartScreenDestination) {
                     inclusive = true
                 }
@@ -59,16 +57,16 @@ fun AnimatedVisibilityScope.WebViewScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(onCloseClick = { navigator.navigateUp()})
+            TopAppBar(onBackClick = { navigator.navigateUp() })
         },
     ) { innerPadding ->
         when (uiState) {
-            WebViewScreenState.Initial, WebViewScreenState.Authorized -> {
+            WebViewScreenState.Initial, WebViewScreenState.Authenticated -> {
                 Loader(modifier = Modifier.padding(innerPadding))
             }
             is WebViewScreenState.Loaded -> {
                 val url = (uiState as WebViewScreenState.Loaded).webViewUrl.toString()
-                WebViewLayout(url = url, modifier = Modifier.padding(innerPadding))
+                WebViewLoginLayout(url = url, modifier = Modifier.padding(innerPadding))
             }
             is WebViewScreenState.Error -> {
                 val message = (uiState as WebViewScreenState.Error).uiText
@@ -80,7 +78,10 @@ fun AnimatedVisibilityScope.WebViewScreen(
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
-private fun WebViewLayout(url: String, modifier: Modifier = Modifier) {
+private fun WebViewLoginLayout(
+    url: String,
+    modifier: Modifier = Modifier,
+) {
     AndroidView(
         factory = {
             WebView(it).apply {
@@ -102,13 +103,13 @@ private fun WebViewLayout(url: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun TopAppBar(onCloseClick: () -> Unit) {
+private fun TopAppBar(onBackClick: () -> Unit) {
     TopAppBar(
         title = {
             Text(text = stringResource(R.string.login))
         },
         navigationIcon = {
-            IconButton(onClick = onCloseClick) {
+            IconButton(onClick = onBackClick) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Default.ArrowBack,
                     contentDescription = stringResource(R.string.common_back),

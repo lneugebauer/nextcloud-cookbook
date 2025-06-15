@@ -24,7 +24,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class WebViewViewModel
+class WebViewLoginViewModel
     @Inject
     constructor(
         private val accountRepository: AccountRepository,
@@ -60,7 +60,12 @@ class WebViewViewModel
                         }
                     }
 
-                    is Resource.Error -> _uiState.update { WebViewScreenState.Error(uiText = result.message ?: UiText.StringResource(R.string.error_unknown)) }
+                    is Resource.Error ->
+                        _uiState.update {
+                            WebViewScreenState.Error(
+                                uiText = result.message ?: UiText.StringResource(R.string.error_unknown),
+                            )
+                        }
                 }
             }
         }
@@ -83,10 +88,12 @@ class WebViewViewModel
                                 if (userMetadata is Resource.Error) {
                                     clearPreferencesUseCase()
                                     _uiState.update {
-                                        WebViewScreenState.Error(uiText = userMetadata.message ?: UiText.StringResource(R.string.error_unknown))
+                                        WebViewScreenState.Error(
+                                            uiText = userMetadata.message ?: UiText.StringResource(R.string.error_unknown),
+                                        )
                                     }
                                 } else {
-                                    _uiState.update { WebViewScreenState.Authorized }
+                                    _uiState.update { WebViewScreenState.Authenticated }
                                 }
                             }
                         }

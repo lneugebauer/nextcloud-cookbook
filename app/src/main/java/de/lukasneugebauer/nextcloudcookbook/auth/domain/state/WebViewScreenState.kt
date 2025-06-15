@@ -8,10 +8,10 @@ sealed interface WebViewScreenState {
 
     data class Loaded(
         val webViewUrl: Uri,
-        val pollLoginServerIsActive: Boolean = false
+        val pollLoginServerIsActive: Boolean = false,
     ) : WebViewScreenState
 
-    object Authorized : WebViewScreenState
+    object Authenticated : WebViewScreenState
 
     data class Error(val uiText: UiText) : WebViewScreenState
 }

@@ -33,16 +33,17 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.generated.destinations.WebViewScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.ManualLoginScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.WebViewLoginScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import de.lukasneugebauer.nextcloudcookbook.R
+import de.lukasneugebauer.nextcloudcookbook.auth.domain.state.StartScreenSignInEvent
 import de.lukasneugebauer.nextcloudcookbook.auth.domain.state.StartScreenState
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.MainGraph
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.DefaultButton
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.DefaultOutlinedTextField
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.DefaultTextButton
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.HideBottomNavigation
-import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.error.AbstractErrorScreen
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
@@ -58,36 +59,35 @@ fun AnimatedVisibilityScope.StartScreen(
     HideBottomNavigation()
 
     LaunchedEffect(uiState) {
-        when (uiState) {
-            is StartScreenState.WebViewLogin -> {
-                val data = (uiState as StartScreenState.WebViewLogin)
-                viewModel.onNavigate()
-                navigator.navigate(
-                    WebViewScreenDestination(
-                        url = data.url,
-                        allowSelfSignedCertificates = data.allowSelfSignedCertificates
+        if (uiState is StartScreenState.Loaded) {
+            val data = uiState as StartScreenState.Loaded
+
+            when (data.event) {
+                StartScreenSignInEvent.WebView -> {
+                    viewModel.onNavigate()
+                    navigator.navigate(
+                        WebViewLoginScreenDestination(
+                            url = data.url,
+                            allowSelfSignedCertificates = data.allowSelfSignedCertificates,
+                        ),
                     )
-                )
-            }
-            is StartScreenState.ManualLogin -> {
-                val data = (uiState as StartScreenState.ManualLogin)
-                viewModel.onNavigate()
-                navigator.navigate(
-                    WebViewScreenDestination(
-                        url = data.url,
-                        allowSelfSignedCertificates = data.allowSelfSignedCertificates
+                }
+                StartScreenSignInEvent.Manual -> {
+                    viewModel.onNavigate()
+                    navigator.navigate(
+                        ManualLoginScreenDestination(
+                            url = data.url,
+                            allowSelfSignedCertificates = data.allowSelfSignedCertificates,
+                        ),
                     )
-                )
+                }
+                null -> Unit
             }
-            else -> Unit
         }
     }
 
     Scaffold { innerPadding ->
         when (uiState) {
-            is StartScreenState.WebViewLogin, is StartScreenState.ManualLogin -> {
-                Loader(modifier = Modifier.padding(innerPadding))
-            }
             is StartScreenState.Loaded -> {
                 val data = uiState as StartScreenState.Loaded
                 StartLayout(
@@ -99,8 +99,8 @@ fun AnimatedVisibilityScope.StartScreen(
                     onAllowSelfSignedCertificatesChange = { allowSelfSignedCertificates ->
                         viewModel.onAllowSelfSignedCertificatesChange(allowSelfSignedCertificates)
                     },
-                    onWebViewLoginClick = { viewModel.onWebViewLoginClick() },
-                    onManualLoginClick = { viewModel.onManualLoginClick() },
+                    onWebViewLoginClick = { viewModel.onLoginClick(event = StartScreenSignInEvent.WebView) },
+                    onManualLoginClick = { viewModel.onLoginClick(event = StartScreenSignInEvent.Manual) },
                 )
             }
             is StartScreenState.Error -> {
