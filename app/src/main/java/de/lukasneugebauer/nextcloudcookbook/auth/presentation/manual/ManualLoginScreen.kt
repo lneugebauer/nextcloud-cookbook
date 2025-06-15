@@ -75,7 +75,7 @@ fun AnimatedVisibilityScope.ManualLoginScreen(
     }
 
     Scaffold(
-        topBar = { TopAppBar(onBackClick = {navigator.navigateUp()})}
+        topBar = { TopAppBar(onBackClick = { navigator.navigateUp() }) },
     ) { innerPadding ->
         when (uiState) {
             is ManualLoginScreenState.Loaded -> {
@@ -95,7 +95,7 @@ fun AnimatedVisibilityScope.ManualLoginScreen(
                     },
                     onLoginClick = {
                         viewModel.tryManualLogin()
-                    }
+                    },
                 )
             }
             ManualLoginScreenState.Authenticated, is ManualLoginScreenState.Authenticating -> {
@@ -125,9 +125,10 @@ fun ManualLoginLayout(
     var passwordVisibility by rememberSaveable { mutableStateOf(false) }
 
     Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(dimensionResource(id = R.dimen.padding_m)),
+        modifier =
+            modifier
+                .fillMaxSize()
+                .padding(dimensionResource(id = R.dimen.padding_m)),
         verticalArrangement = Arrangement.Center,
     ) {
         Text(
@@ -213,7 +214,7 @@ private fun TopAppBar(onBackClick: () -> Unit) {
                     contentDescription = stringResource(R.string.common_back),
                 )
             }
-        }
+        },
     )
 }
 
