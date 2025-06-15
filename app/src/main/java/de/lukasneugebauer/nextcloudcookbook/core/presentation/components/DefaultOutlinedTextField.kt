@@ -75,12 +75,11 @@ fun DefaultOutlinedTextField(
         )
         if (isError) {
             Text(
-                text = errorText!!,
+                text = errorText,
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.bodySmall,
                 modifier =
-                    Modifier
-                        .padding(horizontal = dimensionResource(id = R.dimen.padding_l)),
+                    Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
             )
         }
     }
