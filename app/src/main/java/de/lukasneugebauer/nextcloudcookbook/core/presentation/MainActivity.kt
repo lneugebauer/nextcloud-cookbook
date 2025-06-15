@@ -62,7 +62,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            val appState = AppState()
+            val appState = remember { AppState() }
             val authState by viewModel.authState.collectAsState()
             val intent by viewModel.intentState.collectAsState()
             val splashState by viewModel.splashState.collectAsState()
