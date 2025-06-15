@@ -74,12 +74,13 @@ class ManualLoginViewModel
                 ManualLoginScreenState.Authenticating(username = username, password = password)
             }
 
-            val ncAccount = NcAccount(
-                name = "",
-                username = username,
-                token = password,
-                url = url.removeSuffix("/"),
-            )
+            val ncAccount =
+                NcAccount(
+                    name = "",
+                    username = username,
+                    token = password,
+                    url = url.removeSuffix("/"),
+                )
 
             viewModelScope.launch {
                 preferencesManager.updateNextcloudAccount(ncAccount)
