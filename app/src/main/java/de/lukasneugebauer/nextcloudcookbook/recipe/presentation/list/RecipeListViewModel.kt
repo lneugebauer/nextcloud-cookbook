@@ -50,6 +50,7 @@ class RecipeListViewModel
 
         @Suppress("ktlint:standard:property-naming")
         private val _orderState = MutableStateFlow(RecipeListScreenOrder.ALPHABETICAL_ASC)
+        val orderState = _orderState.asStateFlow()
 
         private val categoryName: String? = savedStateHandle["categoryName"]
 

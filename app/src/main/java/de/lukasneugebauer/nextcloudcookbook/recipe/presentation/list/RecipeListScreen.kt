@@ -22,6 +22,7 @@ import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowDropUp
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.CloudDownload
@@ -113,6 +114,7 @@ fun RecipeListScreenWrapper(
     val searchAppBarState by viewModel.searchAppBarState
     val searchQueryState by viewModel.searchQueryState.collectAsState()
     val selectedKeywordsState by viewModel.selectedKeywordsState.collectAsState()
+    val orderState by viewModel.orderState.collectAsState()
 
     Scaffold(
         topBar = {
@@ -133,6 +135,7 @@ fun RecipeListScreenWrapper(
                             } else {
                                 categoryName
                             },
+                        orderState = orderState,
                         onBackClick = { navigator.navigateUp() },
                         onImportClick = { navigator.navigate(DownloadRecipeScreenDestination) },
                         onReorder = { viewModel.updateOrder(it) },
@@ -273,6 +276,7 @@ private fun RecipeListScreen(
 @Composable
 private fun TopAppBar(
     categoryName: String?,
+    orderState: RecipeListScreenOrder,
     onBackClick: () -> Unit,
     onImportClick: () -> Unit,
     onReorder: (RecipeListScreenOrder) -> Unit,
@@ -323,6 +327,7 @@ private fun TopAppBar(
                 ) {
                     AscendingDropdownMenuItem(
                         text = R.string.recipe_alphabetical,
+                        isSelected = orderState == RecipeListScreenOrder.ALPHABETICAL_ASC,
                         onClick = {
                             onReorder(RecipeListScreenOrder.ALPHABETICAL_ASC)
                             expanded = false
@@ -330,6 +335,7 @@ private fun TopAppBar(
                     )
                     DescendingDropdownMenuItem(
                         text = R.string.recipe_alphabetical,
+                        isSelected = orderState == RecipeListScreenOrder.ALPHABETICAL_DESC,
                         onClick = {
                             onReorder(RecipeListScreenOrder.ALPHABETICAL_DESC)
                             expanded = false
@@ -337,6 +343,7 @@ private fun TopAppBar(
                     )
                     AscendingDropdownMenuItem(
                         text = R.string.recipe_created_at,
+                        isSelected = orderState == RecipeListScreenOrder.CREATED_ASC,
                         onClick = {
                             onReorder(RecipeListScreenOrder.CREATED_ASC)
                             expanded = false
@@ -344,6 +351,7 @@ private fun TopAppBar(
                     )
                     DescendingDropdownMenuItem(
                         text = R.string.recipe_created_at,
+                        isSelected = orderState == RecipeListScreenOrder.CREATED_DESC,
                         onClick = {
                             onReorder(RecipeListScreenOrder.CREATED_DESC)
                             expanded = false
@@ -351,6 +359,7 @@ private fun TopAppBar(
                     )
                     AscendingDropdownMenuItem(
                         text = R.string.recipe_modified_at,
+                        isSelected = orderState == RecipeListScreenOrder.MODIFIED_ASC,
                         onClick = {
                             onReorder(RecipeListScreenOrder.MODIFIED_ASC)
                             expanded = false
@@ -358,6 +367,7 @@ private fun TopAppBar(
                     )
                     DescendingDropdownMenuItem(
                         text = R.string.recipe_modified_at,
+                        isSelected = orderState == RecipeListScreenOrder.MODIFIED_DESC,
                         onClick = {
                             onReorder(RecipeListScreenOrder.MODIFIED_DESC)
                             expanded = false
@@ -372,6 +382,7 @@ private fun TopAppBar(
 @Composable
 private fun AscendingDropdownMenuItem(
     @StringRes text: Int,
+    isSelected: Boolean,
     onClick: () -> Unit,
 ) {
     DropdownMenuItem(
@@ -383,12 +394,21 @@ private fun AscendingDropdownMenuItem(
                 contentDescription = stringResource(id = R.string.common_ascending),
             )
         },
+        trailingIcon = {
+            if (isSelected) {
+                Icon(
+                    Icons.Default.Check,
+                    contentDescription = stringResource(id = R.string.common_selected),
+                )
+            }
+        },
     )
 }
 
 @Composable
 private fun DescendingDropdownMenuItem(
     @StringRes text: Int,
+    isSelected: Boolean,
     onClick: () -> Unit,
 ) {
     DropdownMenuItem(
@@ -399,6 +419,14 @@ private fun DescendingDropdownMenuItem(
                 Icons.Default.ArrowDropDown,
                 contentDescription = stringResource(id = R.string.common_descending),
             )
+        },
+        trailingIcon = {
+            if (isSelected) {
+                Icon(
+                    Icons.Default.Check,
+                    contentDescription = stringResource(id = R.string.common_selected),
+                )
+            }
         },
     )
 }
@@ -527,6 +555,7 @@ private fun TopAppBarPreview() {
     NextcloudCookbookTheme {
         TopAppBar(
             categoryName = null,
+            orderState = RecipeListScreenOrder.ALPHABETICAL_ASC,
             onBackClick = {},
             onImportClick = {},
             onReorder = {},
@@ -541,6 +570,7 @@ private fun TopAppBarWithCategoryNamePreview() {
     NextcloudCookbookTheme {
         TopAppBar(
             categoryName = "Lorem ipsum",
+            orderState = RecipeListScreenOrder.ALPHABETICAL_ASC,
             onBackClick = {},
             onImportClick = {},
             onReorder = {},
