@@ -56,6 +56,7 @@
     <string name="error_unknown">Ein unbekannter Fehler ist aufgetreten</string>
     <string name="home_recommendation">Vorschlag</string>
     <string name="login">Anmelden</string>
+    <string name="login_allow_self_signed_certificates">Erlaube selbstsignierte Zertifiakte</string>
     <string name="login_manual">Manuell anmelden</string>
     <string name="login_root_address">Nextcloud Adresse</string>
     <string name="recipe_alphabetical">Name</string>

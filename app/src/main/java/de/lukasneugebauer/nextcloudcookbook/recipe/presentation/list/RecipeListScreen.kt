@@ -15,7 +15,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.ContentAlpha
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Sort
@@ -34,6 +33,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -475,7 +475,7 @@ private fun SearchAppBar(
             placeholder = {
                 Text(
                     text = stringResource(R.string.common_search),
-                    modifier = Modifier.alpha(ContentAlpha.medium),
+                    color = LocalContentColor.current.copy(alpha = 0.74f),
                 )
             },
             leadingIcon = {
@@ -483,7 +483,7 @@ private fun SearchAppBar(
                     Icon(
                         imageVector = Icons.Default.Search,
                         contentDescription = stringResource(R.string.common_search),
-                        modifier = Modifier.alpha(ContentAlpha.medium),
+                        tint = LocalContentColor.current.copy(alpha = 0.74f),
                     )
                 }
             },
