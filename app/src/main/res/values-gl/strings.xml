@@ -136,4 +136,5 @@
     <string name="common_descending">Descendente</string>
     <string name="recipe_modified_at">Data de modificación</string>
     <string name="recipe_created_at">Data de creación</string>
+    <string name="common_selected">Seleccionado</string>
 </resources>
