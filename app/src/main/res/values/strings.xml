@@ -54,7 +54,7 @@
     <string name="error_timeout">Timeout error</string>
     <string name="error_unknown_host">Unknown host</string>
     <string name="error_unknown">An unknown error occurred</string>
-    <string name="home_recommendation">Recommendation</string>
+    <string name="home_recommendations">Recommendations</string>
     <string name="login">Sign in</string>
     <string name="login_example_url" translatable="false">https://cloud.example.tld</string>
     <string name="login_manual">Manual sign in</string>

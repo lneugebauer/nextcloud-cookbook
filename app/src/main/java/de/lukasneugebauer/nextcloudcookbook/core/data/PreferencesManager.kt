@@ -13,8 +13,6 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.NcAccount
-import de.lukasneugebauer.nextcloudcookbook.core.domain.model.RecipeOfTheDay
-import de.lukasneugebauer.nextcloudcookbook.core.util.Constants.DEFAULT_RECIPE_OF_THE_DAY_ID
 import de.lukasneugebauer.nextcloudcookbook.settings.util.SettingsConstants.STAY_AWAKE_DEFAULT
 import de.lukasneugebauer.nextcloudcookbook.settings.util.SettingsConstants.STAY_AWAKE_KEY
 import kotlinx.coroutines.flow.catch
@@ -22,9 +20,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import timber.log.Timber
 import java.io.IOException
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneOffset
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -81,8 +76,6 @@ class PreferencesManager
             val NC_USERNAME = stringPreferencesKey("nc_username")
             val NC_TOKEN = stringPreferencesKey("nc_token")
             val NC_URL = stringPreferencesKey("nc_url")
-            val RECIPE_OF_THE_DAY_ID = stringPreferencesKey("recipe_of_the_day_id")
-            val RECIPE_OF_THE_DAY_UPDATED_AT = longPreferencesKey("recipe_of_the_day_updated_at")
         }
 
         val preferencesFlow =
@@ -100,9 +93,6 @@ class PreferencesManager
                     val ncUsername = preferences[PreferencesKeys.NC_USERNAME] ?: ""
                     val ncToken = preferences[PreferencesKeys.NC_TOKEN] ?: ""
                     val ncUrl = preferences[PreferencesKeys.NC_URL] ?: ""
-                    val recipeOfTheDayId = preferences[PreferencesKeys.RECIPE_OF_THE_DAY_ID] ?: DEFAULT_RECIPE_OF_THE_DAY_ID
-                    val recipeOfTheDayUpdatedAt =
-                        preferences[PreferencesKeys.RECIPE_OF_THE_DAY_UPDATED_AT] ?: 0
 
                     de.lukasneugebauer.nextcloudcookbook.core.domain.model.Preferences(
                         ncAccount =
@@ -111,18 +101,7 @@ class PreferencesManager
                                 username = ncUsername,
                                 token = ncToken,
                                 url = ncUrl,
-                            ),
-                        recipeOfTheDay =
-                            RecipeOfTheDay(
-                                id = recipeOfTheDayId,
-                                updatedAt =
-                                    LocalDateTime.ofInstant(
-                                        Instant.ofEpochSecond(
-                                            recipeOfTheDayUpdatedAt,
-                                        ),
-                                        ZoneOffset.UTC,
-                                    ),
-                            ),
+                            )
                     )
                 }
 
@@ -140,13 +119,6 @@ class PreferencesManager
                 preferences[PreferencesKeys.NC_USERNAME] = ncAccount.username
                 preferences[PreferencesKeys.NC_TOKEN] = ncAccount.token
                 preferences[PreferencesKeys.NC_URL] = ncAccount.url
-            }
-
-        suspend fun updateRecipeOfTheDay(recipeOfTheDay: RecipeOfTheDay) =
-            context.dataStore54.edit { preferences ->
-                preferences[PreferencesKeys.RECIPE_OF_THE_DAY_ID] = recipeOfTheDay.id
-                preferences[PreferencesKeys.RECIPE_OF_THE_DAY_UPDATED_AT] =
-                    recipeOfTheDay.updatedAt.toEpochSecond(ZoneOffset.UTC)
             }
 
         suspend fun clearPreferences() {
