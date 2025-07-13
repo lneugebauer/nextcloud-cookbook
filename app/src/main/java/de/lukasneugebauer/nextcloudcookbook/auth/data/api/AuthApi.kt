@@ -1,4 +1,4 @@
-package de.lukasneugebauer.nextcloudcookbook.auth.data.remote
+package de.lukasneugebauer.nextcloudcookbook.auth.data.api
 
 import com.haroldadmin.cnradapter.NetworkResponse
 import de.lukasneugebauer.nextcloudcookbook.auth.data.remote.response.LoginEndpointResponse

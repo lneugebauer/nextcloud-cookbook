@@ -4,12 +4,12 @@ import coil3.ImageLoader
 import coil3.memory.MemoryCache
 import com.haroldadmin.cnradapter.NetworkResponse
 import de.lukasneugebauer.nextcloudcookbook.R
+import de.lukasneugebauer.nextcloudcookbook.core.data.api.NcCookbookApiProvider
 import de.lukasneugebauer.nextcloudcookbook.core.domain.repository.BaseRepository
 import de.lukasneugebauer.nextcloudcookbook.core.util.IoDispatcher
 import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import de.lukasneugebauer.nextcloudcookbook.core.util.SimpleResource
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
-import de.lukasneugebauer.nextcloudcookbook.di.ApiProvider
 import de.lukasneugebauer.nextcloudcookbook.di.RecipePreviewsByCategoryStore
 import de.lukasneugebauer.nextcloudcookbook.di.RecipePreviewsStore
 import de.lukasneugebauer.nextcloudcookbook.di.RecipeStore
@@ -32,7 +32,7 @@ import javax.inject.Inject
 class RecipeRepositoryImpl
     @Inject
     constructor(
-        private val apiProvider: ApiProvider,
+        private val apiProvider: NcCookbookApiProvider,
         private val imageLoader: ImageLoader,
         @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
         private val recipePreviewsByCategoryStore: RecipePreviewsByCategoryStore,
@@ -60,7 +60,7 @@ class RecipeRepositoryImpl
         override suspend fun createRecipe(recipe: RecipeDto): Resource<String> {
             return withContext(ioDispatcher) {
                 val api =
-                    apiProvider.getNcCookbookApi()
+                    apiProvider.getApi()
                         ?: return@withContext Resource.Error(message = UiText.StringResource(R.string.error_api_not_initialized))
 
                 try {
@@ -76,7 +76,7 @@ class RecipeRepositoryImpl
         override suspend fun updateRecipe(recipe: RecipeDto): SimpleResource {
             return withContext(ioDispatcher) {
                 val api =
-                    apiProvider.getNcCookbookApi()
+                    apiProvider.getApi()
                         ?: return@withContext Resource.Error(message = UiText.StringResource(R.string.error_api_not_initialized))
 
                 try {
@@ -110,7 +110,7 @@ class RecipeRepositoryImpl
         ): SimpleResource {
             return withContext(ioDispatcher) {
                 val api =
-                    apiProvider.getNcCookbookApi()
+                    apiProvider.getApi()
                         ?: return@withContext Resource.Error(message = UiText.StringResource(R.string.error_api_not_initialized))
 
                 when (val response = api.deleteRecipe(id)) {
@@ -126,7 +126,7 @@ class RecipeRepositoryImpl
         override suspend fun importRecipe(url: ImportUrlDto): Resource<RecipeDto> {
             return withContext(ioDispatcher) {
                 val api =
-                    apiProvider.getNcCookbookApi()
+                    apiProvider.getApi()
                         ?: return@withContext Resource.Error(message = UiText.StringResource(R.string.error_api_not_initialized))
 
                 when (val response = api.importRecipe(url = url)) {
