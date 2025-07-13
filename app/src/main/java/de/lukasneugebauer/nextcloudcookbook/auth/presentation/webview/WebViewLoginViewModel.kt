@@ -8,11 +8,11 @@ import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.auth.domain.repository.AuthRepository
 import de.lukasneugebauer.nextcloudcookbook.auth.domain.state.WebViewScreenState
 import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
+import de.lukasneugebauer.nextcloudcookbook.core.data.api.NcCookbookApiProvider
 import de.lukasneugebauer.nextcloudcookbook.core.domain.repository.AccountRepository
 import de.lukasneugebauer.nextcloudcookbook.core.domain.usecase.ClearPreferencesUseCase
 import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
-import de.lukasneugebauer.nextcloudcookbook.di.ApiProvider
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -29,8 +29,8 @@ class WebViewLoginViewModel
     constructor(
         private val accountRepository: AccountRepository,
         private val authRepository: AuthRepository,
-        private val apiProvider: ApiProvider,
         private val clearPreferencesUseCase: ClearPreferencesUseCase,
+        private val ncCookbookApiProvider: NcCookbookApiProvider,
         private val preferencesManager: PreferencesManager,
         savedStateHandle: SavedStateHandle,
     ) : ViewModel() {
@@ -74,7 +74,7 @@ class WebViewLoginViewModel
             viewModelScope.launch {
                 combine(
                     accountRepository.getAccount(),
-                    apiProvider.ncCookbookApiFlow,
+                    ncCookbookApiProvider.apiFlow,
                 ) { account, api -> Pair(account, api) }
                     .distinctUntilChanged()
                     .collect { (account, api) ->
@@ -108,7 +108,7 @@ class WebViewLoginViewModel
             when (val result = authRepository.tryLogin(url, token)) {
                 is Resource.Success -> {
                     preferencesManager.updateNextcloudAccount(result.data?.ncAccount!!)
-                    apiProvider.initApi()
+                    ncCookbookApiProvider.initApi()
                 }
 
                 is Resource.Error -> {
