@@ -3,11 +3,9 @@ package de.lukasneugebauer.nextcloudcookbook.auth.presentation.manual
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -87,11 +85,11 @@ fun AnimatedVisibilityScope.ManualLoginScreen(
                     modifier = Modifier.padding(innerPadding),
                     usernameError = usernameError,
                     passwordError = passwordError,
-                    onUsernameChange = { username ->
-                        viewModel.onUsernameChange(username)
+                    onUsernameChange = { newUsername ->
+                        viewModel.onUsernameChange(newUsername)
                     },
-                    onPasswordChange = { password ->
-                        viewModel.onPasswordChange(password)
+                    onPasswordChange = { newPassword ->
+                        viewModel.onPasswordChange(newPassword)
                     },
                     onLoginClick = {
                         viewModel.tryManualLogin()
@@ -138,7 +136,7 @@ fun ManualLoginLayout(
         DefaultOutlinedTextField(
             value = username,
             onValueChange = onUsernameChange,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.padding_s)).fillMaxWidth(),
             label = {
                 Text(text = stringResource(R.string.common_username))
             },
@@ -155,11 +153,10 @@ fun ManualLoginLayout(
                 ),
             singleLine = true,
         )
-        Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_s)))
         DefaultOutlinedTextField(
             value = password,
             onValueChange = onPasswordChange,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.padding_m)).fillMaxWidth(),
             label = {
                 Text(text = stringResource(R.string.common_password))
             },
@@ -190,8 +187,6 @@ fun ManualLoginLayout(
                 ),
             singleLine = true,
         )
-        Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_s)))
-        Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_s)))
         DefaultButton(
             onClick = onLoginClick,
             modifier = Modifier.fillMaxWidth(),
