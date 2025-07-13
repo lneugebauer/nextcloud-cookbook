@@ -57,6 +57,7 @@
     <string name="error_unknown_host">Unbekannter Host</string>
     <string name="error_unknown">Ein unbekannter Fehler ist aufgetreten</string>
     <string name="home_recommendation">Vorschlag</string>
+    <string name="info_headline">Mehr erfahren</string>
     <string name="login">Anmelden</string>
     <string name="login_allow_self_signed_certificates">Erlaube selbstsignierte Zertifiakte</string>
     <string name="login_manual">Manuell anmelden</string>
