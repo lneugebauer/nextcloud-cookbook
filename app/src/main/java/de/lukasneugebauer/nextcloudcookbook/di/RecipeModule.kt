@@ -7,6 +7,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import de.lukasneugebauer.nextcloudcookbook.core.data.api.NcCookbookApiProvider
 import de.lukasneugebauer.nextcloudcookbook.core.util.IoDispatcher
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.RecipeFormatterImpl
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.YieldCalculatorImpl
@@ -35,11 +36,11 @@ object RecipeModule {
     @FlowPreview
     @Provides
     @Singleton
-    fun provideRecipePreviewsByCategoryStore(apiProvider: ApiProvider): RecipePreviewsByCategoryStore {
+    fun provideRecipePreviewsByCategoryStore(apiProvider: NcCookbookApiProvider): RecipePreviewsByCategoryStore {
         return StoreBuilder
             .from(
                 Fetcher.of { categoryName: String ->
-                    apiProvider.getNcCookbookApi()?.getRecipesByCategory(categoryName)
+                    apiProvider.getApi()?.getRecipesByCategory(categoryName)
                         ?: throw NullPointerException("Nextcloud Cookbook API is null.")
                 },
             )
@@ -50,11 +51,11 @@ object RecipeModule {
     @FlowPreview
     @Provides
     @Singleton
-    fun provideRecipePreviewsStore(apiProvider: ApiProvider): RecipePreviewsStore {
+    fun provideRecipePreviewsStore(apiProvider: NcCookbookApiProvider): RecipePreviewsStore {
         return StoreBuilder
             .from(
                 Fetcher.of {
-                    apiProvider.getNcCookbookApi()?.getRecipes()
+                    apiProvider.getApi()?.getRecipes()
                         ?: throw NullPointerException("Nextcloud Cookbook API is null.")
                 },
             )
@@ -65,11 +66,11 @@ object RecipeModule {
     @FlowPreview
     @Provides
     @Singleton
-    fun provideRecipeStore(apiProvider: ApiProvider): RecipeStore {
+    fun provideRecipeStore(apiProvider: NcCookbookApiProvider): RecipeStore {
         return StoreBuilder
             .from(
                 Fetcher.of { recipeId: String ->
-                    apiProvider.getNcCookbookApi()?.getRecipe(recipeId)
+                    apiProvider.getApi()?.getRecipe(recipeId)
                         ?: throw NullPointerException("Nextcloud Cookbook API is null.")
                 },
             )
@@ -79,7 +80,7 @@ object RecipeModule {
     @Provides
     @Singleton
     fun provideRecipeRepository(
-        apiProvider: ApiProvider,
+        apiProvider: NcCookbookApiProvider,
         @ApplicationContext context: Context,
         @IoDispatcher ioDispatcher: CoroutineDispatcher,
         recipesByCategoryStore: RecipePreviewsByCategoryStore,

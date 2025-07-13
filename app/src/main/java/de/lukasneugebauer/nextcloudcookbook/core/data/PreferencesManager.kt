@@ -15,6 +15,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.NcAccount
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.RecipeOfTheDay
+import de.lukasneugebauer.nextcloudcookbook.core.util.Constants.ALLOW_SELF_SIGNED_CERTIFICATES_DEFAULT
 import de.lukasneugebauer.nextcloudcookbook.core.util.Constants.DEFAULT_RECIPE_OF_THE_DAY_ID
 import de.lukasneugebauer.nextcloudcookbook.core.util.Constants.IS_SHOW_INGREDIENT_SYNTAX_INDICATOR_DEFAULT
 import de.lukasneugebauer.nextcloudcookbook.settings.util.SettingsConstants.STAY_AWAKE_DEFAULT
@@ -85,6 +86,7 @@ class PreferencesManager
             val NC_URL = stringPreferencesKey("nc_url")
             val RECIPE_OF_THE_DAY_ID = stringPreferencesKey("recipe_of_the_day_id")
             val RECIPE_OF_THE_DAY_UPDATED_AT = longPreferencesKey("recipe_of_the_day_updated_at")
+            val ALLOW_SELF_SIGNED_CERTIFICATES = booleanPreferencesKey("allow_self_signed_certificates")
             val IS_SHOW_INGREDIENT_SYNTAX_INDICATOR = booleanPreferencesKey("is_show_ingredient_syntax_indicator")
         }
 
@@ -109,6 +111,8 @@ class PreferencesManager
                     val recipeOfTheDayId = preferences[PreferencesKeys.RECIPE_OF_THE_DAY_ID] ?: DEFAULT_RECIPE_OF_THE_DAY_ID
                     val recipeOfTheDayUpdatedAt =
                         preferences[PreferencesKeys.RECIPE_OF_THE_DAY_UPDATED_AT] ?: 0
+                    val allowSelfSignedCertificates =
+                        preferences[PreferencesKeys.ALLOW_SELF_SIGNED_CERTIFICATES] ?: ALLOW_SELF_SIGNED_CERTIFICATES_DEFAULT
 
                     de.lukasneugebauer.nextcloudcookbook.core.domain.model.Preferences(
                         isShowIngredientSyntaxIndicator = isShowIngredientSyntaxIndicator,
@@ -130,6 +134,7 @@ class PreferencesManager
                                         ZoneOffset.UTC,
                                     ),
                             ),
+                        allowSelfSignedCertificates = allowSelfSignedCertificates,
                     )
                 }
 
@@ -160,6 +165,11 @@ class PreferencesManager
                 preferences[PreferencesKeys.RECIPE_OF_THE_DAY_ID] = recipeOfTheDay.id
                 preferences[PreferencesKeys.RECIPE_OF_THE_DAY_UPDATED_AT] =
                     recipeOfTheDay.updatedAt.toEpochSecond(ZoneOffset.UTC)
+            }
+
+        suspend fun updateAllowSelfSignedCertificates(allowSelfSignedCertificates: Boolean) =
+            context.dataStore54.edit { preferences ->
+                preferences[PreferencesKeys.ALLOW_SELF_SIGNED_CERTIFICATES] = allowSelfSignedCertificates
             }
 
         suspend fun clearPreferences() {

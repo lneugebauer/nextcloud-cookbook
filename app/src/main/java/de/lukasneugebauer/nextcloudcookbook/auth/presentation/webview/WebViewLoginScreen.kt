@@ -1,9 +1,8 @@
 package de.lukasneugebauer.nextcloudcookbook.auth.presentation.webview
 
 import android.annotation.SuppressLint
-import android.webkit.WebResourceRequest
+import android.net.Uri
 import android.webkit.WebView
-import android.webkit.WebViewClient
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -27,6 +26,7 @@ import com.ramcosta.composedestinations.generated.destinations.HomeScreenDestina
 import com.ramcosta.composedestinations.generated.destinations.StartScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import de.lukasneugebauer.nextcloudcookbook.R
+import de.lukasneugebauer.nextcloudcookbook.auth.domain.WebViewClient
 import de.lukasneugebauer.nextcloudcookbook.auth.domain.state.WebViewScreenState
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.MainGraph
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.HideBottomNavigation
@@ -65,8 +65,12 @@ fun AnimatedVisibilityScope.WebViewLoginScreen(
                 Loader(modifier = Modifier.padding(innerPadding))
             }
             is WebViewScreenState.Loaded -> {
-                val url = (uiState as WebViewScreenState.Loaded).webViewUrl.toString()
-                WebViewLoginLayout(url = url, modifier = Modifier.padding(innerPadding))
+                val webViewUrl = (uiState as WebViewScreenState.Loaded).webViewUrl
+                WebViewLoginLayout(
+                    url = webViewUrl,
+                    allowSelfSignedCertificates = allowSelfSignedCertificates,
+                    modifier = Modifier.padding(innerPadding),
+                )
             }
             is WebViewScreenState.Error -> {
                 val message = (uiState as WebViewScreenState.Error).uiText
@@ -79,23 +83,16 @@ fun AnimatedVisibilityScope.WebViewLoginScreen(
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
 private fun WebViewLoginLayout(
-    url: String,
+    url: Uri,
+    allowSelfSignedCertificates: Boolean,
     modifier: Modifier = Modifier,
 ) {
     AndroidView(
         factory = {
             WebView(it).apply {
                 settings.javaScriptEnabled = true
+                webViewClient = WebViewClient(allowSelfSignedCertificates = allowSelfSignedCertificates)
                 loadUrl(url.toString())
-                webViewClient =
-                    object : WebViewClient() {
-                        override fun shouldOverrideUrlLoading(
-                            view: WebView?,
-                            request: WebResourceRequest?,
-                        ): Boolean {
-                            return false
-                        }
-                    }
             }
         },
         modifier = Modifier.fillMaxSize().then(modifier),

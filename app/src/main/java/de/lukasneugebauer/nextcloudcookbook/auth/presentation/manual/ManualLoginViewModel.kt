@@ -7,12 +7,12 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.auth.domain.state.ManualLoginScreenState
 import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
+import de.lukasneugebauer.nextcloudcookbook.core.data.api.NcCookbookApiProvider
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.NcAccount
 import de.lukasneugebauer.nextcloudcookbook.core.domain.repository.AccountRepository
 import de.lukasneugebauer.nextcloudcookbook.core.domain.usecase.ClearPreferencesUseCase
 import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
-import de.lukasneugebauer.nextcloudcookbook.di.ApiProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
@@ -26,7 +26,7 @@ class ManualLoginViewModel
     @Inject
     constructor(
         private val accountRepository: AccountRepository,
-        private val apiProvider: ApiProvider,
+        private val apiProvider: NcCookbookApiProvider,
         private val clearPreferencesUseCase: ClearPreferencesUseCase,
         private val preferencesManager: PreferencesManager,
         private val savedStateHandle: SavedStateHandle,
@@ -92,7 +92,7 @@ class ManualLoginViewModel
             viewModelScope.launch {
                 combine(
                     accountRepository.getAccount(),
-                    apiProvider.ncCookbookApiFlow,
+                    apiProvider.apiFlow,
                 ) { account, api -> Pair(account, api) }
                     .distinctUntilChanged()
                     .collect { (account, api) ->

@@ -5,6 +5,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
+import de.lukasneugebauer.nextcloudcookbook.core.data.api.NcCookbookApiProvider
 import de.lukasneugebauer.nextcloudcookbook.core.data.repository.AccountRepositoryImpl
 import de.lukasneugebauer.nextcloudcookbook.core.domain.repository.AccountRepository
 import de.lukasneugebauer.nextcloudcookbook.core.util.IoDispatcher
@@ -17,7 +18,7 @@ object AccountModule {
     @Provides
     @Singleton
     fun provideAccountRepository(
-        apiProvider: ApiProvider,
+        apiProvider: NcCookbookApiProvider,
         @IoDispatcher ioDispatcher: CoroutineDispatcher,
         preferencesManager: PreferencesManager,
     ): AccountRepository = AccountRepositoryImpl(apiProvider, ioDispatcher, preferencesManager)

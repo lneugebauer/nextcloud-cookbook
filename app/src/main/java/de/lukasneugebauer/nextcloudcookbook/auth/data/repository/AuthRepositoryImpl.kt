@@ -1,7 +1,7 @@
 package de.lukasneugebauer.nextcloudcookbook.auth.data.repository
 
 import com.haroldadmin.cnradapter.NetworkResponse
-import de.lukasneugebauer.nextcloudcookbook.auth.data.remote.AuthApi
+import de.lukasneugebauer.nextcloudcookbook.auth.data.api.AuthApiProvider
 import de.lukasneugebauer.nextcloudcookbook.auth.domain.model.LoginEndpointResult
 import de.lukasneugebauer.nextcloudcookbook.auth.domain.model.LoginResult
 import de.lukasneugebauer.nextcloudcookbook.auth.domain.repository.AuthRepository
@@ -9,14 +9,18 @@ import de.lukasneugebauer.nextcloudcookbook.core.domain.repository.BaseRepositor
 import de.lukasneugebauer.nextcloudcookbook.core.util.IoDispatcher
 import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 
 class AuthRepositoryImpl(
-    private val api: AuthApi,
+    private val apiProvider: AuthApiProvider,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : AuthRepository, BaseRepository() {
     override suspend fun getLoginEndpoint(baseUrl: String): Resource<LoginEndpointResult> {
         return withContext(ioDispatcher) {
+            val api = apiProvider.apiFlow.filterNotNull().first()
+
             val url =
                 buildString {
                     append(baseUrl.removeSuffix("/"))
@@ -44,7 +48,9 @@ class AuthRepositoryImpl(
         token: String,
     ): Resource<LoginResult> {
         return withContext(ioDispatcher) {
-            return@withContext when (val response = api.tryLogin(url = url, token = token)) {
+            val api = apiProvider.apiFlow.filterNotNull().first()
+
+            when (val response = api.tryLogin(url = url, token = token)) {
                 is NetworkResponse.Success -> {
                     val result = response.body.toLoginResult()
                     Resource.Success(data = result)
