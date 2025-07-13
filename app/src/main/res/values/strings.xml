@@ -57,6 +57,7 @@
     <string name="error_unknown_host">Unknown host</string>
     <string name="error_unknown">An unknown error occurred</string>
     <string name="home_recommendation">Recommendation</string>
+    <string name="info_headline">Learn more</string>
     <string name="login">Sign in</string>
     <string name="login_allow_self_signed_certificates">Allow self-signed certificates</string>
     <string name="login_example_url" translatable="false">https://cloud.example.tld</string>

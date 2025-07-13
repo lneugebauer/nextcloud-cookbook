@@ -4,20 +4,24 @@ import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -33,6 +37,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.generated.destinations.InfoScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.ManualLoginScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.WebViewLoginScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -86,7 +91,11 @@ fun AnimatedVisibilityScope.StartScreen(
         }
     }
 
-    Scaffold { innerPadding ->
+    Scaffold(
+        topBar = {
+            TopAppBar(onClick = { navigator.navigate(InfoScreenDestination) })
+        },
+    ) { innerPadding ->
         when (uiState) {
             is StartScreenState.Loaded -> {
                 val data = uiState as StartScreenState.Loaded
@@ -134,14 +143,14 @@ fun StartLayout(
         Image(
             painter = painterResource(id = R.drawable.ic_nextcloud_logo_symbol),
             contentDescription = "Nextcloud Logo",
+            modifier = Modifier.padding(bottom = dimensionResource(R.dimen.padding_s)),
             alignment = Alignment.Center,
             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
         )
-        Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_s)))
         Text(
             text = "Nextcloud Cookbook",
+            modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.padding_l)),
         )
-        Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_l)))
         DefaultOutlinedTextField(
             value = url,
             onValueChange = onUrlChange,
@@ -172,7 +181,10 @@ fun StartLayout(
             singleLine = true,
         )
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier =
+                Modifier
+                    .padding(bottom = dimensionResource(R.dimen.padding_m))
+                    .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Checkbox(
@@ -190,10 +202,31 @@ fun StartLayout(
         ) {
             Text(text = stringResource(R.string.login))
         }
-        Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_m)))
         DefaultTextButton(onClick = onManualLoginClick) {
             Text(text = stringResource(R.string.login_manual))
         }
+    }
+}
+
+@Composable
+private fun TopAppBar(onClick: () -> Unit) {
+    Surface(modifier = Modifier.fillMaxWidth()) {
+        Box(contentAlignment = Alignment.TopEnd) {
+            IconButton(onClick = onClick) {
+                Icon(
+                    imageVector = Icons.Outlined.Info,
+                    contentDescription = "",
+                )
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun TopAppBarPreview() {
+    NextcloudCookbookTheme {
+        TopAppBar(onClick = {})
     }
 }
 
