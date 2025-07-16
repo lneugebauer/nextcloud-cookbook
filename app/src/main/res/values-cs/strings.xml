@@ -140,4 +140,14 @@
     <string name="recipe_modified_at">Datum a čas modifikace</string>
     <string name="recipe_alphabetical">Název</string>
     <string name="common_selected">Zvolené</string>
+    <string name="settings_github">GitHub</string>
+    <string name="settings_github_logo">Logo GitHubu</string>
+    <string name="settings_github_sponsor">Staňte se sponzorem na GitHubu</string>
+    <string name="settings_liberapay">Liberapay</string>
+    <string name="settings_liberapay_logo">Logo Liberapay</string>
+    <string name="settings_liberapay_patron">Staňte se patronem na Liberapay</string>
+    <string name="settings_paypal">PayPal</string>
+    <string name="settings_paypal_donation">Přispějte prostřednictvím PayPalu</string>
+    <string name="settings_paypal_logo">Logo PayPal</string>
+    <string name="settings_sponsoring">Sponzorství</string>
 </resources>
