@@ -33,6 +33,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -51,8 +52,11 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.Nextcloud
 import de.lukasneugebauer.nextcloudcookbook.core.util.openInBrowser
 import de.lukasneugebauer.nextcloudcookbook.settings.domain.state.SettingsScreenState
 import de.lukasneugebauer.nextcloudcookbook.settings.util.SettingsConstants.GITHUB_ISSUES_URL
+import de.lukasneugebauer.nextcloudcookbook.settings.util.SettingsConstants.GITHUB_SPONSOR_URL
 import de.lukasneugebauer.nextcloudcookbook.settings.util.SettingsConstants.GITHUB_URL
+import de.lukasneugebauer.nextcloudcookbook.settings.util.SettingsConstants.LIBERAPAY_URL
 import de.lukasneugebauer.nextcloudcookbook.settings.util.SettingsConstants.LICENSE_URL
+import de.lukasneugebauer.nextcloudcookbook.settings.util.SettingsConstants.PAYPAL_URL
 import de.lukasneugebauer.nextcloudcookbook.settings.util.SettingsConstants.PRIVACY_URL
 import de.lukasneugebauer.nextcloudcookbook.settings.util.SettingsConstants.WEBLATE_URL
 
@@ -76,7 +80,7 @@ fun AnimatedVisibilityScope.SettingsScreen(
                 Loader(modifier = Modifier.padding(innerPadding))
             }
             is SettingsScreenState.Loaded -> {
-                SettingsContent(
+                SettingsLayout(
                     modifier = Modifier.padding(innerPadding),
                     isStayAwake = (uiState as SettingsScreenState.Loaded).isStayAwake,
                     onStayAwakeChange = { isStayAwake ->
@@ -109,6 +113,15 @@ fun AnimatedVisibilityScope.SettingsScreen(
                     onIssuesClick = {
                         GITHUB_ISSUES_URL.toUri().openInBrowser(context)
                     },
+                    onGitHubClick = {
+                        GITHUB_SPONSOR_URL.toUri().openInBrowser(context)
+                    },
+                    onLiberapayClick = {
+                        LIBERAPAY_URL.toUri().openInBrowser(context)
+                    },
+                    onPayPalClick = {
+                        PAYPAL_URL.toUri().openInBrowser(context)
+                    },
                 )
             }
         }
@@ -131,7 +144,7 @@ fun SettingsTopBar(onNavIconClick: () -> Unit) {
 }
 
 @Composable
-fun SettingsContent(
+fun SettingsLayout(
     modifier: Modifier = Modifier,
     isStayAwake: Boolean,
     onStayAwakeChange: (Boolean) -> Unit,
@@ -142,6 +155,9 @@ fun SettingsContent(
     onSourceCodeClick: () -> Unit,
     onTranslateClick: () -> Unit,
     onIssuesClick: () -> Unit,
+    onGitHubClick: () -> Unit,
+    onLiberapayClick: () -> Unit,
+    onPayPalClick: () -> Unit,
 ) {
     Column(
         modifier =
@@ -165,6 +181,15 @@ fun SettingsContent(
             onTranslateClick = onTranslateClick,
             onIssuesClick = onIssuesClick,
         )
+        @Suppress("SimplifyBooleanWithConstants", "KotlinConstantConditions")
+        if (BuildConfig.FLAVOR == "full") {
+            Spacer(modifier = Modifier.size(size = dimensionResource(R.dimen.padding_m)))
+            SettingsGroupSponsoring(
+                onGitHubClick = onGitHubClick,
+                onLiberapayClick = onLiberapayClick,
+                onPayPalClick = onPayPalClick,
+            )
+        }
     }
 }
 
@@ -343,11 +368,69 @@ fun ColumnScope.SettingsGroupContribution(
     )
 }
 
+@Composable
+fun ColumnScope.SettingsGroupSponsoring(
+    onGitHubClick: () -> Unit,
+    onLiberapayClick: () -> Unit,
+    onPayPalClick: () -> Unit,
+) {
+    Text(
+        text = stringResource(R.string.settings_sponsoring),
+        modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.padding_m)),
+        style = MaterialTheme.typography.headlineSmall,
+    )
+    ListItem(
+        headlineContent = {
+            Text(text = stringResource(R.string.settings_github))
+        },
+        modifier = Modifier.clickable(onClick = onGitHubClick),
+        supportingContent = {
+            Text(text = stringResource(R.string.settings_github_sponsor))
+        },
+        leadingContent = {
+            Icon(
+                painter = painterResource(R.drawable.ic_github_24),
+                contentDescription = stringResource(R.string.settings_github_logo),
+            )
+        },
+    )
+    ListItem(
+        headlineContent = {
+            Text(text = stringResource(R.string.settings_liberapay))
+        },
+        modifier = Modifier.clickable(onClick = onLiberapayClick),
+        supportingContent = {
+            Text(text = stringResource(R.string.settings_liberapay_patron))
+        },
+        leadingContent = {
+            Icon(
+                painter = painterResource(R.drawable.ic_liberapay_24),
+                contentDescription = stringResource(R.string.settings_liberapay_logo),
+            )
+        },
+    )
+    ListItem(
+        headlineContent = {
+            Text(text = stringResource(R.string.settings_paypal))
+        },
+        modifier = Modifier.clickable(onClick = onPayPalClick),
+        supportingContent = {
+            Text(text = stringResource(R.string.settings_paypal_donation))
+        },
+        leadingContent = {
+            Icon(
+                painter = painterResource(R.drawable.ic_paypal_24),
+                contentDescription = "",
+            )
+        },
+    )
+}
+
 @Preview(showBackground = true)
 @Composable
 private fun SettingsContentPreview() {
     NextcloudCookbookTheme {
-        SettingsContent(
+        SettingsLayout(
             isStayAwake = false,
             onStayAwakeChange = {},
             onLogoutClick = {},
@@ -357,6 +440,23 @@ private fun SettingsContentPreview() {
             onSourceCodeClick = {},
             onTranslateClick = {},
             onIssuesClick = {},
+            onGitHubClick = {},
+            onLiberapayClick = {},
+            onPayPalClick = {},
         )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun SettingsGroupSponsoringPreview() {
+    NextcloudCookbookTheme {
+        Column {
+            SettingsGroupSponsoring(
+                onGitHubClick = {},
+                onLiberapayClick = {},
+                onPayPalClick = {},
+            )
+        }
     }
 }
