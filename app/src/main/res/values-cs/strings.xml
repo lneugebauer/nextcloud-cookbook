@@ -147,4 +147,8 @@
     <string name="settings_paypal">PayPal</string>
     <string name="settings_paypal_donation">Přispějte prostřednictvím PayPalu</string>
     <string name="settings_sponsoring">Sponzorství</string>
+    <string name="common_clear_input">Smazat vstup</string>
+    <string name="common_error">Chyba</string>
+    <string name="login_nextcloud_logo">Logo Nextcloudu</string>
+    <string name="recipe_change_order">Změna pořadí</string>
 </resources>
