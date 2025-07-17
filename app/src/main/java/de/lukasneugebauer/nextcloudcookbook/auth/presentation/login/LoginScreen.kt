@@ -176,7 +176,7 @@ fun LoginScreen(
     ) {
         Image(
             painter = painterResource(id = R.drawable.ic_nextcloud_logo_symbol),
-            contentDescription = "Nextcloud Logo",
+            contentDescription = stringResource(R.string.login_nextcloud_logo),
             alignment = Alignment.Center,
             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
         )

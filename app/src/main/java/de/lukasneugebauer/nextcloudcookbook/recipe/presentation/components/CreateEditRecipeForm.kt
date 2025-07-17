@@ -595,7 +595,7 @@ private fun Ingredients(
     ) {
         Icon(
             imageVector = Icons.Default.Add,
-            contentDescription = stringResource(R.string.recipe_ingredient_add),
+            contentDescription = null,
         )
         Text(text = stringResource(R.string.recipe_ingredient_add))
     }
@@ -719,7 +719,7 @@ private fun NutritionItem(
                     IconButton(onClick = { onChange.invoke("") }) {
                         Icon(
                             imageVector = Icons.Default.Clear,
-                            contentDescription = stringResource(id = R.string.common_close),
+                            contentDescription = stringResource(id = R.string.common_clear_input),
                         )
                     }
                 }
@@ -791,7 +791,7 @@ private fun Tools(
                         IconButton(onClick = { onToolDeleted.invoke(index) }) {
                             Icon(
                                 imageVector = Icons.Default.Delete,
-                                contentDescription = stringResource(R.string.recipe_tool_delete),
+                                contentDescription = null,
                             )
                         }
                     },
@@ -816,7 +816,7 @@ private fun Tools(
     ) {
         Icon(
             imageVector = Icons.Default.Add,
-            contentDescription = stringResource(R.string.recipe_tool_add),
+            contentDescription = null,
         )
         Text(text = stringResource(R.string.recipe_tool_add))
     }

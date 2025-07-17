@@ -5,7 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -36,6 +36,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -162,7 +163,7 @@ fun SettingsLayout(
     Column(
         modifier =
             Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
                 .verticalScroll(state = rememberScrollState())
                 .then(modifier),
     ) {
@@ -213,7 +214,7 @@ fun ColumnScope.SettingsGroupGeneral(
         leadingContent = {
             Icon(
                 imageVector = Icons.Outlined.LightMode,
-                contentDescription = stringResource(R.string.settings_stay_awake),
+                contentDescription = null,
             )
         },
         trailingContent = {
@@ -240,7 +241,7 @@ fun ColumnScope.SettingsGroupAccount(onLogoutClick: () -> Unit) {
         leadingContent = {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.Logout,
-                contentDescription = stringResource(id = R.string.settings_logout),
+                contentDescription = null,
             )
         },
     )
@@ -265,7 +266,7 @@ fun ColumnScope.SettingsGroupAbout(
         leadingContent = {
             Icon(
                 imageVector = Icons.Outlined.Lock,
-                contentDescription = stringResource(R.string.settings_privacy),
+                contentDescription = null,
             )
         },
     )
@@ -289,7 +290,7 @@ fun ColumnScope.SettingsGroupAbout(
         leadingContent = {
             Icon(
                 imageVector = Icons.Default.Gavel,
-                contentDescription = stringResource(R.string.settings_oss_licenses),
+                contentDescription = null,
             )
         },
     )
@@ -335,7 +336,7 @@ fun ColumnScope.SettingsGroupContribution(
         leadingContent = {
             Icon(
                 imageVector = Icons.Default.Code,
-                contentDescription = stringResource(R.string.settings_source_code),
+                contentDescription = null,
             )
         },
     )
@@ -347,7 +348,7 @@ fun ColumnScope.SettingsGroupContribution(
         leadingContent = {
             Icon(
                 imageVector = Icons.Outlined.Translate,
-                contentDescription = stringResource(id = R.string.settings_translate),
+                contentDescription = null,
             )
         },
     )
@@ -362,7 +363,7 @@ fun ColumnScope.SettingsGroupContribution(
         leadingContent = {
             Icon(
                 imageVector = Icons.Outlined.BugReport,
-                contentDescription = stringResource(R.string.settings_issues),
+                contentDescription = null,
             )
         },
     )
@@ -390,7 +391,7 @@ fun ColumnScope.SettingsGroupSponsoring(
         leadingContent = {
             Icon(
                 painter = painterResource(R.drawable.ic_github_24),
-                contentDescription = stringResource(R.string.settings_github_logo),
+                contentDescription = null,
             )
         },
     )
@@ -405,7 +406,7 @@ fun ColumnScope.SettingsGroupSponsoring(
         leadingContent = {
             Icon(
                 painter = painterResource(R.drawable.ic_liberapay_24),
-                contentDescription = stringResource(R.string.settings_liberapay_logo),
+                contentDescription = null,
             )
         },
     )
@@ -420,13 +421,13 @@ fun ColumnScope.SettingsGroupSponsoring(
         leadingContent = {
             Icon(
                 painter = painterResource(R.drawable.ic_paypal_24),
-                contentDescription = "",
+                contentDescription = null,
             )
         },
     )
 }
 
-@Preview(showBackground = true)
+@PreviewScreenSizes
 @Composable
 private fun SettingsContentPreview() {
     NextcloudCookbookTheme {

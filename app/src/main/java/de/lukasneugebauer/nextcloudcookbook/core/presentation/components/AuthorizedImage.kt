@@ -35,7 +35,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.Nextcloud
 @Composable
 fun AuthorizedImage(
     imageUrl: String,
-    contentDescription: String,
+    contentDescription: String?,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current

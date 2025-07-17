@@ -507,7 +507,7 @@ private fun RowScope.MetaBox(
 ) {
     Box(modifier = Modifier.weight(1f)) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Icon(icon, contentDescription = "")
+            Icon(icon, contentDescription = null)
             Text(
                 text = stringResource(id = R.string.recipe_duration, duration),
                 fontWeight = FontWeight.Bold,

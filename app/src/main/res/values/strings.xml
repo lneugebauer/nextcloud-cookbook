@@ -6,10 +6,12 @@
     <string name="common_ascending">Ascending</string>
     <string name="common_back">Back</string>
     <string name="common_categories">Categories</string>
+    <string name="common_clear_input">Clear input</string>
     <string name="common_close">Close</string>
     <string name="common_descending">Descending</string>
     <string name="common_download">Download</string>
     <string name="common_edit">Edit</string>
+    <string name="common_error">Error</string>
     <string name="common_home">Home</string>
     <string name="common_hours">Hours</string>
     <string name="common_minutes">Minutes</string>
@@ -58,9 +60,11 @@
     <string name="login">Sign in</string>
     <string name="login_example_url" translatable="false">https://cloud.example.tld</string>
     <string name="login_manual">Manual sign in</string>
+    <string name="login_nextcloud_logo">Nextcloud logo</string>
     <string name="login_root_address">Nextcloud root address</string>
     <string name="recipe_alphabetical">Name</string>
     <string name="recipe_category">Category</string>
+    <string name="recipe_change_order">Change order</string>
     <string name="recipe_cook_time">Cooking</string>
     <string name="recipe_created_at">Creation date</string>
     <string name="recipe_description">Description</string>
@@ -125,12 +129,10 @@
     <string name="settings_contribution">Contribution</string>
     <string name="settings_general">General</string>
     <string name="settings_github">GitHub</string>
-    <string name="settings_github_logo">GitHub logo</string>
     <string name="settings_github_sponsor">Become a GitHub sponsor</string>
     <string name="settings_hosted_on_github">This project is hosted on GitHub</string>
     <string name="settings_issues">Issues</string>
     <string name="settings_liberapay">Liberapay</string>
-    <string name="settings_liberapay_logo">Liberapay logo</string>
     <string name="settings_liberapay_patron">Become a Liberapay patron</string>
     <string name="settings_license">License</string>
     <string name="settings_logout">Log out</string>
@@ -138,7 +140,6 @@
     <string name="settings_oss_licenses">Open source libraries</string>
     <string name="settings_paypal">PayPal</string>
     <string name="settings_paypal_donation">Donate via PayPal</string>
-    <string name="settings_paypal_logo">PayPal logo</string>
     <string name="settings_privacy">Privacy</string>
     <string name="settings_source_code">Get source code</string>
     <string name="settings_sponsoring">Sponsoring</string>

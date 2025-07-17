@@ -16,6 +16,7 @@ import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import de.lukasneugebauer.nextcloudcookbook.R
@@ -58,7 +59,7 @@ fun DefaultOutlinedTextField(
                     {
                         Icon(
                             imageVector = Icons.Default.Error,
-                            contentDescription = "Error",
+                            contentDescription = stringResource(R.string.common_error),
                             tint = MaterialTheme.colorScheme.error,
                         )
                     }

@@ -62,6 +62,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -167,7 +168,7 @@ fun RecipeListScreenWrapper(
             is RecipeListScreenState.Loaded -> {
                 val recipePreviews = (uiState as RecipeListScreenState.Loaded).recipePreviews
                 val keywords = (uiState as RecipeListScreenState.Loaded).keywords
-                RecipeListScreen(
+                RecipeListLayout(
                     recipePreviews = recipePreviews,
                     keywords = keywords,
                     isKeywordSelected = { keyword -> selectedKeywordsState.contains(keyword) },
@@ -198,7 +199,7 @@ fun RecipeListScreenWrapper(
 }
 
 @Composable
-private fun RecipeListScreen(
+private fun RecipeListLayout(
     recipePreviews: List<RecipePreview>,
     keywords: Set<String>,
     isKeywordSelected: (keyword: String) -> Boolean,
@@ -239,7 +240,7 @@ private fun RecipeListScreen(
                         leadingContent = {
                             AuthorizedImage(
                                 imageUrl = recipePreview.imageUrl,
-                                contentDescription = recipePreview.name,
+                                contentDescription = null,
                                 modifier =
                                     Modifier
                                         .size(dimensionResource(id = R.dimen.common_item_width_s))
@@ -320,7 +321,7 @@ private fun TopAppBar(
             IconButton(onClick = { expanded = true }) {
                 Icon(
                     Icons.AutoMirrored.Filled.Sort,
-                    contentDescription = "Order",
+                    contentDescription = stringResource(R.string.recipe_change_order),
                 )
                 DropdownMenu(
                     expanded = expanded,
@@ -483,7 +484,7 @@ private fun SearchAppBar(
                 IconButton(onClick = {}, enabled = false) {
                     Icon(
                         imageVector = Icons.Default.Search,
-                        contentDescription = stringResource(R.string.common_search),
+                        contentDescription = null,
                         modifier = Modifier.alpha(ContentAlpha.medium),
                     )
                 }
@@ -501,7 +502,14 @@ private fun SearchAppBar(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Close,
-                        contentDescription = stringResource(R.string.common_close),
+                        contentDescription =
+                            if (query.isNotEmpty()) {
+                                stringResource(
+                                    R.string.common_clear_input,
+                                )
+                            } else {
+                                stringResource(R.string.common_close)
+                            },
                     )
                 }
             },
@@ -523,7 +531,7 @@ private fun SearchAppBar(
     }
 }
 
-@Preview
+@PreviewScreenSizes
 @Composable
 private fun RecipeListPreview() {
     val recipePreviews =
@@ -540,7 +548,7 @@ private fun RecipeListPreview() {
         }
     val allKeywords = setOf("Keyword 1", "Keyword 2", "Keyword 3")
     NextcloudCookbookTheme {
-        RecipeListScreen(
+        RecipeListLayout(
             recipePreviews = recipePreviews,
             keywords = allKeywords,
             isKeywordSelected = { nextBoolean() },
