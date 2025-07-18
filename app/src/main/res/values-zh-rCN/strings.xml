@@ -10,7 +10,7 @@
     <string name="error_api_not_initialized">API 未初始化</string>
     <string name="error_empty_password">请输入密码</string>
     <string name="error_empty_username">请输入用户名</string>
-    <string name="error_eof">文件结尾错误</string>
+    <string name="error_eof">文件结束错误</string>
     <string name="error_http_403">403 已禁止</string>
     <string name="error_http_404">404 未找到</string>
     <string name="error_http_405">405 方法不允许</string>
@@ -23,15 +23,15 @@
     <string name="login_manual">手动登录</string>
     <string name="recipe_category">类别</string>
     <string name="recipe_cook_time">烹饪时间</string>
-    <string name="recipe_description">说明</string>
+    <string name="recipe_description">描述</string>
     <string name="recipe_duration">%1$d 分钟</string>
     <string name="recipe_edit">编辑食谱</string>
     <string name="recipe_import_from_url">从 URL 导入食谱</string>
-    <string name="recipe_ingredient_add">添加配料</string>
-    <string name="recipe_ingredients">配料</string>
-    <string name="recipe_ingredients_copy">将配料复制到剪贴板</string>
+    <string name="recipe_ingredient_add">添加食材</string>
+    <string name="recipe_ingredients">食材</string>
+    <string name="recipe_ingredients_copy">将食材复制到剪贴板</string>
     <plurals name="recipe_ingredients_servings">
-        <item quantity="other">%1$d 份的配料</item>
+        <item quantity="other">%1$d 份食材</item>
     </plurals>
     <string name="recipe_instruction_delete">删除说明</string>
     <string name="recipe_instructions">说明</string>
@@ -62,10 +62,10 @@
     <string name="recipe_tool">工具</string>
     <string name="recipe_total_time">总时间</string>
     <string name="settings_hosted_on_github">此项目托管在 GitHub 上</string>
-    <string name="settings_license">许可证</string>
+    <string name="settings_license">许可</string>
     <string name="settings_logout">登出</string>
-    <string name="settings_mit_license">MIT 许可证</string>
-    <string name="settings_oss_licenses">开源库</string>
+    <string name="settings_mit_license">MIT 许可</string>
+    <string name="settings_oss_licenses">开放源代码库</string>
     <string name="settings_privacy">隐私</string>
     <string name="settings_source_code">获取源代码</string>
     <string name="settings_stay_awake_on_recipe_screen">当您在食谱屏幕上时，屏幕会一直亮着</string>
@@ -101,7 +101,7 @@
     <string name="error_no_login_url">无法加载登录 URL</string>
     <string name="login_root_address">Nextcloud 根地址</string>
     <string name="recipe_image_url">图片 URL</string>
-    <string name="recipe_ingredient_delete">删除配料</string>
+    <string name="recipe_ingredient_delete">删除食材</string>
     <string name="recipe_instruction_add">添加说明</string>
     <string name="settings_contribution">贡献</string>
     <string name="error_invalid_protocol">协议无效，URL 必须以 https:// 开头</string>
@@ -109,7 +109,7 @@
     <string name="error_no_recipes_found">未找到食谱</string>
     <string name="error_ssl_handshake">证书错误</string>
     <string name="error_timeout">超时错误</string>
-    <string name="recipe_ingredient">配料</string>
+    <string name="recipe_ingredient">食材</string>
     <string name="error_invalid_url">URL 无效</string>
     <string name="home_recommendation">推荐</string>
     <string name="recipe_instruction">说明</string>
@@ -124,7 +124,7 @@
     <string name="recipe_yield">食量</string>
     <string name="settings_general">常规</string>
     <plurals name="recipe_ingredients_copied">
-        <item quantity="other">已复制配料</item>
+        <item quantity="other">已复制食材</item>
     </plurals>
     <string name="common_reorder">重新排序</string>
     <string name="settings_issues">问题</string>
@@ -134,4 +134,15 @@
     <string name="recipe_modified_at">修改日期</string>
     <string name="common_descending">降序</string>
     <string name="common_selected">已选择</string>
+    <string name="common_clear_input">清除输入</string>
+    <string name="common_error">错误</string>
+    <string name="login_nextcloud_logo">Nextcloud 徽标</string>
+    <string name="recipe_change_order">更改顺序‌</string>
+    <string name="settings_github">GitHub</string>
+    <string name="settings_github_sponsor">成为 GitHub 赞助者</string>
+    <string name="settings_liberapay">Liberapay</string>
+    <string name="settings_liberapay_patron">成为 Liberapay 资助者</string>
+    <string name="settings_paypal">PayPal</string>
+    <string name="settings_paypal_donation">通过 PayPal 捐赠</string>
+    <string name="settings_sponsoring">赞助‌</string>
 </resources>
