@@ -2,11 +2,14 @@ package de.lukasneugebauer.nextcloudcookbook.recipe.presentation.home
 
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -14,6 +17,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalMinimumInteractiveComponentSize
 import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -25,9 +29,15 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.isFinite
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.generated.destinations.RecipeDetailScreenDestination
@@ -46,8 +56,10 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.error.NotFoundScre
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.error.UnknownErrorScreen
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.HomeScreenDataResult
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipePreview
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.HomeScreenState
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.RecipeConstants.MORE_BUTTON_THRESHOLD
+import de.lukasneugebauer.nextcloudcookbook.recipe.util.emptyRecipe
 
 @Destination<MainGraph>
 @Composable
@@ -182,21 +194,110 @@ private fun SingleItem(
     imageUrl: String,
     onClick: () -> Unit,
 ) {
-    Card(
-        modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
-        onClick = onClick,
-    ) {
-        Column {
-            AuthorizedImage(
-                imageUrl = imageUrl,
-                contentDescription = name,
-                modifier =
-                    Modifier
-                        .aspectRatio(16f / 9f)
-                        .fillMaxWidth(),
-            )
-            CommonItemBody(name = name, modifier = Modifier.fillMaxWidth())
+    val appBarHeight = 56.dp
+    val bottomBarHeight = 80.dp
+
+    val windowInfo = LocalWindowInfo.current
+    val density = LocalDensity.current
+    val totalScreenHeight = with(density) { windowInfo.containerSize.height.toDp() }
+    val effectiveScreenHeight = totalScreenHeight - appBarHeight - bottomBarHeight
+    val aspectRatio = 16f / 9f
+
+    val screenWidth = with(density) { windowInfo.containerSize.width.toDp() }
+    val isTablet = screenWidth >= 600.dp
+    val fraction = if (isTablet) 0.6f else 0.5f
+
+    BoxWithConstraints {
+        val availableWidth = this.maxWidth
+        val availableHeight = if (this.maxHeight.isFinite) this.maxHeight else effectiveScreenHeight
+        val fullWidthHeight = availableWidth / aspectRatio
+        val maxAllowedHeight = minOf(availableHeight, effectiveScreenHeight * fraction)
+        val useFullWidth = fullWidthHeight <= maxAllowedHeight
+
+        val cardModifier =
+            if (useFullWidth) {
+                Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_m))
+            } else {
+                val calculatedWidth = maxAllowedHeight * aspectRatio
+                val minimumInteractiveComponentSize = LocalMinimumInteractiveComponentSize.current
+                Modifier
+                    .width(calculatedWidth)
+                    .heightIn(max = maxAllowedHeight + minimumInteractiveComponentSize)
+                    .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
+            }
+
+        Card(
+            modifier = cardModifier,
+            onClick = onClick,
+        ) {
+            Column {
+                AuthorizedImage(
+                    imageUrl = imageUrl,
+                    contentDescription = name,
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .aspectRatio(aspectRatio),
+                )
+                CommonItemBody(name = name, modifier = Modifier.fillMaxWidth())
+            }
         }
+    }
+}
+
+@PreviewLightDark
+@PreviewScreenSizes
+@Composable
+private fun HomeLayoutPreview() {
+    NextcloudCookbookTheme {
+        val recipePreview =
+            RecipePreview(
+                id = "1",
+                name = "Lorem ipsum",
+                keywords = emptySet(),
+                category = "Lorem ipsum",
+                imageUrl = "",
+                createdAt = "",
+                modifiedAt = "",
+            )
+        val uiState =
+            HomeScreenState.Loaded(
+                data =
+                    listOf(
+                        HomeScreenDataResult.Single(
+                            headline = R.string.home_recommendation,
+                            recipe = emptyRecipe().copy(name = "Lorem ipsum"),
+                        ),
+                        HomeScreenDataResult.Row(
+                            headline = "Lorem ipsum",
+                            recipes = listOf(recipePreview, recipePreview, recipePreview, recipePreview, recipePreview),
+                        ),
+                        HomeScreenDataResult.Row(
+                            headline = "Lorem ipsum",
+                            recipes = listOf(recipePreview, recipePreview, recipePreview),
+                        ),
+                    ),
+            )
+        HomeScreen(
+            uiState = uiState,
+            onSettingsIconClick = {},
+            onHeadlineClick = {},
+            onRecipeClick = {},
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun EmptyHomeLayoutPreview() {
+    NextcloudCookbookTheme {
+        val uiState = HomeScreenState.Loaded(data = emptyList())
+        HomeScreen(
+            uiState = uiState,
+            onSettingsIconClick = {},
+            onHeadlineClick = {},
+            onRecipeClick = {},
+        )
     }
 }
 
