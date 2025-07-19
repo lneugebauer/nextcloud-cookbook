@@ -128,12 +128,10 @@
     <string name="settings_contribution">Mitmachen</string>
     <string name="settings_general">Allgemein</string>
     <string name="settings_github">GitHub</string>
-    <string name="settings_github_logo">GitHub Logo</string>
     <string name="settings_github_sponsor">Werde GitHub-Sponsor</string>
     <string name="settings_hosted_on_github">Dieses Projekt wird auf GitHub gehostet</string>
     <string name="settings_issues">Probleme</string>
     <string name="settings_liberapay">Liberapay</string>
-    <string name="settings_liberapay_logo">Liberapay Logo</string>
     <string name="settings_liberapay_patron">Werde Liberapay-Förderer</string>
     <string name="settings_license">Lizenz</string>
     <string name="settings_logout">Abmelden</string>
@@ -141,7 +139,6 @@
     <string name="settings_oss_licenses">Open-Source-Bibliotheken</string>
     <string name="settings_paypal">PayPal</string>
     <string name="settings_paypal_donation">Spenden über PayPal</string>
-    <string name="settings_paypal_logo">PayPal Logo</string>
     <string name="settings_privacy">Datenschutz</string>
     <string name="settings_source_code">Quellcode</string>
     <string name="settings_sponsoring">Unterstützen</string>
