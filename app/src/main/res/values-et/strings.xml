@@ -137,4 +137,15 @@
     <string name="recipe_modified_at">Muutmise kuupäev</string>
     <string name="settings_issues">Täiendused ja vead</string>
     <string name="common_selected">Valitud</string>
+    <string name="common_clear_input">Tühjenda sisend</string>
+    <string name="common_error">Viga</string>
+    <string name="login_nextcloud_logo">Nextcloudi logo</string>
+    <string name="recipe_change_order">Muuda järjekorda</string>
+    <string name="settings_github">GitHub</string>
+    <string name="settings_github_sponsor">Hakka sponsoriks GitHubis</string>
+    <string name="settings_liberapay">Liberapay</string>
+    <string name="settings_liberapay_patron">Hakka toetajaks Liberapay teenuses</string>
+    <string name="settings_paypal">PayPal</string>
+    <string name="settings_paypal_donation">Toeta PayPali vahendusel</string>
+    <string name="settings_sponsoring">Toetamise võimalused</string>
 </resources>
