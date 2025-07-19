@@ -69,10 +69,9 @@ fun BottomBarContent(
                 icon = {
                     Icon(
                         imageVector = destination.icon,
-                        contentDescription = stringResource(destination.label),
+                        contentDescription = null,
                     )
                 },
-                enabled = selected != destination,
                 label = { Text(stringResource(destination.label)) },
             )
         }
