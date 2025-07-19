@@ -72,7 +72,6 @@ fun BottomBarContent(
                         contentDescription = null,
                     )
                 },
-                enabled = selected != destination,
                 label = { Text(stringResource(destination.label)) },
             )
         }
