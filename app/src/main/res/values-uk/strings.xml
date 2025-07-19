@@ -139,4 +139,7 @@
     <string name="recipe_created_at">Дата створення</string>
     <string name="recipe_modified_at">Дата зміни</string>
     <string name="recipe_alphabetical">Назва</string>
+    <string name="settings_issues">Проблеми</string>
+    <string name="common_ascending">Висхідний</string>
+    <string name="common_descending">Спуск</string>
 </resources>

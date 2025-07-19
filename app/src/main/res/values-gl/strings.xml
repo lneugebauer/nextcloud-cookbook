@@ -136,4 +136,16 @@
     <string name="common_descending">Descendente</string>
     <string name="recipe_modified_at">Data de modificación</string>
     <string name="recipe_created_at">Data de creación</string>
+    <string name="common_selected">Seleccionado</string>
+    <string name="common_clear_input">LImpar entrada</string>
+    <string name="common_error">Erro</string>
+    <string name="login_nextcloud_logo">Logo de Nextcloud</string>
+    <string name="recipe_change_order">Cambiar orde</string>
+    <string name="settings_github">GitHub</string>
+    <string name="settings_github_sponsor">Patrocina en GitHub</string>
+    <string name="settings_liberapay">Liberapay</string>
+    <string name="settings_liberapay_patron">Patrocina desde Liberapay</string>
+    <string name="settings_paypal">PayPal</string>
+    <string name="settings_paypal_donation">Doa desde PayPal</string>
+    <string name="settings_sponsoring">Patrocinios</string>
 </resources>
