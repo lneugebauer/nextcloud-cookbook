@@ -55,6 +55,7 @@ captures/
 .idea/**/other.xml
 .idea/**/runConfigurations.xml
 .idea/**/php.xml
+.idea/**/assetWizardSettings.xml
 
 # AWS User-specific
 .idea/**/aws.xml
