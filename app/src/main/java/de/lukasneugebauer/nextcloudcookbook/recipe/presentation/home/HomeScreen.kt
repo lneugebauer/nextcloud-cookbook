@@ -2,14 +2,12 @@ package de.lukasneugebauer.nextcloudcookbook.recipe.presentation.home
 
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -37,7 +35,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.isFinite
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.generated.destinations.RecipeDetailScreenDestination
@@ -55,6 +52,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.RowCont
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.error.NotFoundScreen
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.error.UnknownErrorScreen
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
+import de.lukasneugebauer.nextcloudcookbook.core.util.AspectRatio
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.HomeScreenDataResult
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipePreview
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.HomeScreenState
@@ -196,52 +194,37 @@ private fun SingleItem(
 ) {
     val appBarHeight = 64.dp
     val bottomBarHeight = 80.dp
-
+    val minimumInteractiveComponentSize = LocalMinimumInteractiveComponentSize.current
     val windowInfo = LocalWindowInfo.current
     val density = LocalDensity.current
-    val totalScreenHeight = with(density) { windowInfo.containerSize.height.toDp() }
-    val effectiveScreenHeight = totalScreenHeight - appBarHeight - bottomBarHeight
-    val aspectRatio = 16f / 9f
-
+    val screenHeight = with(density) { windowInfo.containerSize.height.toDp() }
     val screenWidth = with(density) { windowInfo.containerSize.width.toDp() }
+    val effectiveScreenHeight = screenHeight - appBarHeight - bottomBarHeight - minimumInteractiveComponentSize
+    val aspectRatio = AspectRatio.VIDEO.ratio
     val isTablet = screenWidth >= 600.dp
-    val fraction = if (isTablet) 0.6f else 0.5f
+    val fullWidthHeight = screenWidth / aspectRatio
+    val maxAllowedHeight = if (isTablet) effectiveScreenHeight * 0.6f else effectiveScreenHeight * 0.3f
+    val useFullWidth = fullWidthHeight <= maxAllowedHeight
 
-    BoxWithConstraints {
-        val availableWidth = this.maxWidth
-        val availableHeight = if (this.maxHeight.isFinite) this.maxHeight else effectiveScreenHeight
-        val fullWidthHeight = availableWidth / aspectRatio
-        val maxAllowedHeight = minOf(availableHeight, effectiveScreenHeight * fraction)
-        val useFullWidth = fullWidthHeight <= maxAllowedHeight
-
-        val cardModifier =
+    Card(
+        modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
+        onClick = onClick,
+    ) {
+        val modifier =
             if (useFullWidth) {
-                Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_m))
+                Modifier.aspectRatio(aspectRatio)
             } else {
-                val calculatedWidth = maxAllowedHeight * aspectRatio
-                val minimumInteractiveComponentSize = LocalMinimumInteractiveComponentSize.current
                 Modifier
-                    .width(calculatedWidth)
+                    .wrapContentWidth()
                     .heightIn(max = maxAllowedHeight + minimumInteractiveComponentSize)
-                    .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
+                    .aspectRatio(aspectRatio)
             }
-
-        Card(
-            modifier = cardModifier,
-            onClick = onClick,
-        ) {
-            Column {
-                AuthorizedImage(
-                    imageUrl = imageUrl,
-                    contentDescription = name,
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .aspectRatio(aspectRatio),
-                )
-                CommonItemBody(name = name, modifier = Modifier.fillMaxWidth())
-            }
-        }
+        AuthorizedImage(
+            imageUrl = imageUrl,
+            contentDescription = name,
+            modifier = modifier,
+        )
+        CommonItemBody(name = name)
     }
 }
 

@@ -45,7 +45,7 @@ fun CommonItem(
 @Composable
 fun CommonItemBody(
     name: String,
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
 ) {
     Text(
         text = name,

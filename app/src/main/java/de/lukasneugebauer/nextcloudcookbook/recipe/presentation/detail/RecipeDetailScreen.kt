@@ -100,6 +100,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Gap
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.pluralResource
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
+import de.lukasneugebauer.nextcloudcookbook.core.util.AspectRatio
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
 import de.lukasneugebauer.nextcloudcookbook.core.util.getActivity
 import de.lukasneugebauer.nextcloudcookbook.core.util.notZero
@@ -401,20 +402,16 @@ private fun Image(imageUrl: String) {
     val modifier =
         if (isLandscape) {
             Modifier
-                .aspectRatio(2.4f / 1f)
+                .aspectRatio(AspectRatio.CINEMA_SCOPE.ratio)
         } else {
             Modifier
-                .aspectRatio(4f / 3f)
+                .aspectRatio(AspectRatio.PHOTO.ratio)
         }
 
     AuthorizedImage(
         imageUrl = imageUrl,
         contentDescription = null,
-        modifier =
-            modifier.then(
-                Modifier.fillMaxWidth()
-                    .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
-            ),
+        modifier = modifier.fillMaxWidth().padding(bottom = dimensionResource(id = R.dimen.padding_m)),
     )
 }
 
