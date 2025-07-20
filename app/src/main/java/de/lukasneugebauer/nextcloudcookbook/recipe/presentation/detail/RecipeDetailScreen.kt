@@ -3,6 +3,7 @@ package de.lukasneugebauer.nextcloudcookbook.recipe.presentation.detail
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Build
 import android.view.View
 import android.view.WindowManager
@@ -67,6 +68,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.dimensionResource
@@ -81,6 +83,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewFontScale
 import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -97,6 +100,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Gap
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.pluralResource
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
+import de.lukasneugebauer.nextcloudcookbook.core.util.AspectRatio
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
 import de.lukasneugebauer.nextcloudcookbook.core.util.getActivity
 import de.lukasneugebauer.nextcloudcookbook.core.util.notZero
@@ -136,7 +140,7 @@ fun AnimatedVisibilityScope.RecipeDetailScreen(
         }
     }
 
-    RecipeDetailContent(
+    RecipeDetailLayout(
         recipe = recipe,
         calculatedIngredients = state.calculatedIngredients,
         currentYield = state.currentYield,
@@ -294,7 +298,7 @@ private fun DropDownMenuItemDelete(onClick: () -> Unit) {
 }
 
 @Composable
-fun RecipeDetailContent(
+fun RecipeDetailLayout(
     recipe: Recipe,
     calculatedIngredients: List<String>,
     currentYield: Int,
@@ -347,7 +351,7 @@ fun RecipeDetailContent(
                         .padding(innerPadding)
                         .verticalScroll(rememberScrollState()),
             ) {
-                Image(recipe.imageUrl, recipe.name)
+                Image(recipe.imageUrl)
                 Name(recipe.name)
                 if (recipe.keywords.isNotEmpty()) {
                     Keywords(keywords = recipe.keywords, onClick = onKeywordClick)
@@ -391,18 +395,23 @@ fun RecipeDetailContent(
 }
 
 @Composable
-private fun Image(
-    imageUrl: String,
-    name: String,
-) {
+private fun Image(imageUrl: String) {
+    val configuration = LocalConfiguration.current
+    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
+    val modifier =
+        if (isLandscape) {
+            Modifier
+                .aspectRatio(AspectRatio.CINEMA_SCOPE.ratio)
+        } else {
+            Modifier
+                .aspectRatio(AspectRatio.PHOTO.ratio)
+        }
+
     AuthorizedImage(
         imageUrl = imageUrl,
-        contentDescription = name,
-        modifier =
-            Modifier
-                .aspectRatio(4f / 3f)
-                .fillMaxWidth()
-                .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
+        contentDescription = null,
+        modifier = modifier.fillMaxWidth().padding(bottom = dimensionResource(id = R.dimen.padding_m)),
     )
 }
 
@@ -923,24 +932,20 @@ private fun InstructionsPreview() {
     }
 }
 
-@Preview(showBackground = true)
+@PreviewScreenSizes
 @Composable
-private fun ContentPreview() {
+private fun RecipeDetailLayoutPreview() {
     val recipe =
-        Recipe(
+        emptyRecipe().copy(
             id = "1",
             name = "Lorem ipsum",
             description = "Lorem ipsum dolor sit amet",
             url = "https://www.example.com",
-            imageOrigin = "https://www.example.com/image.jpg",
-            imageUrl = "/apps/cookbook/recipes/1/image?size=full",
+            imageUrl = "aurelien_lemasson_theobald_x00czbt4dfk_unsplash",
             category = "Lorem ipsum",
-            keywords = emptyList(),
             yield = 2,
-            prepTime = null,
             cookTime = Duration.parse("PT0H35M0S"),
             totalTime = Duration.parse("PT1H50M0S"),
-            nutrition = null,
             tools =
                 List(1) {
                     Tool(id = it, value = "Lorem ipsum")
@@ -962,11 +967,9 @@ private fun ContentPreview() {
                             """.trimMargin(),
                     )
                 },
-            createdAt = "",
-            modifiedAt = "",
         )
     NextcloudCookbookTheme {
-        RecipeDetailContent(
+        RecipeDetailLayout(
             recipe = recipe,
             calculatedIngredients = emptyList(),
             currentYield = 2,
