@@ -194,7 +194,7 @@ private fun SingleItem(
     imageUrl: String,
     onClick: () -> Unit,
 ) {
-    val appBarHeight = 56.dp
+    val appBarHeight = 64.dp
     val bottomBarHeight = 80.dp
 
     val windowInfo = LocalWindowInfo.current

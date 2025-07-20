@@ -23,7 +23,7 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Recipe
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipePreview
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Tool
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.HomeScreenState
-import de.lukasneugebauer.nextcloudcookbook.recipe.presentation.detail.RecipeDetailContent
+import de.lukasneugebauer.nextcloudcookbook.recipe.presentation.detail.RecipeDetailLayout
 import de.lukasneugebauer.nextcloudcookbook.recipe.presentation.home.HomeScreen
 import org.junit.AfterClass
 import org.junit.Assume
@@ -137,7 +137,7 @@ class ScreenshotsTestSuite {
                     BottomBarContent(selected = BottomBarDestination.Recipes, onClick = {})
                 },
             ) { _ ->
-                RecipeDetailContent(
+                RecipeDetailLayout(
                     recipe = RECIPE,
                     calculatedIngredients = emptyList(),
                     currentYield = RECIPE.yield,
