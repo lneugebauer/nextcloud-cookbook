@@ -142,4 +142,7 @@
     <string name="settings_issues">Вопросы</string>
     <string name="recipe_created_at">Дата добавления</string>
     <string name="recipe_alphabetical">Название</string>
+    <string name="settings_github">GitHub</string>
+    <string name="settings_liberapay">Liberapay</string>
+    <string name="settings_paypal">PayPal</string>
 </resources>
