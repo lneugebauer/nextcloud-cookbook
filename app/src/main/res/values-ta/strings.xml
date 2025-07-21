@@ -101,7 +101,7 @@
     <string name="recipe_instruction_add">வழிமுறைகளைச் சேர்க்கவும்</string>
     <string name="recipe_instruction_delete">அறிவுறுத்தலை நீக்கு</string>
     <string name="recipe_instructions">வழிமுறைகள்</string>
-    <string name="recipe_instruction">வழிமுறைகள்</string>
+    <string name="recipe_instruction">வழிமுறை</string>
     <string name="recipe_modified_at">மாற்றும் தேதி</string>
     <string name="recipe_more_menu_delete">நீக்கு</string>
     <string name="recipe_more_menu_edit">தொகு</string>
