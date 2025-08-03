@@ -15,8 +15,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -28,11 +30,13 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.category.domain.model.Category
 import de.lukasneugebauer.nextcloudcookbook.category.domain.state.CategoryListScreenState
+import de.lukasneugebauer.nextcloudcookbook.core.domain.state.LocalAppState
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.MainGraph
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.error.AbstractErrorScreen
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
+import kotlinx.coroutines.launch
 import kotlin.random.Random.Default.nextInt
 
 @Destination<MainGraph>
@@ -82,6 +86,17 @@ private fun CategoryListScreen(
     onClick: (String) -> Unit,
 ) {
     val listState = rememberLazyListState()
+    val appState = LocalAppState.current
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(appState.scrollToTopEvent) {
+        if (appState.scrollToTopEvent > 0L) {
+            coroutineScope.launch {
+                listState.animateScrollToItem(0)
+            }
+        }
+    }
+
     LazyColumn(
         modifier = modifier.fillMaxSize(),
         state = listState,

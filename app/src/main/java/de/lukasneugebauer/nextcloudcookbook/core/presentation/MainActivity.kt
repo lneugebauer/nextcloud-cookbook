@@ -9,6 +9,7 @@ import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -20,13 +21,24 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.navigation.NavBackStackEntry
@@ -108,11 +120,55 @@ class MainActivity : ComponentActivity() {
 fun NextcloudCookbookApp(intent: Intent?) {
     NextcloudCookbookTheme {
         val navController = rememberNavController()
+        val configuration = LocalConfiguration.current
+        val appState = LocalAppState.current
 
         val viewModelStoreOwner =
             checkNotNull(LocalViewModelStoreOwner.current) {
                 "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
             }
+
+        val wasHiddenByScroll = rememberSaveable { mutableStateOf(false) }
+
+        val isPhone = configuration.smallestScreenWidthDp < 600
+        val isLandscape = configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
+        val shouldUseScrollBehavior = isPhone && isLandscape
+
+        val nestedScrollConnection =
+            remember(shouldUseScrollBehavior, appState) {
+                object : NestedScrollConnection {
+                    override fun onPreScroll(
+                        available: Offset,
+                        source: NestedScrollSource,
+                    ): Offset {
+                        if (!shouldUseScrollBehavior) return Offset.Zero
+
+                        if (!appState.isBottomBarVisible && !wasHiddenByScroll.value) {
+                            return Offset.Zero
+                        }
+
+                        val delta = available.y
+                        if (delta < -10f && appState.isBottomBarVisible) {
+                            appState.isBottomBarVisible = false
+                            wasHiddenByScroll.value = true
+                        } else if (delta > 10f && !appState.isBottomBarVisible && wasHiddenByScroll.value) {
+                            appState.isBottomBarVisible = true
+                            wasHiddenByScroll.value = false
+                        }
+                        return Offset.Zero
+                    }
+                }
+            }
+
+        DisposableEffect(configuration, shouldUseScrollBehavior) {
+            if (!shouldUseScrollBehavior) {
+                if (wasHiddenByScroll.value) {
+                    appState.isBottomBarVisible = true
+                    wasHiddenByScroll.value = false
+                }
+            }
+            onDispose { }
+        }
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             destination.route?.let {
@@ -125,16 +181,44 @@ fun NextcloudCookbookApp(intent: Intent?) {
             navController.handleDeepLink(intent)
         }
 
+        val layoutDirection = LocalLayoutDirection.current
+        // Material 3 Navigation Bar standard height matches NavigationBarTokens.ContainerHeight (80dp)
+        // Since NavigationBarTokens is internal, we use the standard value directly
+        val bottomBarHeight = 80.dp
+
         Scaffold(
+            modifier = Modifier.nestedScroll(nestedScrollConnection),
             contentWindowInsets = WindowInsets.safeDrawing,
-            bottomBar = { BottomBar(navController = navController) },
+            bottomBar = {
+                BottomBar(navController = navController)
+            },
         ) { innerPadding ->
+            val density = LocalDensity.current
+            val safeDrawingBottom =
+                with(density) {
+                    WindowInsets.safeDrawing.getBottom(density).toDp()
+                }
+            val animatedBottomPadding by animateDpAsState(
+                targetValue =
+                    if (appState.isBottomBarVisible) {
+                        safeDrawingBottom + bottomBarHeight
+                    } else {
+                        safeDrawingBottom
+                    },
+                label = "bottomPadding",
+            )
+
             DestinationsNavHost(
                 navGraph = MainNavGraph,
                 modifier =
                     Modifier
                         .fillMaxSize()
-                        .padding(innerPadding)
+                        .padding(
+                            top = innerPadding.calculateTopPadding(),
+                            start = innerPadding.calculateLeftPadding(layoutDirection),
+                            end = innerPadding.calculateRightPadding(layoutDirection),
+                            bottom = animatedBottomPadding,
+                        )
                         .consumeWindowInsets(WindowInsets.safeDrawing),
                 navController = navController,
             ) {

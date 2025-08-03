@@ -1,6 +1,9 @@
 package de.lukasneugebauer.nextcloudcookbook.core.presentation.components
 
 import androidx.annotation.StringRes
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.Fastfood
@@ -43,13 +46,21 @@ fun BottomBar(navController: NavController) {
     val destinationsNavigator = navController.rememberDestinationsNavigator()
     var selected by rememberSaveable { mutableStateOf(BottomBarDestination.Home) }
 
-    if (appState.isBottomBarVisible) {
+    AnimatedVisibility(
+        visible = appState.isBottomBarVisible,
+        enter = slideInVertically(initialOffsetY = { it }),
+        exit = slideOutVertically(targetOffsetY = { it }),
+    ) {
         BottomBarContent(
             selected = selected,
             onClick = { destination ->
-                selected = destination
-                destinationsNavigator.navigate(destination.direction) {
-                    launchSingleTop = true
+                if (selected == destination) {
+                    appState.triggerScrollToTop()
+                } else {
+                    selected = destination
+                    destinationsNavigator.navigate(destination.direction) {
+                        launchSingleTop = true
+                    }
                 }
             },
         )
@@ -69,10 +80,9 @@ fun BottomBarContent(
                 icon = {
                     Icon(
                         imageVector = destination.icon,
-                        contentDescription = stringResource(destination.label),
+                        contentDescription = null,
                     )
                 },
-                enabled = selected != destination,
                 label = { Text(stringResource(destination.label)) },
             )
         }

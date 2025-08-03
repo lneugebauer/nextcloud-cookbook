@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
@@ -23,8 +24,10 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalDensity
@@ -42,6 +45,7 @@ import com.ramcosta.composedestinations.generated.destinations.RecipeListWithArg
 import com.ramcosta.composedestinations.generated.destinations.SettingsScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import de.lukasneugebauer.nextcloudcookbook.R
+import de.lukasneugebauer.nextcloudcookbook.core.domain.state.LocalAppState
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.MainGraph
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.AuthorizedImage
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.CommonItemBody
@@ -58,6 +62,7 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipePreview
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.HomeScreenState
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.RecipeConstants.MORE_BUTTON_THRESHOLD
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.emptyRecipe
+import kotlinx.coroutines.launch
 
 @Destination<MainGraph>
 @Composable
@@ -118,6 +123,18 @@ fun HomeScreen(
     onRecipeClick: (recipeId: String) -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+    val lazyListState = rememberLazyListState()
+    val appState = LocalAppState.current
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(appState.scrollToTopEvent) {
+        if (appState.scrollToTopEvent > 0L) {
+            coroutineScope.launch {
+                lazyListState.animateScrollToItem(0)
+            }
+        }
+    }
+
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
@@ -135,6 +152,7 @@ fun HomeScreen(
                     NotFoundScreen()
                 } else {
                     LazyColumn(
+                        state = lazyListState,
                         modifier =
                             Modifier
                                 .fillMaxWidth()
@@ -193,13 +211,12 @@ private fun SingleItem(
     onClick: () -> Unit,
 ) {
     val appBarHeight = 64.dp
-    val bottomBarHeight = 80.dp
     val minimumInteractiveComponentSize = LocalMinimumInteractiveComponentSize.current
     val windowInfo = LocalWindowInfo.current
     val density = LocalDensity.current
     val screenHeight = with(density) { windowInfo.containerSize.height.toDp() }
     val screenWidth = with(density) { windowInfo.containerSize.width.toDp() }
-    val effectiveScreenHeight = screenHeight - appBarHeight - bottomBarHeight - minimumInteractiveComponentSize
+    val effectiveScreenHeight = screenHeight - appBarHeight - minimumInteractiveComponentSize
     val aspectRatio = AspectRatio.VIDEO.ratio
     val isTablet = screenWidth >= 600.dp
     val fullWidthHeight = screenWidth / aspectRatio

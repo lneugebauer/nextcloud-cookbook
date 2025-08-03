@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ContentAlpha
@@ -47,6 +48,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -74,6 +76,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultRecipient
 import de.lukasneugebauer.nextcloudcookbook.R
+import de.lukasneugebauer.nextcloudcookbook.core.domain.state.LocalAppState
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.MainGraph
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.AuthorizedImage
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Gap
@@ -87,6 +90,7 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipeListScreen
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipePreview
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.RecipeListScreenState
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.SearchAppBarState
+import kotlinx.coroutines.launch
 import kotlin.random.Random.Default.nextBoolean
 import kotlin.random.Random.Default.nextInt
 
@@ -210,6 +214,18 @@ private fun RecipeListLayout(
     if (recipePreviews.isEmpty()) {
         NotFoundScreen()
     } else {
+        val lazyListState = rememberLazyListState()
+        val appState = LocalAppState.current
+        val coroutineScope = rememberCoroutineScope()
+
+        LaunchedEffect(appState.scrollToTopEvent) {
+            if (appState.scrollToTopEvent > 0L) {
+                coroutineScope.launch {
+                    lazyListState.animateScrollToItem(0)
+                }
+            }
+        }
+
         Column(modifier = modifier) {
             if (keywords.isNotEmpty()) {
                 LazyRow(
@@ -230,7 +246,7 @@ private fun RecipeListLayout(
                 }
                 HorizontalDivider()
             }
-            LazyColumn {
+            LazyColumn(state = lazyListState) {
                 itemsIndexed(recipePreviews) { index, recipePreview ->
                     ListItem(
                         modifier =
