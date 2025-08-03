@@ -20,13 +20,21 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.navigation.NavBackStackEntry
@@ -108,11 +116,55 @@ class MainActivity : ComponentActivity() {
 fun NextcloudCookbookApp(intent: Intent?) {
     NextcloudCookbookTheme {
         val navController = rememberNavController()
+        val configuration = LocalConfiguration.current
+        val appState = LocalAppState.current
 
         val viewModelStoreOwner =
             checkNotNull(LocalViewModelStoreOwner.current) {
                 "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
             }
+
+        val wasHiddenByScroll = rememberSaveable { mutableStateOf(false) }
+
+        val isPhone = configuration.smallestScreenWidthDp < 600
+        val isLandscape = configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
+        val shouldUseScrollBehavior = isPhone && isLandscape
+
+        val nestedScrollConnection =
+            remember(shouldUseScrollBehavior, appState) {
+                object : NestedScrollConnection {
+                    override fun onPreScroll(
+                        available: Offset,
+                        source: NestedScrollSource,
+                    ): Offset {
+                        if (!shouldUseScrollBehavior) return Offset.Zero
+
+                        if (!appState.isBottomBarVisible && !wasHiddenByScroll.value) {
+                            return Offset.Zero
+                        }
+
+                        val delta = available.y
+                        if (delta < -10f && appState.isBottomBarVisible) {
+                            appState.isBottomBarVisible = false
+                            wasHiddenByScroll.value = true
+                        } else if (delta > 10f && !appState.isBottomBarVisible && wasHiddenByScroll.value) {
+                            appState.isBottomBarVisible = true
+                            wasHiddenByScroll.value = false
+                        }
+                        return Offset.Zero
+                    }
+                }
+            }
+
+        DisposableEffect(configuration, shouldUseScrollBehavior) {
+            if (!shouldUseScrollBehavior) {
+                if (wasHiddenByScroll.value) {
+                    appState.isBottomBarVisible = true
+                    wasHiddenByScroll.value = false
+                }
+            }
+            onDispose { }
+        }
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             destination.route?.let {
@@ -126,8 +178,11 @@ fun NextcloudCookbookApp(intent: Intent?) {
         }
 
         Scaffold(
+            modifier = Modifier.nestedScroll(nestedScrollConnection),
             contentWindowInsets = WindowInsets.safeDrawing,
-            bottomBar = { BottomBar(navController = navController) },
+            bottomBar = {
+                BottomBar(navController = navController)
+            },
         ) { innerPadding ->
             DestinationsNavHost(
                 navGraph = MainNavGraph,
