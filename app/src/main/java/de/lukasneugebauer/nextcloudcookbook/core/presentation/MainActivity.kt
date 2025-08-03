@@ -9,6 +9,7 @@ import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -35,6 +36,9 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.navigation.NavBackStackEntry
@@ -177,6 +181,11 @@ fun NextcloudCookbookApp(intent: Intent?) {
             navController.handleDeepLink(intent)
         }
 
+        val layoutDirection = LocalLayoutDirection.current
+        // Material 3 Navigation Bar standard height matches NavigationBarTokens.ContainerHeight (80dp)
+        // Since NavigationBarTokens is internal, we use the standard value directly
+        val bottomBarHeight = 80.dp
+
         Scaffold(
             modifier = Modifier.nestedScroll(nestedScrollConnection),
             contentWindowInsets = WindowInsets.safeDrawing,
@@ -184,12 +193,32 @@ fun NextcloudCookbookApp(intent: Intent?) {
                 BottomBar(navController = navController)
             },
         ) { innerPadding ->
+            val density = LocalDensity.current
+            val safeDrawingBottom =
+                with(density) {
+                    WindowInsets.safeDrawing.getBottom(density).toDp()
+                }
+            val animatedBottomPadding by animateDpAsState(
+                targetValue =
+                    if (appState.isBottomBarVisible) {
+                        safeDrawingBottom + bottomBarHeight
+                    } else {
+                        safeDrawingBottom
+                    },
+                label = "bottomPadding",
+            )
+
             DestinationsNavHost(
                 navGraph = MainNavGraph,
                 modifier =
                     Modifier
                         .fillMaxSize()
-                        .padding(innerPadding)
+                        .padding(
+                            top = innerPadding.calculateTopPadding(),
+                            start = innerPadding.calculateLeftPadding(layoutDirection),
+                            end = innerPadding.calculateRightPadding(layoutDirection),
+                            bottom = animatedBottomPadding,
+                        )
                         .consumeWindowInsets(WindowInsets.safeDrawing),
                 navController = navController,
             ) {

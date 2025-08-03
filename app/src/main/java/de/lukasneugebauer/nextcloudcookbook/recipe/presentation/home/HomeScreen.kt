@@ -193,13 +193,12 @@ private fun SingleItem(
     onClick: () -> Unit,
 ) {
     val appBarHeight = 64.dp
-    val bottomBarHeight = 80.dp
     val minimumInteractiveComponentSize = LocalMinimumInteractiveComponentSize.current
     val windowInfo = LocalWindowInfo.current
     val density = LocalDensity.current
     val screenHeight = with(density) { windowInfo.containerSize.height.toDp() }
     val screenWidth = with(density) { windowInfo.containerSize.width.toDp() }
-    val effectiveScreenHeight = screenHeight - appBarHeight - bottomBarHeight - minimumInteractiveComponentSize
+    val effectiveScreenHeight = screenHeight - appBarHeight - minimumInteractiveComponentSize
     val aspectRatio = AspectRatio.VIDEO.ratio
     val isTablet = screenWidth >= 600.dp
     val fullWidthHeight = screenWidth / aspectRatio
