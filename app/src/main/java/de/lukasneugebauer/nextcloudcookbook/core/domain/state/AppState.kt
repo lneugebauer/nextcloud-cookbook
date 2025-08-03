@@ -9,6 +9,11 @@ import androidx.compose.runtime.setValue
 @Stable
 class AppState {
     var isBottomBarVisible by mutableStateOf(true)
+    var scrollToTopEvent by mutableStateOf(0L)
+
+    fun triggerScrollToTop() {
+        scrollToTopEvent = System.currentTimeMillis()
+    }
 }
 
 val LocalAppState = compositionLocalOf<AppState> { error("AppState not initialized") }

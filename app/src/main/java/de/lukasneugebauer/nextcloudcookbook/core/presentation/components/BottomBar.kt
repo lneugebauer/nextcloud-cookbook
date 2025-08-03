@@ -54,9 +54,13 @@ fun BottomBar(navController: NavController) {
         BottomBarContent(
             selected = selected,
             onClick = { destination ->
-                selected = destination
-                destinationsNavigator.navigate(destination.direction) {
-                    launchSingleTop = true
+                if (selected == destination) {
+                    appState.triggerScrollToTop()
+                } else {
+                    selected = destination
+                    destinationsNavigator.navigate(destination.direction) {
+                        launchSingleTop = true
+                    }
                 }
             },
         )
