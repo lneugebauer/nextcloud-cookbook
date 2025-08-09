@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Кулінарна книга</string>
-    <string name="common_about">Про це</string>
+    <string name="common_about">Про програму</string>
     <string name="common_back">Назад</string>
     <string name="common_close">Закрити</string>
     <string name="common_home">Дім</string>
@@ -142,4 +142,8 @@
     <string name="settings_issues">Проблеми</string>
     <string name="common_ascending">Висхідний</string>
     <string name="common_descending">Спуск</string>
+    <string name="common_error">Помилка</string>
+    <string name="settings_github">GitHub</string>
+    <string name="settings_liberapay">Liberapay</string>
+    <string name="settings_paypal">PayPal</string>
 </resources>
