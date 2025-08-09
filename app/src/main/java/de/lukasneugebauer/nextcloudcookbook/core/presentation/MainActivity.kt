@@ -73,6 +73,8 @@ class MainActivity : ComponentActivity() {
 
         enableEdgeToEdge()
 
+        handleIntent(intent)
+
         setContent {
             val appState = remember { AppState() }
             val authState by viewModel.authState.collectAsState()
@@ -108,11 +110,14 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    override fun onResume() {
-        this.addOnNewIntentListener {
-            viewModel.setIntent(it)
-        }
-        super.onResume()
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleIntent(intent)
+    }
+
+    private fun handleIntent(intent: Intent) {
+        viewModel.setIntent(intent)
     }
 }
 
