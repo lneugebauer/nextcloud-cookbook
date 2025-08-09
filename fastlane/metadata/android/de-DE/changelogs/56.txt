@@ -1,0 +1,9 @@
+- Indikator für die aktuelle Sortierreihenfolge der Rezeptliste hinzugefügt
+- Barrierefreiheit verbessert
+- Navigations-UI verbessert
+- Zeilenumbruch im Titel der Rezeptliste korrigiert
+- Text zum Teilen von Rezepten korrigiert
+- Möglichkeit zum Kopieren einzelner Zutaten hinzugefügt
+- UI des vorgeschlagenen Rezepts verbessert
+- Einstellungs-UI aktualisiert
+- Übersetzungen aktualisiert

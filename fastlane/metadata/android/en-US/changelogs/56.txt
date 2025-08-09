@@ -1,0 +1,9 @@
+- Add indicator for current recipe list sort order
+- Improve accessibility
+- Improve bottom navigation UI
+- Fix recipe list title wrap
+- Fix recipe share text
+- Fix ability to copy single ingredient
+- Fix recommended recipe size
+- Update settings UI
+- Update translations
