@@ -139,7 +139,7 @@
     <string name="settings_issues">Problemas</string>
     <string name="common_descending">Descendente</string>
     <string name="recipe_alphabetical">Nombre</string>
-    <string name="common_error">Error</string>
+    <string name="common_error">error</string>
     <string name="common_selected">Seleccionado</string>
     <string name="login_nextcloud_logo">Logo de Nextcloud</string>
     <string name="recipe_change_order">Cambiar orden</string>
