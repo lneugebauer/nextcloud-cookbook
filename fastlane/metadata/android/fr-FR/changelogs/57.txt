@@ -1,1 +1,0 @@
-- Correction d'un plantage au démarrage sur certains appareils
