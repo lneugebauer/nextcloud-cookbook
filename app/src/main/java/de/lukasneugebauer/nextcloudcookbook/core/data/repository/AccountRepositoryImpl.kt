@@ -16,7 +16,6 @@ import de.lukasneugebauer.nextcloudcookbook.di.ApiProvider
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import org.acra.ACRA
@@ -53,9 +52,8 @@ class AccountRepositoryImpl
                 val api =
                     apiProvider.getNcCookbookApi()
                         ?: return@withContext Resource.Error(message = UiText.StringResource(R.string.error_api_not_initialized))
-                val username = preferencesManager.preferencesFlow.map { it.ncAccount.username }.first()
 
-                when (val response = api.getUserMetadata(username)) {
+                when (val response = api.getCurrentUser()) {
                     is NetworkResponse.Success -> {
                         val result = response.body.ocs.data.toUserMetadata()
                         Resource.Success(data = result)

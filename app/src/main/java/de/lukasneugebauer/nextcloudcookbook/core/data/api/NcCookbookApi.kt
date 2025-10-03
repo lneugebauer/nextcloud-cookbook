@@ -33,10 +33,8 @@ interface NcCookbookApi {
         "OCS-APIRequest: true",
         "Content-Type: application/json;charset=utf-8",
     )
-    @GET("ocs/v2.php/cloud/users/{username}?format=json")
-    suspend fun getUserMetadata(
-        @Path("username") username: String,
-    ): NetworkResponse<UserMetadataResponse, ErrorResponse>
+    @GET("ocs/v2.php/cloud/user?format=json")
+    suspend fun getCurrentUser(): NetworkResponse<UserMetadataResponse, ErrorResponse>
 
     @GET("$FULL_PATH/categories")
     suspend fun getCategories(): List<CategoryDto>
