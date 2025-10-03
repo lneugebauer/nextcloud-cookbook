@@ -1,0 +1,1 @@
+- Oprava zlyhania pri spustení na niektorých zariadeniach
