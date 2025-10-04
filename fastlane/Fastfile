@@ -91,7 +91,18 @@ platform :android do
   lane :playstore do
     upload_to_play_store(
       track: "internal",
-      skip_upload_apk: true
+      skip_upload_apk: true,
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true
+    )
+  end
+
+  desc "Deploy to GPS"
+  lane :playstoreMetadata do
+    upload_to_play_store(
+      skip_upload_apk: true,
+      skip_upload_aab: true
     )
   end
 
@@ -114,6 +125,7 @@ platform :android do
     github
     bundle
     playstore
+    playstoreMetadata
   end
 
   desc "Generate screenshots"
