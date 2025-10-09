@@ -1,0 +1,3 @@
+- Fix crash if display name is unavailable
+- Fix crash if multi-window mode is used
+- Update translations
