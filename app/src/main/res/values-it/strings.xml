@@ -139,4 +139,16 @@
     <string name="common_ascending">Crescente</string>
     <string name="common_descending">Decrescente</string>
     <string name="settings_issues">Segnalazioni</string>
+    <string name="common_clear_input">Rimuovi immissione</string>
+    <string name="common_error">Errore</string>
+    <string name="common_selected">Selezionato</string>
+    <string name="login_nextcloud_logo">Logo Nextcloud</string>
+    <string name="recipe_change_order">Cambia ordine</string>
+    <string name="settings_github">GitHub</string>
+    <string name="settings_github_sponsor">Diventa sponsor GitHub</string>
+    <string name="settings_liberapay">Liberapay</string>
+    <string name="settings_liberapay_patron">Diventa un sostenitore di Liberapay</string>
+    <string name="settings_paypal">PayPal</string>
+    <string name="settings_paypal_donation">Dona via PayPal</string>
+    <string name="settings_sponsoring">Sponsorizzazione</string>
 </resources>
