@@ -51,7 +51,7 @@
     <string name="recipe_instruction">Indicación</string>
     <string name="recipe_more_menu_delete">Eliminar</string>
     <string name="recipe_more_menu_edit">Editar</string>
-    <string name="recipe_more_menu_share">Código abierto</string>
+    <string name="recipe_more_menu_share">Abrir fuente</string>
     <string name="recipe_new">Receta nueva</string>
     <string name="recipe_nutrition">Información nutricional</string>
     <string name="recipe_nutrition_carbohydrate">Carbohidrato</string>
@@ -150,4 +150,5 @@
     <string name="common_clear_input">Borrar entrada</string>
     <string name="settings_github_sponsor">Patrocina en GitHub</string>
     <string name="settings_liberapay_patron">Patrocina en Liberapay</string>
+    <string name="settings_sponsoring">Patrocinio</string>
 </resources>
