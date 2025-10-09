@@ -1,1 +1,0 @@
-- Sisselogimise veaparandus, kui tegemist pole peakasutaja kontoga

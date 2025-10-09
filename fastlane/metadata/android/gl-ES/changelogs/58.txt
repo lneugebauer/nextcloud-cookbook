@@ -1,1 +1,0 @@
-- Arranxo do acceso con contas non-admin
