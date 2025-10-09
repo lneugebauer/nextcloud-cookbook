@@ -182,8 +182,14 @@ fun NextcloudCookbookApp(intent: Intent?) {
         }
 
         LaunchedEffect(intent) {
-            Timber.d(navController.currentBackStackEntry.toString())
-            navController.handleDeepLink(intent)
+            Timber.d("currentBackStackEntry: ${navController.currentBackStackEntry}")
+            if (intent?.data != null && intent.action != Intent.ACTION_MAIN) {
+                try {
+                    navController.handleDeepLink(intent)
+                } catch (e: Exception) {
+                    Timber.w(e, "Failed to handle deep link: ${intent.data}")
+                }
+            }
         }
 
         val layoutDirection = LocalLayoutDirection.current
