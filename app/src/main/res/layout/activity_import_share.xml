@@ -26,7 +26,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:gravity="end"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        style="?android:attr/buttonBarStyle">
 
         <Button
             android:id="@+id/button_retry"
@@ -34,7 +35,7 @@
             android:layout_height="wrap_content"
             android:text="@string/import_share_retry"
             android:visibility="gone"
-            style="@style/Widget.AppCompat.Button.Borderless" />
+            style="?android:attr/buttonBarButtonStyle" />
 
         <Button
             android:id="@+id/button_open"
@@ -43,7 +44,7 @@
             android:layout_marginStart="8dp"
             android:text="@string/import_share_open"
             android:visibility="gone"
-            style="@style/Widget.AppCompat.Button.Borderless" />
+            style="?android:attr/buttonBarButtonStyle" />
 
         <Button
             android:id="@+id/button_close"
@@ -51,6 +52,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:text="@string/common_close"
-            style="@style/Widget.AppCompat.Button.Borderless" />
+            style="?android:attr/buttonBarButtonStyle" />
     </LinearLayout>
 </LinearLayout>
