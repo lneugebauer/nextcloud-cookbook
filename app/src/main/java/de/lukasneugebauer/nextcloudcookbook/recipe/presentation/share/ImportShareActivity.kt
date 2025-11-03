@@ -21,7 +21,6 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class ImportShareActivity : ComponentActivity() {
-
     private val viewModel: ImportShareViewModel by viewModels()
 
     private lateinit var progressBar: ProgressBar

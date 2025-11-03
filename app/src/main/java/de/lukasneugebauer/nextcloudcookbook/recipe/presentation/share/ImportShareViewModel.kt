@@ -18,57 +18,59 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
+class ImportShareViewModel
+    @Inject
+    constructor(
+        private val recipeRepository: RecipeRepository,
+    ) : ViewModel() {
+        private val _state =
+            MutableStateFlow<DownloadRecipeScreenState>(DownloadRecipeScreenState.Initial())
+        val state: StateFlow<DownloadRecipeScreenState> = _state.asStateFlow()
 
-class ImportShareViewModel @Inject constructor(
-    private val recipeRepository: RecipeRepository,
-) : ViewModel() {
-    private val _state =
-        MutableStateFlow<DownloadRecipeScreenState>(DownloadRecipeScreenState.Initial())
-    val state: StateFlow<DownloadRecipeScreenState> = _state.asStateFlow()
-
-    fun importFromSharedText(sharedText: String?) {
-        val text = sharedText.orEmpty()
-        val url = extractFirstHttpUrl(text)
-        if (url == null) {
-            _state.update {
-                DownloadRecipeScreenState.Error(
-                    url = "",
-                    uiText = UiText.StringResource(R.string.error_invalid_url),
-                )
-            }
-            return
-        }
-
-        viewModelScope.launch {
-            _state.update { DownloadRecipeScreenState.Loading(url = url) }
-            val result = recipeRepository.importRecipe(ImportUrlDto(url))
-            when {
-                result is Resource.Success && result.data != null -> {
-                    _state.update { DownloadRecipeScreenState.Loaded(id = result.data.id) }
+        fun importFromSharedText(sharedText: String?) {
+            val text = sharedText.orEmpty()
+            val url = extractFirstHttpUrl(text)
+            if (url == null) {
+                _state.update {
+                    DownloadRecipeScreenState.Error(
+                        url = "",
+                        uiText = UiText.StringResource(R.string.error_invalid_url),
+                    )
                 }
+                return
+            }
 
-                else -> {
-                    _state.update {
-                        DownloadRecipeScreenState.Error(
-                            url = url,
-                            uiText = result.message
-                                ?: UiText.StringResource(R.string.error_unknown),
-                        )
+            viewModelScope.launch {
+                _state.update { DownloadRecipeScreenState.Loading(url = url) }
+                val result = recipeRepository.importRecipe(ImportUrlDto(url))
+                when {
+                    result is Resource.Success && result.data != null -> {
+                        _state.update { DownloadRecipeScreenState.Loaded(id = result.data.id) }
+                    }
+
+                    else -> {
+                        _state.update {
+                            DownloadRecipeScreenState.Error(
+                                url = url,
+                                uiText =
+                                    result.message
+                                        ?: UiText.StringResource(R.string.error_unknown),
+                            )
+                        }
                     }
                 }
             }
         }
-    }
 
-    private fun extractFirstHttpUrl(text: String): String? {
-        // Use Android's WEB_URL pattern but ensure http(s) scheme
-        val matcher = Patterns.WEB_URL.matcher(text)
-        while (matcher.find()) {
-            val candidate = matcher.group()
-            if (candidate != null && candidate.startsWith("https://", true)) {
-                return candidate
+        private fun extractFirstHttpUrl(text: String): String? {
+            // Use Android's WEB_URL pattern but ensure http(s) scheme
+            val matcher = Patterns.WEB_URL.matcher(text)
+            while (matcher.find()) {
+                val candidate = matcher.group()
+                if (candidate != null && candidate.startsWith("https://", true)) {
+                    return candidate
+                }
             }
+            return null
         }
-        return null
     }
-}
