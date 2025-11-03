@@ -31,6 +31,16 @@
                 <data android:pathPrefix="/recipe"/>
             </intent-filter>
         </activity>
+        <activity
+            android:name=".recipe.presentation.share.ImportShareActivity"
+            android:exported="true"
+            android:theme="@style/Theme.NextcloudCookbook">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

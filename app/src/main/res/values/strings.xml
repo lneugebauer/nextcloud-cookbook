@@ -149,4 +149,10 @@
     <string name="settings_version_number">version %1$s (%2$d)</string>
     <string name="settings_version">Nextcloud Cookbook app</string>
     <string name="settings_where_to_report_issues">You can report bugs, enhancement proposals and feature requests at the GitHub issue tracker</string>
+    <string name="import_share_initial">Ready to import shared link</string>
+    <string name="import_share_loading">Importing recipe…</string>
+    <string name="import_share_success">Recipe imported. You can open it now.</string>
+    <string name="import_share_error">Import failed: %1$s</string>
+    <string name="import_share_retry">Retry</string>
+    <string name="import_share_open">Open recipe</string>
 </resources>
