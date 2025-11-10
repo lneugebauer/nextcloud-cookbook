@@ -30,17 +30,14 @@
                 <data android:host="lneugebauer.github.io"/>
                 <data android:pathPrefix="/recipe"/>
             </intent-filter>
-        </activity>
-        <activity
-            android:name=".recipe.presentation.share.ImportShareActivity"
-            android:exported="true"
-            android:theme="@style/Theme.NextcloudCookbook">
+            <!-- Handle share intents (text/plain) and forward them into the app navigation -->
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
+        <!-- ImportShareActivity removed: share intents are handled by MainActivity and routed to the DownloadRecipeScreen -->
     </application>
 
 </manifest>

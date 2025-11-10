@@ -190,6 +190,37 @@ fun NextcloudCookbookApp(intent: Intent?) {
                     Timber.w(e, "Failed to handle deep link: ${intent.data}")
                 }
             }
+
+            // Handle share intents (text/plain) and route them to the DownloadRecipeScreen
+            if (intent?.action == Intent.ACTION_SEND && intent.type == "text/plain") {
+                val sharedText = intent.getStringExtra(Intent.EXTRA_TEXT).orEmpty()
+                if (sharedText.isNotEmpty()) {
+                    Timber.i("Received shared text: $sharedText")
+                    try {
+                        // Extract first https URL from sharedText and navigate with it as a query parameter
+                        val matcher = android.util.Patterns.WEB_URL.matcher(sharedText)
+                        var foundUrl: String? = null
+                        while (matcher.find()) {
+                          val candidate = matcher.group()
+                          if (!candidate.isNullOrEmpty() && candidate.startsWith("https://", true)) {
+                            foundUrl = candidate
+                            break
+                          }
+                        }
+
+                        if (!foundUrl.isNullOrEmpty()) {
+                          val encoded = java.net.URLEncoder.encode(foundUrl, "UTF-8")
+                          val downloadRoute = com.ramcosta.composedestinations.generated.destinations.DownloadRecipeScreenDestination.route
+                          val routeWithArg = "$downloadRoute?sharedUrl=$encoded"
+                          navController.navigate(routeWithArg)
+                        } else {
+                          Timber.w("No https URL found in shared text: $sharedText")
+                        }
+                    } catch (e: Exception) {
+                        Timber.w(e, "Failed to route share intent to DownloadRecipeScreen: $sharedText")
+                    }
+                 }
+             }
         }
 
         val layoutDirection = LocalLayoutDirection.current
