@@ -3,7 +3,6 @@
     <JavaCodeStyleSettings>
       <option name="IMPORT_LAYOUT_TABLE">
         <value>
-          <package name="" withSubpackages="true" static="false" module="true" />
           <emptyLine />
           <package name="android" withSubpackages="true" static="false" />
           <emptyLine />
