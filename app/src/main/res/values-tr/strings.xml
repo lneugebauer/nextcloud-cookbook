@@ -129,4 +129,23 @@
         <item quantity="one">Malzeme kopyalandı</item>
         <item quantity="other">Malzemeler kopyalandı</item>
     </plurals>
+    <string name="common_ascending">Artan</string>
+    <string name="common_clear_input">Girdiyi temizle</string>
+    <string name="common_descending">Azalan</string>
+    <string name="common_error">Hata</string>
+    <string name="common_reorder">Yeniden sırala</string>
+    <string name="common_selected">Seçilen</string>
+    <string name="login_nextcloud_logo">Nextcloud logosu</string>
+    <string name="recipe_alphabetical">Ad</string>
+    <string name="recipe_change_order">Sıralamayı değiştir</string>
+    <string name="recipe_created_at">Oluşturulma tarihi</string>
+    <string name="recipe_modified_at">Değiştirilme tarihi</string>
+    <string name="settings_github">GitHub</string>
+    <string name="settings_github_sponsor">GitHub sponsoru olun</string>
+    <string name="settings_issues">Sorunlar</string>
+    <string name="settings_liberapay">Liberapay</string>
+    <string name="settings_liberapay_patron">Liberapay sponsoru olun</string>
+    <string name="settings_paypal">PayPal</string>
+    <string name="settings_paypal_donation">PayPal ile bağış yapın</string>
+    <string name="settings_sponsoring">Sponsorluk</string>
 </resources>
