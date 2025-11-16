@@ -143,7 +143,7 @@ fun RecipeListScreenWrapper(
                             },
                         orderState = orderState,
                         onBackClick = { navigator.navigateUp() },
-                        onImportClick = { navigator.navigate(DownloadRecipeScreenDestination) },
+                        onImportClick = { navigator.navigate(DownloadRecipeScreenDestination()) },
                         onReorder = { viewModel.updateOrder(it) },
                         onSearchClick = { viewModel.toggleSearchAppBarVisibility() },
                     )

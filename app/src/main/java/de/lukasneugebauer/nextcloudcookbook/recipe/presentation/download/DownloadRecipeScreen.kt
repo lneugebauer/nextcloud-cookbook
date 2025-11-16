@@ -37,14 +37,54 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.DownloadRecipeScreenState
+import timber.log.Timber
 
 @Destination<MainGraph>
 @Composable
+@Suppress("UNUSED_PARAMETER")
 fun AnimatedVisibilityScope.DownloadRecipeScreen(
     navigator: DestinationsNavigator,
+    sharedUrl: String? = null,
     viewModel: DownloadRecipeViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
+
+    // If a sharedUrl navigation argument is provided, populate the ViewModel's url field
+    LaunchedEffect(sharedUrl) {
+        if (!sharedUrl.isNullOrBlank()) {
+            // The incoming parameter can be URL-encoded and sometimes prefixed by
+            // route placeholders like "{sharedUrl}?sharedUrl=" depending on how the
+            // route was constructed. Normalize by extracting the last "sharedUrl="
+            // value and URL-decoding it.
+            Timber.d("Raw sharedUrl param: $sharedUrl")
+            try {
+                var candidate = sharedUrl
+                // If the parameter accidentally contains the literal template or repeated params,
+                // pick the substring after the last "sharedUrl=" occurrence.
+                val marker = "sharedUrl="
+                val idx = candidate.lastIndexOf(marker)
+                if (idx != -1) {
+                    candidate = candidate.substring(idx + marker.length)
+                }
+
+                // URL-decode (handle percent-encoding)
+                candidate = java.net.URLDecoder.decode(candidate, "UTF-8")
+
+                Timber.i("Normalized shared URL: $candidate")
+
+                if (candidate.isNotBlank()) {
+                    viewModel.updateUrl(candidate)
+                    // Start the import automatically when the sharedUrl is provided
+                    viewModel.importRecipe()
+                }
+            } catch (e: Exception) {
+                Timber.w(e, "Failed to normalize/decode sharedUrl: $sharedUrl")
+                // Fallback: use the raw param if normalization fails
+                viewModel.updateUrl(sharedUrl)
+                viewModel.importRecipe()
+            }
+        }
+    }
 
     HideBottomNavigation()
 
