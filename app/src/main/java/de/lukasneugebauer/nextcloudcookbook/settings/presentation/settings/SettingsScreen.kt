@@ -18,6 +18,7 @@ import androidx.compose.material.icons.filled.Gavel
 import androidx.compose.material.icons.outlined.BugReport
 import androidx.compose.material.icons.outlined.LightMode
 import androidx.compose.material.icons.outlined.Lock
+import androidx.compose.material.icons.outlined.Report
 import androidx.compose.material.icons.outlined.Translate
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -81,11 +82,16 @@ fun AnimatedVisibilityScope.SettingsScreen(
                 Loader(modifier = Modifier.padding(innerPadding))
             }
             is SettingsScreenState.Loaded -> {
+                val currentState = uiState as SettingsScreenState.Loaded
                 SettingsLayout(
                     modifier = Modifier.padding(innerPadding),
-                    isStayAwake = (uiState as SettingsScreenState.Loaded).isStayAwake,
+                    isStayAwake = currentState.isStayAwake,
                     onStayAwakeChange = { isStayAwake ->
                         viewModel.setStayAwake(isStayAwake)
+                    },
+                    isShowRecipeSyntaxIndicator = currentState.isShowRecipeSyntaxIndicator,
+                    onShowRecipeSyntaxIndicatorChange = { isShowRecipeSyntaxIndicator ->
+                        viewModel.setShowRecipeSyntaxIndicator(isShowRecipeSyntaxIndicator)
                     },
                     onLogoutClick = {
                         viewModel.logout {
@@ -149,6 +155,8 @@ fun SettingsLayout(
     modifier: Modifier = Modifier,
     isStayAwake: Boolean,
     onStayAwakeChange: (Boolean) -> Unit,
+    isShowRecipeSyntaxIndicator: Boolean,
+    onShowRecipeSyntaxIndicatorChange: (Boolean) -> Unit,
     onLogoutClick: () -> Unit,
     onPrivacyClick: () -> Unit,
     onLicenseClick: () -> Unit,
@@ -167,7 +175,12 @@ fun SettingsLayout(
                 .verticalScroll(state = rememberScrollState())
                 .then(modifier),
     ) {
-        SettingsGroupGeneral(isStayAwake = isStayAwake, onStayAwakeChange = onStayAwakeChange)
+        SettingsGroupGeneral(
+            isStayAwake = isStayAwake,
+            onStayAwakeChange = onStayAwakeChange,
+            isShowRecipeSyntaxIndicator = isShowRecipeSyntaxIndicator,
+            onShowRecipeSyntaxIndicatorChange = onShowRecipeSyntaxIndicatorChange,
+        )
         Spacer(modifier = Modifier.size(size = dimensionResource(R.dimen.padding_m)))
         SettingsGroupAccount(onLogoutClick = onLogoutClick)
         Spacer(modifier = Modifier.size(size = dimensionResource(R.dimen.padding_m)))
@@ -198,6 +211,8 @@ fun SettingsLayout(
 fun ColumnScope.SettingsGroupGeneral(
     isStayAwake: Boolean,
     onStayAwakeChange: (Boolean) -> Unit,
+    isShowRecipeSyntaxIndicator: Boolean,
+    onShowRecipeSyntaxIndicatorChange: (Boolean) -> Unit,
 ) {
     Text(
         text = stringResource(R.string.settings_general),
@@ -221,6 +236,26 @@ fun ColumnScope.SettingsGroupGeneral(
             Switch(
                 checked = isStayAwake,
                 onCheckedChange = onStayAwakeChange,
+            )
+        },
+    )
+    ListItem(
+        headlineContent = {
+            Text(text = "Recipe syntax indicator")
+        },
+        supportingContent = {
+            Text(text = "Show an indicator if the recipe syntax is invalid")
+        },
+        leadingContent = {
+            Icon(
+                imageVector = Icons.Outlined.Report,
+                contentDescription = null,
+            )
+        },
+        trailingContent = {
+            Switch(
+                checked = isShowRecipeSyntaxIndicator,
+                onCheckedChange = onShowRecipeSyntaxIndicatorChange,
             )
         },
     )
@@ -434,6 +469,8 @@ private fun SettingsContentPreview() {
         SettingsLayout(
             isStayAwake = false,
             onStayAwakeChange = {},
+            isShowRecipeSyntaxIndicator = true,
+            onShowRecipeSyntaxIndicatorChange = {},
             onLogoutClick = {},
             onPrivacyClick = {},
             onLicenseClick = {},

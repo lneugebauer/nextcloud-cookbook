@@ -1,6 +1,7 @@
 package de.lukasneugebauer.nextcloudcookbook.recipe.data
 
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.YieldCalculator
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.CalculatedIngredient
 import java.text.Normalizer
 import java.text.NumberFormat
 import java.util.Locale
@@ -28,11 +29,11 @@ class YieldCalculatorImpl(customLocale: Locale? = null) : YieldCalculator {
         ingredients: List<String>,
         currentYield: Int,
         originalYield: Int,
-    ): List<String> {
+    ): List<CalculatedIngredient> {
         return ingredients.map { ingredient ->
-            if (ingredient.startsWith(DOUBLE_HASH_PREFIX)) return@map ingredient
+            if (ingredient.startsWith(DOUBLE_HASH_PREFIX)) return@map CalculatedIngredient(ingredient = ingredient, hasCorrectSyntax = true)
 
-            if (originalYield < 1) return@map ingredient
+            if (originalYield < 1) return@map CalculatedIngredient(ingredient = ingredient, hasCorrectSyntax = false)
 
             // Fraction
             val matchResult = FRACTION_REGEX.matchEntire(ingredient)
@@ -87,7 +88,7 @@ class YieldCalculatorImpl(customLocale: Locale? = null) : YieldCalculator {
                     newAmountString = numberFormat.format(newAmount).toString()
                 }
 
-                return@map ingredient.replace(fractionMatch, newAmountString)
+                return@map CalculatedIngredient(ingredient = ingredient.replace(fractionMatch, newAmountString), hasCorrectSyntax = true)
             }
 
             // Decimal
@@ -110,10 +111,10 @@ class YieldCalculatorImpl(customLocale: Locale? = null) : YieldCalculator {
                         .joinToString(" ")
 
                 val newAmount = numberFormat.format((amount / originalYield) * currentYield)
-                return@map "$newAmount$possibleUnit $unitAndIngredient"
+                return@map CalculatedIngredient(ingredient = "$newAmount$possibleUnit $unitAndIngredient", hasCorrectSyntax = true)
             }
 
-            ingredient
+            CalculatedIngredient(ingredient = ingredient, hasCorrectSyntax = false)
         }
     }
 

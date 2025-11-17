@@ -137,7 +137,7 @@ class RecipeDetailViewModel
                         yield = _state.value.currentYield,
                         ingredients =
                             _state.value.calculatedIngredients.mapIndexed { index, ingredient ->
-                                Ingredient(id = index, value = ingredient)
+                                Ingredient(id = index, value = ingredient.ingredient, hasCorrectSyntax = ingredient.hasCorrectSyntax)
                             },
                     ),
                 )

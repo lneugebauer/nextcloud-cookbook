@@ -914,7 +914,7 @@ private val MockedRecipe =
             },
         ingredients =
             List(2) {
-                Ingredient(id = it, value = "Lorem ipsum")
+                Ingredient(id = it, value = "Lorem ipsum", hasCorrectSyntax = false)
             },
         instructions =
             List(1) {

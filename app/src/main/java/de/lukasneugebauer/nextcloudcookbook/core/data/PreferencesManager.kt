@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 import androidx.datastore.core.DataMigration
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
@@ -83,6 +84,7 @@ class PreferencesManager
             val NC_URL = stringPreferencesKey("nc_url")
             val RECIPE_OF_THE_DAY_ID = stringPreferencesKey("recipe_of_the_day_id")
             val RECIPE_OF_THE_DAY_UPDATED_AT = longPreferencesKey("recipe_of_the_day_updated_at")
+            val IS_SHOW_RECIPE_SYNTAX_INDICATOR = booleanPreferencesKey("is_show_recipe_syntax_indicator")
         }
 
         val preferencesFlow =
@@ -96,6 +98,7 @@ class PreferencesManager
                     }
                 }
                 .map { preferences ->
+                    val isShowRecipeSyntaxIndicator = preferences[PreferencesKeys.IS_SHOW_RECIPE_SYNTAX_INDICATOR] ?: true
                     val ncName = preferences[PreferencesKeys.NC_NAME] ?: ""
                     val ncUsername = preferences[PreferencesKeys.NC_USERNAME] ?: ""
                     val ncToken = preferences[PreferencesKeys.NC_TOKEN] ?: ""
@@ -105,6 +108,7 @@ class PreferencesManager
                         preferences[PreferencesKeys.RECIPE_OF_THE_DAY_UPDATED_AT] ?: 0
 
                     de.lukasneugebauer.nextcloudcookbook.core.domain.model.Preferences(
+                        isShowRecipeSyntaxIndicator = isShowRecipeSyntaxIndicator,
                         ncAccount =
                             NcAccount(
                                 name = ncName,
@@ -132,6 +136,12 @@ class PreferencesManager
 
         fun setStayAwake(isStayAwake: Boolean) {
             sharedPreferences.edit { putBoolean(STAY_AWAKE_KEY, isStayAwake) }
+        }
+
+        suspend fun updateShowRecipeSyntaxIndicator(isShowRecipeSyntaxIndicator: Boolean) {
+            context.dataStore54.edit { preferences ->
+                preferences[PreferencesKeys.IS_SHOW_RECIPE_SYNTAX_INDICATOR] = isShowRecipeSyntaxIndicator
+            }
         }
 
         suspend fun updateNextcloudAccount(ncAccount: NcAccount) =

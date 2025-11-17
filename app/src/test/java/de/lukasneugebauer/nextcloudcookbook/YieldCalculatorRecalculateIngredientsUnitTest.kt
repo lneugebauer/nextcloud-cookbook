@@ -1,6 +1,7 @@
 package de.lukasneugebauer.nextcloudcookbook
 
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.YieldCalculatorImpl
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.CalculatedIngredient
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -69,24 +70,24 @@ class YieldCalculatorRecalculateIngredientsUnitTest {
             )
         val expectedIngredients =
             listOf(
-                "2 cup flour",
-                "6tbsp oil",
-                "1 cup sugar",
-                "3 kg butter",
-                "6 1/2 tsp salt",
-                "10 bell pepper",
-                "pepper",
-                "some oregano",
-                "3 potatoes",
-                "1,6 carrots",
-                "2 - 2 onions",
-                "2-3 bananas",
-                "2 150 g apples",
-                "1/2 unicode",
-                "3/4 cup creme",
-                "1.2 bananas",
-                "0.5 cup yogurt",
-                "7 unicode",
+                CalculatedIngredient("2 cup flour", true),
+                CalculatedIngredient("6tbsp oil", true),
+                CalculatedIngredient("1 cup sugar", true),
+                CalculatedIngredient("3 kg butter", true),
+                CalculatedIngredient("6 1/2 tsp salt", true),
+                CalculatedIngredient("10 bell pepper", true),
+                CalculatedIngredient("pepper", false),
+                CalculatedIngredient("some oregano", false),
+                CalculatedIngredient("3 potatoes", true),
+                CalculatedIngredient("1,6 carrots", false),
+                CalculatedIngredient("2 - 2 onions", true),
+                CalculatedIngredient("2-3 bananas", false),
+                CalculatedIngredient("2 150 g apples", true),
+                CalculatedIngredient("1/2 unicode", true),
+                CalculatedIngredient("3/4 cup creme", true),
+                CalculatedIngredient("1.2 bananas", true),
+                CalculatedIngredient("0.5 cup yogurt", true),
+                CalculatedIngredient("7 unicode", true),
             )
 
         assertEquals(

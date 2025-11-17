@@ -10,6 +10,10 @@ import de.lukasneugebauer.nextcloudcookbook.di.ApiProvider
 import de.lukasneugebauer.nextcloudcookbook.settings.domain.state.SettingsScreenState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -27,19 +31,31 @@ class SettingsViewModel
         val uiState = _uiState.asStateFlow()
 
         init {
-            _uiState.update {
-                SettingsScreenState.Loaded(
-                    isStayAwake = preferencesManager.getStayAwake(),
-                )
-            }
+            preferencesManager.preferencesFlow.map { it.isShowRecipeSyntaxIndicator }.distinctUntilChanged().onEach {
+                    isShowRecipeSyntaxIndicator ->
+                _uiState.update {
+                    SettingsScreenState.Loaded(
+                        isStayAwake = preferencesManager.getStayAwake(),
+                        isShowRecipeSyntaxIndicator = isShowRecipeSyntaxIndicator,
+                    )
+                }
+            }.launchIn(viewModelScope)
         }
 
         fun setStayAwake(isStayAwake: Boolean) {
-            preferencesManager.setStayAwake(isStayAwake = isStayAwake)
             _uiState.update {
-                SettingsScreenState.Loaded(
-                    isStayAwake = isStayAwake,
-                )
+                if (it is SettingsScreenState.Loaded) {
+                    preferencesManager.setStayAwake(isStayAwake = isStayAwake)
+                    it.copy(isStayAwake = isStayAwake)
+                } else {
+                    it
+                }
+            }
+        }
+
+        fun setShowRecipeSyntaxIndicator(isShowRecipeSyntaxIndicator: Boolean) {
+            viewModelScope.launch {
+                preferencesManager.updateShowRecipeSyntaxIndicator(isShowRecipeSyntaxIndicator)
             }
         }
 
