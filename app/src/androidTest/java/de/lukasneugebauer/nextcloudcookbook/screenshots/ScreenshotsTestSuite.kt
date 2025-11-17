@@ -12,7 +12,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 import de.lukasneugebauer.nextcloudcookbook.R
-import de.lukasneugebauer.nextcloudcookbook.auth.presentation.login.LoginScreen
+import de.lukasneugebauer.nextcloudcookbook.auth.presentation.start.StartLayout
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.BottomBarContent
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.BottomBarDestination
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
@@ -56,7 +56,7 @@ class ScreenshotsTestSuite {
     @Test
     fun loginScreen() {
         makeScreenshotOf("1") {
-            LoginScreen(
+            StartLayout(
                 showManualLogin = false,
                 usernameError = null,
                 passwordError = null,
@@ -72,7 +72,7 @@ class ScreenshotsTestSuite {
     @Test
     fun manualLoginScreen() {
         makeScreenshotOf("2") {
-            LoginScreen(
+            StartLayout(
                 showManualLogin = true,
                 usernameError = null,
                 passwordError = null,
