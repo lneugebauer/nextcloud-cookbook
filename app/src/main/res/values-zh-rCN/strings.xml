@@ -137,12 +137,12 @@
     <string name="common_clear_input">清除输入</string>
     <string name="common_error">错误</string>
     <string name="login_nextcloud_logo">Nextcloud 徽标</string>
-    <string name="recipe_change_order">更改顺序‌</string>
+    <string name="recipe_change_order">更改顺序</string>
     <string name="settings_github">GitHub</string>
     <string name="settings_github_sponsor">成为 GitHub 赞助者</string>
     <string name="settings_liberapay">Liberapay</string>
     <string name="settings_liberapay_patron">成为 Liberapay 资助者</string>
     <string name="settings_paypal">PayPal</string>
     <string name="settings_paypal_donation">通过 PayPal 捐赠</string>
-    <string name="settings_sponsoring">赞助‌</string>
+    <string name="settings_sponsoring">赞助</string>
 </resources>
