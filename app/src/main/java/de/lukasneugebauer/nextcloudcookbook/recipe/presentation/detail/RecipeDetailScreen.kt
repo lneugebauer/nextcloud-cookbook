@@ -679,7 +679,7 @@ private fun Ingredients(
             }
             if (!hasCorrectSyntax) {
                 Box(modifier = Modifier.minimumInteractiveComponentSize()) {
-                    Icon(imageVector = Icons.Default.Report, contentDescription = "tbd")
+                    Icon(imageVector = Icons.Default.Report, contentDescription = stringResource(R.string.recipe_ingredient_syntax_error))
                 }
             }
             LaunchedEffect(Unit) {

@@ -71,19 +71,20 @@
     <string name="recipe_edit">Rezept bearbeiten</string>
     <string name="recipe_image_url">Bild URL</string>
     <string name="recipe_import_from_url">Rezept von URL importieren</string>
-    <string name="recipe_ingredient_add">Zutat hinzufügen</string>
-    <string name="recipe_ingredient_delete">Zutat löschen</string>
     <string name="recipe_ingredients">Zutaten</string>
     <plurals name="recipe_ingredients_copied">
         <item quantity="one">Zutat kopiert</item>
         <item quantity="other">Zutaten kopiert</item>
     </plurals>
     <string name="recipe_ingredients_copy">Zutaten in Zwischenablage kopieren</string>
-    <string name="recipe_ingredient">Zutat</string>
     <plurals name="recipe_ingredients_servings">
         <item quantity="one">Zutaten für %1$d Portion</item>
         <item quantity="other">Zutaten für %1$d Portionen</item>
     </plurals>
+    <string name="recipe_ingredient_add">Zutat hinzufügen</string>
+    <string name="recipe_ingredient_delete">Zutat löschen</string>
+    <string name="recipe_ingredient_syntax_error">Zutat kann nicht neu berechnet werden.</string>
+    <string name="recipe_ingredient">Zutat</string>
     <string name="recipe_instruction_add">Zubereitungsschritt hinzufügen</string>
     <string name="recipe_instruction_delete">Zubereitungsschritt löschen</string>
     <string name="recipe_instructions">Zubereitung</string>
