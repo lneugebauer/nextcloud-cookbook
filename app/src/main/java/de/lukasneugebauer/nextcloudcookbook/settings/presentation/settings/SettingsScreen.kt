@@ -241,10 +241,10 @@ fun ColumnScope.SettingsGroupGeneral(
     )
     ListItem(
         headlineContent = {
-            Text(text = "Recipe syntax indicator")
+            Text(text = stringResource(R.string.settings_recipe_syntax_indicator))
         },
         supportingContent = {
-            Text(text = "Show an indicator if the recipe syntax is invalid")
+            Text(text = stringResource(R.string.settings_show_indicator_if_recipe_syntax_is_invalid))
         },
         leadingContent = {
             Icon(

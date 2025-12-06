@@ -140,6 +140,8 @@
     <string name="settings_paypal">PayPal</string>
     <string name="settings_paypal_donation">Spenden über PayPal</string>
     <string name="settings_privacy">Datenschutz</string>
+    <string name="settings_recipe_syntax_indicator">Zutaten Syntax-Indikator</string>
+    <string name="settings_show_indicator_if_recipe_syntax_is_invalid">Zeigt einen Hinweis an, wenn die Syntax der Zutaten für die Neuberechnung ungeeignet ist.</string>
     <string name="settings_source_code">Quellcode</string>
     <string name="settings_sponsoring">Unterstützen</string>
     <string name="settings_stay_awake_on_recipe_screen">Der Bildschirm bleibt eingeschaltet, während Sie sich auf dem Rezeptbildschirm befinden</string>
