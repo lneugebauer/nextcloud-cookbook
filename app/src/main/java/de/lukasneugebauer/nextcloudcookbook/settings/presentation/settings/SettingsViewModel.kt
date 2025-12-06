@@ -31,15 +31,17 @@ class SettingsViewModel
         val uiState = _uiState.asStateFlow()
 
         init {
-            preferencesManager.preferencesFlow.map { it.isShowRecipeSyntaxIndicator }.distinctUntilChanged().onEach {
-                    isShowRecipeSyntaxIndicator ->
-                _uiState.update {
-                    SettingsScreenState.Loaded(
-                        isStayAwake = preferencesManager.getStayAwake(),
-                        isShowRecipeSyntaxIndicator = isShowRecipeSyntaxIndicator,
-                    )
-                }
-            }.launchIn(viewModelScope)
+            preferencesManager.preferencesFlow
+                .map { it.isShowIngredientSyntaxIndicator }
+                .distinctUntilChanged()
+                .onEach { isShowRecipeSyntaxIndicator ->
+                    _uiState.update {
+                        SettingsScreenState.Loaded(
+                            isStayAwake = preferencesManager.getStayAwake(),
+                            isShowRecipeSyntaxIndicator = isShowRecipeSyntaxIndicator,
+                        )
+                    }
+                }.launchIn(viewModelScope)
         }
 
         fun setStayAwake(isStayAwake: Boolean) {
@@ -55,7 +57,7 @@ class SettingsViewModel
 
         fun setShowRecipeSyntaxIndicator(isShowRecipeSyntaxIndicator: Boolean) {
             viewModelScope.launch {
-                preferencesManager.updateShowRecipeSyntaxIndicator(isShowRecipeSyntaxIndicator)
+                preferencesManager.updateShowIngredientSyntaxIndicator(isShowRecipeSyntaxIndicator)
             }
         }
 

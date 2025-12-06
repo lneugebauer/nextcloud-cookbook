@@ -413,7 +413,10 @@ private fun Image(imageUrl: String) {
     AuthorizedImage(
         imageUrl = imageUrl,
         contentDescription = null,
-        modifier = modifier.fillMaxWidth().padding(bottom = dimensionResource(id = R.dimen.padding_m)),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
     )
 }
 
@@ -649,7 +652,10 @@ private fun Ingredients(
             }
             val textViewId = remember { View.generateViewId() }
             with(LocalDensity.current) {
-                var modifier = Modifier.weight(1f).minimumInteractiveComponentSize()
+                var modifier =
+                    Modifier
+                        .weight(1f)
+                        .minimumInteractiveComponentSize()
 
                 if (ingredient.startsWith("##")) {
                     modifier = modifier.then(Modifier.padding(start = dimensionResource(id = R.dimen.padding_m)))

@@ -241,7 +241,7 @@ fun ColumnScope.SettingsGroupGeneral(
     )
     ListItem(
         headlineContent = {
-            Text(text = stringResource(R.string.settings_recipe_syntax_indicator))
+            Text(text = stringResource(R.string.settings_ingredient_syntax_indicator))
         },
         supportingContent = {
             Text(text = stringResource(R.string.settings_show_indicator_if_recipe_syntax_is_invalid))
