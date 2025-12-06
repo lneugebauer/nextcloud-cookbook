@@ -65,11 +65,8 @@ data class RecipeDto(
             nutrition = nutrition?.toNutrition(),
             tools = tool.mapIndexed { index, tool -> Tool(id = index, value = tool) },
             ingredients =
-                recipeIngredient.mapIndexed {
-                        index,
-                        ingredient,
-                    ->
-                    Ingredient(id = index, value = ingredient, hasCorrectSyntax = false)
+                recipeIngredient.mapIndexed { index, ingredient ->
+                    Ingredient(id = index, value = ingredient)
                 },
             instructions = recipeInstructions.mapIndexed { index, instruction -> Instruction(id = index, value = instruction) },
             createdAt = dateCreated ?: "",

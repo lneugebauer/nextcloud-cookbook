@@ -13,7 +13,7 @@ data class Tool(
 data class Ingredient(
     override val id: Int,
     override val value: String,
-    val hasCorrectSyntax: Boolean,
+    val hasCorrectSyntax: Boolean = false,
 ) : ReorderableString
 
 data class Instruction(
