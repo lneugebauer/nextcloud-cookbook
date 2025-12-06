@@ -67,7 +67,12 @@ class RecipeDetailViewModel
                 Triple(isShowIngredientSyntaxIndicator, recipeResponse, recipePreviewDtos)
             }.onEach { (isShowIngredientSyntaxIndicator, recipeResponse, recipePreviewDtos) ->
                 when (recipeResponse) {
-                    is StoreReadResponse.Loading -> _state.value = _state.value.copy(loading = true, isShowIngredientSyntaxIndicator = isShowIngredientSyntaxIndicator)
+                    is StoreReadResponse.Loading ->
+                        _state.value =
+                            _state.value.copy(
+                                loading = true,
+                                isShowIngredientSyntaxIndicator = isShowIngredientSyntaxIndicator,
+                            )
                     is StoreReadResponse.Data -> {
                         val recipe = enrichRecipeLinks(recipeResponse.value.toRecipe(), recipePreviewDtos)
                         _state.value =
@@ -85,7 +90,12 @@ class RecipeDetailViewModel
                             )
                     }
 
-                    is StoreReadResponse.NoNewData -> _state.value = _state.value.copy(loading = false, isShowIngredientSyntaxIndicator = isShowIngredientSyntaxIndicator)
+                    is StoreReadResponse.NoNewData ->
+                        _state.value =
+                            _state.value.copy(
+                                loading = false,
+                                isShowIngredientSyntaxIndicator = isShowIngredientSyntaxIndicator,
+                            )
                     is StoreReadResponse.Error.Exception ->
                         _state.value =
                             _state.value.copy(

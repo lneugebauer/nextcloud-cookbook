@@ -99,7 +99,9 @@ class PreferencesManager
                     }
                 }
                 .map { preferences ->
-                    val isShowIngredientSyntaxIndicator = preferences[PreferencesKeys.IS_SHOW_INGREDIENT_SYNTAX_INDICATOR] ?: IS_SHOW_INGREDIENT_SYNTAX_INDICATOR_DEFAULT
+                    val isShowIngredientSyntaxIndicator =
+                        preferences[PreferencesKeys.IS_SHOW_INGREDIENT_SYNTAX_INDICATOR]
+                            ?: IS_SHOW_INGREDIENT_SYNTAX_INDICATOR_DEFAULT
                     val ncName = preferences[PreferencesKeys.NC_NAME] ?: ""
                     val ncUsername = preferences[PreferencesKeys.NC_USERNAME] ?: ""
                     val ncToken = preferences[PreferencesKeys.NC_TOKEN] ?: ""
