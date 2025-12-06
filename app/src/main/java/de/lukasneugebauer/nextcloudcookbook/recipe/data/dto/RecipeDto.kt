@@ -64,7 +64,10 @@ data class RecipeDto(
             totalTime = totalTime.parseAsDuration(),
             nutrition = nutrition?.toNutrition(),
             tools = tool.mapIndexed { index, tool -> Tool(id = index, value = tool) },
-            ingredients = recipeIngredient.mapIndexed { index, ingredient -> Ingredient(id = index, value = ingredient) },
+            ingredients =
+                recipeIngredient.mapIndexed { index, ingredient ->
+                    Ingredient(id = index, value = ingredient)
+                },
             instructions = recipeInstructions.mapIndexed { index, instruction -> Instruction(id = index, value = instruction) },
             createdAt = dateCreated ?: "",
             modifiedAt = dateModified ?: "",

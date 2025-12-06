@@ -31,6 +31,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Report
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material.icons.outlined.Add
@@ -105,6 +106,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
 import de.lukasneugebauer.nextcloudcookbook.core.util.getActivity
 import de.lukasneugebauer.nextcloudcookbook.core.util.notZero
 import de.lukasneugebauer.nextcloudcookbook.core.util.openInBrowser
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.CalculatedIngredient
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Ingredient
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Instruction
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Nutrition
@@ -188,6 +190,7 @@ fun AnimatedVisibilityScope.RecipeDetailScreen(
         onResetYield = {
             viewModel.resetYield()
         },
+        isShowIngredientSyntaxIndicator = state.isShowIngredientSyntaxIndicator,
     )
 }
 
@@ -300,7 +303,7 @@ private fun DropDownMenuItemDelete(onClick: () -> Unit) {
 @Composable
 fun RecipeDetailLayout(
     recipe: Recipe,
-    calculatedIngredients: List<String>,
+    calculatedIngredients: List<CalculatedIngredient>,
     currentYield: Int,
     onDecreaseYield: () -> Unit,
     onIncreaseYield: () -> Unit,
@@ -314,6 +317,7 @@ fun RecipeDetailLayout(
     error: UiText?,
     onKeywordClick: (keyword: String) -> Unit,
     onResetYield: () -> Unit,
+    isShowIngredientSyntaxIndicator: Boolean,
 ) {
     Scaffold(
         topBar = {
@@ -370,12 +374,13 @@ fun RecipeDetailLayout(
                 }
                 if (recipe.ingredients.isNotEmpty()) {
                     Ingredients(
-                        calculatedIngredients.ifEmpty { recipe.ingredients.map { it.value } },
+                        calculatedIngredients.ifEmpty { recipe.ingredients.map { CalculatedIngredient(it.value, it.hasCorrectSyntax) } },
                         onDecreaseYield,
                         onIncreaseYield,
                         onResetYield,
                         currentYield,
                         recipe.yield != currentYield,
+                        isShowIngredientSyntaxIndicator,
                     )
                 }
                 if (recipe.nutrition != null) {
@@ -411,7 +416,10 @@ private fun Image(imageUrl: String) {
     AuthorizedImage(
         imageUrl = imageUrl,
         contentDescription = null,
-        modifier = modifier.fillMaxWidth().padding(bottom = dimensionResource(id = R.dimen.padding_m)),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
     )
 }
 
@@ -552,12 +560,13 @@ private fun Category(category: String) {
 
 @Composable
 private fun Ingredients(
-    ingredients: List<String>,
+    ingredients: List<CalculatedIngredient>,
     onDecreaseYield: () -> Unit,
     onIncreaseYield: () -> Unit,
     onResetYield: () -> Unit,
     currentYield: Int,
     showResetButton: Boolean,
+    isShowIngredientSyntaxIndicator: Boolean,
 ) {
     val clipboardManager = LocalClipboardManager.current
     val context = LocalContext.current
@@ -635,13 +644,8 @@ private fun Ingredients(
             }
         }
     }
-    ingredients.forEach { ingredient ->
+    ingredients.forEach { (ingredient, hasCorrectSyntax) ->
         var checked by rememberSaveable { mutableStateOf(false) }
-        val modifier =
-            Modifier
-                .fillMaxWidth()
-                .minimumInteractiveComponentSize()
-                .padding(end = dimensionResource(id = R.dimen.padding_m))
 
         Row {
             if (!ingredient.startsWith("##")) {
@@ -652,6 +656,18 @@ private fun Ingredients(
             }
             val textViewId = remember { View.generateViewId() }
             with(LocalDensity.current) {
+                var modifier =
+                    Modifier
+                        .weight(1f)
+                        .minimumInteractiveComponentSize()
+
+                if (ingredient.startsWith("##")) {
+                    modifier = modifier.then(Modifier.padding(start = dimensionResource(id = R.dimen.padding_m)))
+                }
+                if (hasCorrectSyntax) {
+                    modifier = modifier.then(Modifier.padding(end = dimensionResource(id = R.dimen.padding_m)))
+                }
+
                 MarkdownText(
                     markdown =
                         if (checked) {
@@ -659,16 +675,16 @@ private fun Ingredients(
                         } else {
                             ingredient
                         },
-                    modifier =
-                        if (ingredient.startsWith("##")) {
-                            modifier.then(Modifier.padding(start = dimensionResource(id = R.dimen.padding_m)))
-                        } else {
-                            modifier
-                        },
+                    modifier = modifier,
                     fontSize = LocalTextStyle.current.fontSize * this.fontScale,
                     style = LocalTextStyle.current.copy(color = LocalContentColor.current),
                     viewId = textViewId,
                 )
+            }
+            if (isShowIngredientSyntaxIndicator && !hasCorrectSyntax) {
+                Box(modifier = Modifier.minimumInteractiveComponentSize()) {
+                    Icon(imageVector = Icons.Default.Report, contentDescription = stringResource(R.string.recipe_ingredient_syntax_error))
+                }
             }
             LaunchedEffect(Unit) {
                 context.getActivity()?.findViewById<TextView>(textViewId)?.setOnLongClickListener {
@@ -908,11 +924,35 @@ private fun DescriptionPreview() {
 
 @Preview(showBackground = true)
 @Composable
+private fun IngredientsPreview() {
+    val loremIpsum = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed"
+    val loremIpsumList = loremIpsum.split(" ")
+    val ingredients =
+        MutableList(3) {
+            val stringArray = loremIpsumList.take((it + 1) * (it + 1))
+            CalculatedIngredient(ingredient = stringArray.joinToString(" "), hasCorrectSyntax = it != 1)
+        }
+    ingredients.add(0, CalculatedIngredient("## A headline", true))
+    NextcloudCookbookTheme {
+        Column {
+            Ingredients(
+                ingredients = ingredients,
+                onDecreaseYield = {},
+                onIncreaseYield = {},
+                onResetYield = {},
+                currentYield = 2,
+                showResetButton = false,
+                isShowIngredientSyntaxIndicator = true,
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
 private fun InstructionsPreview() {
-    val instructions =
-        List(5) {
-            val loremIpsum =
-                """Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
+    val loremIpsum =
+        """Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
                 |nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam
                 |voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd
                 |gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum
@@ -920,8 +960,10 @@ private fun InstructionsPreview() {
                 |ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam
                 |et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata
                 |sanctus est Lorem ipsum dolor sit amet.
-                """.trimMargin()
-            val loremIpsumList = loremIpsum.split(" ")
+        """.trimMargin()
+    val loremIpsumList = loremIpsum.split(" ")
+    val instructions =
+        List(5) {
             val stringArray = loremIpsumList.take((it + 1) * (it + 1))
             Instruction(id = it, value = stringArray.joinToString(" "))
         }
@@ -952,7 +994,7 @@ private fun RecipeDetailLayoutPreview() {
                 },
             ingredients =
                 List(2) {
-                    Ingredient(id = it, value = "Lorem ipsum")
+                    Ingredient(id = it, value = "Lorem ipsum", hasCorrectSyntax = it != 1)
                 },
             instructions =
                 List(1) {
@@ -985,6 +1027,7 @@ private fun RecipeDetailLayoutPreview() {
             error = null,
             onKeywordClick = {},
             onResetYield = {},
+            isShowIngredientSyntaxIndicator = true,
         )
     }
 }

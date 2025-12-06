@@ -72,19 +72,20 @@
     <string name="recipe_edit">Edit recipe</string>
     <string name="recipe_image_url">Image URL</string>
     <string name="recipe_import_from_url">Import recipe from URL</string>
-    <string name="recipe_ingredient_add">Add ingredient</string>
-    <string name="recipe_ingredient_delete">Delete ingredient</string>
     <string name="recipe_ingredients">Ingredients</string>
     <plurals name="recipe_ingredients_copied">
         <item quantity="one">Copied ingredient</item>
         <item quantity="other">Copied ingredients</item>
     </plurals>
     <string name="recipe_ingredients_copy">Copy ingredients to clipboard</string>
-    <string name="recipe_ingredient">Ingredient</string>
     <plurals name="recipe_ingredients_servings">
         <item quantity="one">Ingredients for %1$d serving</item>
         <item quantity="other">Ingredients for %1$d servings</item>
     </plurals>
+    <string name="recipe_ingredient_add">Add ingredient</string>
+    <string name="recipe_ingredient_delete">Delete ingredient</string>
+    <string name="recipe_ingredient_syntax_error">Ingredient can not be recalculated.</string>
+    <string name="recipe_ingredient">Ingredient</string>
     <string name="recipe_instruction_add">Add instruction</string>
     <string name="recipe_instruction_delete">Delete instruction</string>
     <string name="recipe_instructions">Instructions</string>
@@ -131,6 +132,7 @@
     <string name="settings_github">GitHub</string>
     <string name="settings_github_sponsor">Become a GitHub sponsor</string>
     <string name="settings_hosted_on_github">This project is hosted on GitHub</string>
+    <string name="settings_ingredient_syntax_indicator">Ingredient syntax indicator</string>
     <string name="settings_issues">Issues</string>
     <string name="settings_liberapay">Liberapay</string>
     <string name="settings_liberapay_patron">Become a Liberapay patron</string>
@@ -141,6 +143,7 @@
     <string name="settings_paypal">PayPal</string>
     <string name="settings_paypal_donation">Donate via PayPal</string>
     <string name="settings_privacy">Privacy</string>
+    <string name="settings_show_indicator_if_recipe_syntax_is_invalid">Show an indicator if the syntax of the ingredients is unsuitable for recalculation.</string>
     <string name="settings_source_code">Get source code</string>
     <string name="settings_sponsoring">Sponsoring</string>
     <string name="settings_stay_awake_on_recipe_screen">Screen stays on while you are on the recipe screen</string>

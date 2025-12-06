@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -54,18 +55,24 @@ class RecipeDetailViewModel
         private fun getRecipe(id: String) {
             _state.value = _state.value.copy(loading = true)
             combine(
+                preferencesManager.preferencesFlow.map { it.isShowIngredientSyntaxIndicator },
                 recipeRepository.getRecipeFlow(id),
                 recipeRepository.getRecipePreviewsFlow(),
-            ) { recipeResponse, recipePreviewsResponse ->
+            ) { isShowIngredientSyntaxIndicator, recipeResponse, recipePreviewsResponse ->
                 val recipePreviewDtos =
                     when (recipePreviewsResponse) {
                         is StoreReadResponse.Data -> recipePreviewsResponse.dataOrNull()
                         else -> null
                     }
-                Pair(recipeResponse, recipePreviewDtos)
-            }.onEach { (recipeResponse, recipePreviewDtos) ->
+                Triple(isShowIngredientSyntaxIndicator, recipeResponse, recipePreviewDtos)
+            }.onEach { (isShowIngredientSyntaxIndicator, recipeResponse, recipePreviewDtos) ->
                 when (recipeResponse) {
-                    is StoreReadResponse.Loading -> _state.value = _state.value.copy(loading = true)
+                    is StoreReadResponse.Loading ->
+                        _state.value =
+                            _state.value.copy(
+                                loading = true,
+                                isShowIngredientSyntaxIndicator = isShowIngredientSyntaxIndicator,
+                            )
                     is StoreReadResponse.Data -> {
                         val recipe = enrichRecipeLinks(recipeResponse.value.toRecipe(), recipePreviewDtos)
                         _state.value =
@@ -79,15 +86,22 @@ class RecipeDetailViewModel
                                 currentYield = recipe.yield,
                                 data = recipe,
                                 loading = false,
+                                isShowIngredientSyntaxIndicator = isShowIngredientSyntaxIndicator,
                             )
                     }
 
-                    is StoreReadResponse.NoNewData -> _state.value = _state.value.copy(loading = false)
+                    is StoreReadResponse.NoNewData ->
+                        _state.value =
+                            _state.value.copy(
+                                loading = false,
+                                isShowIngredientSyntaxIndicator = isShowIngredientSyntaxIndicator,
+                            )
                     is StoreReadResponse.Error.Exception ->
                         _state.value =
                             _state.value.copy(
                                 error = recipeResponse.errorMessageOrNull()?.asUiText(),
                                 loading = false,
+                                isShowIngredientSyntaxIndicator = isShowIngredientSyntaxIndicator,
                             )
 
                     is StoreReadResponse.Error.Message ->
@@ -95,6 +109,7 @@ class RecipeDetailViewModel
                             _state.value.copy(
                                 error = recipeResponse.message.asUiText(),
                                 loading = false,
+                                isShowIngredientSyntaxIndicator = isShowIngredientSyntaxIndicator,
                             )
                 }
             }.launchIn(viewModelScope)
@@ -137,7 +152,7 @@ class RecipeDetailViewModel
                         yield = _state.value.currentYield,
                         ingredients =
                             _state.value.calculatedIngredients.mapIndexed { index, ingredient ->
-                                Ingredient(id = index, value = ingredient)
+                                Ingredient(id = index, value = ingredient.ingredient, hasCorrectSyntax = ingredient.hasCorrectSyntax)
                             },
                     ),
                 )

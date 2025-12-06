@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 import androidx.datastore.core.DataMigration
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
@@ -15,6 +16,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.NcAccount
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.RecipeOfTheDay
 import de.lukasneugebauer.nextcloudcookbook.core.util.Constants.DEFAULT_RECIPE_OF_THE_DAY_ID
+import de.lukasneugebauer.nextcloudcookbook.core.util.Constants.IS_SHOW_INGREDIENT_SYNTAX_INDICATOR_DEFAULT
 import de.lukasneugebauer.nextcloudcookbook.settings.util.SettingsConstants.STAY_AWAKE_DEFAULT
 import de.lukasneugebauer.nextcloudcookbook.settings.util.SettingsConstants.STAY_AWAKE_KEY
 import kotlinx.coroutines.flow.catch
@@ -83,6 +85,7 @@ class PreferencesManager
             val NC_URL = stringPreferencesKey("nc_url")
             val RECIPE_OF_THE_DAY_ID = stringPreferencesKey("recipe_of_the_day_id")
             val RECIPE_OF_THE_DAY_UPDATED_AT = longPreferencesKey("recipe_of_the_day_updated_at")
+            val IS_SHOW_INGREDIENT_SYNTAX_INDICATOR = booleanPreferencesKey("is_show_ingredient_syntax_indicator")
         }
 
         val preferencesFlow =
@@ -96,6 +99,9 @@ class PreferencesManager
                     }
                 }
                 .map { preferences ->
+                    val isShowIngredientSyntaxIndicator =
+                        preferences[PreferencesKeys.IS_SHOW_INGREDIENT_SYNTAX_INDICATOR]
+                            ?: IS_SHOW_INGREDIENT_SYNTAX_INDICATOR_DEFAULT
                     val ncName = preferences[PreferencesKeys.NC_NAME] ?: ""
                     val ncUsername = preferences[PreferencesKeys.NC_USERNAME] ?: ""
                     val ncToken = preferences[PreferencesKeys.NC_TOKEN] ?: ""
@@ -105,6 +111,7 @@ class PreferencesManager
                         preferences[PreferencesKeys.RECIPE_OF_THE_DAY_UPDATED_AT] ?: 0
 
                     de.lukasneugebauer.nextcloudcookbook.core.domain.model.Preferences(
+                        isShowIngredientSyntaxIndicator = isShowIngredientSyntaxIndicator,
                         ncAccount =
                             NcAccount(
                                 name = ncName,
@@ -132,6 +139,12 @@ class PreferencesManager
 
         fun setStayAwake(isStayAwake: Boolean) {
             sharedPreferences.edit { putBoolean(STAY_AWAKE_KEY, isStayAwake) }
+        }
+
+        suspend fun updateShowIngredientSyntaxIndicator(isShowRecipeSyntaxIndicator: Boolean) {
+            context.dataStore54.edit { preferences ->
+                preferences[PreferencesKeys.IS_SHOW_INGREDIENT_SYNTAX_INDICATOR] = isShowRecipeSyntaxIndicator
+            }
         }
 
         suspend fun updateNextcloudAccount(ncAccount: NcAccount) =
