@@ -16,6 +16,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.NcAccount
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.RecipeOfTheDay
 import de.lukasneugebauer.nextcloudcookbook.core.util.Constants.DEFAULT_RECIPE_OF_THE_DAY_ID
+import de.lukasneugebauer.nextcloudcookbook.core.util.Constants.IS_SHOW_INGREDIENT_SYNTAX_INDICATOR_DEFAULT
 import de.lukasneugebauer.nextcloudcookbook.settings.util.SettingsConstants.STAY_AWAKE_DEFAULT
 import de.lukasneugebauer.nextcloudcookbook.settings.util.SettingsConstants.STAY_AWAKE_KEY
 import kotlinx.coroutines.flow.catch
@@ -98,7 +99,7 @@ class PreferencesManager
                     }
                 }
                 .map { preferences ->
-                    val isShowIngredientSyntaxIndicator = preferences[PreferencesKeys.IS_SHOW_INGREDIENT_SYNTAX_INDICATOR] ?: true
+                    val isShowIngredientSyntaxIndicator = preferences[PreferencesKeys.IS_SHOW_INGREDIENT_SYNTAX_INDICATOR] ?: IS_SHOW_INGREDIENT_SYNTAX_INDICATOR_DEFAULT
                     val ncName = preferences[PreferencesKeys.NC_NAME] ?: ""
                     val ncUsername = preferences[PreferencesKeys.NC_USERNAME] ?: ""
                     val ncToken = preferences[PreferencesKeys.NC_TOKEN] ?: ""

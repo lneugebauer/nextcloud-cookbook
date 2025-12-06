@@ -190,6 +190,7 @@ fun AnimatedVisibilityScope.RecipeDetailScreen(
         onResetYield = {
             viewModel.resetYield()
         },
+        isShowIngredientSyntaxIndicator = state.isShowIngredientSyntaxIndicator,
     )
 }
 
@@ -316,6 +317,7 @@ fun RecipeDetailLayout(
     error: UiText?,
     onKeywordClick: (keyword: String) -> Unit,
     onResetYield: () -> Unit,
+    isShowIngredientSyntaxIndicator: Boolean,
 ) {
     Scaffold(
         topBar = {
@@ -378,6 +380,7 @@ fun RecipeDetailLayout(
                         onResetYield,
                         currentYield,
                         recipe.yield != currentYield,
+                        isShowIngredientSyntaxIndicator,
                     )
                 }
                 if (recipe.nutrition != null) {
@@ -563,6 +566,7 @@ private fun Ingredients(
     onResetYield: () -> Unit,
     currentYield: Int,
     showResetButton: Boolean,
+    isShowIngredientSyntaxIndicator: Boolean,
 ) {
     val clipboardManager = LocalClipboardManager.current
     val context = LocalContext.current
@@ -677,7 +681,7 @@ private fun Ingredients(
                     viewId = textViewId,
                 )
             }
-            if (!hasCorrectSyntax) {
+            if (isShowIngredientSyntaxIndicator && !hasCorrectSyntax) {
                 Box(modifier = Modifier.minimumInteractiveComponentSize()) {
                     Icon(imageVector = Icons.Default.Report, contentDescription = stringResource(R.string.recipe_ingredient_syntax_error))
                 }
@@ -938,6 +942,7 @@ private fun IngredientsPreview() {
                 onResetYield = {},
                 currentYield = 2,
                 showResetButton = false,
+                isShowIngredientSyntaxIndicator = true,
             )
         }
     }
@@ -1022,6 +1027,7 @@ private fun RecipeDetailLayoutPreview() {
             error = null,
             onKeywordClick = {},
             onResetYield = {},
+            isShowIngredientSyntaxIndicator = true,
         )
     }
 }
