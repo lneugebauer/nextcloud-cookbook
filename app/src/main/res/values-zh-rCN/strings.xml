@@ -145,4 +145,7 @@
     <string name="settings_paypal">PayPal</string>
     <string name="settings_paypal_donation">通过 PayPal 捐赠</string>
     <string name="settings_sponsoring">赞助</string>
+    <string name="recipe_ingredient_syntax_error">无法重新计算食材。</string>
+    <string name="settings_ingredient_syntax_indicator">食材语法指示器</string>
+    <string name="settings_show_indicator_if_recipe_syntax_is_invalid">如果食材的语法不适合重新计算，则显示指示器。</string>
 </resources>
