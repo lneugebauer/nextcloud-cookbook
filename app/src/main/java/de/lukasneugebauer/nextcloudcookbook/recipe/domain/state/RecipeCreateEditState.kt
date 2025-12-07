@@ -17,9 +17,13 @@ sealed interface RecipeCreateEditState {
         val keywords: Set<String> = emptySet(),
     ) : RecipeCreateEditState
 
-    data class Updated(val recipeId: String) : RecipeCreateEditState
+    data class Updated(
+        val recipeId: String,
+    ) : RecipeCreateEditState
 
-    data class Error(val error: UiText) : RecipeCreateEditState
+    data class Error(
+        val error: UiText,
+    ) : RecipeCreateEditState
 }
 
 fun RecipeCreateEditState.ifSuccess(f: () -> Unit) {

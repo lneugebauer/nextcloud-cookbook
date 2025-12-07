@@ -6,7 +6,9 @@ import java.text.Normalizer
 import java.text.NumberFormat
 import java.util.Locale
 
-class YieldCalculatorImpl(customLocale: Locale? = null) : YieldCalculator {
+class YieldCalculatorImpl(
+    customLocale: Locale? = null,
+) : YieldCalculator {
     private val numberFormat =
         if (customLocale != null) {
             NumberFormat.getNumberInstance(customLocale)
@@ -94,11 +96,13 @@ class YieldCalculatorImpl(customLocale: Locale? = null) : YieldCalculator {
             // Decimal
             if (isValidIngredientSyntax(ingredient)) {
                 val possibleUnit =
-                    ingredient.split(" ")
+                    ingredient
+                        .split(" ")
                         .firstOrNull()
                         ?.replace(Regex("""[^a-zA-Z]"""), "") ?: ""
                 val amount =
-                    ingredient.split(" ")
+                    ingredient
+                        .split(" ")
                         .firstOrNull()
                         ?.split("-")
                         ?.firstOrNull()
@@ -106,7 +110,8 @@ class YieldCalculatorImpl(customLocale: Locale? = null) : YieldCalculator {
                         ?.replace(",", ".")
                         ?.toDoubleOrNull() ?: 0.0
                 val unitAndIngredient =
-                    ingredient.split(" ")
+                    ingredient
+                        .split(" ")
                         .drop(1)
                         .joinToString(" ")
 

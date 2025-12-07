@@ -24,17 +24,15 @@ object CategoryModule {
     @FlowPreview
     @Provides
     @Singleton
-    fun provideCategoriesStore(apiProvider: NcCookbookApiProvider): CategoriesStore {
-        return StoreBuilder
+    fun provideCategoriesStore(apiProvider: NcCookbookApiProvider): CategoriesStore =
+        StoreBuilder
             .from(
                 fetcher =
                     Fetcher.of {
                         apiProvider.getApi()?.getCategories()
                             ?: throw NullPointerException("Nextcloud Cookbook API is null.")
                     },
-            )
-            .build()
-    }
+            ).build()
 
     @Provides
     @Singleton

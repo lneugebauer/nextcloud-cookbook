@@ -22,7 +22,8 @@ fun keyboardAsState(): State<Boolean> {
         val listener =
             ViewTreeObserver.OnGlobalLayoutListener {
                 val isKeyboardOpen =
-                    ViewCompat.getRootWindowInsets(view)
+                    ViewCompat
+                        .getRootWindowInsets(view)
                         ?.isVisible(WindowInsetsCompat.Type.ime()) ?: true
                 // ... do anything you want here with `isKeyboardOpen`
                 keyboardState.value = isKeyboardOpen

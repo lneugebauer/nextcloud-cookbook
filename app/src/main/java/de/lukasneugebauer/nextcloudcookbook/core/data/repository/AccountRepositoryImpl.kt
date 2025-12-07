@@ -27,7 +27,8 @@ class AccountRepositoryImpl
         private val apiProvider: NcCookbookApiProvider,
         @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
         private val preferencesManager: PreferencesManager,
-    ) : AccountRepository, BaseRepository() {
+    ) : BaseRepository(),
+        AccountRepository {
         override suspend fun getCapabilities(): Resource<Capabilities> {
             return withContext(ioDispatcher) {
                 val api =
@@ -36,8 +37,12 @@ class AccountRepositoryImpl
 
                 when (val response = api.getCapabilities()) {
                     is NetworkResponse.Success -> {
-                        val result = response.body.ocs.data.capabilities.toCapabilities()
-                        val nextcloudVersion = response.body.ocs.data.version.toNextcloudVersion()
+                        val result =
+                            response.body.ocs.data.capabilities
+                                .toCapabilities()
+                        val nextcloudVersion =
+                            response.body.ocs.data.version
+                                .toNextcloudVersion()
                         ACRA.errorReporter.putCustomData("Nextcloud version", nextcloudVersion)
                         Resource.Success(data = result)
                     }
@@ -55,7 +60,9 @@ class AccountRepositoryImpl
 
                 when (val response = api.getCurrentUser()) {
                     is NetworkResponse.Success -> {
-                        val result = response.body.ocs.data.toUserMetadata()
+                        val result =
+                            response.body.ocs.data
+                                .toUserMetadata()
                         Resource.Success(data = result)
                     }
 

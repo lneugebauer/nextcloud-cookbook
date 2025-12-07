@@ -13,7 +13,6 @@ class CategoryRepositoryImpl
     constructor(
         private val categoriesStore: CategoriesStore,
     ) : CategoryRepository {
-        override fun getCategories(): Flow<StoreReadResponse<List<CategoryDto>>> {
-            return categoriesStore.stream(StoreReadRequest.cached(key = Unit, refresh = false))
-        }
+        override fun getCategories(): Flow<StoreReadResponse<List<CategoryDto>>> =
+            categoriesStore.stream(StoreReadRequest.cached(key = Unit, refresh = false))
     }

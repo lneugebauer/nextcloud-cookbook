@@ -23,7 +23,8 @@ class UserAgentInterceptor : Interceptor {
             )
 
         val request =
-            chain.request()
+            chain
+                .request()
                 .newBuilder()
                 .header("User-Agent", userAgent)
                 .build()

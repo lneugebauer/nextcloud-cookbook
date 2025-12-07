@@ -64,7 +64,8 @@ open class BaseRepository {
     }
 
     private fun unknownErrorUiText(t: Throwable?): UiText =
-        t?.localizedMessage
+        t
+            ?.localizedMessage
             ?.let { UiText.DynamicString(it) }
             ?: run { UiText.StringResource(R.string.error_unknown) }
 }

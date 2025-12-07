@@ -394,18 +394,20 @@ abstract class RecipeCreateEditViewModel(
     }
 
     private fun getCategories() {
-        categoryRepository.getCategories().onEach { categoriesResponse ->
-            when (categoriesResponse) {
-                is StoreReadResponse.Data ->
-                    categories =
-                        categoriesResponse.value
-                            .filter { it.recipeCount > 0 }
-                            .filter { it.name != "*" }
-                            .map { it.toCategory() }
+        categoryRepository
+            .getCategories()
+            .onEach { categoriesResponse ->
+                when (categoriesResponse) {
+                    is StoreReadResponse.Data ->
+                        categories =
+                            categoriesResponse.value
+                                .filter { it.recipeCount > 0 }
+                                .filter { it.name != "*" }
+                                .map { it.toCategory() }
 
-                else -> Unit
-            }
-        }.launchIn(viewModelScope)
+                    else -> Unit
+                }
+            }.launchIn(viewModelScope)
     }
 
     private fun getKeywords() {

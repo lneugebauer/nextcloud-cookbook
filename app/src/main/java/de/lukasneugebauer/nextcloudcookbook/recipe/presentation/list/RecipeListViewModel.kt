@@ -15,6 +15,7 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.RecipeListScreen
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.SearchAppBarState
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.RecipeConstants.UNCATEGORIZED_RECIPE
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
@@ -35,9 +36,10 @@ class RecipeListViewModel
         private val recipeRepository: RecipeRepository,
         savedStateHandle: SavedStateHandle,
     ) : ViewModel() {
-        @Suppress("ktlint:standard:property-naming")
+        @Suppress("ktlint:standard:backing-property-naming")
         private val _uiState = MutableStateFlow<RecipeListScreenState>(RecipeListScreenState.Initial)
-        val state = _uiState.asStateFlow()
+        val state: StateFlow<RecipeListScreenState>
+            get() = _uiState.asStateFlow()
 
         private val _searchAppBarState = mutableStateOf(SearchAppBarState.CLOSED)
         val searchAppBarState: State<SearchAppBarState> = _searchAppBarState
@@ -107,121 +109,123 @@ class RecipeListViewModel
                 _orderState,
             ) { recipePreviewsResponse, query, selectedKeywords, order ->
                 RecipeListScreenFlowData(recipePreviewsResponse, query, selectedKeywords, order)
-            }
-                .onEach { (recipePreviewsResponse, query, selectedKeywords, order) ->
-                    when (recipePreviewsResponse) {
-                        is StoreReadResponse.Loading -> _uiState.update { RecipeListScreenState.Initial }
-                        is StoreReadResponse.Data ->
-                            _uiState.update {
-                                val recipePreviews =
-                                    recipePreviewsResponse.value
-                                        .filter {
-                                            // Custom filter for uncategorized recipes as they can not be directly fetch via API
-                                            if (categoryName == UNCATEGORIZED_RECIPE && it.category != null) return@filter false
+            }.onEach { (recipePreviewsResponse, query, selectedKeywords, order) ->
+                when (recipePreviewsResponse) {
+                    is StoreReadResponse.Loading -> _uiState.update { RecipeListScreenState.Initial }
+                    is StoreReadResponse.Data ->
+                        _uiState.update {
+                            val recipePreviews =
+                                recipePreviewsResponse.value
+                                    .filter {
+                                        // Custom filter for uncategorized recipes as they can not be directly fetch via API
+                                        if (categoryName == UNCATEGORIZED_RECIPE && it.category != null) return@filter false
 
-                                            val inFilter =
-                                                selectedKeywords.isEmpty() ||
-                                                    selectedKeywords.any { keyword ->
-                                                        it.keywords?.contains(keyword) ?: false
-                                                    }
-                                            val inQuery =
-                                                query.isBlank() ||
-                                                    it.name.lowercase()
-                                                        .contains(query.lowercase())
-
-                                            inFilter && inQuery
-                                        }
-                                        .map { it.toRecipePreview() }
-
-                                val keywords =
-                                    recipePreviewsResponse.value.map { it.toRecipePreview() }
-                                        .flatMap { it.keywords }.toSortedSet()
-
-                                val sortedRecipePreviews =
-                                    when (order) {
-                                        RecipeListScreenOrder.ALPHABETICAL_ASC -> recipePreviews
-                                        RecipeListScreenOrder.ALPHABETICAL_DESC -> recipePreviews.asReversed()
-                                        RecipeListScreenOrder.CREATED_ASC -> {
-                                            recipePreviews.sortedBy {
-                                                try {
-                                                    val parsed =
-                                                        ZonedDateTime.parse(
-                                                            it.createdAt,
-                                                            DATE_TIME_FORMATTER,
-                                                        )
-                                                    parsed.toEpochSecond()
-                                                } catch (e: DateTimeParseException) {
-                                                    Timber.e(e)
-                                                    0L
+                                        val inFilter =
+                                            selectedKeywords.isEmpty() ||
+                                                selectedKeywords.any { keyword ->
+                                                    it.keywords?.contains(keyword) ?: false
                                                 }
-                                            }
-                                        }
+                                        val inQuery =
+                                            query.isBlank() ||
+                                                it.name
+                                                    .lowercase()
+                                                    .contains(query.lowercase())
 
-                                        RecipeListScreenOrder.CREATED_DESC -> {
-                                            recipePreviews.sortedByDescending {
-                                                try {
-                                                    val parsed =
-                                                        ZonedDateTime.parse(
-                                                            it.createdAt,
-                                                            DATE_TIME_FORMATTER,
-                                                        )
-                                                    parsed.toEpochSecond()
-                                                } catch (e: DateTimeParseException) {
-                                                    Timber.e(e)
-                                                    0L
-                                                }
-                                            }
-                                        }
+                                        inFilter && inQuery
+                                    }.map { it.toRecipePreview() }
 
-                                        RecipeListScreenOrder.MODIFIED_ASC -> {
-                                            recipePreviews.sortedBy {
-                                                try {
-                                                    val parsed =
-                                                        ZonedDateTime.parse(
-                                                            it.modifiedAt,
-                                                            DATE_TIME_FORMATTER,
-                                                        )
-                                                    parsed.toEpochSecond()
-                                                } catch (e: DateTimeParseException) {
-                                                    Timber.e(e)
-                                                    0L
-                                                }
-                                            }
-                                        }
+                            val keywords =
+                                recipePreviewsResponse.value
+                                    .map { it.toRecipePreview() }
+                                    .flatMap { it.keywords }
+                                    .toSortedSet()
 
-                                        RecipeListScreenOrder.MODIFIED_DESC -> {
-                                            recipePreviews.sortedByDescending {
-                                                try {
-                                                    val parsed =
-                                                        ZonedDateTime.parse(
-                                                            it.modifiedAt,
-                                                            DATE_TIME_FORMATTER,
-                                                        )
-                                                    parsed.toEpochSecond()
-                                                } catch (e: DateTimeParseException) {
-                                                    Timber.e(e)
-                                                    0L
-                                                }
+                            val sortedRecipePreviews =
+                                when (order) {
+                                    RecipeListScreenOrder.ALPHABETICAL_ASC -> recipePreviews
+                                    RecipeListScreenOrder.ALPHABETICAL_DESC -> recipePreviews.asReversed()
+                                    RecipeListScreenOrder.CREATED_ASC -> {
+                                        recipePreviews.sortedBy {
+                                            try {
+                                                val parsed =
+                                                    ZonedDateTime.parse(
+                                                        it.createdAt,
+                                                        DATE_TIME_FORMATTER,
+                                                    )
+                                                parsed.toEpochSecond()
+                                            } catch (e: DateTimeParseException) {
+                                                Timber.e(e)
+                                                0L
                                             }
                                         }
                                     }
 
-                                RecipeListScreenState.Loaded(
-                                    recipePreviews = sortedRecipePreviews,
-                                    keywords = keywords,
-                                )
-                            }
+                                    RecipeListScreenOrder.CREATED_DESC -> {
+                                        recipePreviews.sortedByDescending {
+                                            try {
+                                                val parsed =
+                                                    ZonedDateTime.parse(
+                                                        it.createdAt,
+                                                        DATE_TIME_FORMATTER,
+                                                    )
+                                                parsed.toEpochSecond()
+                                            } catch (e: DateTimeParseException) {
+                                                Timber.e(e)
+                                                0L
+                                            }
+                                        }
+                                    }
 
-                        is StoreReadResponse.NoNewData -> Unit
-                        is StoreReadResponse.Error -> {
-                            val message =
-                                recipePreviewsResponse.errorMessageOrNull()
-                                    ?.let { UiText.DynamicString(it) }
-                                    ?: run { UiText.StringResource(R.string.error_unknown) }
-                            _uiState.update { RecipeListScreenState.Error(message) }
+                                    RecipeListScreenOrder.MODIFIED_ASC -> {
+                                        recipePreviews.sortedBy {
+                                            try {
+                                                val parsed =
+                                                    ZonedDateTime.parse(
+                                                        it.modifiedAt,
+                                                        DATE_TIME_FORMATTER,
+                                                    )
+                                                parsed.toEpochSecond()
+                                            } catch (e: DateTimeParseException) {
+                                                Timber.e(e)
+                                                0L
+                                            }
+                                        }
+                                    }
+
+                                    RecipeListScreenOrder.MODIFIED_DESC -> {
+                                        recipePreviews.sortedByDescending {
+                                            try {
+                                                val parsed =
+                                                    ZonedDateTime.parse(
+                                                        it.modifiedAt,
+                                                        DATE_TIME_FORMATTER,
+                                                    )
+                                                parsed.toEpochSecond()
+                                            } catch (e: DateTimeParseException) {
+                                                Timber.e(e)
+                                                0L
+                                            }
+                                        }
+                                    }
+                                }
+
+                            RecipeListScreenState.Loaded(
+                                recipePreviews = sortedRecipePreviews,
+                                keywords = keywords,
+                            )
                         }
+
+                    is StoreReadResponse.NoNewData -> Unit
+                    is StoreReadResponse.Error -> {
+                        val message =
+                            recipePreviewsResponse
+                                .errorMessageOrNull()
+                                ?.let { UiText.DynamicString(it) }
+                                ?: run { UiText.StringResource(R.string.error_unknown) }
+                        _uiState.update { RecipeListScreenState.Error(message) }
                     }
-                }.launchIn(viewModelScope)
+                }
+            }.launchIn(viewModelScope)
         }
 
         companion object {

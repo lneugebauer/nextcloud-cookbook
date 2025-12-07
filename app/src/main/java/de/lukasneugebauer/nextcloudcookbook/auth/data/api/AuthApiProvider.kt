@@ -37,10 +37,12 @@ class AuthApiProvider
 
         override fun initApi() {
             scope.launch {
-                preferencesManager.preferencesFlow.map { it.allowSelfSignedCertificates }.distinctUntilChanged().collectLatest {
-                        allowSelfSignedCertificates ->
-                    initRetrofitApi(allowSelfSignedCertificates = allowSelfSignedCertificates)
-                }
+                preferencesManager.preferencesFlow
+                    .map { it.allowSelfSignedCertificates }
+                    .distinctUntilChanged()
+                    .collectLatest { allowSelfSignedCertificates ->
+                        initRetrofitApi(allowSelfSignedCertificates = allowSelfSignedCertificates)
+                    }
             }
         }
 
@@ -58,7 +60,8 @@ class AuthApiProvider
             val client = builder.build()
 
             val authApi =
-                Retrofit.Builder()
+                Retrofit
+                    .Builder()
                     .baseUrl("http://localhost/")
                     .client(client)
                     .addConverterFactory(GsonConverterFactory.create(gson))

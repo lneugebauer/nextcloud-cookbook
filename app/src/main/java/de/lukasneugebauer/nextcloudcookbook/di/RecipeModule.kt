@@ -36,46 +36,40 @@ object RecipeModule {
     @FlowPreview
     @Provides
     @Singleton
-    fun provideRecipePreviewsByCategoryStore(apiProvider: NcCookbookApiProvider): RecipePreviewsByCategoryStore {
-        return StoreBuilder
+    fun provideRecipePreviewsByCategoryStore(apiProvider: NcCookbookApiProvider): RecipePreviewsByCategoryStore =
+        StoreBuilder
             .from(
                 Fetcher.of { categoryName: String ->
                     apiProvider.getApi()?.getRecipesByCategory(categoryName)
                         ?: throw NullPointerException("Nextcloud Cookbook API is null.")
                 },
-            )
-            .build()
-    }
+            ).build()
 
     @ExperimentalCoroutinesApi
     @FlowPreview
     @Provides
     @Singleton
-    fun provideRecipePreviewsStore(apiProvider: NcCookbookApiProvider): RecipePreviewsStore {
-        return StoreBuilder
+    fun provideRecipePreviewsStore(apiProvider: NcCookbookApiProvider): RecipePreviewsStore =
+        StoreBuilder
             .from(
                 Fetcher.of {
                     apiProvider.getApi()?.getRecipes()
                         ?: throw NullPointerException("Nextcloud Cookbook API is null.")
                 },
-            )
-            .build()
-    }
+            ).build()
 
     @ExperimentalCoroutinesApi
     @FlowPreview
     @Provides
     @Singleton
-    fun provideRecipeStore(apiProvider: NcCookbookApiProvider): RecipeStore {
-        return StoreBuilder
+    fun provideRecipeStore(apiProvider: NcCookbookApiProvider): RecipeStore =
+        StoreBuilder
             .from(
                 Fetcher.of { recipeId: String ->
                     apiProvider.getApi()?.getRecipe(recipeId)
                         ?: throw NullPointerException("Nextcloud Cookbook API is null.")
                 },
-            )
-            .build()
-    }
+            ).build()
 
     @Provides
     @Singleton

@@ -11,5 +11,7 @@ sealed interface RecipeListScreenState {
         val keywords: Set<String>,
     ) : RecipeListScreenState
 
-    data class Error(val uiText: UiText) : RecipeListScreenState
+    data class Error(
+        val uiText: UiText,
+    ) : RecipeListScreenState
 }

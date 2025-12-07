@@ -19,7 +19,9 @@ import javax.inject.Inject
 @HiltViewModel
 class StartScreenViewModel
     @Inject
-    constructor(private val preferencesManager: PreferencesManager) : ViewModel() {
+    constructor(
+        private val preferencesManager: PreferencesManager,
+    ) : ViewModel() {
         private val _uiState = MutableStateFlow<StartScreenState>(StartScreenState.Loaded())
         val uiState = _uiState.asStateFlow()
 

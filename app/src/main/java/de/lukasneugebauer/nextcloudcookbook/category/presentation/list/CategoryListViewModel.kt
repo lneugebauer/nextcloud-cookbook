@@ -27,28 +27,31 @@ class CategoryListViewModel
         val uiState = _uiState.asStateFlow()
 
         init {
-            categoryRepository.getCategories().onEach { categoriesResponse ->
-                when (categoriesResponse) {
-                    is StoreReadResponse.Loading -> _uiState.update { CategoryListScreenState.Initial }
-                    is StoreReadResponse.Data ->
-                        _uiState.update {
-                            CategoryListScreenState.Loaded(
-                                categoriesResponse.value
-                                    .filter { it.recipeCount > 0 }
-                                    .map { it.toCategory() },
-                            )
+            categoryRepository
+                .getCategories()
+                .onEach { categoriesResponse ->
+                    when (categoriesResponse) {
+                        is StoreReadResponse.Loading -> _uiState.update { CategoryListScreenState.Initial }
+                        is StoreReadResponse.Data ->
+                            _uiState.update {
+                                CategoryListScreenState.Loaded(
+                                    categoriesResponse.value
+                                        .filter { it.recipeCount > 0 }
+                                        .map { it.toCategory() },
+                                )
+                            }
+
+                        is StoreReadResponse.NoNewData -> Unit
+
+                        is StoreReadResponse.Error -> {
+                            val message =
+                                categoriesResponse
+                                    .errorMessageOrNull()
+                                    ?.let { DynamicString(it) }
+                                    ?: run { StringResource(R.string.error_unknown) }
+                            _uiState.update { CategoryListScreenState.Error(message) }
                         }
-
-                    is StoreReadResponse.NoNewData -> Unit
-
-                    is StoreReadResponse.Error -> {
-                        val message =
-                            categoriesResponse.errorMessageOrNull()
-                                ?.let { DynamicString(it) }
-                                ?: run { StringResource(R.string.error_unknown) }
-                        _uiState.update { CategoryListScreenState.Error(message) }
                     }
-                }
-            }.launchIn(viewModelScope)
+                }.launchIn(viewModelScope)
         }
     }

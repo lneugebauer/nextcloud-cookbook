@@ -7,13 +7,13 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 
-class WebViewClient(private val allowSelfSignedCertificates: Boolean) : WebViewClient() {
+class WebViewClient(
+    private val allowSelfSignedCertificates: Boolean,
+) : WebViewClient() {
     override fun shouldOverrideUrlLoading(
         view: WebView?,
         request: WebResourceRequest?,
-    ): Boolean {
-        return false
-    }
+    ): Boolean = false
 
     @SuppressLint("WebViewClientOnReceivedSslError")
     override fun onReceivedSslError(

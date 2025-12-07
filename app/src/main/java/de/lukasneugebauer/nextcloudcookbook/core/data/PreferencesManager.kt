@@ -46,7 +46,10 @@ val Context.dataStore54 by preferencesDataStore(
                 }
 
                 override suspend fun migrate(currentData: Preferences): Preferences {
-                    val oldData = context.dataStore.data.first().asMap()
+                    val oldData =
+                        context.dataStore.data
+                            .first()
+                            .asMap()
                     val currentMutablePrefs = currentData.toMutablePreferences()
 
                     oldData.forEach { (key, value) ->
@@ -99,8 +102,7 @@ class PreferencesManager
                     } else {
                         throw exception
                     }
-                }
-                .map { preferences ->
+                }.map { preferences ->
                     val isShowIngredientSyntaxIndicator =
                         preferences[PreferencesKeys.IS_SHOW_INGREDIENT_SYNTAX_INDICATOR]
                             ?: IS_SHOW_INGREDIENT_SYNTAX_INDICATOR_DEFAULT
@@ -138,9 +140,7 @@ class PreferencesManager
                     )
                 }
 
-        fun getStayAwake(): Boolean {
-            return sharedPreferences.getBoolean(STAY_AWAKE_KEY, STAY_AWAKE_DEFAULT)
-        }
+        fun getStayAwake(): Boolean = sharedPreferences.getBoolean(STAY_AWAKE_KEY, STAY_AWAKE_DEFAULT)
 
         fun setStayAwake(isStayAwake: Boolean) {
             sharedPreferences.edit { putBoolean(STAY_AWAKE_KEY, isStayAwake) }

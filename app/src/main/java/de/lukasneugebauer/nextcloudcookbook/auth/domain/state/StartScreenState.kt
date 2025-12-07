@@ -10,7 +10,9 @@ sealed interface StartScreenState {
         val event: StartScreenSignInEvent? = null,
     ) : StartScreenState
 
-    data class Error(val uiText: UiText) : StartScreenState
+    data class Error(
+        val uiText: UiText,
+    ) : StartScreenState
 }
 
 sealed interface StartScreenSignInEvent {

@@ -47,12 +47,14 @@ fun AuthorizedImage(
     val fullImageUrl = credentials?.baseUrl + newImageUrl
 
     val headers =
-        NetworkHeaders.Builder()
+        NetworkHeaders
+            .Builder()
             .set("Authorization", credentials?.basic ?: "")
             .build()
 
     val imageRequest =
-        ImageRequest.Builder(context)
+        ImageRequest
+            .Builder(context)
             .data(fullImageUrl)
             .httpHeaders(headers)
             .crossfade(true)

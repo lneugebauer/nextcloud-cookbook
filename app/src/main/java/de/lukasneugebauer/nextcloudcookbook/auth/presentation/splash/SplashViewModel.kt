@@ -24,7 +24,8 @@ class SplashViewModel
         val uiState: StateFlow<SplashScreenState> = _uiState
 
         fun initialize() {
-            accountRepository.getAccount()
+            accountRepository
+                .getAccount()
                 .distinctUntilChanged()
                 .onEach { account ->
                     val userMetadata = accountRepository.getUserMetadata()
@@ -34,7 +35,6 @@ class SplashViewModel
                     } else {
                         _uiState.update { SplashScreenState.Unauthorized }
                     }
-                }
-                .launchIn(viewModelScope)
+                }.launchIn(viewModelScope)
         }
     }

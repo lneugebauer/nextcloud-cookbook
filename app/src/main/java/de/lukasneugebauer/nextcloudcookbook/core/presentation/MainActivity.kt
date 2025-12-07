@@ -229,8 +229,7 @@ fun NextcloudCookbookApp(intent: Intent?) {
                             start = innerPadding.calculateLeftPadding(layoutDirection),
                             end = innerPadding.calculateRightPadding(layoutDirection),
                             bottom = animatedBottomPadding,
-                        )
-                        .consumeWindowInsets(WindowInsets.safeDrawing),
+                        ).consumeWindowInsets(WindowInsets.safeDrawing),
                 navController = navController,
             ) {
                 composable(SplashScreenDestination) {

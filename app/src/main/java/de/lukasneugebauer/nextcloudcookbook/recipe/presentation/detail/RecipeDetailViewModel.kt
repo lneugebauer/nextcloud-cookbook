@@ -181,8 +181,8 @@ class RecipeDetailViewModel
             recipe: Recipe,
             recipePreviewDtos: List<RecipePreviewDto>?,
         ): Recipe {
-            fun replace(text: String): String {
-                return RECIPE_URL_REGEX.replace(text) { matchResult ->
+            fun replace(text: String): String =
+                RECIPE_URL_REGEX.replace(text) { matchResult ->
                     val (shortId, fullId) = matchResult.destructured
 
                     if (shortId.isNotBlank()) {
@@ -200,7 +200,6 @@ class RecipeDetailViewModel
                         "nccookbook://lneugebauer.github.io/recipe/$fullId"
                     }
                 }
-            }
 
             val newDescription = replace(recipe.description)
 

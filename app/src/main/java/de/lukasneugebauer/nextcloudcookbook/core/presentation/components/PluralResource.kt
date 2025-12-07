@@ -9,6 +9,4 @@ fun pluralResource(
     @PluralsRes resId: Int,
     quantity: Int,
     vararg formatArgs: Any? = emptyArray(),
-): String {
-    return LocalContext.current.resources.getQuantityString(resId, quantity, *formatArgs)
-}
+): String = LocalContext.current.resources.getQuantityString(resId, quantity, *formatArgs)

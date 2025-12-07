@@ -34,7 +34,8 @@ class GetHomeScreenDataUseCase
     ) {
         suspend operator fun invoke(): List<HomeScreenDataResult> {
             val currentDate =
-                LocalDateTime.now()
+                LocalDateTime
+                    .now()
                     .withHour(0)
                     .withMinute(0)
                     .withSecond(0)
@@ -44,7 +45,11 @@ class GetHomeScreenDataUseCase
             if (recipeOfTheDay.id == DEFAULT_RECIPE_OF_THE_DAY_ID || recipeOfTheDay.updatedAt.isBefore(currentDate)) {
                 try {
                     val newRecipeOfTheDayId =
-                        recipePreviewsStore.get(Unit).randomOrNull()?.toRecipePreview()?.id
+                        recipePreviewsStore
+                            .get(Unit)
+                            .randomOrNull()
+                            ?.toRecipePreview()
+                            ?.id
                             ?: DEFAULT_RECIPE_OF_THE_DAY_ID
 
                     recipeOfTheDay =
@@ -75,7 +80,8 @@ class GetHomeScreenDataUseCase
 
             withContext(ioDispatcher) {
                 try {
-                    categoriesStore.get(Unit)
+                    categoriesStore
+                        .get(Unit)
                         .sortedByDescending { it.recipeCount }
                         .take(RecipeConstants.HOME_SCREEN_CATEGORIES)
                         .forEach { categoryDto ->

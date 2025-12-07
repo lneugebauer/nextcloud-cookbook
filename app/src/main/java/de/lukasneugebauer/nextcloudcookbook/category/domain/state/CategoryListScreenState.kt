@@ -6,7 +6,11 @@ import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
 sealed interface CategoryListScreenState {
     object Initial : CategoryListScreenState
 
-    data class Loaded(val data: List<Category>) : CategoryListScreenState
+    data class Loaded(
+        val data: List<Category>,
+    ) : CategoryListScreenState
 
-    data class Error(val uiText: UiText) : CategoryListScreenState
+    data class Error(
+        val uiText: UiText,
+    ) : CategoryListScreenState
 }

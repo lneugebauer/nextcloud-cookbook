@@ -10,7 +10,9 @@ import javax.inject.Singleton
 @Singleton
 class GetAllKeywordsUseCase
     @Inject
-    constructor(private val recipeRepository: RecipeRepository) {
+    constructor(
+        private val recipeRepository: RecipeRepository,
+    ) {
         operator fun invoke(filterByCategory: String? = null): Flow<Set<String>> {
             val recipePreviewsFlow =
                 if (filterByCategory.isNullOrBlank()) {

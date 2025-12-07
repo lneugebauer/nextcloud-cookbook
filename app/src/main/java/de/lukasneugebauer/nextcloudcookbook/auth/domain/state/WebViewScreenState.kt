@@ -13,5 +13,7 @@ sealed interface WebViewScreenState {
 
     object Authenticated : WebViewScreenState
 
-    data class Error(val uiText: UiText) : WebViewScreenState
+    data class Error(
+        val uiText: UiText,
+    ) : WebViewScreenState
 }

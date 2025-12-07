@@ -16,9 +16,10 @@ import kotlinx.coroutines.withContext
 class AuthRepositoryImpl(
     private val apiProvider: AuthApiProvider,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
-) : AuthRepository, BaseRepository() {
-    override suspend fun getLoginEndpoint(baseUrl: String): Resource<LoginEndpointResult> {
-        return withContext(ioDispatcher) {
+) : BaseRepository(),
+    AuthRepository {
+    override suspend fun getLoginEndpoint(baseUrl: String): Resource<LoginEndpointResult> =
+        withContext(ioDispatcher) {
             val api = apiProvider.apiFlow.filterNotNull().first()
 
             val url =
@@ -41,13 +42,12 @@ class AuthRepositoryImpl(
                 }
             }
         }
-    }
 
     override suspend fun tryLogin(
         url: String,
         token: String,
-    ): Resource<LoginResult> {
-        return withContext(ioDispatcher) {
+    ): Resource<LoginResult> =
+        withContext(ioDispatcher) {
             val api = apiProvider.apiFlow.filterNotNull().first()
 
             when (val response = api.tryLogin(url = url, token = token)) {
@@ -59,5 +59,4 @@ class AuthRepositoryImpl(
                 is NetworkResponse.Error -> handleResponseError(response.error)
             }
         }
-    }
 }

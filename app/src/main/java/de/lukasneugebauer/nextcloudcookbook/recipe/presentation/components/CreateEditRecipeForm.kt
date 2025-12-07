@@ -474,7 +474,8 @@ private fun Keywords(
             contentPadding = PaddingValues(horizontal = dimensionResource(id = R.dimen.padding_m)),
             horizontalArrangement = Arrangement.spacedBy(space = dimensionResource(id = R.dimen.padding_s)),
         ) {
-            keywords.filter { keyword -> !state.chips.any { it.text == keyword } }
+            keywords
+                .filter { keyword -> !state.chips.any { it.text == keyword } }
                 .forEach {
                     item {
                         SuggestionChip(

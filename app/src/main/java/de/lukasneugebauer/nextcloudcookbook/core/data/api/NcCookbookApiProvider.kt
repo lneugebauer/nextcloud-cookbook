@@ -47,20 +47,21 @@ class NcCookbookApiProvider
 
         override fun initApi() {
             scope.launch {
-                preferencesManager.preferencesFlow.map {
-                    Pair(
-                        it.allowSelfSignedCertificates,
-                        it.ncAccount,
-                    )
-                }.distinctUntilChanged().collectLatest {
-                        (allowSelfSignedCertificates, ncAccount) ->
-                    if (ncAccount.username.isNotBlank() &&
-                        ncAccount.token.isNotBlank() &&
-                        ncAccount.url.isNotBlank()
-                    ) {
-                        initRetrofitApi(ncAccount = ncAccount, allowSelfSignedCertificates = allowSelfSignedCertificates)
+                preferencesManager.preferencesFlow
+                    .map {
+                        Pair(
+                            it.allowSelfSignedCertificates,
+                            it.ncAccount,
+                        )
+                    }.distinctUntilChanged()
+                    .collectLatest { (allowSelfSignedCertificates, ncAccount) ->
+                        if (ncAccount.username.isNotBlank() &&
+                            ncAccount.token.isNotBlank() &&
+                            ncAccount.url.isNotBlank()
+                        ) {
+                            initRetrofitApi(ncAccount = ncAccount, allowSelfSignedCertificates = allowSelfSignedCertificates)
+                        }
                     }
-                }
             }
         }
 
@@ -83,7 +84,8 @@ class NcCookbookApiProvider
             val client = builder.addInterceptor(authInterceptor).build()
 
             val ncCookbookApi =
-                Retrofit.Builder()
+                Retrofit
+                    .Builder()
                     .baseUrl(ncAccount.url.addSuffix("/"))
                     .client(client)
                     .addConverterFactory(GsonConverterFactory.create(gson))

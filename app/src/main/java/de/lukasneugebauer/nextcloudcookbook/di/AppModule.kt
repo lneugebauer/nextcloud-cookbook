@@ -54,7 +54,8 @@ object AppModule {
                     }
             }
 
-        return OkHttpClient.Builder()
+        return OkHttpClient
+            .Builder()
             .addInterceptor(httpLoggingInterceptor)
             .addInterceptor(NetworkInterceptor())
             .addInterceptor(UserAgentInterceptor())

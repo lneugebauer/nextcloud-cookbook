@@ -486,8 +486,7 @@ private fun Meta(
                 .padding(
                     top = dimensionResource(id = R.dimen.padding_m),
                     bottom = dimensionResource(id = R.dimen.padding_l),
-                )
-                .fillMaxWidth(),
+                ).fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
         if (prepTime != null && prepTime != Duration.ZERO) {
@@ -591,14 +590,15 @@ private fun Ingredients(
                 },
             )
             if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
-                Toast.makeText(
-                    context,
-                    context.resources.getQuantityString(
-                        R.plurals.recipe_ingredients_copied,
-                        ingredients.size,
-                    ),
-                    Toast.LENGTH_SHORT,
-                ).show()
+                Toast
+                    .makeText(
+                        context,
+                        context.resources.getQuantityString(
+                            R.plurals.recipe_ingredients_copied,
+                            ingredients.size,
+                        ),
+                        Toast.LENGTH_SHORT,
+                    ).show()
             }
         }) {
             Icon(
@@ -704,8 +704,7 @@ private fun Ingredients(
                                     1,
                                 ),
                                 Toast.LENGTH_SHORT,
-                            )
-                            .show()
+                            ).show()
                     }
 
                     true

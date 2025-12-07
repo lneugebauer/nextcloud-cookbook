@@ -38,7 +38,8 @@ class RecipeRepositoryImpl
         private val recipePreviewsByCategoryStore: RecipePreviewsByCategoryStore,
         private val recipePreviewsStore: RecipePreviewsStore,
         private val recipeStore: RecipeStore,
-    ) : RecipeRepository, BaseRepository() {
+    ) : BaseRepository(),
+        RecipeRepository {
         override fun getRecipePreviewsFlow(): Flow<StoreReadResponse<List<RecipePreviewDto>>> =
             recipePreviewsStore.stream(StoreReadRequest.cached(key = Unit, refresh = false))
 
