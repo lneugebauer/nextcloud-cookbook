@@ -12,7 +12,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 import de.lukasneugebauer.nextcloudcookbook.R
+import de.lukasneugebauer.nextcloudcookbook.auth.presentation.manual.ManualLoginLayout
 import de.lukasneugebauer.nextcloudcookbook.auth.presentation.start.StartLayout
+import de.lukasneugebauer.nextcloudcookbook.core.domain.state.AppState
+import de.lukasneugebauer.nextcloudcookbook.core.domain.state.LocalAppState
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.BottomBarContent
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.BottomBarDestination
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
@@ -57,14 +60,12 @@ class ScreenshotsTestSuite {
     fun loginScreen() {
         makeScreenshotOf("1") {
             StartLayout(
-                showManualLogin = false,
-                usernameError = null,
-                passwordError = null,
-                urlError = null,
-                onClearError = {},
-                onLoginClick = {},
-                onShowManualLoginClick = {},
-                onManualLoginClick = { _, _, _ -> },
+                url = "",
+                allowSelfSignedCertificates = false,
+                onUrlChange = {},
+                onAllowSelfSignedCertificatesChange = {},
+                onWebViewLoginClick = {},
+                onManualLoginClick = {},
             )
         }
     }
@@ -72,15 +73,13 @@ class ScreenshotsTestSuite {
     @Test
     fun manualLoginScreen() {
         makeScreenshotOf("2") {
-            StartLayout(
-                showManualLogin = true,
-                usernameError = null,
-                passwordError = null,
-                urlError = null,
-                onClearError = {},
+            ManualLoginLayout(
+                url = "https://cloud.example.com",
+                username = "",
+                password = "",
+                onUsernameChange = {},
+                onPasswordChange = {},
                 onLoginClick = {},
-                onShowManualLoginClick = {},
-                onManualLoginClick = { _, _, _ -> },
             )
         }
     }
@@ -153,6 +152,7 @@ class ScreenshotsTestSuite {
                     error = null,
                     onKeywordClick = {},
                     onResetYield = {},
+                    isShowIngredientSyntaxIndicator = true,
                 )
             }
         }
@@ -168,7 +168,7 @@ class ScreenshotsTestSuite {
 
         composeTestRule.setContent {
             NextcloudCookbookTheme {
-                CompositionLocalProvider(LocalInspectionMode provides true) {
+                CompositionLocalProvider(LocalInspectionMode provides true, LocalAppState provides AppState()) {
                     content()
                 }
             }
