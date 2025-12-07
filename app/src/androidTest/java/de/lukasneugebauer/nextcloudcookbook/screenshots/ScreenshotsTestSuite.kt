@@ -13,6 +13,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.auth.presentation.manual.ManualLoginLayout
+import de.lukasneugebauer.nextcloudcookbook.auth.presentation.manual.TopAppBar
 import de.lukasneugebauer.nextcloudcookbook.auth.presentation.start.StartLayout
 import de.lukasneugebauer.nextcloudcookbook.core.domain.state.AppState
 import de.lukasneugebauer.nextcloudcookbook.core.domain.state.LocalAppState
@@ -70,17 +71,22 @@ class ScreenshotsTestSuite {
         }
     }
 
+    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     @Test
     fun manualLoginScreen() {
         makeScreenshotOf("2") {
-            ManualLoginLayout(
-                url = "https://cloud.example.com",
-                username = "",
-                password = "",
-                onUsernameChange = {},
-                onPasswordChange = {},
-                onLoginClick = {},
-            )
+            Scaffold(
+                topBar = { TopAppBar(onBackClick = {}) },
+            ) { _ ->
+                ManualLoginLayout(
+                    url = "https://cloud.example.com",
+                    username = "",
+                    password = "",
+                    onUsernameChange = {},
+                    onPasswordChange = {},
+                    onLoginClick = {},
+                )
+            }
         }
     }
 

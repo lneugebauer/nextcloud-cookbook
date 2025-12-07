@@ -201,7 +201,7 @@ fun ManualLoginLayout(
 }
 
 @Composable
-private fun TopAppBar(onBackClick: () -> Unit) {
+fun TopAppBar(onBackClick: () -> Unit) {
     TopAppBar(
         title = {
             Text(text = stringResource(R.string.login))
