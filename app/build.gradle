@@ -16,7 +16,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    compileSdk 35
+    compileSdk 36
     if (keystoreProperties.containsKey('storeFile')) {
         signingConfigs {
             upload {
@@ -37,7 +37,7 @@ android {
     defaultConfig {
         applicationId "de.lukasneugebauer.nextcloudcookbook"
         minSdk 25
-        targetSdk 35
+        targetSdk 36
         versionCode 59
         versionName "0.25.3"
 
