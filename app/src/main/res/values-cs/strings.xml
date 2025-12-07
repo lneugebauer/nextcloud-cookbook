@@ -129,9 +129,10 @@
     <string name="download_recipe">Stáhnout recept</string>
     <string name="common_reorder">Přerovnat</string>
     <plurals name="recipe_ingredients_copied">
-        <item quantity="one">Zkopírovaná ingredience</item>
-        <item quantity="few">Zkopírované ingredience</item>
-        <item quantity="other">Zkopírovaná ingredience</item>
+        <item quantity="one">Zkopírovaná přísada</item>
+        <item quantity="few">Zkopírované přísady</item>
+        <item quantity="many">Zkopírovaných přísad</item>
+        <item quantity="other">Zkopírovaných přísad</item>
     </plurals>
     <string name="settings_issues">Chyby a nedostatky</string>
     <string name="common_descending">Sestupně</string>
@@ -151,4 +152,11 @@
     <string name="common_error">Chyba</string>
     <string name="login_nextcloud_logo">Logo Nextcloudu</string>
     <string name="recipe_change_order">Změna pořadí</string>
+    <string name="error_retry">Zkusit znovu</string>
+    <string name="info_headline">Další informace</string>
+    <string name="login_allow_self_signed_certificates">Povolit samopodepsané certifikáty</string>
+    <string name="login_instance_hint">Zadejte prosím přihlašovací údaje pro %1$s.</string>
+    <string name="recipe_ingredient_syntax_error">Množství přísady nelze přepočítat.</string>
+    <string name="settings_ingredient_syntax_indicator">Upozornění na nezpracovatelný formát přísady</string>
+    <string name="settings_show_indicator_if_recipe_syntax_is_invalid">Zobrazí upozornění v případě, že je přísada uvedena ve formátu, který neumožňuje přepočítat potřebné množství v závislosti na počtu porcí.</string>
 </resources>
