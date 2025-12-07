@@ -1,0 +1,3 @@
+- Zutaten Syntax-Hinweis hinzugefügt
+- Option, um selbstsignierte Zertifikate zu erlauben, hinzugefügt
+- Übersetzungen aktualisiert
