@@ -25,6 +25,7 @@ import androidx.core.net.toUri
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.generated.destinations.LibrariesScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import de.lukasneugebauer.nextcloudcookbook.BuildConfig
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.MainGraph
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.HideBottomNavigation
@@ -32,9 +33,13 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.Nextcloud
 import de.lukasneugebauer.nextcloudcookbook.core.util.openInBrowser
 import de.lukasneugebauer.nextcloudcookbook.settings.presentation.settings.SettingsGroupAbout
 import de.lukasneugebauer.nextcloudcookbook.settings.presentation.settings.SettingsGroupContribution
+import de.lukasneugebauer.nextcloudcookbook.settings.presentation.settings.SettingsGroupSponsoring
 import de.lukasneugebauer.nextcloudcookbook.settings.util.SettingsConstants.GITHUB_ISSUES_URL
+import de.lukasneugebauer.nextcloudcookbook.settings.util.SettingsConstants.GITHUB_SPONSOR_URL
 import de.lukasneugebauer.nextcloudcookbook.settings.util.SettingsConstants.GITHUB_URL
+import de.lukasneugebauer.nextcloudcookbook.settings.util.SettingsConstants.LIBERAPAY_URL
 import de.lukasneugebauer.nextcloudcookbook.settings.util.SettingsConstants.LICENSE_URL
+import de.lukasneugebauer.nextcloudcookbook.settings.util.SettingsConstants.PAYPAL_URL
 import de.lukasneugebauer.nextcloudcookbook.settings.util.SettingsConstants.PRIVACY_URL
 import de.lukasneugebauer.nextcloudcookbook.settings.util.SettingsConstants.WEBLATE_URL
 
@@ -68,6 +73,15 @@ fun AnimatedVisibilityScope.InfoScreen(navigator: DestinationsNavigator) {
             onIssuesClick = {
                 GITHUB_ISSUES_URL.toUri().openInBrowser(context)
             },
+            onGitHubClick = {
+                GITHUB_SPONSOR_URL.toUri().openInBrowser(context)
+            },
+            onLiberapayClick = {
+                LIBERAPAY_URL.toUri().openInBrowser(context)
+            },
+            onPayPalClick = {
+                PAYPAL_URL.toUri().openInBrowser(context)
+            },
         )
     }
 }
@@ -81,6 +95,9 @@ private fun InfoLayout(
     onSourceCodeClick: () -> Unit,
     onTranslateClick: () -> Unit,
     onIssuesClick: () -> Unit,
+    onGitHubClick: () -> Unit,
+    onLiberapayClick: () -> Unit,
+    onPayPalClick: () -> Unit,
 ) {
     Column(
         modifier =
@@ -100,6 +117,15 @@ private fun InfoLayout(
             onTranslateClick = onTranslateClick,
             onIssuesClick = onIssuesClick,
         )
+        @Suppress("SimplifyBooleanWithConstants", "KotlinConstantConditions")
+        if (BuildConfig.FLAVOR == "full") {
+            Spacer(modifier = Modifier.size(size = dimensionResource(R.dimen.padding_m)))
+            SettingsGroupSponsoring(
+                onGitHubClick = onGitHubClick,
+                onLiberapayClick = onLiberapayClick,
+                onPayPalClick = onPayPalClick,
+            )
+        }
     }
 }
 
@@ -139,6 +165,9 @@ private fun InfoLayoutPreview() {
             onSourceCodeClick = {},
             onTranslateClick = {},
             onIssuesClick = {},
+            onGitHubClick = {},
+            onLiberapayClick = {},
+            onPayPalClick = {},
         )
     }
 }
