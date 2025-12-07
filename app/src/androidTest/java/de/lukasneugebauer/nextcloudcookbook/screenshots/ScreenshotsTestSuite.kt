@@ -12,7 +12,11 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 import de.lukasneugebauer.nextcloudcookbook.R
-import de.lukasneugebauer.nextcloudcookbook.auth.presentation.login.LoginScreen
+import de.lukasneugebauer.nextcloudcookbook.auth.presentation.manual.ManualLoginLayout
+import de.lukasneugebauer.nextcloudcookbook.auth.presentation.manual.TopAppBar
+import de.lukasneugebauer.nextcloudcookbook.auth.presentation.start.StartLayout
+import de.lukasneugebauer.nextcloudcookbook.core.domain.state.AppState
+import de.lukasneugebauer.nextcloudcookbook.core.domain.state.LocalAppState
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.BottomBarContent
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.BottomBarDestination
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
@@ -56,32 +60,33 @@ class ScreenshotsTestSuite {
     @Test
     fun loginScreen() {
         makeScreenshotOf("1") {
-            LoginScreen(
-                showManualLogin = false,
-                usernameError = null,
-                passwordError = null,
-                urlError = null,
-                onClearError = {},
-                onLoginClick = {},
-                onShowManualLoginClick = {},
-                onManualLoginClick = { _, _, _ -> },
+            StartLayout(
+                url = "",
+                allowSelfSignedCertificates = false,
+                onUrlChange = {},
+                onAllowSelfSignedCertificatesChange = {},
+                onWebViewLoginClick = {},
+                onManualLoginClick = {},
             )
         }
     }
 
+    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     @Test
     fun manualLoginScreen() {
         makeScreenshotOf("2") {
-            LoginScreen(
-                showManualLogin = true,
-                usernameError = null,
-                passwordError = null,
-                urlError = null,
-                onClearError = {},
-                onLoginClick = {},
-                onShowManualLoginClick = {},
-                onManualLoginClick = { _, _, _ -> },
-            )
+            Scaffold(
+                topBar = { TopAppBar(onBackClick = {}) },
+            ) { _ ->
+                ManualLoginLayout(
+                    url = "https://cloud.example.com",
+                    username = "",
+                    password = "",
+                    onUsernameChange = {},
+                    onPasswordChange = {},
+                    onLoginClick = {},
+                )
+            }
         }
     }
 
@@ -153,6 +158,7 @@ class ScreenshotsTestSuite {
                     error = null,
                     onKeywordClick = {},
                     onResetYield = {},
+                    isShowIngredientSyntaxIndicator = true,
                 )
             }
         }
@@ -168,7 +174,7 @@ class ScreenshotsTestSuite {
 
         composeTestRule.setContent {
             NextcloudCookbookTheme {
-                CompositionLocalProvider(LocalInspectionMode provides true) {
+                CompositionLocalProvider(LocalInspectionMode provides true, LocalAppState provides AppState()) {
                     content()
                 }
             }

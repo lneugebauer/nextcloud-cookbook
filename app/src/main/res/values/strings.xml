@@ -48,6 +48,7 @@
     <string name="error_invalid_url">Invalid URL</string>
     <string name="error_malformed_json">Malformed JSON</string>
     <string name="error_recipe_id_missing">Recipe ID missing</string>
+    <string name="error_retry">Retry</string>
     <string name="error_no_account_data">Account data not found</string>
     <string name="error_no_categories_found">No categories found</string>
     <string name="error_no_login_url">Could not load login URL</string>
@@ -57,8 +58,11 @@
     <string name="error_unknown_host">Unknown host</string>
     <string name="error_unknown">An unknown error occurred</string>
     <string name="home_recommendation">Recommendation</string>
+    <string name="info_headline">Learn more</string>
     <string name="login">Sign in</string>
+    <string name="login_allow_self_signed_certificates">Allow self-signed certificates</string>
     <string name="login_example_url" translatable="false">https://cloud.example.tld</string>
+    <string name="login_instance_hint">Please enter your login details for %1$s.</string>
     <string name="login_manual">Manual sign in</string>
     <string name="login_nextcloud_logo">Nextcloud logo</string>
     <string name="login_root_address">Nextcloud root address</string>

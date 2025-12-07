@@ -8,5 +8,6 @@ object Constants {
     const val DEFAULT_RECIPE_OF_THE_DAY_ID: String = "0"
     const val FULL_PATH: String = API_ENDPOINT + API_VERSION
     const val SHARED_PREFERENCES_KEY: String = BuildConfig.APPLICATION_ID + ".SHARED_PREFERENCES"
+    const val ALLOW_SELF_SIGNED_CERTIFICATES_DEFAULT: Boolean = false
     const val IS_SHOW_INGREDIENT_SYNTAX_INDICATOR_DEFAULT: Boolean = true
 }

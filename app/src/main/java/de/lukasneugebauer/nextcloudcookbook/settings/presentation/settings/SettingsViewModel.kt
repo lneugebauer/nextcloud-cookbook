@@ -4,9 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
+import de.lukasneugebauer.nextcloudcookbook.core.data.api.NcCookbookApiProvider
 import de.lukasneugebauer.nextcloudcookbook.core.domain.usecase.ClearAllStoresUseCase
 import de.lukasneugebauer.nextcloudcookbook.core.domain.usecase.ClearPreferencesUseCase
-import de.lukasneugebauer.nextcloudcookbook.di.ApiProvider
 import de.lukasneugebauer.nextcloudcookbook.settings.domain.state.SettingsScreenState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -22,7 +22,7 @@ import javax.inject.Inject
 class SettingsViewModel
     @Inject
     constructor(
-        private val apiProvider: ApiProvider,
+        private val apiProvider: NcCookbookApiProvider,
         private val clearAllStoresUseCase: ClearAllStoresUseCase,
         private val clearPreferencesUseCase: ClearPreferencesUseCase,
         private val preferencesManager: PreferencesManager,

@@ -1,13 +1,12 @@
-package de.lukasneugebauer.nextcloudcookbook.di
+package de.lukasneugebauer.nextcloudcookbook.core.data.api
 
 import com.google.gson.GsonBuilder
 import com.haroldadmin.cnradapter.NetworkResponseAdapterFactory
 import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
-import de.lukasneugebauer.nextcloudcookbook.core.data.api.NcCookbookApi
 import de.lukasneugebauer.nextcloudcookbook.core.data.remote.BasicAuthInterceptor
 import de.lukasneugebauer.nextcloudcookbook.core.data.remote.ErrorResponseDeserializer
-import de.lukasneugebauer.nextcloudcookbook.core.data.remote.NetworkInterceptor
 import de.lukasneugebauer.nextcloudcookbook.core.data.remote.response.ErrorResponse
+import de.lukasneugebauer.nextcloudcookbook.core.domain.ApiProvider
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.NcAccount
 import de.lukasneugebauer.nextcloudcookbook.core.util.addSuffix
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.NutritionDto
@@ -15,81 +14,85 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.data.remote.deserializer.Nutr
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class ApiProvider
+class NcCookbookApiProvider
     @Inject
     constructor(
-        private val scope: CoroutineScope,
-        private val httpLoggingInterceptor: HttpLoggingInterceptor,
+        private val client: OkHttpClient,
         private val preferencesManager: PreferencesManager,
-    ) {
+        private val scope: CoroutineScope,
+    ) : ApiProvider<NcCookbookApi?> {
         private val gson =
             GsonBuilder()
                 .registerTypeAdapter(ErrorResponse::class.java, ErrorResponseDeserializer())
                 .registerTypeAdapter(NutritionDto::class.java, NutritionDeserializer())
                 .create()
 
-        private val _ncCookbookApiFlow = MutableStateFlow<NcCookbookApi?>(null)
-        val ncCookbookApiFlow: StateFlow<NcCookbookApi?> = _ncCookbookApiFlow
+        private val _apiFlow = MutableStateFlow<NcCookbookApi?>(null)
+        override val apiFlow: StateFlow<NcCookbookApi?> = _apiFlow
 
         init {
             initApi()
         }
 
-        fun initApi() {
+        override fun initApi() {
             scope.launch {
-                val ncAccount =
-                    preferencesManager.preferencesFlow
-                        .map { it.ncAccount }
-                        .first()
-
-                if (ncAccount.username.isNotBlank() &&
-                    ncAccount.token.isNotBlank() &&
-                    ncAccount.url.isNotBlank()
-                ) {
-                    initRetrofitApi(ncAccount)
+                preferencesManager.preferencesFlow.map {
+                    Pair(
+                        it.allowSelfSignedCertificates,
+                        it.ncAccount,
+                    )
+                }.distinctUntilChanged().collectLatest {
+                        (allowSelfSignedCertificates, ncAccount) ->
+                    if (ncAccount.username.isNotBlank() &&
+                        ncAccount.token.isNotBlank() &&
+                        ncAccount.url.isNotBlank()
+                    ) {
+                        initRetrofitApi(ncAccount = ncAccount, allowSelfSignedCertificates = allowSelfSignedCertificates)
+                    }
                 }
             }
         }
 
-        fun resetApi() {
-            _ncCookbookApiFlow.value = null
+        override fun resetApi() {
+            _apiFlow.value = null
         }
 
-        private fun initRetrofitApi(ncAccount: NcAccount) {
+        private fun initRetrofitApi(
+            ncAccount: NcAccount,
+            allowSelfSignedCertificates: Boolean = false,
+        ) {
             val authInterceptor = BasicAuthInterceptor(ncAccount.username, ncAccount.token)
 
-            val client =
-                OkHttpClient.Builder()
-                    .addInterceptor(httpLoggingInterceptor)
-                    .addInterceptor(authInterceptor)
-                    .addNetworkInterceptor(NetworkInterceptor())
-                    .connectTimeout(30, TimeUnit.SECONDS)
-                    .readTimeout(30, TimeUnit.SECONDS)
-                    .writeTimeout(30, TimeUnit.SECONDS)
-                    .build()
+            val builder = client.newBuilder()
 
-            val retrofit =
+            if (allowSelfSignedCertificates) {
+                trustAllCertificates(builder)
+            }
+
+            val client = builder.addInterceptor(authInterceptor).build()
+
+            val ncCookbookApi =
                 Retrofit.Builder()
                     .baseUrl(ncAccount.url.addSuffix("/"))
                     .client(client)
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .addCallAdapterFactory(NetworkResponseAdapterFactory())
                     .build()
+                    .create(NcCookbookApi::class.java)
 
-            _ncCookbookApiFlow.value = retrofit.create(NcCookbookApi::class.java)
+            _apiFlow.value = ncCookbookApi
         }
 
-        fun getNcCookbookApi(): NcCookbookApi? = _ncCookbookApiFlow.value
+        override fun getApi(): NcCookbookApi? = _apiFlow.value
     }

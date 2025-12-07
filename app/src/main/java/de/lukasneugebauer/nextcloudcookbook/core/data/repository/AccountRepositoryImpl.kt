@@ -3,6 +3,7 @@ package de.lukasneugebauer.nextcloudcookbook.core.data.repository
 import com.haroldadmin.cnradapter.NetworkResponse
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
+import de.lukasneugebauer.nextcloudcookbook.core.data.api.NcCookbookApiProvider
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.Capabilities
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.CookbookVersion
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.NcAccount
@@ -12,7 +13,6 @@ import de.lukasneugebauer.nextcloudcookbook.core.domain.repository.BaseRepositor
 import de.lukasneugebauer.nextcloudcookbook.core.util.IoDispatcher
 import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
-import de.lukasneugebauer.nextcloudcookbook.di.ApiProvider
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -24,14 +24,14 @@ import javax.inject.Inject
 class AccountRepositoryImpl
     @Inject
     constructor(
-        private val apiProvider: ApiProvider,
+        private val apiProvider: NcCookbookApiProvider,
         @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
         private val preferencesManager: PreferencesManager,
     ) : AccountRepository, BaseRepository() {
         override suspend fun getCapabilities(): Resource<Capabilities> {
             return withContext(ioDispatcher) {
                 val api =
-                    apiProvider.getNcCookbookApi()
+                    apiProvider.getApi()
                         ?: return@withContext Resource.Error(message = UiText.StringResource(R.string.error_api_not_initialized))
 
                 when (val response = api.getCapabilities()) {
@@ -50,7 +50,7 @@ class AccountRepositoryImpl
         override suspend fun getUserMetadata(): Resource<UserMetadata> {
             return withContext(ioDispatcher) {
                 val api =
-                    apiProvider.getNcCookbookApi()
+                    apiProvider.getApi()
                         ?: return@withContext Resource.Error(message = UiText.StringResource(R.string.error_api_not_initialized))
 
                 when (val response = api.getCurrentUser()) {
@@ -59,8 +59,14 @@ class AccountRepositoryImpl
                         Resource.Success(data = result)
                     }
 
-                    is NetworkResponse.Error -> {
-                        handleResponseError(response.error)
+                    is NetworkResponse.NetworkError -> {
+                        handleResponseError(t = response.error)
+                    }
+                    is NetworkResponse.ServerError -> {
+                        handleResponseError(t = response.error, code = response.code)
+                    }
+                    is NetworkResponse.UnknownError -> {
+                        handleResponseError(t = response.error, code = response.code)
                     }
                 }
             }
@@ -88,7 +94,7 @@ class AccountRepositoryImpl
         override suspend fun getCookbookVersion(): Resource<CookbookVersion> {
             return withContext(ioDispatcher) {
                 val api =
-                    apiProvider.getNcCookbookApi()
+                    apiProvider.getApi()
                         ?: return@withContext Resource.Error(message = UiText.StringResource(R.string.error_api_not_initialized))
 
                 when (val response = api.getCookbookVersion()) {
