@@ -148,4 +148,7 @@
     <string name="settings_paypal">PayPal</string>
     <string name="settings_paypal_donation">Toeta PayPali vahendusel</string>
     <string name="settings_sponsoring">Toetamise võimalused</string>
+    <string name="recipe_ingredient_syntax_error">Koostisosa ei saa uuesti arvutada.</string>
+    <string name="settings_ingredient_syntax_indicator">Koostisosa süntaksimärge</string>
+    <string name="settings_show_indicator_if_recipe_syntax_is_invalid">Kui koostisosa ei saa uuesti arvutada, siis näita vastavat märget.</string>
 </resources>
