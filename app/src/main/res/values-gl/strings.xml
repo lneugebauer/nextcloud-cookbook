@@ -148,4 +148,7 @@
     <string name="settings_paypal">PayPal</string>
     <string name="settings_paypal_donation">Doa desde PayPal</string>
     <string name="settings_sponsoring">Patrocinios</string>
+    <string name="recipe_ingredient_syntax_error">Non se pode recalcular o ingrediente.</string>
+    <string name="settings_ingredient_syntax_indicator">Indicador da sintaxe do ingrediente</string>
+    <string name="settings_show_indicator_if_recipe_syntax_is_invalid">Mostra un indicador se a sintaxe dos ingredientes non é axeitada para calcular cantidades.</string>
 </resources>
