@@ -101,6 +101,7 @@ platform :android do
   desc "Deploy to GPS"
   lane :playstoreMetadata do
     upload_to_play_store(
+      track: "internal",
       skip_upload_apk: true,
       skip_upload_aab: true,
       version_code: get_version_code(app_project_dir: '**/app')
