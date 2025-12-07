@@ -59,8 +59,14 @@ class AccountRepositoryImpl
                         Resource.Success(data = result)
                     }
 
-                    is NetworkResponse.Error -> {
-                        handleResponseError(response.error)
+                    is NetworkResponse.NetworkError -> {
+                        handleResponseError(t = response.error)
+                    }
+                    is NetworkResponse.ServerError -> {
+                        handleResponseError(t = response.error, code = response.code)
+                    }
+                    is NetworkResponse.UnknownError -> {
+                        handleResponseError(t = response.error, code = response.code)
                     }
                 }
             }

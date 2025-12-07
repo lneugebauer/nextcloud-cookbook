@@ -48,6 +48,7 @@
     <string name="error_invalid_url">Invalid URL</string>
     <string name="error_malformed_json">Malformed JSON</string>
     <string name="error_recipe_id_missing">Recipe ID missing</string>
+    <string name="error_retry">Retry</string>
     <string name="error_no_account_data">Account data not found</string>
     <string name="error_no_categories_found">No categories found</string>
     <string name="error_no_login_url">Could not load login URL</string>

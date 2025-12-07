@@ -101,7 +101,11 @@ fun AnimatedVisibilityScope.ManualLoginScreen(
             }
             is ManualLoginScreenState.Error -> {
                 val message = (uiState as ManualLoginScreenState.Error).uiText
-                AbstractErrorScreen(uiText = message, modifier = Modifier.padding(innerPadding))
+                AbstractErrorScreen(
+                    uiText = message,
+                    modifier = Modifier.padding(innerPadding),
+                    onRetryClick = { viewModel.onRetry() },
+                )
             }
         }
     }

@@ -15,31 +15,51 @@ open class BaseRepository {
     fun <T> handleResponseError(
         t: Throwable?,
         serverMessage: String? = null,
+        code: Int? = null,
     ): Resource.Error<T> {
         Timber.e(t?.stackTraceToString())
 
         if (!serverMessage.isNullOrBlank()) return Resource.Error(UiText.DynamicString(serverMessage))
 
-        val message =
-            when (t) {
-                is HttpException ->
-                    when (t.code()) {
-                        400 -> UiText.StringResource(R.string.error_http_400)
-                        401 -> UiText.StringResource(R.string.error_http_401)
-                        403 -> UiText.StringResource(R.string.error_http_403)
-                        404 -> UiText.StringResource(R.string.error_http_404)
-                        405 -> UiText.StringResource(R.string.error_http_405)
-                        500 -> UiText.StringResource(R.string.error_http_500)
-                        503 -> UiText.StringResource(R.string.error_http_503)
-                        else -> unknownErrorUiText(t)
-                    }
-                is SocketTimeoutException -> UiText.StringResource(R.string.error_timeout)
-                is UnknownHostException -> UiText.StringResource(R.string.error_unknown_host)
-                is MalformedJsonException -> UiText.StringResource(R.string.error_malformed_json)
-                is SSLHandshakeException -> UiText.StringResource(R.string.error_ssl_handshake)
-                is EOFException -> UiText.StringResource(R.string.error_eof)
-                else -> unknownErrorUiText(t)
-            }
+        var message = unknownErrorUiText(null)
+
+        if (code != null) {
+            message =
+                when (code) {
+                    400 -> UiText.StringResource(R.string.error_http_400)
+                    401 -> UiText.StringResource(R.string.error_http_401)
+                    403 -> UiText.StringResource(R.string.error_http_403)
+                    404 -> UiText.StringResource(R.string.error_http_404)
+                    405 -> UiText.StringResource(R.string.error_http_405)
+                    500 -> UiText.StringResource(R.string.error_http_500)
+                    503 -> UiText.StringResource(R.string.error_http_503)
+                    else -> unknownErrorUiText(t)
+                }
+        }
+
+        if (t != null) {
+            message =
+                when (t) {
+                    is HttpException ->
+                        when (t.code()) {
+                            400 -> UiText.StringResource(R.string.error_http_400)
+                            401 -> UiText.StringResource(R.string.error_http_401)
+                            403 -> UiText.StringResource(R.string.error_http_403)
+                            404 -> UiText.StringResource(R.string.error_http_404)
+                            405 -> UiText.StringResource(R.string.error_http_405)
+                            500 -> UiText.StringResource(R.string.error_http_500)
+                            503 -> UiText.StringResource(R.string.error_http_503)
+                            else -> unknownErrorUiText(t)
+                        }
+
+                    is SocketTimeoutException -> UiText.StringResource(R.string.error_timeout)
+                    is UnknownHostException -> UiText.StringResource(R.string.error_unknown_host)
+                    is MalformedJsonException -> UiText.StringResource(R.string.error_malformed_json)
+                    is SSLHandshakeException -> UiText.StringResource(R.string.error_ssl_handshake)
+                    is EOFException -> UiText.StringResource(R.string.error_eof)
+                    else -> unknownErrorUiText(t)
+                }
+        }
         return Resource.Error(message)
     }
 

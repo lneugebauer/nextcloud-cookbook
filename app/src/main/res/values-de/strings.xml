@@ -47,6 +47,7 @@
     <string name="error_invalid_protocol">Invalides Protokol; URL muss mit https:// beginnen</string>
     <string name="error_invalid_url">Invalide URL</string>
     <string name="error_malformed_json">Fehlerhaftes JSON-Format</string>
+    <string name="error_retry">Erneut versuchen</string>
     <string name="error_recipe_id_missing">Unbekannte Rezept ID</string>
     <string name="error_no_account_data">Konto-Daten nicht gefunden</string>
     <string name="error_no_categories_found">Keine Kategorien gefunden</string>

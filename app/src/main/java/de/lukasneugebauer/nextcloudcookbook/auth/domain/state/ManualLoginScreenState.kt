@@ -17,5 +17,8 @@ sealed interface ManualLoginScreenState {
 
     object Authenticated : ManualLoginScreenState
 
-    data class Error(val uiText: UiText) : ManualLoginScreenState
+    data class Error(
+        val uiText: UiText,
+        val username: String = "",
+    ) : ManualLoginScreenState
 }

@@ -88,6 +88,12 @@ class ManualLoginViewModel
             }
         }
 
+        fun onRetry() {
+            val currentState = _uiState.value as? ManualLoginScreenState.Error
+            val username: String = currentState?.username ?: ""
+            _uiState.update { ManualLoginScreenState.Loaded(username = username) }
+        }
+
         private fun observeAuthorizationStatus() {
             viewModelScope.launch {
                 combine(
@@ -108,6 +114,7 @@ class ManualLoginViewModel
                                     _uiState.update {
                                         ManualLoginScreenState.Error(
                                             uiText = userMetadata.message ?: UiText.StringResource(R.string.error_unknown),
+                                            username = account.data?.username ?: "",
                                         )
                                     }
                                 } else {
