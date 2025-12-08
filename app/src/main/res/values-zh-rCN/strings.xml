@@ -148,4 +148,8 @@
     <string name="recipe_ingredient_syntax_error">无法重新计算食材。</string>
     <string name="settings_ingredient_syntax_indicator">食材语法指示器</string>
     <string name="settings_show_indicator_if_recipe_syntax_is_invalid">如果食材的语法不适合重新计算，则显示指示器。</string>
+    <string name="error_retry">重试</string>
+    <string name="info_headline">了解详情</string>
+    <string name="login_allow_self_signed_certificates">允许自签名证书</string>
+    <string name="login_instance_hint">请输入 %1$s 的登录信息。</string>
 </resources>
