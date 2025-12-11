@@ -151,4 +151,8 @@
     <string name="recipe_ingredient_syntax_error">Koostisosa ei saa uuesti arvutada.</string>
     <string name="settings_ingredient_syntax_indicator">Koostisosa süntaksimärge</string>
     <string name="settings_show_indicator_if_recipe_syntax_is_invalid">Kui koostisosa ei saa uuesti arvutada, siis näita vastavat märget.</string>
+    <string name="error_retry">Proovi uuesti</string>
+    <string name="info_headline">Loe lisaks</string>
+    <string name="login_allow_self_signed_certificates">Luba kasutada enda allkirjastatud sertifikaate</string>
+    <string name="login_instance_hint">Palun sisesta %1$s teenuse jaoks vajalik kasutajanimi ja salasõna.</string>
 </resources>
