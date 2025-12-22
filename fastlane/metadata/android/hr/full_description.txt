@@ -1,0 +1,20 @@
+Pregledajte sve svoje recepte pohranjene u vašoj Nextcloud instanci.
+
+Izvorni kod dostupan je na GitHubu na adresi https://github.com/lneugebauer/nextcloud-cookbook/. Tamo možete prijaviti greške, predložiti poboljšanja i zatražiti nove funkcionalnosti.
+
+Trenutno:
+- Popis svih recepata
+- Popis svih recepata po kategoriji
+- Pregled recepta
+- Održavanje zaslona aktivnim na prikazu recepta
+- Postavke
+- Uređivanje recepta
+- Dodavanje recepta
+- Uvoz recepta putem URL-a
+
+Planirano:
+- Izvanmrežno korištenje
+- Jedinstvena prijava (Single Sign-On) putem aplikacije Nextcloud Files
+- Prijava putem QR koda
+
+Za korištenje ove aplikacije potreban je javno dostupan Nextcloud poslužitelj s najnovijom verzijom aplikacije Cookbook.
