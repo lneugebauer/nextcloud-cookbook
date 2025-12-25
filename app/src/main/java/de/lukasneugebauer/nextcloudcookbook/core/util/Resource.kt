@@ -13,5 +13,6 @@ sealed class Resource<T>(
     class Error<T>(
         message: UiText,
         data: T? = null,
+        val isAuthError: Boolean = false,
     ) : Resource<T>(data, message)
 }

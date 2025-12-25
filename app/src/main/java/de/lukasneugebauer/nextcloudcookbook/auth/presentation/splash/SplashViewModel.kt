@@ -28,11 +28,24 @@ class SplashViewModel
                 .getAccount()
                 .distinctUntilChanged()
                 .onEach { account ->
-                    val userMetadata = accountRepository.getUserMetadata()
+                    if (account is Resource.Success) {
+                        val userMetadata = accountRepository.getUserMetadata()
 
-                    if (account is Resource.Success && userMetadata is Resource.Success) {
-                        _uiState.update { SplashScreenState.Authorized }
+                        when {
+                            userMetadata is Resource.Success -> {
+                                _uiState.update { SplashScreenState.Authorized }
+                            }
+                            userMetadata is Resource.Error && userMetadata.isAuthError -> {
+                                // Server explicitly rejected credentials (401/403)
+                                _uiState.update { SplashScreenState.Unauthorized }
+                            }
+                            else -> {
+                                // Network error but we have stored credentials - allow offline access
+                                _uiState.update { SplashScreenState.Authorized }
+                            }
+                        }
                     } else {
+                        // No stored credentials
                         _uiState.update { SplashScreenState.Unauthorized }
                     }
                 }.launchIn(viewModelScope)
