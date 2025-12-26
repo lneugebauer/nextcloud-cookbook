@@ -13,4 +13,6 @@ sealed interface HomeScreenState {
     data class Error(
         val uiText: UiText,
     ) : HomeScreenState
+
+    object ServerUnreachable : HomeScreenState
 }

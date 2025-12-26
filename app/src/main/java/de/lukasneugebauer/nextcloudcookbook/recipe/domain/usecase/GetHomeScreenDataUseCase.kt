@@ -17,9 +17,17 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import org.mobilenativefoundation.store.store5.impl.extensions.get
 import timber.log.Timber
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import java.time.LocalDateTime
 import javax.inject.Inject
 import javax.inject.Singleton
+import javax.net.ssl.SSLHandshakeException
+
+sealed class HomeScreenDataFetchResult {
+    data class Success(val data: List<HomeScreenDataResult>) : HomeScreenDataFetchResult()
+    object NetworkError : HomeScreenDataFetchResult()
+}
 
 @Singleton
 class GetHomeScreenDataUseCase
@@ -32,7 +40,7 @@ class GetHomeScreenDataUseCase
         private val recipePreviewsStore: RecipePreviewsStore,
         private val recipeStore: RecipeStore,
     ) {
-        suspend operator fun invoke(): List<HomeScreenDataResult> {
+        suspend operator fun invoke(): HomeScreenDataFetchResult {
             val currentDate =
                 LocalDateTime
                     .now()
@@ -41,6 +49,7 @@ class GetHomeScreenDataUseCase
                     .withSecond(0)
             val homeScreenData = mutableListOf<HomeScreenDataResult>()
             var recipeOfTheDay = preferencesManager.preferencesFlow.map { it.recipeOfTheDay }.first()
+            var networkErrorOccurred = false
 
             if (recipeOfTheDay.id == DEFAULT_RECIPE_OF_THE_DAY_ID || recipeOfTheDay.updatedAt.isBefore(currentDate)) {
                 try {
@@ -60,6 +69,9 @@ class GetHomeScreenDataUseCase
                     preferencesManager.updateRecipeOfTheDay(recipeOfTheDay)
                 } catch (e: Exception) {
                     Timber.e(e.stackTraceToString())
+                    if (isNetworkError(e)) {
+                        networkErrorOccurred = true
+                    }
                 }
             }
 
@@ -75,6 +87,9 @@ class GetHomeScreenDataUseCase
                     homeScreenData.add(result)
                 } catch (e: Exception) {
                     Timber.e(e.stackTraceToString())
+                    if (isNetworkError(e)) {
+                        networkErrorOccurred = true
+                    }
                 }
             }
 
@@ -100,9 +115,25 @@ class GetHomeScreenDataUseCase
                         }
                 } catch (e: Exception) {
                     Timber.e(e.stackTraceToString())
+                    if (isNetworkError(e)) {
+                        networkErrorOccurred = true
+                    }
                 }
             }
 
-            return homeScreenData.toList()
+            return if (homeScreenData.isEmpty() && networkErrorOccurred) {
+                HomeScreenDataFetchResult.NetworkError
+            } else {
+                HomeScreenDataFetchResult.Success(homeScreenData.toList())
+            }
+        }
+
+        private fun isNetworkError(e: Exception): Boolean {
+            return e is SocketTimeoutException ||
+                e is UnknownHostException ||
+                e is SSLHandshakeException ||
+                e.cause is SocketTimeoutException ||
+                e.cause is UnknownHostException ||
+                e.cause is SSLHandshakeException
         }
     }
