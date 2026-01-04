@@ -1,6 +1,7 @@
 package de.lukasneugebauer.nextcloudcookbook.recipe.presentation.detail
 
 import android.app.Activity
+import android.content.ClipData
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
@@ -63,12 +64,14 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.ClipEntry
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -113,6 +116,7 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Nutrition
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Recipe
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Tool
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.emptyRecipe
+import kotlinx.coroutines.launch
 import java.time.Duration
 
 @Destination<MainGraph>(
@@ -567,8 +571,9 @@ private fun Ingredients(
     showResetButton: Boolean,
     isShowIngredientSyntaxIndicator: Boolean,
 ) {
-    val clipboardManager = LocalClipboardManager.current
+    val clipboard = LocalClipboard.current
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -583,12 +588,18 @@ private fun Ingredients(
             style = MaterialTheme.typography.titleLarge,
         )
         IconButton(onClick = {
-            clipboardManager.setText(
-                buildAnnotatedString {
-                    ingredients.joinTo(this, separator = "\n- ", prefix = "- ")
-                    toAnnotatedString()
-                },
-            )
+            scope.launch {
+                clipboard.setClipEntry(
+                    ClipEntry(
+                        ClipData.newPlainText(
+                            "ingredients",
+                            buildAnnotatedString {
+                                ingredients.joinTo(this, separator = "\n- ", prefix = "- ") { it.ingredient }
+                            }.text,
+                        ),
+                    ),
+                )
+            }
             if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
                 Toast
                     .makeText(
@@ -688,12 +699,16 @@ private fun Ingredients(
             }
             LaunchedEffect(Unit) {
                 context.getActivity()?.findViewById<TextView>(textViewId)?.setOnLongClickListener {
-                    clipboardManager.setText(
-                        buildAnnotatedString {
-                            append(ingredient)
-                            toAnnotatedString()
-                        },
-                    )
+                    scope.launch {
+                        clipboard.setClipEntry(
+                            ClipEntry(
+                                ClipData.newPlainText(
+                                    "ingredient",
+                                    ingredient,
+                                ),
+                            ),
+                        )
+                    }
 
                     if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
                         Toast
