@@ -2,7 +2,7 @@ package de.lukasneugebauer.nextcloudcookbook.recipe.presentation.list
 
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.runtime.Composable
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.generated.destinations.RecipeCreateScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
