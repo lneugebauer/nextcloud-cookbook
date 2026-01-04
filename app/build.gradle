@@ -1,7 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'com.google.devtools.ksp'
-    id 'com.mikepenz.aboutlibraries.plugin'
+    id 'com.mikepenz.aboutlibraries.plugin.android'
     id 'dagger.hilt.android.plugin'
     id 'kotlin-android'
     id 'kotlin-kapt'
@@ -178,9 +178,3 @@ dependencies {
 kapt {
     correctErrorTypes true
 }
-
-aboutLibraries {
-	// Remove the "generated" timestamp to allow for reproducible builds
-	excludeFields = ['generated']
-}
-
