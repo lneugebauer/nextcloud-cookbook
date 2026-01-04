@@ -40,7 +40,6 @@ allprojects {
         compilerOptions {
             freeCompilerArgs.add("-opt-in=androidx.compose.animation.ExperimentalAnimationApi")
             freeCompilerArgs.add("-opt-in=androidx.compose.foundation.layout.ExperimentalLayoutApi")
-            freeCompilerArgs.add("-opt-in=androidx.compose.material.ExperimentalMaterialApi")
             freeCompilerArgs.add("-opt-in=androidx.compose.material3.ExperimentalMaterial3Api")
         }
     }
