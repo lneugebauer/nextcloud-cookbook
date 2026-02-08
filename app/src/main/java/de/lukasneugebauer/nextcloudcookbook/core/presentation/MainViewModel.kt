@@ -4,17 +4,13 @@ import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.Credentials
-import de.lukasneugebauer.nextcloudcookbook.core.domain.model.Preferences
 import de.lukasneugebauer.nextcloudcookbook.core.domain.repository.AccountRepository
 import de.lukasneugebauer.nextcloudcookbook.core.domain.state.AuthState
 import de.lukasneugebauer.nextcloudcookbook.core.domain.state.SplashState
 import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -25,7 +21,6 @@ class MainViewModel
     @Inject
     constructor(
         private val accountRepository: AccountRepository,
-        private val preferencesManager: PreferencesManager,
     ) : ViewModel() {
         private val _splashState = MutableStateFlow<SplashState>(SplashState.Initial)
         val splashState: StateFlow<SplashState> = _splashState
@@ -35,26 +30,6 @@ class MainViewModel
 
         private val _intentState = MutableStateFlow<Intent?>(null)
         val intentState: StateFlow<Intent?> = _intentState
-
-        val preferencesState: StateFlow<Preferences> =
-            preferencesManager.preferencesFlow
-                .stateIn(
-                    scope = viewModelScope,
-                    started = SharingStarted.WhileSubscribed(5000),
-                    initialValue =
-                        Preferences(
-                            isShowIngredientSyntaxIndicator = false,
-                            ncAccount =
-                                de.lukasneugebauer.nextcloudcookbook.core.domain.model
-                                    .NcAccount("", "", "", ""),
-                            recipeOfTheDay =
-                                de.lukasneugebauer.nextcloudcookbook.core.domain.model.RecipeOfTheDay(
-                                    "",
-                                    java.time.LocalDateTime.now(),
-                                ),
-                            allowSelfSignedCertificates = false,
-                        ),
-                )
 
         init {
             getLoginCredentials()

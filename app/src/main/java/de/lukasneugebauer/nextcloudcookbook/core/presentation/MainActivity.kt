@@ -53,7 +53,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import de.lukasneugebauer.nextcloudcookbook.auth.presentation.splash.SplashScreen
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.Credentials
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.LocalCredentials
-import de.lukasneugebauer.nextcloudcookbook.core.domain.model.LocalPreferences
 import de.lukasneugebauer.nextcloudcookbook.core.domain.state.AppState
 import de.lukasneugebauer.nextcloudcookbook.core.domain.state.AuthState
 import de.lukasneugebauer.nextcloudcookbook.core.domain.state.LocalAppState
@@ -81,7 +80,6 @@ class MainActivity : ComponentActivity() {
             val authState by viewModel.authState.collectAsState()
             val intent by viewModel.intentState.collectAsState()
             val splashState by viewModel.splashState.collectAsState()
-            val preferences by viewModel.preferencesState.collectAsState()
             val credentials: Credentials? by remember {
                 derivedStateOf {
                     when (authState) {
@@ -106,7 +104,6 @@ class MainActivity : ComponentActivity() {
             CompositionLocalProvider(
                 LocalAppState provides appState,
                 LocalCredentials provides credentials,
-                LocalPreferences provides preferences,
             ) {
                 NextcloudCookbookApp(intent = intent)
             }
