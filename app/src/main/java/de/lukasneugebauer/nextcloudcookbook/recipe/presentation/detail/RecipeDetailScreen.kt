@@ -547,8 +547,9 @@ private fun Category(category: String) {
         modifier =
             Modifier
                 .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
-                .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
+                .padding(bottom = dimensionResource(id = R.dimen.padding_l)),
         horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_s)),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
             imageVector = Icons.Default.Category,
@@ -727,7 +728,7 @@ private fun Ingredients(
             }
         }
     }
-    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_m)))
+    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.padding_l)))
 }
 
 @Composable
