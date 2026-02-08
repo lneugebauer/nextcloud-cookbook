@@ -19,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.DragHandle
 import androidx.compose.material.icons.filled.Save
@@ -464,6 +465,16 @@ private fun Keywords(
                 .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
         onSubmit = ::Chip,
         label = { Text(text = "Keywords") },
+        trailingIcon = {
+            if (state.chips.isEmpty()) return@OutlinedChipTextField
+
+            IconButton(onClick = { state.chips = emptyList() }) {
+                Icon(
+                    imageVector = Icons.Default.Close,
+                    contentDescription = stringResource(R.string.common_clear_input),
+                )
+            }
+        },
     )
 
     if (keywords.isEmpty()) {
