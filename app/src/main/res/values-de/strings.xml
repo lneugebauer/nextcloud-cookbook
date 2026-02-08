@@ -92,6 +92,7 @@
     <string name="recipe_instruction_delete">Zubereitungsschritt löschen</string>
     <string name="recipe_instructions">Zubereitung</string>
     <string name="recipe_instruction">Zubereitungsschritt</string>
+    <string name="recipe_keywords">Keywords</string>
     <string name="recipe_modified_at">Bearbeitungsdatum</string>
     <string name="recipe_more_menu_delete">Löschen</string>
     <string name="recipe_more_menu_edit">Bearbeiten</string>

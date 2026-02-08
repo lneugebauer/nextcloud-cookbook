@@ -94,6 +94,7 @@
     <string name="recipe_instruction_delete">Delete instruction</string>
     <string name="recipe_instructions">Instructions</string>
     <string name="recipe_instruction">Instruction</string>
+    <string name="recipe_keywords">Keywords</string>
     <string name="recipe_modified_at">Modification date</string>
     <string name="recipe_more_menu_delete">Delete</string>
     <string name="recipe_more_menu_edit">Edit</string>

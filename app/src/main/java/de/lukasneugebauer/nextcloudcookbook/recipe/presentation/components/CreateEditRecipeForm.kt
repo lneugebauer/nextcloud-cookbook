@@ -474,7 +474,7 @@ private fun Keywords(
                 .fillMaxWidth()
                 .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
         onSubmit = ::Chip,
-        label = { Text(text = "Keywords") },
+        label = { Text(text = stringResource(R.string.recipe_keywords)) },
         trailingIcon = {
             if (state.chips.isEmpty()) return@OutlinedChipTextField
 
