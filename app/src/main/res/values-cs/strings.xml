@@ -159,4 +159,5 @@
     <string name="recipe_ingredient_syntax_error">Množství přísady nelze přepočítat.</string>
     <string name="settings_ingredient_syntax_indicator">Upozornění na nezpracovatelný formát přísady</string>
     <string name="settings_show_indicator_if_recipe_syntax_is_invalid">Zobrazí upozornění v případě, že je přísada uvedena ve formátu, který neumožňuje přepočítat potřebné množství v závislosti na počtu porcí.</string>
+    <string name="recipe_keywords">Klíčová slova</string>
 </resources>
