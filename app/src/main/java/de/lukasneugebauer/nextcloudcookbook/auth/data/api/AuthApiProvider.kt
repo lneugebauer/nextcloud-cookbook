@@ -2,15 +2,12 @@ package de.lukasneugebauer.nextcloudcookbook.auth.data.api
 
 import com.google.gson.GsonBuilder
 import com.haroldadmin.cnradapter.NetworkResponseAdapterFactory
-import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
 import de.lukasneugebauer.nextcloudcookbook.core.domain.ApiProvider
-import de.lukasneugebauer.nextcloudcookbook.core.util.Constants.ALLOW_SELF_SIGNED_CERTIFICATES_DEFAULT
+import de.lukasneugebauer.nextcloudcookbook.core.util.OkHttpClientProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -22,8 +19,7 @@ import javax.inject.Singleton
 class AuthApiProvider
     @Inject
     constructor(
-        private val client: OkHttpClient,
-        private val preferencesManager: PreferencesManager,
+        private val clientProvider: OkHttpClientProvider,
         private val scope: CoroutineScope,
     ) : ApiProvider<AuthApi?> {
         private val gson = GsonBuilder().create()
@@ -37,12 +33,9 @@ class AuthApiProvider
 
         override fun initApi() {
             scope.launch {
-                preferencesManager.preferencesFlow
-                    .map { it.allowSelfSignedCertificates }
-                    .distinctUntilChanged()
-                    .collectLatest { allowSelfSignedCertificates ->
-                        initRetrofitApi(allowSelfSignedCertificates = allowSelfSignedCertificates)
-                    }
+                clientProvider.clientFlow.collectLatest { client ->
+                    initRetrofitApi(client)
+                }
             }
         }
 
@@ -50,15 +43,7 @@ class AuthApiProvider
             _apiFlow.value = null
         }
 
-        private fun initRetrofitApi(allowSelfSignedCertificates: Boolean = ALLOW_SELF_SIGNED_CERTIFICATES_DEFAULT) {
-            val builder = client.newBuilder()
-
-            if (allowSelfSignedCertificates) {
-                trustAllCertificates(builder)
-            }
-
-            val client = builder.build()
-
+        private fun initRetrofitApi(client: OkHttpClient) {
             val authApi =
                 Retrofit
                     .Builder()

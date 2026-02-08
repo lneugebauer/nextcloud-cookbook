@@ -8,6 +8,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.data.remote.ErrorResponseDeseri
 import de.lukasneugebauer.nextcloudcookbook.core.data.remote.response.ErrorResponse
 import de.lukasneugebauer.nextcloudcookbook.core.domain.ApiProvider
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.NcAccount
+import de.lukasneugebauer.nextcloudcookbook.core.util.OkHttpClientProvider
 import de.lukasneugebauer.nextcloudcookbook.core.util.addSuffix
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.NutritionDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.remote.deserializer.NutritionDeserializer
@@ -16,6 +17,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
@@ -28,7 +30,7 @@ import javax.inject.Singleton
 class NcCookbookApiProvider
     @Inject
     constructor(
-        private val client: OkHttpClient,
+        private val clientProvider: OkHttpClientProvider,
         private val preferencesManager: PreferencesManager,
         private val scope: CoroutineScope,
     ) : ApiProvider<NcCookbookApi?> {
@@ -48,20 +50,29 @@ class NcCookbookApiProvider
         override fun initApi() {
             scope.launch {
                 preferencesManager.preferencesFlow
-                    .map {
-                        Pair(
-                            it.allowSelfSignedCertificates,
-                            it.ncAccount,
-                        )
-                    }.distinctUntilChanged()
-                    .collectLatest { (allowSelfSignedCertificates, ncAccount) ->
+                    .map { it.ncAccount }
+                    .distinctUntilChanged()
+                    .collectLatest { ncAccount ->
                         if (ncAccount.username.isNotBlank() &&
                             ncAccount.token.isNotBlank() &&
                             ncAccount.url.isNotBlank()
                         ) {
-                            initRetrofitApi(ncAccount = ncAccount, allowSelfSignedCertificates = allowSelfSignedCertificates)
+                            initRetrofitApi(ncAccount = ncAccount, client = clientProvider.getCurrentClient())
                         }
                     }
+            }
+
+            // Also watch for client changes and rebuild if we have an active account
+            scope.launch {
+                clientProvider.clientFlow.collectLatest { client ->
+                    val currentAccount = preferencesManager.preferencesFlow.first().ncAccount
+                    if (currentAccount.username.isNotBlank() &&
+                        currentAccount.token.isNotBlank() &&
+                        currentAccount.url.isNotBlank()
+                    ) {
+                        initRetrofitApi(ncAccount = currentAccount, client = client)
+                    }
+                }
             }
         }
 
@@ -71,23 +82,16 @@ class NcCookbookApiProvider
 
         private fun initRetrofitApi(
             ncAccount: NcAccount,
-            allowSelfSignedCertificates: Boolean = false,
+            client: OkHttpClient,
         ) {
             val authInterceptor = BasicAuthInterceptor(ncAccount.username, ncAccount.token)
-
-            val builder = client.newBuilder()
-
-            if (allowSelfSignedCertificates) {
-                trustAllCertificates(builder)
-            }
-
-            val client = builder.addInterceptor(authInterceptor).build()
+            val clientWithAuth = client.newBuilder().addInterceptor(authInterceptor).build()
 
             val ncCookbookApi =
                 Retrofit
                     .Builder()
                     .baseUrl(ncAccount.url.addSuffix("/"))
-                    .client(client)
+                    .client(clientWithAuth)
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .addCallAdapterFactory(NetworkResponseAdapterFactory())
                     .build()

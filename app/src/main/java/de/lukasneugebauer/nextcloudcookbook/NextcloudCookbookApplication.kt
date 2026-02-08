@@ -8,13 +8,10 @@ import coil3.SingletonImageLoader
 import coil3.network.okhttp.OkHttpNetworkFetcherFactory
 import coil3.util.DebugLogger
 import dagger.hilt.android.HiltAndroidApp
-import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
-import de.lukasneugebauer.nextcloudcookbook.core.util.SslUtils
+import de.lukasneugebauer.nextcloudcookbook.core.util.OkHttpClientProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import org.acra.ACRA
@@ -29,7 +26,7 @@ import javax.inject.Inject
 @HiltAndroidApp
 class NextcloudCookbookApplication : Application() {
     @Inject
-    lateinit var preferencesManager: PreferencesManager
+    lateinit var clientProvider: OkHttpClientProvider
 
     private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
@@ -51,39 +48,28 @@ class NextcloudCookbookApplication : Application() {
     }
 
     private fun initializeImageLoader() {
-        val initialImageLoader = createImageLoader(allowSelfSignedCerts = false)
+        val initialImageLoader = createImageLoader(clientProvider.getCurrentClient())
         SingletonImageLoader.setSafe { initialImageLoader }
 
-        // Watch for preference changes and update the ImageLoader
+        // Watch for client changes and update the ImageLoader
         applicationScope.launch {
-            preferencesManager.preferencesFlow
-                .map { it.allowSelfSignedCertificates }
-                .distinctUntilChanged()
-                .collect { allowSelfSignedCerts ->
-                    val newImageLoader = createImageLoader(allowSelfSignedCerts)
-                    SingletonImageLoader.setSafe { newImageLoader }
-                }
+            clientProvider.clientFlow.collect { client ->
+                val newImageLoader = createImageLoader(client)
+                SingletonImageLoader.setSafe { newImageLoader }
+            }
         }
     }
 
-    private fun createImageLoader(allowSelfSignedCerts: Boolean): ImageLoader {
-        val okHttpClient =
-            if (allowSelfSignedCerts) {
-                SslUtils.createTrustAllOkHttpClient()
-            } else {
-                OkHttpClient.Builder().build()
-            }
-
-        return ImageLoader
+    private fun createImageLoader(client: OkHttpClient): ImageLoader =
+        ImageLoader
             .Builder(this as PlatformContext)
             .components {
-                add(OkHttpNetworkFetcherFactory(okHttpClient))
+                add(OkHttpNetworkFetcherFactory(client))
             }.apply {
                 if (BuildConfig.DEBUG) {
                     logger(DebugLogger())
                 }
             }.build()
-    }
 
     private fun initAcra() {
         if (!BuildConfig.DEBUG) {
