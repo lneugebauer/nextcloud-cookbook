@@ -407,6 +407,16 @@ private fun Category(
                 .fillMaxWidth()
                 .padding(horizontal = dimensionResource(id = R.dimen.padding_m)),
         label = { Text(text = stringResource(id = R.string.recipe_category)) },
+        trailingIcon = {
+            if (recipe.category.isBlank()) return@DefaultOutlinedTextField
+
+            IconButton(onClick = { onCategoryChange.invoke("") }) {
+                Icon(
+                    imageVector = Icons.Default.Clear,
+                    contentDescription = stringResource(R.string.common_clear_input),
+                )
+            }
+        },
         keyboardOptions =
             KeyboardOptions.Default.copy(
                 imeAction = ImeAction.Next,
