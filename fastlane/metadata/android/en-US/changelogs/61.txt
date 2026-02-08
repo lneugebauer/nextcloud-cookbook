@@ -1,0 +1,5 @@
+- Add clear button to keyword input
+- Add clear button to category input
+- Fix copy ingredient text to clipboard
+- Fix image loading with custom cert
+- Update translations

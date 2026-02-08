@@ -1,0 +1,5 @@
+- Schaltfläche „Löschen“ zur Keyword-Eingabe hinzugefügt
+- Schaltfläche „Löschen“ zur Kategorie-Eingabe hinzugefügt
+- Fehler beim Kopieren von Zutaten-Text in die Zwischenablage behoben
+- Fehler Laden von Bildern mit benutzerdefiniertem Zertifikat behoben
+- Übersetzungen aktualisiert
