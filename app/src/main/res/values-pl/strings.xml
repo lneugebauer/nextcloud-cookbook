@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Cookbook</string>
+    <string name="app_name">Książka Kucharska</string>
     <string name="common_about">O aplikacji</string>
     <string name="common_back">Wstecz</string>
     <string name="common_categories">Kategorie</string>
@@ -19,7 +19,7 @@
     <string name="common_share">Udostępnij</string>
     <string name="common_username">Nazwa użytkownika</string>
     <string name="common_yes">Tak</string>
-    <string name="dialog_crash_report_text">Ups, Nextcloud Cookbook właśnie się zawiesił. Czy chcesz wysłać raport o awarii do programistów?</string>
+    <string name="dialog_crash_report_text">Ups, Książka Kucharska Nextcloud właśnie się zawiesiła. Czy chcesz wysłać raport o awarii do programistów?</string>
     <string name="error_authentication_failed">Błąd uwierzytelniania</string>
     <string name="error_api_not_initialized">API nie zainicjalizowane</string>
     <string name="error_empty_password">Proszę wpis hasło</string>
@@ -98,7 +98,7 @@
     <string name="settings_stay_awake_on_recipe_screen">Ekran pozostanie włączony, gdy przeglądasz przepis</string>
     <string name="settings_stay_awake">Pozostaw włączony ekran</string>
     <string name="settings_version_number">wersja %1$s (%2$d)</string>
-    <string name="settings_version">Aplikacja Nextcloud Cookbook</string>
+    <string name="settings_version">Aplikacja Nextcloud Książka Kucharska</string>
     <string name="settings_where_to_report_issues">Możesz zgłosić błędy oraz propozycje nowych funkcji na GitHub</string>
     <string name="recipe_nutrition">Informacje o wartości odżywczej</string>
     <string name="recipe_nutrition_cholesterol">Cholesterol</string>
@@ -113,4 +113,53 @@
     <string name="recipe_nutrition_sodium">Sód</string>
     <string name="recipe_nutrition_sugar">Cukier</string>
     <string name="recipe_nutrition_trans_fat">Tłuszcze trans</string>
+    <string name="common_error">Błąd</string>
+    <string name="common_download">Pobierz</string>
+    <string name="download_recipe">Pobierz przepis</string>
+    <string name="download_recipe_url">Adres URL Przepisu</string>
+    <string name="common_selected">Zaznaczono</string>
+    <string name="error_retry">Spróbuj ponownie</string>
+    <string name="login_nextcloud_logo">logo Nextcloud</string>
+    <string name="recipe_import_from_url">Importuj przepis z adresu URL</string>
+    <string name="recipe_ingredient_syntax_error">Składnik nie może zostać przeliczony.</string>
+    <string name="recipe_created_at">Data utworzenia</string>
+    <string name="info_headline">Dowiedz się więcej</string>
+    <string name="login_allow_self_signed_certificates">Zezwalaj na samodzielnie podpisane certyfikaty</string>
+    <string name="common_add">Dodaj</string>
+    <string name="settings_github">GitHub</string>
+    <string name="settings_paypal_donation">Wesprzyj przy pomocy PayPal</string>
+    <string name="settings_translate">Pomóż w tłumaczeniu</string>
+    <string name="settings_paypal">PayPal</string>
+    <plurals name="recipe_servings">
+        <item quantity="one">%1$d Porcja</item>
+        <item quantity="few">%1$d Porcje</item>
+        <item quantity="many">%1$d Porcji</item>
+        <item quantity="other">%1$d Porcji</item>
+    </plurals>
+    <string name="recipe_servings_decrease">Usuń porcję</string>
+    <string name="recipe_servings_increase">Dodaj porcję</string>
+    <string name="recipe_servings_reset">Resetuj ilość porcji</string>
+    <string name="settings_issues">Problemy</string>
+    <string name="settings_liberapay">Liberapay</string>
+    <string name="settings_liberapay_patron">Zostań patronem na Liberapay</string>
+    <string name="recipe_alphabetical">Nazwa</string>
+    <string name="recipe_change_order">Zmień kolejność</string>
+    <plurals name="recipe_ingredients_copied">
+        <item quantity="one">Skopiowany składnik</item>
+        <item quantity="few">Skopiowane składniki</item>
+        <item quantity="many">Skopiowanych składników</item>
+        <item quantity="other">Skopiowanych składników</item>
+    </plurals>
+    <string name="recipe_ingredients_copy">Skopiuj składniki do schowka</string>
+    <string name="recipe_keywords">Słowa kluczowe</string>
+    <string name="recipe_modified_at">Data modyfikacji</string>
+    <string name="settings_github_sponsor">Zostań sponsorem na platformie GitHub</string>
+    <string name="settings_sponsoring">Sponsorowanie</string>
+    <string name="common_ascending">Rosnąco</string>
+    <string name="common_descending">Malejąco</string>
+    <string name="common_reorder">Uporządkuj ponownie</string>
+    <string name="login_instance_hint">Proszę podać twoje dane logowanie dla %1$s.</string>
+    <string name="settings_show_indicator_if_recipe_syntax_is_invalid">Wskazuje składnik którego sposób zapisu na liście składników nie jest dostosowany do przeliczenia.</string>
+    <string name="settings_ingredient_syntax_indicator">Wskaźnik składni składnika</string>
+    <string name="common_clear_input">Usuń dane wejściowe</string>
 </resources>
