@@ -11,7 +11,7 @@ Funkcje:
 - Edycja przepisu
 - Dodawanie przepisów
 
-Zaplanowany:
+Zaplanowane funkcje:
 - Korzystanie w trybie offline
 - Pojedyncze logowanie za pośrednictwem aplikacji Nextcloud Files
 - Logowanie się za pomocą kodu QR
