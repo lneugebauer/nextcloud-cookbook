@@ -155,4 +155,5 @@
     <string name="info_headline">Loe lisaks</string>
     <string name="login_allow_self_signed_certificates">Luba kasutada enda allkirjastatud sertifikaate</string>
     <string name="login_instance_hint">Palun sisesta %1$s teenuse jaoks vajalik kasutajanimi ja salasõna.</string>
+    <string name="recipe_keywords">Märksõnad</string>
 </resources>
