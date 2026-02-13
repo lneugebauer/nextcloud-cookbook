@@ -78,20 +78,22 @@ To install through [Obtainium](https://github.com/ImranR98/Obtainium/tree/main?t
 ## Screenshots
 
 <table>
-    <tr>
-        <td>Phone</td>
-        <td><img src="./assets/images/phoneScreenshots/1.png" alt="Phone screenshot 1"></td>
-        <td><img src="./assets/images/phoneScreenshots/2.png" alt="Phone screenshot 2"></td>
-        <td><img src="./assets/images/phoneScreenshots/3.png" alt="Phone screenshot 3"></td>
-        <td><img src="./assets/images/phoneScreenshots/4.png" alt="Phone screenshot 4"></td>
-    </tr>
-    <tr>
-        <td>Tablet</td>
-        <td><img src="./assets/images/tenInchScreenshots/1.png" alt="Tablet screenshot 1"></td>
-        <td><img src="./assets/images/tenInchScreenshots/2.png" alt="Tablet screenshot 2"></td>
-        <td><img src="./assets/images/tenInchScreenshots/3.png" alt="Tablet screenshot 3"></td>
-        <td><img src="./assets/images/tenInchScreenshots/4.png" alt="Tablet screenshot 4"></td>
-    </tr>
+    <tbody>
+        <tr>
+            <td>Phone</td>
+            <td><img src="./assets/images/phoneScreenshots/1.png" alt="Phone screenshot 1"></td>
+            <td><img src="./assets/images/phoneScreenshots/2.png" alt="Phone screenshot 2"></td>
+            <td><img src="./assets/images/phoneScreenshots/3.png" alt="Phone screenshot 3"></td>
+            <td><img src="./assets/images/phoneScreenshots/4.png" alt="Phone screenshot 4"></td>
+        </tr>
+        <tr>
+            <td>Tablet</td>
+            <td><img src="./assets/images/tenInchScreenshots/1.png" alt="Tablet screenshot 1"></td>
+            <td><img src="./assets/images/tenInchScreenshots/2.png" alt="Tablet screenshot 2"></td>
+            <td><img src="./assets/images/tenInchScreenshots/3.png" alt="Tablet screenshot 3"></td>
+            <td><img src="./assets/images/tenInchScreenshots/4.png" alt="Tablet screenshot 4"></td>
+        </tr>
+    </tbody>
 </table>
 
 ## Features :rocket:
@@ -111,12 +113,11 @@ To install through [Obtainium](https://github.com/ImranR98/Obtainium/tree/main?t
 - Single Sign On through Nextcloud Files app
 - Login via QR-Code
 
-
 ## Translations :earth_africa:
 
 [![Translation status](https://hosted.weblate.org/widget/nextcloud-cookbook/287x66-grey.png)](https://hosted.weblate.org/engage/nextcloud-cookbook/)
 
 ## Requirements :link:
 
-* [Nextcloud](https://nextcloud.com/) instance running
-* [Nextcloud Cookbook](https://github.com/nextcloud/cookbook) app enabled
+- [Nextcloud](https://nextcloud.com/) instance running
+- [Nextcloud Cookbook](https://github.com/nextcloud/cookbook) app enabled
