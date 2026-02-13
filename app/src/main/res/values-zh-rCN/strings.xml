@@ -11,7 +11,7 @@
     <string name="error_empty_password">请输入密码</string>
     <string name="error_empty_username">请输入用户名</string>
     <string name="error_eof">文件结束错误</string>
-    <string name="error_http_403">403 已禁止</string>
+    <string name="error_http_403">403 被禁止</string>
     <string name="error_http_404">404 未找到</string>
     <string name="error_http_405">405 方法不允许</string>
     <string name="error_recipe_id_missing">食谱 ID 缺失</string>
@@ -27,11 +27,11 @@
     <string name="recipe_duration">%1$d 分钟</string>
     <string name="recipe_edit">编辑食谱</string>
     <string name="recipe_import_from_url">从 URL 导入食谱</string>
-    <string name="recipe_ingredient_add">添加食材</string>
-    <string name="recipe_ingredients">食材</string>
-    <string name="recipe_ingredients_copy">将食材复制到剪贴板</string>
+    <string name="recipe_ingredient_add">添加配料</string>
+    <string name="recipe_ingredients">配料</string>
+    <string name="recipe_ingredients_copy">将配料复制到剪贴板</string>
     <plurals name="recipe_ingredients_servings">
-        <item quantity="other">%1$d 份食材</item>
+        <item quantity="other">%1$d 份配料</item>
     </plurals>
     <string name="recipe_instruction_delete">删除说明</string>
     <string name="recipe_instructions">说明</string>
@@ -91,7 +91,7 @@
     <string name="common_search">搜索</string>
     <string name="common_username">用户名</string>
     <string name="common_yes">是</string>
-    <string name="dialog_crash_report_text">糟糕，Nextcloud 食谱刚刚崩溃了。是否向开发人员发送崩溃报告？</string>
+    <string name="dialog_crash_report_text">糟糕，Nextcloud 食谱刚刚崩溃了。是否要向开发者发送崩溃报告？</string>
     <string name="download_recipe">下载食谱</string>
     <string name="error_empty_url">请输入 URL</string>
     <string name="error_http_401">401 未经授权</string>
@@ -101,7 +101,7 @@
     <string name="error_no_login_url">无法加载登录 URL</string>
     <string name="login_root_address">Nextcloud 根地址</string>
     <string name="recipe_image_url">图片 URL</string>
-    <string name="recipe_ingredient_delete">删除食材</string>
+    <string name="recipe_ingredient_delete">删除配料</string>
     <string name="recipe_instruction_add">添加说明</string>
     <string name="settings_contribution">贡献</string>
     <string name="error_invalid_protocol">协议无效，URL 必须以 https:// 开头</string>
@@ -109,7 +109,7 @@
     <string name="error_no_recipes_found">未找到食谱</string>
     <string name="error_ssl_handshake">证书错误</string>
     <string name="error_timeout">超时错误</string>
-    <string name="recipe_ingredient">食材</string>
+    <string name="recipe_ingredient">配料</string>
     <string name="error_invalid_url">URL 无效</string>
     <string name="home_recommendation">推荐</string>
     <string name="recipe_instruction">说明</string>
@@ -121,10 +121,10 @@
     <string name="recipe_uncategorised">未分类食谱</string>
     <string name="recipe_url">URL</string>
     <string name="settings_account">账号</string>
-    <string name="recipe_yield">食量</string>
+    <string name="recipe_yield">份量</string>
     <string name="settings_general">常规</string>
     <plurals name="recipe_ingredients_copied">
-        <item quantity="other">已复制食材</item>
+        <item quantity="other">已复制配料</item>
     </plurals>
     <string name="common_reorder">重新排序</string>
     <string name="settings_issues">问题</string>
@@ -145,11 +145,12 @@
     <string name="settings_paypal">PayPal</string>
     <string name="settings_paypal_donation">通过 PayPal 捐赠</string>
     <string name="settings_sponsoring">赞助</string>
-    <string name="recipe_ingredient_syntax_error">无法重新计算食材。</string>
-    <string name="settings_ingredient_syntax_indicator">食材语法指示器</string>
-    <string name="settings_show_indicator_if_recipe_syntax_is_invalid">如果食材的语法不适合重新计算，则显示指示器。</string>
+    <string name="recipe_ingredient_syntax_error">无法重新计算配料。</string>
+    <string name="settings_ingredient_syntax_indicator">配料语法指示器</string>
+    <string name="settings_show_indicator_if_recipe_syntax_is_invalid">如果配料的语法不适合重新计算，则显示指示器。</string>
     <string name="error_retry">重试</string>
     <string name="info_headline">了解详情</string>
     <string name="login_allow_self_signed_certificates">允许自签名证书</string>
     <string name="login_instance_hint">请输入 %1$s 的登录信息。</string>
+    <string name="recipe_keywords">关键词</string>
 </resources>
