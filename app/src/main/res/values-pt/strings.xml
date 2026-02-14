@@ -139,4 +139,19 @@
         <item quantity="many">%1$d Porções</item>
         <item quantity="other">%1$d Porções</item>
     </plurals>
+    <string name="common_clear_input">Limpar Entrada</string>
+    <string name="common_error">Erro</string>
+    <string name="common_selected">Selecionados</string>
+    <string name="error_retry">Tentar Novamente</string>
+    <string name="info_headline">Descobrir Mais</string>
+    <string name="login_allow_self_signed_certificates">Permitir certificados auto-assinados</string>
+    <string name="login_instance_hint">Por favor insira os seus detalhes de login para %1$s.</string>
+    <string name="login_nextcloud_logo">Logo Nextcloud</string>
+    <string name="recipe_change_order">Alterar ordem</string>
+    <string name="recipe_ingredient_syntax_error">Ingrediente não pode ser recalculado.</string>
+    <string name="recipe_keywords">Palavras-chave</string>
+    <string name="settings_github">GitHub</string>
+    <string name="settings_github_sponsor">Torne-se num patrocinador GitHub</string>
+    <string name="settings_ingredient_syntax_indicator">Indicador da sintaxe de ingrediente</string>
+    <string name="settings_liberapay">Liberapay</string>
 </resources>
