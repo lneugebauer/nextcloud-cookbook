@@ -1,0 +1,20 @@
+Visa alla dina recept lagrade i din Nextcloud instans.
+
+Källkoden kan hittas på GitHub på adressen https://github.com/lneugebauer/nextcloud-cookbook/. Rapportera buggar, förbättringsförslag och funktionsförslag där.
+
+Nuvarande:
+- Lista alla recept
+- Lista alla recept efter kategori
+- Visa recept
+- Håll dig vaken på receptskärmen
+- Inställningar
+- Redigera recept
+- Lägg till recept
+- Importera recept via URL
+
+Planerat:
+- Offlineanvändning
+- Enkel inloggning via Nextcloud Files-appen
+- Logga in via QR-kod
+
+En offentligt tillgänglig Nextcloud-server med den senaste kokboksappen krävs för att använda den här appen.
