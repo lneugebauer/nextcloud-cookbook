@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -146,6 +147,16 @@ fun AnimatedVisibilityScope.RecipeDetailScreen(
         }
     }
 
+    // enable full screen views of reciepe picture
+    var showFullScreenDetailImage by remember { mutableStateOf(false) }
+    if (showFullScreenDetailImage && recipe.imageUrl.isNotBlank()) {
+        FullScreenImageViewer(
+            imageUrl = recipe.imageUrl,
+            contentDescription = recipe.name,
+            onDismiss = { showFullScreenDetailImage = false },
+        )
+    }
+
     RecipeDetailLayout(
         recipe = recipe,
         calculatedIngredients = state.calculatedIngredients,
@@ -159,6 +170,11 @@ fun AnimatedVisibilityScope.RecipeDetailScreen(
         onNavIconClick = {
             if (!navigator.popBackStack()) {
                 (context as? Activity)?.finish()
+            }
+        },
+        onDetailImageClick = { // Add this new parameter
+            if (recipe.imageUrl.isNotBlank()) {
+                showFullScreenDetailImage = true
             }
         },
         onEditClick = {
@@ -312,6 +328,7 @@ fun RecipeDetailLayout(
     onDecreaseYield: () -> Unit,
     onIncreaseYield: () -> Unit,
     onNavIconClick: () -> Unit,
+    onDetailImageClick: () -> Unit,
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit,
     shareText: String,
@@ -359,7 +376,7 @@ fun RecipeDetailLayout(
                         .padding(innerPadding)
                         .verticalScroll(rememberScrollState()),
             ) {
-                Image(recipe.imageUrl)
+                Image(recipe.imageUrl, onClick = onDetailImageClick)
                 Name(recipe.name)
                 if (recipe.keywords.isNotEmpty()) {
                     Keywords(keywords = recipe.keywords, onClick = onKeywordClick)
@@ -404,7 +421,7 @@ fun RecipeDetailLayout(
 }
 
 @Composable
-private fun Image(imageUrl: String) {
+private fun Image(imageUrl: String, onClick: Function0<Unit>) {
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
@@ -423,7 +440,8 @@ private fun Image(imageUrl: String) {
         modifier =
             modifier
                 .fillMaxWidth()
-                .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
+                .padding(bottom = dimensionResource(id = R.dimen.padding_m))
+                .clickable(onClick = onClick),
     )
 }
 
@@ -1033,6 +1051,7 @@ private fun RecipeDetailLayoutPreview() {
             onDecreaseYield = {},
             onIncreaseYield = {},
             onNavIconClick = {},
+            onDetailImageClick = {},
             onEditClick = {},
             onDeleteClick = {},
             shareText = "",

@@ -109,6 +109,7 @@ kotlin {
 
 dependencies {
 
+    implementation 'androidx.compose.foundation:foundation:1.10.3'
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
 
     implementation 'androidx.core:core-ktx:1.17.0'
@@ -142,6 +143,7 @@ dependencies {
 
     implementation "io.coil-kt.coil3:coil-compose:$coil_version"
     implementation "io.coil-kt.coil3:coil-network-okhttp:$coil_version"
+    implementation("me.saket.telephoto:zoomable-image-coil3:0.18.0")
 
     implementation "org.mobilenativefoundation.store:store5:$store_version"
 

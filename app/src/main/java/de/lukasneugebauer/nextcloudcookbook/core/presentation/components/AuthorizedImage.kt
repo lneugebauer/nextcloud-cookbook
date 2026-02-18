@@ -1,12 +1,14 @@
 package de.lukasneugebauer.nextcloudcookbook.core.presentation.components
 
 import android.annotation.SuppressLint
+import android.content.Context
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -27,19 +29,15 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import de.lukasneugebauer.nextcloudcookbook.R
+import de.lukasneugebauer.nextcloudcookbook.core.domain.model.Credentials
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.LocalCredentials
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
 
-@SuppressLint("DiscouragedApi")
-@OptIn(ExperimentalCoilApi::class)
-@Composable
-fun AuthorizedImage(
+fun authorizedImageRequest(
     imageUrl: String,
-    contentDescription: String?,
-    modifier: Modifier = Modifier,
-) {
-    val context = LocalContext.current
-    val credentials = LocalCredentials.current
+    context: Context,
+    credentials: Credentials?,
+    ): ImageRequest {
 
     val path = credentials?.baseUrl?.toUri()?.path
     val regex = """^$path""".toRegex()
@@ -52,8 +50,7 @@ fun AuthorizedImage(
             .set("Authorization", credentials?.basic ?: "")
             .build()
 
-    val imageRequest =
-        ImageRequest
+    return ImageRequest
             .Builder(context)
             .data(fullImageUrl)
             .httpHeaders(headers)
@@ -61,7 +58,20 @@ fun AuthorizedImage(
             .memoryCacheKey(key = imageUrl)
             .diskCacheKey(key = imageUrl)
             .build()
+}
+@SuppressLint("DiscouragedApi")
+@OptIn(ExperimentalCoilApi::class)
+@Composable
+fun AuthorizedImage(
+    imageUrl: String,
+    contentDescription: String?,
+    modifier: Modifier = Modifier,
+) {
 
+    val context = LocalContext.current
+    val credentials = LocalCredentials.current
+
+    val imageRequest = authorizedImageRequest(imageUrl, context, credentials)
     val previewHandler =
         AsyncImagePreviewHandler {
             val resId =
@@ -71,7 +81,7 @@ fun AuthorizedImage(
                     context.packageName,
                 )
             val drawable = AppCompatResources.getDrawable(context, resId)
-            drawable?.asImage()
+            drawable?.asImage()!!
         }
 
     CompositionLocalProvider(LocalAsyncImagePreviewHandler provides previewHandler) {
