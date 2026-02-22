@@ -1,6 +1,7 @@
 package de.lukasneugebauer.nextcloudcookbook.core.presentation.components
 
 import android.annotation.SuppressLint
+import android.content.Context
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,8 +28,35 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import de.lukasneugebauer.nextcloudcookbook.R
+import de.lukasneugebauer.nextcloudcookbook.core.domain.model.Credentials
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.LocalCredentials
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
+
+fun authorizedImageRequest(
+    imageUrl: String,
+    context: Context,
+    credentials: Credentials?,
+): ImageRequest {
+    val path = credentials?.baseUrl?.toUri()?.path
+    val regex = """^$path""".toRegex()
+    val newImageUrl = imageUrl.replace(regex, "")
+    val fullImageUrl = credentials?.baseUrl + newImageUrl
+
+    val headers =
+        NetworkHeaders
+            .Builder()
+            .set("Authorization", credentials?.basic ?: "")
+            .build()
+
+    return ImageRequest
+        .Builder(context)
+        .data(fullImageUrl)
+        .httpHeaders(headers)
+        .crossfade(true)
+        .memoryCacheKey(key = imageUrl)
+        .diskCacheKey(key = imageUrl)
+        .build()
+}
 
 @SuppressLint("DiscouragedApi")
 @OptIn(ExperimentalCoilApi::class)
@@ -41,27 +69,7 @@ fun AuthorizedImage(
     val context = LocalContext.current
     val credentials = LocalCredentials.current
 
-    val path = credentials?.baseUrl?.toUri()?.path
-    val regex = """^$path""".toRegex()
-    val newImageUrl = imageUrl.replace(regex, "")
-    val fullImageUrl = credentials?.baseUrl + newImageUrl
-
-    val headers =
-        NetworkHeaders
-            .Builder()
-            .set("Authorization", credentials?.basic ?: "")
-            .build()
-
-    val imageRequest =
-        ImageRequest
-            .Builder(context)
-            .data(fullImageUrl)
-            .httpHeaders(headers)
-            .crossfade(true)
-            .memoryCacheKey(key = imageUrl)
-            .diskCacheKey(key = imageUrl)
-            .build()
-
+    val imageRequest = authorizedImageRequest(imageUrl, context, credentials)
     val previewHandler =
         AsyncImagePreviewHandler {
             val resId =
@@ -71,7 +79,7 @@ fun AuthorizedImage(
                     context.packageName,
                 )
             val drawable = AppCompatResources.getDrawable(context, resId)
-            drawable?.asImage()
+            drawable?.asImage()!!
         }
 
     CompositionLocalProvider(LocalAsyncImagePreviewHandler provides previewHandler) {

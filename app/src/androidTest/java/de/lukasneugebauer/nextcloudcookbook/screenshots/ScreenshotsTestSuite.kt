@@ -149,6 +149,7 @@ class ScreenshotsTestSuite {
                     onDecreaseYield = {},
                     onIncreaseYield = {},
                     onNavIconClick = {},
+                    onDetailImageClick = {},
                     onEditClick = {},
                     onDeleteClick = {},
                     shareText = "",

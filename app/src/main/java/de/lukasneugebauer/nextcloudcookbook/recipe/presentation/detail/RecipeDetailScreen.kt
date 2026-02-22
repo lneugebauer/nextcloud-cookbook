@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -146,6 +147,15 @@ fun AnimatedVisibilityScope.RecipeDetailScreen(
         }
     }
 
+    var showFullScreenDetailImage by remember { mutableStateOf(false) }
+    if (showFullScreenDetailImage && recipe.imageUrl.isNotBlank()) {
+        FullScreenImageViewer(
+            imageUrl = recipe.imageUrl,
+            contentDescription = recipe.name,
+            onDismiss = { showFullScreenDetailImage = false },
+        )
+    }
+
     RecipeDetailLayout(
         recipe = recipe,
         calculatedIngredients = state.calculatedIngredients,
@@ -159,6 +169,11 @@ fun AnimatedVisibilityScope.RecipeDetailScreen(
         onNavIconClick = {
             if (!navigator.popBackStack()) {
                 (context as? Activity)?.finish()
+            }
+        },
+        onDetailImageClick = {
+            if (recipe.imageUrl.isNotBlank()) {
+                showFullScreenDetailImage = true
             }
         },
         onEditClick = {
@@ -312,6 +327,7 @@ fun RecipeDetailLayout(
     onDecreaseYield: () -> Unit,
     onIncreaseYield: () -> Unit,
     onNavIconClick: () -> Unit,
+    onDetailImageClick: () -> Unit,
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit,
     shareText: String,
@@ -360,7 +376,7 @@ fun RecipeDetailLayout(
                         .verticalScroll(rememberScrollState()),
             ) {
                 if (recipe.imageOrigin.isNotBlank()) {
-                    Image(recipe.imageUrl)
+                    Image(recipe.imageUrl, onClick = onDetailImageClick)
                     Name(recipe.name)
                 }
                 if (recipe.keywords.isNotEmpty()) {
@@ -406,11 +422,14 @@ fun RecipeDetailLayout(
 }
 
 @Composable
-private fun Image(imageUrl: String) {
+private fun Image(
+    imageUrl: String,
+    onClick: () -> Unit,
+) {
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
-    val modifier =
+    var modifier =
         if (isLandscape) {
             Modifier
                 .aspectRatio(AspectRatio.CINEMA_SCOPE.ratio)
@@ -418,6 +437,10 @@ private fun Image(imageUrl: String) {
             Modifier
                 .aspectRatio(AspectRatio.PHOTO.ratio)
         }
+
+    if (imageUrl.isNotBlank()) {
+        modifier = modifier.clickable(onClick = onClick)
+    }
 
     AuthorizedImage(
         imageUrl = imageUrl,
@@ -1035,6 +1058,7 @@ private fun RecipeDetailLayoutPreview() {
             onDecreaseYield = {},
             onIncreaseYield = {},
             onNavIconClick = {},
+            onDetailImageClick = {},
             onEditClick = {},
             onDeleteClick = {},
             shareText = "",

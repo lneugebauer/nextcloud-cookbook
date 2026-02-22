@@ -142,6 +142,7 @@ dependencies {
 
     implementation "io.coil-kt.coil3:coil-compose:$coil_version"
     implementation "io.coil-kt.coil3:coil-network-okhttp:$coil_version"
+    implementation("me.saket.telephoto:zoomable-image-coil3:0.18.0")
 
     implementation "org.mobilenativefoundation.store:store5:$store_version"
 
