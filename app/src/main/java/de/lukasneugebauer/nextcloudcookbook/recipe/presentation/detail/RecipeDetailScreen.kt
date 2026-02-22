@@ -147,7 +147,6 @@ fun AnimatedVisibilityScope.RecipeDetailScreen(
         }
     }
 
-    // enable full screen views of reciepe picture
     var showFullScreenDetailImage by remember { mutableStateOf(false) }
     if (showFullScreenDetailImage && recipe.imageUrl.isNotBlank()) {
         FullScreenImageViewer(
@@ -172,7 +171,7 @@ fun AnimatedVisibilityScope.RecipeDetailScreen(
                 (context as? Activity)?.finish()
             }
         },
-        onDetailImageClick = { // Add this new parameter
+        onDetailImageClick = {
             if (recipe.imageUrl.isNotBlank()) {
                 showFullScreenDetailImage = true
             }
@@ -421,11 +420,14 @@ fun RecipeDetailLayout(
 }
 
 @Composable
-private fun Image(imageUrl: String, onClick: Function0<Unit>) {
+private fun Image(
+    imageUrl: String,
+    onClick: () -> Unit,
+) {
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
-    val modifier =
+    var modifier =
         if (isLandscape) {
             Modifier
                 .aspectRatio(AspectRatio.CINEMA_SCOPE.ratio)
@@ -434,14 +436,17 @@ private fun Image(imageUrl: String, onClick: Function0<Unit>) {
                 .aspectRatio(AspectRatio.PHOTO.ratio)
         }
 
+    if (imageUrl.isNotBlank()) {
+        modifier = modifier.clickable(onClick = onClick)
+    }
+
     AuthorizedImage(
         imageUrl = imageUrl,
         contentDescription = null,
         modifier =
             modifier
                 .fillMaxWidth()
-                .padding(bottom = dimensionResource(id = R.dimen.padding_m))
-                .clickable(onClick = onClick),
+                .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
     )
 }
 

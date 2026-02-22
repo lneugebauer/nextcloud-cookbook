@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -37,8 +36,7 @@ fun authorizedImageRequest(
     imageUrl: String,
     context: Context,
     credentials: Credentials?,
-    ): ImageRequest {
-
+): ImageRequest {
     val path = credentials?.baseUrl?.toUri()?.path
     val regex = """^$path""".toRegex()
     val newImageUrl = imageUrl.replace(regex, "")
@@ -51,14 +49,15 @@ fun authorizedImageRequest(
             .build()
 
     return ImageRequest
-            .Builder(context)
-            .data(fullImageUrl)
-            .httpHeaders(headers)
-            .crossfade(true)
-            .memoryCacheKey(key = imageUrl)
-            .diskCacheKey(key = imageUrl)
-            .build()
+        .Builder(context)
+        .data(fullImageUrl)
+        .httpHeaders(headers)
+        .crossfade(true)
+        .memoryCacheKey(key = imageUrl)
+        .diskCacheKey(key = imageUrl)
+        .build()
 }
+
 @SuppressLint("DiscouragedApi")
 @OptIn(ExperimentalCoilApi::class)
 @Composable
@@ -67,7 +66,6 @@ fun AuthorizedImage(
     contentDescription: String?,
     modifier: Modifier = Modifier,
 ) {
-
     val context = LocalContext.current
     val credentials = LocalCredentials.current
 
