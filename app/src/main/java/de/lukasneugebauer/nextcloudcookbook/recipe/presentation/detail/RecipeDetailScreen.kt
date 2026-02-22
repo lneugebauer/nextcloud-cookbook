@@ -375,8 +375,10 @@ fun RecipeDetailLayout(
                         .padding(innerPadding)
                         .verticalScroll(rememberScrollState()),
             ) {
-                Image(recipe.imageUrl, onClick = onDetailImageClick)
-                Name(recipe.name)
+                if (recipe.imageOrigin.isNotBlank()) {
+                    Image(recipe.imageUrl, onClick = onDetailImageClick)
+                    Name(recipe.name)
+                }
                 if (recipe.keywords.isNotEmpty()) {
                     Keywords(keywords = recipe.keywords, onClick = onKeywordClick)
                 }
