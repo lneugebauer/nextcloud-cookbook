@@ -6,6 +6,7 @@
     "ruby@3.3"
   ],
   "shell": {
+    "init_hook": "devbox run app:init",
     "scripts": {
       "app:init": [
         "bundle install"
