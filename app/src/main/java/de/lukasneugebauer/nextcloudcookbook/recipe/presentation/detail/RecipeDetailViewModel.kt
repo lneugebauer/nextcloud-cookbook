@@ -177,6 +177,17 @@ class RecipeDetailViewModel
             }
         }
 
+        fun showFullScreenImage() {
+            val recipe = _state.value.data ?: return
+            if (recipe.imageUrl.isNotBlank() && recipe.imageOrigin.isNotBlank()) {
+                _state.value = _state.value.copy(showFullScreenImage = true)
+            }
+        }
+
+        fun hideFullScreenImage() {
+            _state.value = _state.value.copy(showFullScreenImage = false)
+        }
+
         private fun enrichRecipeLinks(
             recipe: Recipe,
             recipePreviewDtos: List<RecipePreviewDto>?,

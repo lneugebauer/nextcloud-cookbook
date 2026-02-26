@@ -13,4 +13,5 @@ data class RecipeDetailState(
     val error: UiText? = null,
     val loading: Boolean = true,
     val isShowIngredientSyntaxIndicator: Boolean = IS_SHOW_INGREDIENT_SYNTAX_INDICATOR_DEFAULT,
+    val showFullScreenImage: Boolean = false,
 )

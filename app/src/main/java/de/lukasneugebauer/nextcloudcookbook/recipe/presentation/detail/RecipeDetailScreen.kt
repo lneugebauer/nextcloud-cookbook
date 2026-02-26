@@ -147,12 +147,11 @@ fun AnimatedVisibilityScope.RecipeDetailScreen(
         }
     }
 
-    var showFullScreenDetailImage by remember { mutableStateOf(false) }
-    if (showFullScreenDetailImage && recipe.imageUrl.isNotBlank()) {
+    if (state.showFullScreenImage) {
         FullScreenImageViewer(
             imageUrl = recipe.imageUrl,
             contentDescription = recipe.name,
-            onDismiss = { showFullScreenDetailImage = false },
+            onDismiss = { viewModel.hideFullScreenImage() },
         )
     }
 
@@ -172,9 +171,7 @@ fun AnimatedVisibilityScope.RecipeDetailScreen(
             }
         },
         onDetailImageClick = {
-            if (recipe.imageUrl.isNotBlank()) {
-                showFullScreenDetailImage = true
-            }
+            viewModel.showFullScreenImage()
         },
         onEditClick = {
             if (recipe.isNotEmpty()) {
@@ -375,7 +372,7 @@ fun RecipeDetailLayout(
                         .padding(innerPadding)
                         .verticalScroll(rememberScrollState()),
             ) {
-                if (recipe.imageOrigin.isNotBlank()) {
+                if (recipe.imageOrigin.isNotBlank() && recipe.imageUrl.isNotBlank()) {
                     Image(recipe.imageUrl, onClick = onDetailImageClick)
                     Name(recipe.name)
                 }
@@ -429,7 +426,7 @@ private fun Image(
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
-    var modifier =
+    val modifier =
         if (isLandscape) {
             Modifier
                 .aspectRatio(AspectRatio.CINEMA_SCOPE.ratio)
@@ -438,17 +435,14 @@ private fun Image(
                 .aspectRatio(AspectRatio.PHOTO.ratio)
         }
 
-    if (imageUrl.isNotBlank()) {
-        modifier = modifier.clickable(onClick = onClick)
-    }
-
     AuthorizedImage(
         imageUrl = imageUrl,
         contentDescription = null,
         modifier =
             modifier
                 .fillMaxWidth()
-                .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
+                .padding(bottom = dimensionResource(id = R.dimen.padding_m))
+                .clickable(onClick = onClick),
     )
 }
 
