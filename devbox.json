@@ -24,7 +24,7 @@
         "bundle exec fastlane screenshots"
       ],
       "app:deploy": [
-        "rm -r fastlane/metadata/android/nn",
+        "[ -d fastlane/metadata/android/nn ] && rm -r fastlane/metadata/android/nn",
         "bundle exec fastlane deploy"
       ],
       "docs:init": [
