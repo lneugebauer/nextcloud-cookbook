@@ -155,4 +155,5 @@
     <string name="recipe_ingredient_syntax_error">Malzeme yeniden hesaplanamıyor.</string>
     <string name="settings_ingredient_syntax_indicator">Malzeme söz dizimi göstergesi</string>
     <string name="settings_show_indicator_if_recipe_syntax_is_invalid">Malzemelerin söz dizimi yeniden hesaplama için uygun değilse bir gösterge görüntüle.</string>
+    <string name="recipe_keywords">Anahtar sözcükler</string>
 </resources>
