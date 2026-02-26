@@ -57,6 +57,8 @@
     <string name="error_timeout">Timeout error</string>
     <string name="error_unknown_host">Unknown host</string>
     <string name="error_unknown">An unknown error occurred</string>
+    <string name="error_server_unreachable">Server unreachable</string>
+    <string name="error_server_unreachable_description">Could not connect to your Nextcloud server. Please check your network connection and try again.</string>
     <string name="home_recommendation">Recommendation</string>
     <string name="info_headline">Learn more</string>
     <string name="login">Sign in</string>

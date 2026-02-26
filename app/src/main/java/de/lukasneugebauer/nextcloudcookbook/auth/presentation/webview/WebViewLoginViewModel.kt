@@ -85,15 +85,27 @@ class WebViewLoginViewModel
 
                             account is Resource.Success -> {
                                 val userMetadata = accountRepository.getUserMetadata()
-                                if (userMetadata is Resource.Error) {
-                                    clearPreferencesUseCase()
-                                    _uiState.update {
-                                        WebViewScreenState.Error(
-                                            uiText = userMetadata.message ?: UiText.StringResource(R.string.error_unknown),
-                                        )
+                                when {
+                                    userMetadata is Resource.Success -> {
+                                        _uiState.update { WebViewScreenState.Authenticated }
                                     }
-                                } else {
-                                    _uiState.update { WebViewScreenState.Authenticated }
+                                    userMetadata is Resource.Error && userMetadata.isAuthError -> {
+                                        // Only clear credentials on actual auth errors (401/403)
+                                        clearPreferencesUseCase()
+                                        _uiState.update {
+                                            WebViewScreenState.Error(
+                                                uiText = userMetadata.message ?: UiText.StringResource(R.string.error_unknown),
+                                            )
+                                        }
+                                    }
+                                    userMetadata is Resource.Error -> {
+                                        // Network error - don't clear credentials, just show error
+                                        _uiState.update {
+                                            WebViewScreenState.Error(
+                                                uiText = userMetadata.message ?: UiText.StringResource(R.string.error_unknown),
+                                            )
+                                        }
+                                    }
                                 }
                             }
                         }
