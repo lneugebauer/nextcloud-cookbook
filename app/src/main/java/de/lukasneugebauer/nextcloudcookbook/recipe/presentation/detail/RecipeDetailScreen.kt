@@ -52,11 +52,14 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.minimumInteractiveComponentSize
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -71,6 +74,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.ClipEntry
 import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalConfiguration
@@ -229,6 +233,7 @@ private fun TopBar(
     onNavIconClick: () -> Unit,
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit,
+    scrollBehavior: TopAppBarScrollBehavior,
     shareText: String,
 ) {
     val context = LocalContext.current
@@ -247,12 +252,18 @@ private fun TopBar(
         context.startActivity(shareIntent)
     }
 
-    TopAppBar(
+    MediumTopAppBar(
         title = {
+            // MediumTopAppBar invokes the title lambda twice: once for the collapsed row
+            // (titleLarge) and once for the expanded row (headlineSmall). We distinguish
+            // them by font size to keep maxLines static per row and avoid layout shifts.
+            val isExpandedTitle =
+                LocalTextStyle.current.fontSize > MaterialTheme.typography.titleLarge.fontSize
             Text(
                 text = recipe.name,
+                modifier = Modifier.padding(bottom = if (isExpandedTitle) dimensionResource(R.dimen.padding_m) else 0.dp),
                 overflow = TextOverflow.Ellipsis,
-                maxLines = 1,
+                maxLines = if (isExpandedTitle) Int.MAX_VALUE else 1,
             )
         },
         navigationIcon = {
@@ -284,6 +295,7 @@ private fun TopBar(
                 }
             }
         },
+        scrollBehavior = scrollBehavior,
     )
 }
 
@@ -336,13 +348,17 @@ fun RecipeDetailLayout(
     onResetYield: () -> Unit,
     isShowIngredientSyntaxIndicator: Boolean,
 ) {
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+
     Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             TopBar(
                 recipe = recipe,
                 onNavIconClick = onNavIconClick,
                 onEditClick = onEditClick,
                 onDeleteClick = onDeleteClick,
+                scrollBehavior = scrollBehavior,
                 shareText = shareText,
             )
         },
@@ -374,7 +390,6 @@ fun RecipeDetailLayout(
             ) {
                 if (recipe.imageOrigin.isNotBlank() && recipe.imageUrl.isNotBlank()) {
                     Image(recipe.imageUrl, onClick = onDetailImageClick)
-                    Name(recipe.name)
                 }
                 if (recipe.keywords.isNotEmpty()) {
                     Keywords(keywords = recipe.keywords, onClick = onKeywordClick)
@@ -443,18 +458,6 @@ private fun Image(
                 .fillMaxWidth()
                 .padding(bottom = dimensionResource(id = R.dimen.padding_m))
                 .clickable(onClick = onClick),
-    )
-}
-
-@Composable
-private fun Name(name: String) {
-    Text(
-        text = name,
-        modifier =
-            Modifier
-                .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
-                .padding(bottom = dimensionResource(id = R.dimen.padding_m)),
-        style = MaterialTheme.typography.titleLarge,
     )
 }
 
