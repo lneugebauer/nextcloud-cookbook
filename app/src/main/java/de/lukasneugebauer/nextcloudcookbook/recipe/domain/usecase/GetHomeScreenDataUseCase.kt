@@ -25,7 +25,10 @@ import javax.inject.Singleton
 import javax.net.ssl.SSLHandshakeException
 
 sealed class HomeScreenDataFetchResult {
-    data class Success(val data: List<HomeScreenDataResult>) : HomeScreenDataFetchResult()
+    data class Success(
+        val data: List<HomeScreenDataResult>,
+    ) : HomeScreenDataFetchResult()
+
     object NetworkError : HomeScreenDataFetchResult()
 }
 
@@ -128,12 +131,11 @@ class GetHomeScreenDataUseCase
             }
         }
 
-        private fun isNetworkError(e: Exception): Boolean {
-            return e is SocketTimeoutException ||
+        private fun isNetworkError(e: Exception): Boolean =
+            e is SocketTimeoutException ||
                 e is UnknownHostException ||
                 e is SSLHandshakeException ||
                 e.cause is SocketTimeoutException ||
                 e.cause is UnknownHostException ||
                 e.cause is SSLHandshakeException
-        }
     }

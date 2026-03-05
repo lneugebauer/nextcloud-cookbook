@@ -34,15 +34,16 @@ class HomeViewModel
 
         private fun loadData() {
             loadJob?.cancel()
-            loadJob = viewModelScope.launch {
-                when (val result = getHomeScreenDataUseCase()) {
-                    is HomeScreenDataFetchResult.Success -> {
-                        _uiState.update { HomeScreenState.Loaded(result.data) }
-                    }
-                    is HomeScreenDataFetchResult.NetworkError -> {
-                        _uiState.update { HomeScreenState.ServerUnreachable }
+            loadJob =
+                viewModelScope.launch {
+                    when (val result = getHomeScreenDataUseCase()) {
+                        is HomeScreenDataFetchResult.Success -> {
+                            _uiState.update { HomeScreenState.Loaded(result.data) }
+                        }
+                        is HomeScreenDataFetchResult.NetworkError -> {
+                            _uiState.update { HomeScreenState.ServerUnreachable }
+                        }
                     }
                 }
-            }
         }
     }
