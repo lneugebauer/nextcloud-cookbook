@@ -113,16 +113,6 @@ class ManualLoginViewModel
                                     userMetadata is Resource.Success -> {
                                         _uiState.update { ManualLoginScreenState.Authenticated }
                                     }
-                                    userMetadata is Resource.Error && userMetadata.isAuthError -> {
-                                        // Only clear credentials on actual auth errors (401/403)
-                                        clearPreferencesUseCase()
-                                        _uiState.update {
-                                            ManualLoginScreenState.Error(
-                                                uiText = userMetadata.message ?: UiText.StringResource(R.string.error_unknown),
-                                                username = account.data?.username ?: "",
-                                            )
-                                        }
-                                    }
                                     userMetadata is Resource.Error -> {
                                         // Network error - don't clear credentials, just show error
                                         _uiState.update {
