@@ -13,7 +13,6 @@ fun ServerUnreachableScreen(onRetryClick: () -> Unit) {
     AbstractErrorScreen(
         uiText = UiText.StringResource(R.string.error_server_unreachable_description),
         icon = Icons.Default.CloudOff,
-        iconContentDescription = UiText.StringResource(R.string.error_server_unreachable),
         onRetryClick = onRetryClick,
     )
 }
