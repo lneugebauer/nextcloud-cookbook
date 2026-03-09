@@ -3,14 +3,15 @@ package de.lukasneugebauer.nextcloudcookbook.recipe.presentation.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import de.lukasneugebauer.nextcloudcookbook.core.domain.NetworkErrorException
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.HomeScreenState
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.usecase.GetHomeScreenDataUseCase
-import de.lukasneugebauer.nextcloudcookbook.recipe.domain.usecase.HomeScreenDataFetchResult
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -36,12 +37,16 @@ class HomeViewModel
             loadJob?.cancel()
             loadJob =
                 viewModelScope.launch {
-                    when (val result = getHomeScreenDataUseCase()) {
-                        is HomeScreenDataFetchResult.Success -> {
-                            _uiState.update { HomeScreenState.Loaded(result.data) }
-                        }
-                        is HomeScreenDataFetchResult.NetworkError -> {
-                            _uiState.update { HomeScreenState.ServerUnreachable }
+                    try {
+                        val data = getHomeScreenDataUseCase()
+                        _uiState.update { HomeScreenState.Loaded(data) }
+                    } catch (e: NetworkErrorException) {
+                        Timber.e(e.stackTraceToString())
+                        _uiState.update { HomeScreenState.ServerUnreachable }
+                    } catch (e: Exception) {
+                        Timber.e(e.stackTraceToString())
+                        _uiState.update {
+                            HomeScreenState.Error(UiText.StringResource(R.string.error_unknown))
                         }
                     }
                 }
