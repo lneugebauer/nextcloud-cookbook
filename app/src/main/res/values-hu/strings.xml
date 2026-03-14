@@ -136,4 +136,8 @@
     <string name="recipe_tool_add">Eszköz hozzáadása</string>
     <string name="settings_logout">Kijelentkezés</string>
     <string name="settings_where_to_report_issues">Hibákat, javítási javaslatokat és funkcióigényeket a GitHub issue trackerben jelenthet.</string>
+    <string name="common_clear_input">Bemenet törlése</string>
+    <string name="common_error">Hiba</string>
+    <string name="common_selected">Kiválasztott</string>
+    <string name="error_retry">Újra</string>
 </resources>
