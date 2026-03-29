@@ -10,6 +10,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.util.IoDispatcher
 import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import de.lukasneugebauer.nextcloudcookbook.core.util.SimpleResource
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
+import de.lukasneugebauer.nextcloudcookbook.di.CategoriesStore
 import de.lukasneugebauer.nextcloudcookbook.di.RecipePreviewsByCategoryStore
 import de.lukasneugebauer.nextcloudcookbook.di.RecipePreviewsStore
 import de.lukasneugebauer.nextcloudcookbook.di.RecipeStore
@@ -38,6 +39,7 @@ class RecipeRepositoryImpl
         private val recipePreviewsByCategoryStore: RecipePreviewsByCategoryStore,
         private val recipePreviewsStore: RecipePreviewsStore,
         private val recipeStore: RecipeStore,
+        private val categoriesStore: CategoriesStore,
     ) : BaseRepository(),
         RecipeRepository {
         override fun getRecipePreviewsFlow(): Flow<StoreReadResponse<List<RecipePreviewDto>>> =
@@ -98,6 +100,12 @@ class RecipeRepositoryImpl
                     }
 
                     refreshCaches(id = recipe.id, categoryName = recipe.recipeCategory)
+
+                    if (currentRecipe.recipeCategory != recipe.recipeCategory) {
+                        recipePreviewsByCategoryStore.fresh(currentRecipe.recipeCategory)
+                        categoriesStore.fresh(Unit)
+                    }
+
                     Resource.Success(Unit)
                 } catch (e: Exception) {
                     handleResponseError(e.fillInStackTrace())
@@ -119,7 +127,10 @@ class RecipeRepositoryImpl
                         refreshCaches(id = id, categoryName = categoryName, deleted = true)
                         Resource.Success(Unit)
                     }
-                    is NetworkResponse.Error -> handleResponseError(response.error, response.body?.msg)
+
+                    is NetworkResponse.Error -> {
+                        handleResponseError(response.error, response.body?.msg)
+                    }
                 }
             }
         }
@@ -135,7 +146,10 @@ class RecipeRepositoryImpl
                         refreshCaches(id = response.body.id, categoryName = response.body.recipeCategory)
                         Resource.Success(response.body)
                     }
-                    is NetworkResponse.Error -> handleResponseError(response.error, response.body?.msg)
+
+                    is NetworkResponse.Error -> {
+                        handleResponseError(response.error, response.body?.msg)
+                    }
                 }
             }
         }
