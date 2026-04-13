@@ -34,7 +34,7 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.mapper.toDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.mapper.toEntity
 
 typealias RecipePreviewsByCategoryStore = Store<String, List<RecipePreviewDto>>
-typealias RecipePreviewsStore = Store<Any, List<RecipePreviewDto>>
+typealias RecipePreviewsStore = Store<Unit, List<RecipePreviewDto>>
 typealias RecipeStore = Store<String, RecipeDto>
 
 
@@ -50,29 +50,26 @@ object RecipeModule {
         recipePreviewDao: RecipePreviewDao,
     ): RecipePreviewsStore =
         StoreBuilder
-            .from<Any, List<RecipePreviewDto>, List<RecipePreviewDto>>(
-                fetcher = Fetcher.of { categoryName: Any ->
-                    apiProvider.getApi()?.getRecipes() // O getRecipesByCategory(categoryName)
+            .from<Unit, List<RecipePreviewDto>, List<RecipePreviewDto>>(
+                fetcher = Fetcher.of {
+                    apiProvider.getApi()?.getRecipes()
                         ?: throw NullPointerException("Nextcloud Cookbook API is null.")
                 },
-                sourceOfTruth = SourceOfTruth.of(
-                    reader = { categoryName: Any ->
-                        recipePreviewDao.getByCategory(categoryName.toString()).map { entities ->
+                sourceOfTruth = SourceOfTruth.of<Unit, List<RecipePreviewDto>, List<RecipePreviewDto>>(
+                    reader = {
+                        recipePreviewDao.getAll().map { entities ->
                             entities.map { it.toDto() }.takeIf { it.isNotEmpty() }
                         }
                     },
-                    writer = { categoryName: Any, dtos: List<RecipePreviewDto> ->
-                        val entities = dtos.map { it.toEntity(categoryName.toString()) }
-                        recipePreviewDao.replaceByCategory(categoryName.toString(), entities)
+                    writer = { _: Unit, dtos ->
+                        val entities = dtos.map { it.toEntity() }
+                        recipePreviewDao.replaceRecipes(entities)
                     },
-                    delete = { categoryName: Any ->
-                        recipePreviewDao.deleteByCategory(categoryName.toString())
-                    },
-                    deleteAll = {
-                        recipePreviewDao.deleteAll()
-                    }
+                    delete = { _: Unit -> recipePreviewDao.deleteAll() },
+                    deleteAll = { recipePreviewDao.deleteAll() }
                 ),
             ).build()
+
 
     @Provides
     @Singleton

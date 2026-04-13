@@ -5,7 +5,7 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipePreviewEnt
 
 fun RecipePreviewEntity.toDto(): RecipePreviewDto =
     RecipePreviewDto(
-        recipeId = null,         // deprecated, no lo persistimos
+        recipeId = null,
         id = id,
         name = name,
         keywords = keywords,
@@ -16,14 +16,15 @@ fun RecipePreviewEntity.toDto(): RecipePreviewDto =
         imagePlaceholderUrl = imagePlaceholderUrl,
     )
 
-fun RecipePreviewDto.toEntity(categoryName: String): RecipePreviewEntity =
+fun RecipePreviewDto.toEntity(categoryOverride: String? = null): RecipePreviewEntity =
     RecipePreviewEntity(
         id = id?.takeIf { it.isNotBlank() }
-                ?: recipeId?.takeIf { it.isNotBlank() }
-                ?: throw IllegalStateException("Both 'id' and 'recipe_id' are null or blank"),
+            ?: recipeId?.takeIf { it.isNotBlank() }
+            ?: throw IllegalStateException("Both 'id' and 'recipe_id' are null or blank"),
         name = name,
         keywords = keywords,
-        category = categoryName,
+        category = categoryOverride ?: category
+        ?: throw IllegalStateException("Category is required (either from DTO or override)"),
         dateCreated = dateCreated,
         dateModified = dateModified,
         imageUrl = imageUrl,
