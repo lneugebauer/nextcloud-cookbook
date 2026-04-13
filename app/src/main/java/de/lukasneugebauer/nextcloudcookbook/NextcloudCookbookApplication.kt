@@ -2,6 +2,8 @@ package de.lukasneugebauer.nextcloudcookbook
 
 import android.app.Application
 import android.content.Context
+import androidx.hilt.work.HiltWorkerFactory
+import androidx.work.Configuration
 import coil3.ImageLoader
 import coil3.PlatformContext
 import coil3.SingletonImageLoader
@@ -24,9 +26,17 @@ import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltAndroidApp
-class NextcloudCookbookApplication : Application() {
+class NextcloudCookbookApplication : Application(), Configuration.Provider {
     @Inject
     lateinit var clientProvider: OkHttpClientProvider
+
+    @Inject
+    lateinit var workerFactory: HiltWorkerFactory
+
+    override val workManagerConfiguration: Configuration
+        get() = Configuration.Builder()
+            .setWorkerFactory(workerFactory)
+            .build()
 
     private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
