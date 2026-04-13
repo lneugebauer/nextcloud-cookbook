@@ -53,13 +53,7 @@ class SplashViewModel
                     .enqueueUniqueWork(
                         "sync_initial",
                         ExistingWorkPolicy.KEEP,
-                        OneTimeWorkRequestBuilder<SyncWorker>()
-                            .setConstraints(
-                                Constraints.Builder()
-                                    .setRequiredNetworkType(NetworkType.CONNECTED)
-                                    .build()
-                            )
-                            .build()
+                        SyncWorker.buildOneTimeRequest()
                     )
             }
         }
