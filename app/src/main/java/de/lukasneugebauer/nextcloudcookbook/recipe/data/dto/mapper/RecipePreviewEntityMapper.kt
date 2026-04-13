@@ -16,13 +16,14 @@ fun RecipePreviewEntity.toDto(): RecipePreviewDto =
         imagePlaceholderUrl = imagePlaceholderUrl,
     )
 
-fun RecipePreviewDto.toEntity(): RecipePreviewEntity =
+fun RecipePreviewDto.toEntity(categoryName: String): RecipePreviewEntity =
     RecipePreviewEntity(
-        id = if (!id.isNullOrBlank()) id else recipeId
-            ?: throw IllegalStateException("Both 'id' and 'recipe_id' are null or blank"),
+        id = id?.takeIf { it.isNotBlank() }
+                ?: recipeId?.takeIf { it.isNotBlank() }
+                ?: throw IllegalStateException("Both 'id' and 'recipe_id' are null or blank"),
         name = name,
         keywords = keywords,
-        category = category,
+        category = categoryName,
         dateCreated = dateCreated,
         dateModified = dateModified,
         imageUrl = imageUrl,

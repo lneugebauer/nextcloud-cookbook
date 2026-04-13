@@ -42,16 +42,16 @@ object CategoryModule {
                 sourceOfTruth = SourceOfTruth.of<Any, List<CategoryDto>, List<CategoryDto>>(
                     reader = { _: Any ->
                         categoryDao.getAll().map { entities ->
-                            entities.map { it.toDto() }.takeIf { it.isNotEmpty() }
+                            entities.map { it.toDto() }
                         }
                     },
                     writer = { _: Any, dtos: List<CategoryDto> ->
-                        categoryDao.deleteAll()
-                        categoryDao.upsertAll(dtos.map { it.toEntity() })
+                        val entities = dtos.map { it.toEntity() }
+                        categoryDao.replaceCategories(entities)
                     },
                     delete = { categoryDao.deleteAll() },
                     deleteAll = { categoryDao.deleteAll() },
-                ),
+                )
             ).build()
 
     @Provides

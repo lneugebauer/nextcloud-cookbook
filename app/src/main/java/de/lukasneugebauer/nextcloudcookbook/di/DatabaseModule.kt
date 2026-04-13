@@ -26,7 +26,6 @@ object DatabaseModule {
             CookbookDatabase::class.java,
             "cookbook.db",
         )
-            .fallbackToDestructiveMigration(true)
             .build()
 
     @Provides

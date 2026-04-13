@@ -17,6 +17,7 @@ import de.lukasneugebauer.nextcloudcookbook.di.RecipePreviewsStore
 import de.lukasneugebauer.nextcloudcookbook.di.RecipeStore
 import org.mobilenativefoundation.store.store5.impl.extensions.fresh
 import timber.log.Timber
+import java.util.concurrent.CancellationException
 import java.util.concurrent.TimeUnit
 
 @HiltWorker
@@ -30,21 +31,29 @@ class SyncWorker @AssistedInject constructor(
 
     override suspend fun doWork(): Result {
         return try {
-            val previews = recipePreviewsStore.fresh(Unit)
+            val previews = recipePreviewsStore.fresh(
+                Unit)
             categoriesStore.fresh(Unit)
+            var hadFailures = false
 
             previews.forEach { previewDto ->
                 val id = if (!previewDto.id.isNullOrBlank()) previewDto.id else previewDto.recipeId
                 if (id != null) {
                     try {
                         recipeStore.fresh(id)
+                    } catch (e: CancellationException) {
+                        throw e
                     } catch (e: Exception) {
+                        hadFailures = true
                         Timber.w(e, "Failed to sync recipe $id")
                     }
                 }
             }
 
-            Result.success()
+            if (hadFailures) Result.retry() else Result.success()
+
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             Timber.e(e, "SyncWorker failed")
             Result.retry()
