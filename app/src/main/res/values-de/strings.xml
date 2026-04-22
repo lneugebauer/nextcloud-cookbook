@@ -27,7 +27,7 @@
     <string name="common_share">Teilen</string>
     <string name="common_username">Benutzername</string>
     <string name="common_yes">Ja</string>
-    <string name="dialog_crash_report_text">Ups, Nextcloud Cookbook ist gerade abgestürzt. Willst du einen Fehlerbericht an die Entwickler senden?</string>
+    <string name="dialog_crash_report_text">Ups, Nextcloud Kochbuch ist gerade abgestürzt. Willst du einen Fehlerbericht an die Entwickler senden?</string>
     <string name="download_recipe">Rezept herunterladen</string>
     <string name="download_recipe_url">Rezept URL</string>
     <string name="error_api_not_initialized">API nicht initialisiert</string>
@@ -44,8 +44,8 @@
     <string name="error_http_500">500 Interner Server-Fehler</string>
     <string name="error_http_503">503 Dienst nicht verfügbar</string>
     <string name="error_http_unknown">Unbekannter HTTP-Fehler</string>
-    <string name="error_invalid_protocol">Invalides Protokol; URL muss mit https:// beginnen</string>
-    <string name="error_invalid_url">Invalide URL</string>
+    <string name="error_invalid_protocol">Ungültiges Protokoll; URL muss mit https:// beginnen</string>
+    <string name="error_invalid_url">Ungültige URL</string>
     <string name="error_malformed_json">Fehlerhaftes JSON-Format</string>
     <string name="error_retry">Erneut versuchen</string>
     <string name="error_recipe_id_missing">Unbekannte Rezept ID</string>
@@ -60,7 +60,7 @@
     <string name="home_recommendation">Vorschlag</string>
     <string name="info_headline">Mehr erfahren</string>
     <string name="login">Anmelden</string>
-    <string name="login_allow_self_signed_certificates">Erlaube selbstsignierte Zertifiakte</string>
+    <string name="login_allow_self_signed_certificates">Erlaube selbstsignierte Zertifikake</string>
     <string name="login_manual">Manuell anmelden</string>
     <string name="login_nextcloud_logo">Nextcloud Logo</string>
     <string name="login_root_address">Nextcloud Adresse</string>
@@ -153,6 +153,6 @@
     <string name="settings_stay_awake">Aktiv lassen</string>
     <string name="settings_translate">Hilf beim Übersetzen</string>
     <string name="settings_version_number">Version %1$s (%2$d)</string>
-    <string name="settings_version">Nextcloud Cookbook App</string>
+    <string name="settings_version">Nextcloud Kochbuch App</string>
     <string name="settings_where_to_report_issues">Sie können Fehler, Verbesserungsvorschläge oder Wünsche für neue Funktionen als Issue auf GitHub erfassen</string>
 </resources>
