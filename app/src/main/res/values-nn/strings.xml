@@ -136,4 +136,24 @@
     <string name="error_ssl_handshake">Sertifikatfeil</string>
     <string name="recipe_description">Beskriving</string>
     <string name="common_reorder">Bestill på nytt</string>
+    <string name="common_clear_input">Tøm inndata</string>
+    <string name="common_error">Feil</string>
+    <string name="common_selected">Vald</string>
+    <string name="error_retry">Prøv på nytt</string>
+    <string name="info_headline">Lær meir</string>
+    <string name="login_allow_self_signed_certificates">Tillat sjølvsignerte sertifikat</string>
+    <string name="login_instance_hint">Ver venleg og oppgi innloggingsdetaljane dine for %1$s.</string>
+    <string name="login_nextcloud_logo">Nextcloud logo</string>
+    <string name="recipe_change_order">Endre rekkjefølgje</string>
+    <string name="recipe_ingredient_syntax_error">Ingrediensen kan ikkje reknast ut på nytt.</string>
+    <string name="recipe_keywords">Nøkkelord</string>
+    <string name="settings_github">GitHub</string>
+    <string name="settings_github_sponsor">Bli ein GitHub-sponsor</string>
+    <string name="settings_ingredient_syntax_indicator">Ingrediens syntaks indikator</string>
+    <string name="settings_liberapay">Liberapay</string>
+    <string name="settings_liberapay_patron">Bli Liberapay-givar</string>
+    <string name="settings_paypal">PayPal</string>
+    <string name="settings_paypal_donation">Gje gåve via PayPal</string>
+    <string name="settings_show_indicator_if_recipe_syntax_is_invalid">Vis ein indikator dersom syntaksen for ingrediensane ikkje er eigna for omrekning.</string>
+    <string name="settings_sponsoring">Sponsing</string>
 </resources>

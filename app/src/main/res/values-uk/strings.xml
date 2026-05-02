@@ -146,4 +146,15 @@
     <string name="settings_github">GitHub</string>
     <string name="settings_liberapay">Liberapay</string>
     <string name="settings_paypal">PayPal</string>
+    <string name="info_headline">Дізнатися більше</string>
+    <string name="login_allow_self_signed_certificates">Дозволити сертифікати з самопідписом</string>
+    <string name="login_instance_hint">Будь ласка, введіть свої дані для входу в систему для %1$s.</string>
+    <string name="login_nextcloud_logo">Логотип Nextcloud</string>
+    <string name="recipe_keywords">Ключові слова</string>
+    <string name="settings_github_sponsor">Станьте спонсором GitHub</string>
+    <string name="settings_ingredient_syntax_indicator">Індикатор синтаксису інгредієнта</string>
+    <string name="settings_liberapay_patron">Станьте патроном Liberapay</string>
+    <string name="settings_paypal_donation">Зробити пожертву через PayPal</string>
+    <string name="settings_show_indicator_if_recipe_syntax_is_invalid">Показати індикатор, якщо синтаксис інгредієнтів не підходить для перерахунку.</string>
+    <string name="settings_sponsoring">Спонсорство</string>
 </resources>
