@@ -22,13 +22,20 @@ open class BaseRepository {
         if (!serverMessage.isNullOrBlank()) return Resource.Error(UiText.DynamicString(serverMessage))
 
         var message = unknownErrorUiText(null)
+        var isAuthError = false
 
         if (code != null) {
             message =
                 when (code) {
                     400 -> UiText.StringResource(R.string.error_http_400)
-                    401 -> UiText.StringResource(R.string.error_http_401)
-                    403 -> UiText.StringResource(R.string.error_http_403)
+                    401 -> {
+                        isAuthError = true
+                        UiText.StringResource(R.string.error_http_401)
+                    }
+                    403 -> {
+                        isAuthError = true
+                        UiText.StringResource(R.string.error_http_403)
+                    }
                     404 -> UiText.StringResource(R.string.error_http_404)
                     405 -> UiText.StringResource(R.string.error_http_405)
                     500 -> UiText.StringResource(R.string.error_http_500)
@@ -43,8 +50,14 @@ open class BaseRepository {
                     is HttpException ->
                         when (t.code()) {
                             400 -> UiText.StringResource(R.string.error_http_400)
-                            401 -> UiText.StringResource(R.string.error_http_401)
-                            403 -> UiText.StringResource(R.string.error_http_403)
+                            401 -> {
+                                isAuthError = true
+                                UiText.StringResource(R.string.error_http_401)
+                            }
+                            403 -> {
+                                isAuthError = true
+                                UiText.StringResource(R.string.error_http_403)
+                            }
                             404 -> UiText.StringResource(R.string.error_http_404)
                             405 -> UiText.StringResource(R.string.error_http_405)
                             500 -> UiText.StringResource(R.string.error_http_500)
@@ -60,7 +73,7 @@ open class BaseRepository {
                     else -> unknownErrorUiText(t)
                 }
         }
-        return Resource.Error(message)
+        return Resource.Error(message, isAuthError = isAuthError)
     }
 
     private fun unknownErrorUiText(t: Throwable?): UiText =

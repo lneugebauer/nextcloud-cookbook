@@ -2,6 +2,7 @@ package de.lukasneugebauer.nextcloudcookbook.recipe.domain.usecase
 
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
+import de.lukasneugebauer.nextcloudcookbook.core.domain.NetworkErrorException
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.RecipeOfTheDay
 import de.lukasneugebauer.nextcloudcookbook.core.util.Constants.DEFAULT_RECIPE_OF_THE_DAY_ID
 import de.lukasneugebauer.nextcloudcookbook.core.util.IoDispatcher
@@ -16,10 +17,12 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import org.mobilenativefoundation.store.store5.impl.extensions.get
-import timber.log.Timber
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import java.time.LocalDateTime
 import javax.inject.Inject
 import javax.inject.Singleton
+import javax.net.ssl.SSLHandshakeException
 
 @Singleton
 class GetHomeScreenDataUseCase
@@ -33,17 +36,17 @@ class GetHomeScreenDataUseCase
         private val recipeStore: RecipeStore,
     ) {
         suspend operator fun invoke(): List<HomeScreenDataResult> {
-            val currentDate =
-                LocalDateTime
-                    .now()
-                    .withHour(0)
-                    .withMinute(0)
-                    .withSecond(0)
-            val homeScreenData = mutableListOf<HomeScreenDataResult>()
-            var recipeOfTheDay = preferencesManager.preferencesFlow.map { it.recipeOfTheDay }.first()
+            try {
+                val currentDate =
+                    LocalDateTime
+                        .now()
+                        .withHour(0)
+                        .withMinute(0)
+                        .withSecond(0)
+                val homeScreenData = mutableListOf<HomeScreenDataResult>()
+                var recipeOfTheDay = preferencesManager.preferencesFlow.map { it.recipeOfTheDay }.first()
 
-            if (recipeOfTheDay.id == DEFAULT_RECIPE_OF_THE_DAY_ID || recipeOfTheDay.updatedAt.isBefore(currentDate)) {
-                try {
+                if (recipeOfTheDay.id == DEFAULT_RECIPE_OF_THE_DAY_ID || recipeOfTheDay.updatedAt.isBefore(currentDate)) {
                     val newRecipeOfTheDayId =
                         recipePreviewsStore
                             .get(Unit)
@@ -58,28 +61,20 @@ class GetHomeScreenDataUseCase
                             updatedAt = LocalDateTime.now(),
                         )
                     preferencesManager.updateRecipeOfTheDay(recipeOfTheDay)
-                } catch (e: Exception) {
-                    Timber.e(e.stackTraceToString())
                 }
-            }
 
-            // FIXME: 25.12.21 Get different recipe of the day if api returns 404 error.
-            //  E.g. after deleting recipe of the day.
-            withContext(ioDispatcher) {
-                try {
+                // FIXME: 25.12.21 Get different recipe of the day if api returns 404 error.
+                //  E.g. after deleting recipe of the day.
+                withContext(ioDispatcher) {
                     val result =
                         HomeScreenDataResult.Single(
                             R.string.home_recommendation,
                             recipeStore.get(recipeOfTheDay.id).toRecipe(),
                         )
                     homeScreenData.add(result)
-                } catch (e: Exception) {
-                    Timber.e(e.stackTraceToString())
                 }
-            }
 
-            withContext(ioDispatcher) {
-                try {
+                withContext(ioDispatcher) {
                     categoriesStore
                         .get(Unit)
                         .sortedByDescending { it.recipeCount }
@@ -98,11 +93,22 @@ class GetHomeScreenDataUseCase
                                 homeScreenData.add(result)
                             }
                         }
-                } catch (e: Exception) {
-                    Timber.e(e.stackTraceToString())
                 }
-            }
 
-            return homeScreenData.toList()
+                return homeScreenData.toList()
+            } catch (e: Exception) {
+                if (isNetworkError(e)) {
+                    throw NetworkErrorException(e)
+                }
+                throw e
+            }
         }
+
+        private fun isNetworkError(e: Exception): Boolean =
+            e is SocketTimeoutException ||
+                e is UnknownHostException ||
+                e is SSLHandshakeException ||
+                e.cause is SocketTimeoutException ||
+                e.cause is UnknownHostException ||
+                e.cause is SSLHandshakeException
     }

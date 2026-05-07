@@ -54,6 +54,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.RowContainer
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.RowContent
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.error.NotFoundScreen
+import de.lukasneugebauer.nextcloudcookbook.core.presentation.error.ServerUnreachableScreen
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.error.UnknownErrorScreen
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
 import de.lukasneugebauer.nextcloudcookbook.core.util.AspectRatio
@@ -89,6 +90,7 @@ fun AnimatedVisibilityScope.HomeScreen(
                 ),
             )
         },
+        onRetryClick = { viewModel.retry() },
     )
 }
 
@@ -121,6 +123,7 @@ fun HomeScreen(
     onSettingsIconClick: () -> Unit,
     onHeadlineClick: (categoryName: String) -> Unit,
     onRecipeClick: (recipeId: String) -> Unit,
+    onRetryClick: () -> Unit = {},
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     val lazyListState = rememberLazyListState()
@@ -200,6 +203,7 @@ fun HomeScreen(
                 }
             }
             is HomeScreenState.Error -> UnknownErrorScreen()
+            HomeScreenState.ServerUnreachable -> ServerUnreachableScreen(onRetryClick = onRetryClick)
         }
     }
 }
