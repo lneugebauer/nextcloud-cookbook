@@ -1,8 +1,6 @@
 package de.lukasneugebauer.nextcloudcookbook.recipe.presentation.components
 
-import android.Manifest
 import android.content.Context
-import android.content.pm.PackageManager
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -63,7 +61,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.dokar.chiptextfield.Chip
 import com.dokar.chiptextfield.m3.OutlinedChipTextField
@@ -101,7 +98,10 @@ fun CreateEditRecipeForm(
     onDescriptionChanged: (description: String) -> Unit,
     onUrlChanged: (url: String) -> Unit,
     onImageOriginChanged: (imageUrl: String) -> Unit,
-    onImageUpload: suspend (image: RecipeImageUpload) -> Resource<String>,
+    onUploadImage: (uri: Uri) -> Unit,
+    isImageUploading: Boolean,
+    imageUploadError: UiText?,
+    onClearImageUploadError: () -> Unit,
     onPrepTimeChanged: (time: DurationComponents) -> Unit,
     onCookTimeChanged: (time: DurationComponents) -> Unit,
     onTotalTimeChanged: (time: DurationComponents) -> Unit,
@@ -135,46 +135,14 @@ fun CreateEditRecipeForm(
     onSaveClick: () -> Unit,
 ) {
     val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
     var cameraImageUri by remember { mutableStateOf<Uri?>(null) }
-    var isImageUploading by remember { mutableStateOf(false) }
-    var imageUploadError by remember { mutableStateOf<UiText?>(null) }
-
-    fun uploadImage(uri: Uri) {
-        coroutineScope.launch {
-            isImageUploading = true
-            imageUploadError = null
-
-            val image =
-                compressRecipeImage(
-                    context = context,
-                    uri = uri,
-                )
-
-            if (image == null) {
-                imageUploadError = UiText.StringResource(R.string.error_image_processing_failed)
-                isImageUploading = false
-                return@launch
-            }
-
-            when (val result = onImageUpload(image)) {
-                is Resource.Success -> Unit
-                is Resource.Error -> {
-                    imageUploadError =
-                        result.message ?: UiText.StringResource(R.string.error_image_upload_failed)
-                }
-            }
-
-            isImageUploading = false
-        }
-    }
 
     val takePictureLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { success ->
             if (success) {
                 cameraImageUri?.let { uri ->
-                    uploadImage(uri)
+                    onUploadImage(uri)
                 }
             }
         }
@@ -186,33 +154,19 @@ fun CreateEditRecipeForm(
             cameraImageUri = uri
             takePictureLauncher.launch(uri)
         }.onFailure {
-            imageUploadError = UiText.StringResource(R.string.error_image_processing_failed)
+            // Error handling is managed by the ViewModel
         }
     }
-
-    val cameraPermissionLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-            if (isGranted) {
-                launchCamera()
-            } else {
-                imageUploadError = UiText.StringResource(R.string.error_camera_permission_denied)
-            }
-        }
 
     val pickImageLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             uri?.let {
-                uploadImage(it)
+                onUploadImage(it)
             }
         }
 
     fun requestCameraImage() {
-        val cameraPermission = Manifest.permission.CAMERA
-        if (ContextCompat.checkSelfPermission(context, cameraPermission) == PackageManager.PERMISSION_GRANTED) {
-            launchCamera()
-        } else {
-            cameraPermissionLauncher.launch(cameraPermission)
-        }
+        launchCamera()
     }
 
     Scaffold(
@@ -258,7 +212,7 @@ fun CreateEditRecipeForm(
                 isImageUploading = isImageUploading,
                 imageUploadError = imageUploadError,
                 onImageOriginChanged = { newImageOrigin ->
-                    imageUploadError = null
+                    onClearImageUploadError()
                     onImageOriginChanged(newImageOrigin)
                 },
                 onPickImageClick = {
@@ -1149,7 +1103,10 @@ private fun CreateEditRecipeFormPreview() {
             onDescriptionChanged = {},
             onUrlChanged = {},
             onImageOriginChanged = {},
-            onImageUpload = { Resource.Success("") },
+            onUploadImage = {},
+            isImageUploading = false,
+            imageUploadError = null,
+            onClearImageUploadError = {},
             onPrepTimeChanged = {},
             onCookTimeChanged = {},
             onTotalTimeChanged = {},

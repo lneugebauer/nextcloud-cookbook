@@ -48,6 +48,7 @@
     <string name="error_camera_permission_denied">Camera permission denied</string>
     <string name="error_image_processing_failed">Could not process image</string>
     <string name="error_image_upload_failed">Could not upload image</string>
+    <string name="error_invalid_image_payload">Invalid image data</string>
     <string name="error_invalid_protocol">Invalid protocol; URL must start with https://</string>
     <string name="error_invalid_url">Invalid URL</string>
     <string name="error_malformed_json">Malformed JSON</string>

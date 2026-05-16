@@ -99,6 +99,10 @@ class RecipeRepositoryImpl
 
         override suspend fun uploadRecipeImage(image: RecipeImageUpload): Resource<String> {
             return withContext(ioDispatcher) {
+                if (image.fileName.isBlank() || image.mimeType.isBlank() || image.bytes.isEmpty()) {
+                    return@withContext Resource.Error(message = UiText.StringResource(R.string.error_invalid_image_payload))
+                }
+
                 val ncAccount = preferencesManager.preferencesFlow.first().ncAccount
                 if (ncAccount.username.isBlank() || ncAccount.token.isBlank() || ncAccount.url.isBlank()) {
                     return@withContext Resource.Error(message = UiText.StringResource(R.string.error_no_account_data))

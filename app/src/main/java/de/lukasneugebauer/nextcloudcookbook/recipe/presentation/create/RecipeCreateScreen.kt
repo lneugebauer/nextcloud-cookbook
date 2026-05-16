@@ -5,6 +5,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -24,6 +25,9 @@ fun AnimatedVisibilityScope.RecipeCreateScreen(
     viewModel: RecipeCreateViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val isImageUploading by viewModel.isImageUploading.collectAsState()
+    val imageUploadError by viewModel.imageUploadError.collectAsState()
+    val context = LocalContext.current
 
     HideBottomNavigation()
 
@@ -58,8 +62,13 @@ fun AnimatedVisibilityScope.RecipeCreateScreen(
                 onImageOriginChanged = { newImageUrl ->
                     viewModel.changeImageOrigin(newImageUrl)
                 },
-                onImageUpload = { image ->
-                    viewModel.uploadRecipeImage(image)
+                onUploadImage = { uri ->
+                    viewModel.uploadImage(uri, context)
+                },
+                isImageUploading = isImageUploading,
+                imageUploadError = imageUploadError,
+                onClearImageUploadError = {
+                    viewModel.clearImageUploadError()
                 },
                 onPrepTimeChanged = { newPrepTime ->
                     viewModel.changePrepTime(newPrepTime)
