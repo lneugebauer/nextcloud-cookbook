@@ -58,6 +58,9 @@ fun AnimatedVisibilityScope.RecipeCreateScreen(
                 onImageOriginChanged = { newImageUrl ->
                     viewModel.changeImageOrigin(newImageUrl)
                 },
+                onImageUpload = { image ->
+                    viewModel.uploadRecipeImage(image)
+                },
                 onPrepTimeChanged = { newPrepTime ->
                     viewModel.changePrepTime(newPrepTime)
                 },

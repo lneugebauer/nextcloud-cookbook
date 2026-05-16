@@ -33,4 +33,8 @@ However, you can share recipes as text using the share button on the details scr
 
 ## How can I update the image of a recipe?
 
-Due to limitations of the coobook api, it is currently not possible to update the image of a recipe using the app.
+You can update the image of a recipe by editing the recipe and selecting a new image from your gallery or by taking a new photo. The app will upload the image to your Nextcloud and update the recipe accordingly.
+
+## Why do I get a "409 Conflict" error when saving a recipe?
+
+A 409 error typically indicates that a recipe with the exact same name already exists in your library. Since the Nextcloud Cookbook app stores recipes as files based on their title, a naming collision prevents the creation of a new recipe. Try using a unique name for your recipe.

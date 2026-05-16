@@ -41,9 +41,13 @@
     <string name="error_http_403">403 Verboten</string>
     <string name="error_http_404">404 Nicht gefunden</string>
     <string name="error_http_405">405 Methode nicht erlaubt</string>
+    <string name="error_http_409">409 Konflikt: Rezept existiert bereits</string>
     <string name="error_http_500">500 Interner Server-Fehler</string>
     <string name="error_http_503">503 Dienst nicht verfügbar</string>
     <string name="error_http_unknown">Unbekannter HTTP-Fehler</string>
+    <string name="error_camera_permission_denied">Kamerazugriff verweigert</string>
+    <string name="error_image_processing_failed">Bild konnte nicht verarbeitet werden</string>
+    <string name="error_image_upload_failed">Bild konnte nicht hochgeladen werden</string>
     <string name="error_invalid_protocol">Ungültiges Protokoll; URL muss mit https:// beginnen</string>
     <string name="error_invalid_url">Ungültige URL</string>
     <string name="error_malformed_json">Fehlerhaftes JSON-Format</string>
@@ -73,6 +77,8 @@
     <string name="recipe_duration">%1$d Min.</string>
     <string name="recipe_edit">Rezept bearbeiten</string>
     <string name="recipe_image_url">Bild URL</string>
+    <string name="recipe_image_select">Bild auswählen</string>
+    <string name="recipe_image_take_photo">Foto aufnehmen</string>
     <string name="recipe_import_from_url">Rezept von URL importieren</string>
     <string name="recipe_ingredients">Zutaten</string>
     <plurals name="recipe_ingredients_copied">

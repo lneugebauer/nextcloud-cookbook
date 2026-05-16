@@ -5,9 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import de.lukasneugebauer.nextcloudcookbook.category.domain.model.Category
 import de.lukasneugebauer.nextcloudcookbook.category.domain.repository.CategoryRepository
+import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.NutritionDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipeDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.DurationComponents
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipeImageUpload
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.repository.RecipeRepository
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.RecipeCreateEditState
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.ifSuccess
@@ -107,6 +109,14 @@ abstract class RecipeCreateEditViewModel(
     }
 
     abstract fun save()
+
+    suspend fun uploadRecipeImage(image: RecipeImageUpload): Resource<String> {
+        val result = recipeRepository.uploadRecipeImage(image)
+        if (result is Resource.Success && result.data != null) {
+            changeImageOrigin(result.data)
+        }
+        return result
+    }
 
     fun changeName(newName: String) {
         _uiState.value.ifSuccess {

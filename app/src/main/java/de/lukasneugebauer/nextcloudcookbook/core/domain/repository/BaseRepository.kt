@@ -12,6 +12,13 @@ import java.net.UnknownHostException
 import javax.net.ssl.SSLHandshakeException
 
 open class BaseRepository {
+    /**
+     * Handles network and API response errors, mapping them to [Resource.Error] with user-friendly messages.
+     *
+     * @param t The throwable to handle (e.g., [HttpException], [UnknownHostException]).
+     * @param serverMessage An optional custom message from the server.
+     * @param code An optional HTTP status code.
+     */
     fun <T> handleResponseError(
         t: Throwable?,
         serverMessage: String? = null,
@@ -31,6 +38,7 @@ open class BaseRepository {
                     403 -> UiText.StringResource(R.string.error_http_403)
                     404 -> UiText.StringResource(R.string.error_http_404)
                     405 -> UiText.StringResource(R.string.error_http_405)
+                    409 -> UiText.StringResource(R.string.error_http_409)
                     500 -> UiText.StringResource(R.string.error_http_500)
                     503 -> UiText.StringResource(R.string.error_http_503)
                     else -> unknownErrorUiText(t)
@@ -47,6 +55,7 @@ open class BaseRepository {
                             403 -> UiText.StringResource(R.string.error_http_403)
                             404 -> UiText.StringResource(R.string.error_http_404)
                             405 -> UiText.StringResource(R.string.error_http_405)
+                            409 -> UiText.StringResource(R.string.error_http_409)
                             500 -> UiText.StringResource(R.string.error_http_500)
                             503 -> UiText.StringResource(R.string.error_http_503)
                             else -> unknownErrorUiText(t)
