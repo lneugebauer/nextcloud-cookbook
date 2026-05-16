@@ -1108,6 +1108,7 @@ private fun CreateEditRecipeFormPreview() {
             isImageUploading = false,
             imageUploadError = null,
             onClearImageUploadError = {},
+            onImageUploadError = {},
             onPrepTimeChanged = {},
             onCookTimeChanged = {},
             onTotalTimeChanged = {},
