@@ -102,6 +102,7 @@ fun CreateEditRecipeForm(
     isImageUploading: Boolean,
     imageUploadError: UiText?,
     onClearImageUploadError: () -> Unit,
+    onImageUploadError: (Int) -> Unit,
     onPrepTimeChanged: (time: DurationComponents) -> Unit,
     onCookTimeChanged: (time: DurationComponents) -> Unit,
     onTotalTimeChanged: (time: DurationComponents) -> Unit,
@@ -154,7 +155,7 @@ fun CreateEditRecipeForm(
             cameraImageUri = uri
             takePictureLauncher.launch(uri)
         }.onFailure {
-            // Error handling is managed by the ViewModel
+            onImageUploadError(R.string.error_image_processing_failed)
         }
     }
 

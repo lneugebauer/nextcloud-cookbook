@@ -125,6 +125,10 @@ abstract class RecipeCreateEditViewModel(
         _imageUploadError.value = null
     }
 
+    fun setImageUploadError(errorResId: Int) {
+        _imageUploadError.value = UiText.StringResource(errorResId)
+    }
+
     fun uploadImage(uri: Uri, context: Context) {
         viewModelScope.launch {
             _isImageUploading.value = true
@@ -145,6 +149,8 @@ abstract class RecipeCreateEditViewModel(
                     is Resource.Success -> {
                         if (result.data != null) {
                             changeImageOrigin(result.data)
+                        } else {
+                            _imageUploadError.value = UiText.StringResource(R.string.error_image_upload_failed)
                         }
                     }
                     is Resource.Error -> {
@@ -152,6 +158,8 @@ abstract class RecipeCreateEditViewModel(
                             result.message ?: UiText.StringResource(R.string.error_image_upload_failed)
                     }
                 }
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
             } catch (e: Exception) {
                 _imageUploadError.value = UiText.StringResource(R.string.error_image_upload_failed)
             } finally {

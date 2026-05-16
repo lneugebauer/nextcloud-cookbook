@@ -70,6 +70,9 @@ fun AnimatedVisibilityScope.RecipeCreateScreen(
                 onClearImageUploadError = {
                     viewModel.clearImageUploadError()
                 },
+                onImageUploadError = { errorResId ->
+                    viewModel.setImageUploadError(errorResId)
+                },
                 onPrepTimeChanged = { newPrepTime ->
                     viewModel.changePrepTime(newPrepTime)
                 },
