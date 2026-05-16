@@ -1,5 +1,10 @@
 package de.lukasneugebauer.nextcloudcookbook.recipe.presentation.components
 
+import android.content.Context
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -10,6 +15,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
@@ -22,7 +29,10 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.DragHandle
+import androidx.compose.material.icons.filled.PhotoCamera
+import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material.icons.filled.Save
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -32,11 +42,17 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -44,6 +60,8 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.core.content.FileProvider
 import com.dokar.chiptextfield.Chip
 import com.dokar.chiptextfield.m3.OutlinedChipTextField
 import com.dokar.chiptextfield.rememberChipTextFieldState
@@ -53,12 +71,17 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Default
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.DefaultOutlinedTextField
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Gap
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
+import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
+import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.DurationComponents
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Ingredient
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Instruction
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Recipe
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipeImageUpload
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Tool
+import kotlinx.coroutines.launch
 import sh.calvin.reorderable.ReorderableColumn
+import java.io.File
 import java.time.Duration
 
 @Composable
@@ -75,6 +98,11 @@ fun CreateEditRecipeForm(
     onDescriptionChanged: (description: String) -> Unit,
     onUrlChanged: (url: String) -> Unit,
     onImageOriginChanged: (imageUrl: String) -> Unit,
+    onUploadImage: (uri: Uri) -> Unit,
+    isImageUploading: Boolean,
+    imageUploadError: UiText?,
+    onClearImageUploadError: () -> Unit,
+    onImageUploadError: (Int) -> Unit,
     onPrepTimeChanged: (time: DurationComponents) -> Unit,
     onCookTimeChanged: (time: DurationComponents) -> Unit,
     onTotalTimeChanged: (time: DurationComponents) -> Unit,
@@ -107,7 +135,41 @@ fun CreateEditRecipeForm(
     onSwapInstruction: (fromIndex: Int, toIndex: Int) -> Unit,
     onSaveClick: () -> Unit,
 ) {
+    val context = LocalContext.current
     val scrollState = rememberScrollState()
+    var cameraImageUri by remember { mutableStateOf<Uri?>(null) }
+
+    val takePictureLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { success ->
+            if (success) {
+                cameraImageUri?.let { uri ->
+                    onUploadImage(uri)
+                }
+            }
+        }
+
+    fun launchCamera() {
+        runCatching {
+            createRecipeImageUri(context)
+        }.onSuccess { uri ->
+            cameraImageUri = uri
+            takePictureLauncher.launch(uri)
+        }.onFailure {
+            onImageUploadError(R.string.error_image_processing_failed)
+        }
+    }
+
+    val pickImageLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+            uri?.let {
+                onUploadImage(it)
+            }
+        }
+
+    fun requestCameraImage() {
+        launchCamera()
+    }
+
     Scaffold(
         topBar = {
             RecipeEditTopBar(
@@ -148,7 +210,20 @@ fun CreateEditRecipeForm(
             ImageOrigin(
                 recipe = recipe,
                 modifier = modifier,
-                onImageOriginChanged = onImageOriginChanged,
+                isImageUploading = isImageUploading,
+                imageUploadError = imageUploadError,
+                onImageOriginChanged = { newImageOrigin ->
+                    onClearImageUploadError()
+                    onImageOriginChanged(newImageOrigin)
+                },
+                onPickImageClick = {
+                    pickImageLauncher.launch(
+                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly),
+                    )
+                },
+                onTakePhotoClick = {
+                    requestCameraImage()
+                },
             )
             PrepTime(
                 prepTime = prepTime,
@@ -326,27 +401,65 @@ private fun Url(
 private fun ImageOrigin(
     recipe: Recipe,
     modifier: Modifier,
+    isImageUploading: Boolean,
+    imageUploadError: UiText?,
     onImageOriginChanged: (imageOrigin: String) -> Unit,
+    onPickImageClick: () -> Unit,
+    onTakePhotoClick: () -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
 
-    DefaultOutlinedTextField(
-        value = recipe.imageOrigin,
-        onValueChange = onImageOriginChanged,
+    Row(
         modifier = modifier,
-        label = { Text(text = stringResource(R.string.recipe_image_url)) },
-        keyboardOptions =
-            KeyboardOptions.Default.copy(
-                imeAction = ImeAction.Next,
-            ),
-        keyboardActions =
-            KeyboardActions(
-                onNext = {
-                    focusManager.moveFocus(FocusDirection.Down)
-                },
-            ),
-        singleLine = true,
-    )
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            DefaultOutlinedTextField(
+                value = recipe.imageOrigin,
+                onValueChange = onImageOriginChanged,
+                modifier = Modifier.fillMaxWidth(),
+                label = { Text(text = stringResource(R.string.recipe_image_url)) },
+                errorText = imageUploadError?.asString(),
+                keyboardOptions =
+                    KeyboardOptions.Default.copy(
+                        imeAction = ImeAction.Next,
+                    ),
+                keyboardActions =
+                    KeyboardActions(
+                        onNext = {
+                            focusManager.moveFocus(FocusDirection.Down)
+                        },
+                    ),
+                singleLine = true,
+            )
+        }
+        Gap(size = dimensionResource(id = R.dimen.padding_s))
+        Row(
+            modifier = Modifier.width(96.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            if (isImageUploading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(24.dp),
+                    strokeWidth = 2.dp,
+                )
+            } else {
+                IconButton(onClick = onPickImageClick) {
+                    Icon(
+                        imageVector = Icons.Default.PhotoLibrary,
+                        contentDescription = stringResource(R.string.recipe_image_select),
+                    )
+                }
+                IconButton(onClick = onTakePhotoClick) {
+                    Icon(
+                        imageVector = Icons.Default.PhotoCamera,
+                        contentDescription = stringResource(R.string.recipe_image_take_photo),
+                    )
+                }
+            }
+        }
+    }
 }
 
 @Composable
@@ -915,6 +1028,20 @@ private fun Instructions(
     }
 }
 
+private fun createRecipeImageUri(context: Context): Uri {
+    val imagesDir =
+        File(context.cacheDir, "recipe_images").apply {
+            mkdirs()
+        }
+    val imageFile = File.createTempFile("recipe-image-", ".jpg", imagesDir)
+
+    return FileProvider.getUriForFile(
+        context,
+        "${context.packageName}.fileprovider",
+        imageFile,
+    )
+}
+
 private val MockedRecipe =
     Recipe(
         id = "1",
@@ -977,6 +1104,11 @@ private fun CreateEditRecipeFormPreview() {
             onDescriptionChanged = {},
             onUrlChanged = {},
             onImageOriginChanged = {},
+            onUploadImage = {},
+            isImageUploading = false,
+            imageUploadError = null,
+            onClearImageUploadError = {},
+            onImageUploadError = {},
             onPrepTimeChanged = {},
             onCookTimeChanged = {},
             onTotalTimeChanged = {},

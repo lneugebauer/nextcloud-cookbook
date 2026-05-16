@@ -1,17 +1,24 @@
 package de.lukasneugebauer.nextcloudcookbook.recipe.util
 
+import android.content.Context
+import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.category.domain.model.Category
 import de.lukasneugebauer.nextcloudcookbook.category.domain.repository.CategoryRepository
+import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
+import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.NutritionDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipeDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.DurationComponents
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipeImageUpload
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.repository.RecipeRepository
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.RecipeCreateEditState
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.ifSuccess
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.usecase.GetAllKeywordsUseCase
+import de.lukasneugebauer.nextcloudcookbook.recipe.presentation.components.compressRecipeImage
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.RecipeConstants.DEFAULT_YIELD
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -107,6 +114,59 @@ abstract class RecipeCreateEditViewModel(
     }
 
     abstract fun save()
+
+    private val _isImageUploading = MutableStateFlow(false)
+    val isImageUploading: StateFlow<Boolean> = _isImageUploading
+
+    private val _imageUploadError = MutableStateFlow<UiText?>(null)
+    val imageUploadError: StateFlow<UiText?> = _imageUploadError
+
+    fun clearImageUploadError() {
+        _imageUploadError.value = null
+    }
+
+    fun setImageUploadError(errorResId: Int) {
+        _imageUploadError.value = UiText.StringResource(errorResId)
+    }
+
+    fun uploadImage(uri: Uri, context: Context) {
+        viewModelScope.launch {
+            _isImageUploading.value = true
+            _imageUploadError.value = null
+
+            try {
+                val image = compressRecipeImage(
+                    context = context,
+                    uri = uri,
+                )
+
+                if (image == null) {
+                    _imageUploadError.value = UiText.StringResource(R.string.error_image_processing_failed)
+                    return@launch
+                }
+
+                when (val result = recipeRepository.uploadRecipeImage(image)) {
+                    is Resource.Success -> {
+                        if (result.data != null) {
+                            changeImageOrigin(result.data)
+                        } else {
+                            _imageUploadError.value = UiText.StringResource(R.string.error_image_upload_failed)
+                        }
+                    }
+                    is Resource.Error -> {
+                        _imageUploadError.value =
+                            result.message ?: UiText.StringResource(R.string.error_image_upload_failed)
+                    }
+                }
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                _imageUploadError.value = UiText.StringResource(R.string.error_image_upload_failed)
+            } finally {
+                _isImageUploading.value = false
+            }
+        }
+    }
 
     fun changeName(newName: String) {
         _uiState.value.ifSuccess {
