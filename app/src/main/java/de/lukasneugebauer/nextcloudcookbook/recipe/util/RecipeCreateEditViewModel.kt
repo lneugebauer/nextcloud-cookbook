@@ -136,12 +136,13 @@ abstract class RecipeCreateEditViewModel(
     fun uploadImage(uri: Uri, context: Context) {
         viewModelScope.launch {
             imageUploadMutex.withLock {
+                val appContext = context.applicationContext
                 _isImageUploading.value = true
                 _imageUploadError.value = null
 
                 try {
                     val image = compressRecipeImage(
-                        context = context,
+                        context = appContext,
                         uri = uri,
                     )
 
