@@ -26,6 +26,8 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import org.mobilenativefoundation.store.store5.StoreReadResponse
 import timber.log.Timber
 import java.lang.UnsupportedOperationException
@@ -129,41 +131,45 @@ abstract class RecipeCreateEditViewModel(
         _imageUploadError.value = UiText.StringResource(errorResId)
     }
 
+    private val imageUploadMutex = Mutex()
+
     fun uploadImage(uri: Uri, context: Context) {
         viewModelScope.launch {
-            _isImageUploading.value = true
-            _imageUploadError.value = null
+            imageUploadMutex.withLock {
+                _isImageUploading.value = true
+                _imageUploadError.value = null
 
-            try {
-                val image = compressRecipeImage(
-                    context = context,
-                    uri = uri,
-                )
+                try {
+                    val image = compressRecipeImage(
+                        context = context,
+                        uri = uri,
+                    )
 
-                if (image == null) {
-                    _imageUploadError.value = UiText.StringResource(R.string.error_image_processing_failed)
-                    return@launch
-                }
+                    if (image == null) {
+                        _imageUploadError.value = UiText.StringResource(R.string.error_image_processing_failed)
+                        return@withLock
+                    }
 
-                when (val result = recipeRepository.uploadRecipeImage(image)) {
-                    is Resource.Success -> {
-                        if (result.data != null) {
-                            changeImageOrigin(result.data)
-                        } else {
-                            _imageUploadError.value = UiText.StringResource(R.string.error_image_upload_failed)
+                    when (val result = recipeRepository.uploadRecipeImage(image)) {
+                        is Resource.Success -> {
+                            if (result.data != null) {
+                                changeImageOrigin(result.data)
+                            } else {
+                                _imageUploadError.value = UiText.StringResource(R.string.error_image_upload_failed)
+                            }
+                        }
+                        is Resource.Error -> {
+                            _imageUploadError.value =
+                                result.message ?: UiText.StringResource(R.string.error_image_upload_failed)
                         }
                     }
-                    is Resource.Error -> {
-                        _imageUploadError.value =
-                            result.message ?: UiText.StringResource(R.string.error_image_upload_failed)
-                    }
+                } catch (e: kotlinx.coroutines.CancellationException) {
+                    throw e
+                } catch (e: Exception) {
+                    _imageUploadError.value = UiText.StringResource(R.string.error_image_upload_failed)
+                } finally {
+                    _isImageUploading.value = false
                 }
-            } catch (e: kotlinx.coroutines.CancellationException) {
-                throw e
-            } catch (e: Exception) {
-                _imageUploadError.value = UiText.StringResource(R.string.error_image_upload_failed)
-            } finally {
-                _isImageUploading.value = false
             }
         }
     }

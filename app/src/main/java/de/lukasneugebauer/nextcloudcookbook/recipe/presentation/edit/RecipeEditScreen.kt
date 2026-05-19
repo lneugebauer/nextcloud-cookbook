@@ -64,7 +64,7 @@ fun AnimatedVisibilityScope.RecipeEditScreen(
                     viewModel.changeImageOrigin(newImageUrl)
                 },
                 onUploadImage = { uri ->
-                    viewModel.uploadImage(uri, context)
+                    viewModel.uploadImage(uri, context.applicationContext)
                 },
                 isImageUploading = isImageUploading,
                 imageUploadError = imageUploadError,
