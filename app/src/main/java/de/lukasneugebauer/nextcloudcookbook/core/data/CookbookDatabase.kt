@@ -16,6 +16,7 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipePreviewEnt
 )
 abstract class CookbookDatabase : RoomDatabase() {
     abstract fun recipePreviewDao(): RecipePreviewDao
+
     abstract fun recipeDao(): RecipeDao
 
     abstract fun categoryDao(): CategoryDao

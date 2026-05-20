@@ -26,7 +26,9 @@ import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltAndroidApp
-class NextcloudCookbookApplication : Application(), Configuration.Provider {
+class NextcloudCookbookApplication :
+    Application(),
+    Configuration.Provider {
     @Inject
     lateinit var clientProvider: OkHttpClientProvider
 
@@ -34,9 +36,11 @@ class NextcloudCookbookApplication : Application(), Configuration.Provider {
     lateinit var workerFactory: HiltWorkerFactory
 
     override val workManagerConfiguration: Configuration
-        get() = Configuration.Builder()
-            .setWorkerFactory(workerFactory)
-            .build()
+        get() =
+            Configuration
+                .Builder()
+                .setWorkerFactory(workerFactory)
+                .build()
 
     private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 

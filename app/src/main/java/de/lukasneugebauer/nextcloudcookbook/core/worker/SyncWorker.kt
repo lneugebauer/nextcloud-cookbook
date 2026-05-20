@@ -21,64 +21,66 @@ import java.util.concurrent.CancellationException
 import java.util.concurrent.TimeUnit
 
 @HiltWorker
-class SyncWorker @AssistedInject constructor(
-    @Assisted context: Context,
-    @Assisted params: WorkerParameters,
-    private val recipePreviewsStore: RecipePreviewsStore,
-    private val categoriesStore: CategoriesStore,
-    private val recipeStore: RecipeStore
-) : CoroutineWorker(context, params) {
+class SyncWorker
+    @AssistedInject
+    constructor(
+        @Assisted context: Context,
+        @Assisted params: WorkerParameters,
+        private val recipePreviewsStore: RecipePreviewsStore,
+        private val categoriesStore: CategoriesStore,
+        private val recipeStore: RecipeStore,
+    ) : CoroutineWorker(context, params) {
+        override suspend fun doWork(): Result =
+            try {
+                val previews =
+                    recipePreviewsStore.fresh(
+                        Unit,
+                    )
+                categoriesStore.fresh(Unit)
+                var hadFailures = false
 
-    override suspend fun doWork(): Result {
-        return try {
-            val previews = recipePreviewsStore.fresh(
-                Unit)
-            categoriesStore.fresh(Unit)
-            var hadFailures = false
-
-            previews.forEach { previewDto ->
-                val id = if (!previewDto.id.isNullOrBlank()) previewDto.id else previewDto.recipeId
-                if (id != null) {
-                    try {
-                        recipeStore.fresh(id)
-                    } catch (e: CancellationException) {
-                        throw e
-                    } catch (e: Exception) {
-                        hadFailures = true
-                        Timber.w(e, "Failed to sync recipe $id")
+                previews.forEach { previewDto ->
+                    val id = if (!previewDto.id.isNullOrBlank()) previewDto.id else previewDto.recipeId
+                    if (id != null) {
+                        try {
+                            recipeStore.fresh(id)
+                        } catch (e: CancellationException) {
+                            throw e
+                        } catch (e: Exception) {
+                            hadFailures = true
+                            Timber.w(e, "Failed to sync recipe $id")
+                        }
                     }
                 }
+
+                if (hadFailures) Result.retry() else Result.success()
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Timber.e(e, "SyncWorker failed")
+                Result.retry()
             }
 
-            if (hadFailures) Result.retry() else Result.success()
+        companion object {
+            const val WORK_NAME = "sync_recipes"
 
-        } catch (e: CancellationException) {
-            throw e
-        } catch (e: Exception) {
-            Timber.e(e, "SyncWorker failed")
-            Result.retry()
+            fun buildPeriodicRequest() =
+                PeriodicWorkRequestBuilder<SyncWorker>(1, TimeUnit.HOURS)
+                    .setConstraints(
+                        Constraints
+                            .Builder()
+                            .setRequiredNetworkType(NetworkType.CONNECTED)
+                            .build(),
+                    ).setBackoffCriteria(BackoffPolicy.EXPONENTIAL, WorkRequest.MIN_BACKOFF_MILLIS, TimeUnit.MILLISECONDS)
+                    .build()
+
+            fun buildOneTimeRequest() =
+                OneTimeWorkRequestBuilder<SyncWorker>()
+                    .setConstraints(
+                        Constraints
+                            .Builder()
+                            .setRequiredNetworkType(NetworkType.CONNECTED)
+                            .build(),
+                    ).build()
         }
     }
-
-    companion object {
-        const val WORK_NAME = "sync_recipes"
-
-        fun buildPeriodicRequest() = PeriodicWorkRequestBuilder<SyncWorker>(1, TimeUnit.HOURS)
-            .setConstraints(
-                Constraints.Builder()
-                    .setRequiredNetworkType(NetworkType.CONNECTED)
-                    .build()
-            )
-            .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, WorkRequest.MIN_BACKOFF_MILLIS, TimeUnit.MILLISECONDS)
-            .build()
-
-        fun buildOneTimeRequest() = OneTimeWorkRequestBuilder<SyncWorker>()
-            .setConstraints(
-                Constraints.Builder()
-                    .setRequiredNetworkType(NetworkType.CONNECTED)
-                    .build()
-            )
-            .build()
-    }
-
-}

@@ -25,7 +25,10 @@ interface RecipePreviewDao {
     suspend fun deleteAll()
 
     @Transaction
-    suspend fun replaceByCategory(category: String, recipes: List<RecipePreviewEntity>) {
+    suspend fun replaceByCategory(
+        category: String,
+        recipes: List<RecipePreviewEntity>,
+    ) {
         deleteByCategory(category)
         upsertAll(recipes)
     }
@@ -35,6 +38,4 @@ interface RecipePreviewDao {
         deleteAll()
         upsertAll(recipes)
     }
-
 }
-

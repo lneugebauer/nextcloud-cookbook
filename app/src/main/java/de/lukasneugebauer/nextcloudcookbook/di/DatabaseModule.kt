@@ -17,16 +17,17 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
-
     @Provides
     @Singleton
-    fun provideDatabase(@ApplicationContext context: Context): CookbookDatabase =
-        Room.databaseBuilder(
-            context,
-            CookbookDatabase::class.java,
-            "cookbook.db",
-        )
-            .build()
+    fun provideDatabase(
+        @ApplicationContext context: Context,
+    ): CookbookDatabase =
+        Room
+            .databaseBuilder(
+                context,
+                CookbookDatabase::class.java,
+                "cookbook.db",
+            ).build()
 
     @Provides
     fun provideRecipePreviewDao(db: CookbookDatabase): RecipePreviewDao = db.recipePreviewDao()
@@ -40,5 +41,4 @@ object DatabaseModule {
     @Provides
     @Singleton
     fun provideGson(): Gson = Gson()
-
 }

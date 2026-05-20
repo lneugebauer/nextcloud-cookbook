@@ -3,10 +3,7 @@ package de.lukasneugebauer.nextcloudcookbook.auth.presentation.splash
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.work.Constraints
 import androidx.work.ExistingWorkPolicy
-import androidx.work.NetworkType
-import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -39,7 +36,7 @@ class SplashViewModel
                 .distinctUntilChanged()
                 .onEach { account ->
                     if (account is Resource.Success) {
-                        triggerInitialSync();
+                        triggerInitialSync()
                         _uiState.update { SplashScreenState.Authorized }
                     } else {
                         _uiState.update { SplashScreenState.Unauthorized }
@@ -49,13 +46,13 @@ class SplashViewModel
 
         private fun triggerInitialSync() {
             viewModelScope.launch {
-                WorkManager.getInstance(context)
+                WorkManager
+                    .getInstance(context)
                     .enqueueUniqueWork(
                         "sync_initial",
                         ExistingWorkPolicy.KEEP,
-                        SyncWorker.buildOneTimeRequest()
+                        SyncWorker.buildOneTimeRequest(),
                     )
             }
         }
-
     }

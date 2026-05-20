@@ -35,23 +35,25 @@ object CategoryModule {
     ): CategoriesStore =
         StoreBuilder
             .from<Any, List<CategoryDto>, List<CategoryDto>>(
-                fetcher = Fetcher.of {
-                    apiProvider.getApi()?.getCategories()
-                        ?: throw NullPointerException("Nextcloud Cookbook API is null.")
-                },
-                sourceOfTruth = SourceOfTruth.of<Any, List<CategoryDto>, List<CategoryDto>>(
-                    reader = { _: Any ->
-                        categoryDao.getAll().map { entities ->
-                            entities.map { it.toDto() }
-                        }
+                fetcher =
+                    Fetcher.of {
+                        apiProvider.getApi()?.getCategories()
+                            ?: throw NullPointerException("Nextcloud Cookbook API is null.")
                     },
-                    writer = { _: Any, dtos: List<CategoryDto> ->
-                        val entities = dtos.map { it.toEntity() }
-                        categoryDao.replaceCategories(entities)
-                    },
-                    delete = { categoryDao.deleteAll() },
-                    deleteAll = { categoryDao.deleteAll() },
-                )
+                sourceOfTruth =
+                    SourceOfTruth.of<Any, List<CategoryDto>, List<CategoryDto>>(
+                        reader = { _: Any ->
+                            categoryDao.getAll().map { entities ->
+                                entities.map { it.toDto() }
+                            }
+                        },
+                        writer = { _: Any, dtos: List<CategoryDto> ->
+                            val entities = dtos.map { it.toEntity() }
+                            categoryDao.replaceCategories(entities)
+                        },
+                        delete = { categoryDao.deleteAll() },
+                        deleteAll = { categoryDao.deleteAll() },
+                    ),
             ).build()
 
     @Provides

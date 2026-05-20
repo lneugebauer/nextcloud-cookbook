@@ -23,5 +23,4 @@ interface CategoryDao {
         deleteAll()
         upsertAll(categories)
     }
-
 }

@@ -18,13 +18,15 @@ fun RecipePreviewEntity.toDto(): RecipePreviewDto =
 
 fun RecipePreviewDto.toEntity(categoryOverride: String? = null): RecipePreviewEntity =
     RecipePreviewEntity(
-        id = id?.takeIf { it.isNotBlank() }
-            ?: recipeId?.takeIf { it.isNotBlank() }
-            ?: throw IllegalStateException("Both 'id' and 'recipe_id' are null or blank"),
+        id =
+            id?.takeIf { it.isNotBlank() }
+                ?: recipeId?.takeIf { it.isNotBlank() }
+                ?: throw IllegalStateException("Both 'id' and 'recipe_id' are null or blank"),
         name = name,
         keywords = keywords,
-        category = categoryOverride ?: category
-        ?: throw IllegalStateException("Category is required (either from DTO or override)"),
+        category =
+            categoryOverride ?: category
+                ?: throw IllegalStateException("Category is required (either from DTO or override)"),
         dateCreated = dateCreated,
         dateModified = dateModified,
         imageUrl = imageUrl,

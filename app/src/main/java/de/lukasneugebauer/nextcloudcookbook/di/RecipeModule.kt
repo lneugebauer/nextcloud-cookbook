@@ -14,6 +14,8 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.data.RecipeFormatterImpl
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.YieldCalculatorImpl
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipeDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipePreviewDto
+import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.mapper.toDto
+import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.mapper.toEntity
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.repository.RecipeRepositoryImpl
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.RecipeFormatter
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.YieldCalculator
@@ -30,13 +32,10 @@ import org.mobilenativefoundation.store.store5.SourceOfTruth
 import org.mobilenativefoundation.store.store5.Store
 import org.mobilenativefoundation.store.store5.StoreBuilder
 import javax.inject.Singleton
-import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.mapper.toDto
-import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.mapper.toEntity
 
 typealias RecipePreviewsByCategoryStore = Store<String, List<RecipePreviewDto>>
 typealias RecipePreviewsStore = Store<Unit, List<RecipePreviewDto>>
 typealias RecipeStore = Store<String, RecipeDto>
-
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -51,25 +50,26 @@ object RecipeModule {
     ): RecipePreviewsStore =
         StoreBuilder
             .from<Unit, List<RecipePreviewDto>, List<RecipePreviewDto>>(
-                fetcher = Fetcher.of {
-                    apiProvider.getApi()?.getRecipes()
-                        ?: throw NullPointerException("Nextcloud Cookbook API is null.")
-                },
-                sourceOfTruth = SourceOfTruth.of<Unit, List<RecipePreviewDto>, List<RecipePreviewDto>>(
-                    reader = {
-                        recipePreviewDao.getAll().map { entities ->
-                            entities.map { it.toDto() }.takeIf { it.isNotEmpty() }
-                        }
+                fetcher =
+                    Fetcher.of {
+                        apiProvider.getApi()?.getRecipes()
+                            ?: throw NullPointerException("Nextcloud Cookbook API is null.")
                     },
-                    writer = { _: Unit, dtos ->
-                        val entities = dtos.map { it.toEntity() }
-                        recipePreviewDao.replaceRecipes(entities)
-                    },
-                    delete = { _: Unit -> recipePreviewDao.deleteAll() },
-                    deleteAll = { recipePreviewDao.deleteAll() }
-                ),
+                sourceOfTruth =
+                    SourceOfTruth.of<Unit, List<RecipePreviewDto>, List<RecipePreviewDto>>(
+                        reader = {
+                            recipePreviewDao.getAll().map { entities ->
+                                entities.map { it.toDto() }.takeIf { it.isNotEmpty() }
+                            }
+                        },
+                        writer = { _: Unit, dtos ->
+                            val entities = dtos.map { it.toEntity() }
+                            recipePreviewDao.replaceRecipes(entities)
+                        },
+                        delete = { _: Unit -> recipePreviewDao.deleteAll() },
+                        deleteAll = { recipePreviewDao.deleteAll() },
+                    ),
             ).build()
-
 
     @Provides
     @Singleton
@@ -79,27 +79,29 @@ object RecipeModule {
     ): RecipePreviewsByCategoryStore =
         StoreBuilder
             .from(
-                fetcher = Fetcher.of { categoryName: String ->
-                    apiProvider.getApi()?.getRecipesByCategory(categoryName)
-                        ?: throw NullPointerException("Nextcloud Cookbook API is null.")
-                },
-                sourceOfTruth = SourceOfTruth.of<String, List<RecipePreviewDto>, List<RecipePreviewDto>>(
-                    reader = { categoryName ->
-                        recipePreviewDao.getByCategory(categoryName).map { entities ->
-                            entities.map { it.toDto() }.takeIf { it.isNotEmpty() }
-                        }
+                fetcher =
+                    Fetcher.of { categoryName: String ->
+                        apiProvider.getApi()?.getRecipesByCategory(categoryName)
+                            ?: throw NullPointerException("Nextcloud Cookbook API is null.")
                     },
-                    writer = { categoryName, dtos ->
-                        val entities = dtos.map { it.toEntity(categoryName) }
-                        recipePreviewDao.replaceByCategory(categoryName, entities)
-                    },
-                    delete = { categoryName ->
-                        recipePreviewDao.deleteByCategory(categoryName)
-                    },
-                    deleteAll = {
-                        recipePreviewDao.deleteAll()
-                    }
-                )
+                sourceOfTruth =
+                    SourceOfTruth.of<String, List<RecipePreviewDto>, List<RecipePreviewDto>>(
+                        reader = { categoryName ->
+                            recipePreviewDao.getByCategory(categoryName).map { entities ->
+                                entities.map { it.toDto() }.takeIf { it.isNotEmpty() }
+                            }
+                        },
+                        writer = { categoryName, dtos ->
+                            val entities = dtos.map { it.toEntity(categoryName) }
+                            recipePreviewDao.replaceByCategory(categoryName, entities)
+                        },
+                        delete = { categoryName ->
+                            recipePreviewDao.deleteByCategory(categoryName)
+                        },
+                        deleteAll = {
+                            recipePreviewDao.deleteAll()
+                        },
+                    ),
             ).build()
 
     @Provides
@@ -111,22 +113,24 @@ object RecipeModule {
     ): RecipeStore =
         StoreBuilder
             .from(
-                fetcher = Fetcher.of { recipeId: String ->
-                    apiProvider.getApi()?.getRecipe(recipeId)
-                        ?: throw NullPointerException("Nextcloud Cookbook API is null.")
-                },
-                sourceOfTruth = SourceOfTruth.of<String, RecipeDto, RecipeDto>(
-                    reader = { id: String ->
-                        recipeDao.getById(id).map { entity ->
-                            entity?.let { gson.fromJson(it.json, RecipeDto::class.java) }
-                        }
+                fetcher =
+                    Fetcher.of { recipeId: String ->
+                        apiProvider.getApi()?.getRecipe(recipeId)
+                            ?: throw NullPointerException("Nextcloud Cookbook API is null.")
                     },
-                    writer = { _: String, dto: RecipeDto ->
-                        recipeDao.upsert(RecipeEntity(id = dto.id, json = gson.toJson(dto)))
-                    },
-                    delete = { id: String -> recipeDao.deleteById(id) },
-                    deleteAll = { recipeDao.deleteAll() },
-                ),
+                sourceOfTruth =
+                    SourceOfTruth.of<String, RecipeDto, RecipeDto>(
+                        reader = { id: String ->
+                            recipeDao.getById(id).map { entity ->
+                                entity?.let { gson.fromJson(it.json, RecipeDto::class.java) }
+                            }
+                        },
+                        writer = { _: String, dto: RecipeDto ->
+                            recipeDao.upsert(RecipeEntity(id = dto.id, json = gson.toJson(dto)))
+                        },
+                        delete = { id: String -> recipeDao.deleteById(id) },
+                        deleteAll = { recipeDao.deleteAll() },
+                    ),
             ).build()
 
     @Provides
