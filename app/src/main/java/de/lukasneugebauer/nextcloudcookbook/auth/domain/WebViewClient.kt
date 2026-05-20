@@ -11,6 +11,7 @@ import android.webkit.WebViewClient
 
 class WebViewClient(
     private val allowSelfSignedCertificates: Boolean,
+    private val onMainFrameError: (errorCode: Int, description: CharSequence?) -> Unit = { _, _ -> },
 ) : WebViewClient() {
     override fun shouldOverrideUrlLoading(
         view: WebView?,
@@ -36,14 +37,18 @@ class WebViewClient(
         error: WebResourceError?,
     ) {
         if (request != null && request.isForMainFrame) {
+            val errorCode = error?.errorCode ?: ERROR_UNKNOWN
+            val description = error?.description
             Log.w(
                 TAG,
-                "Login WebView load error ${error?.errorCode}: ${error?.description} @ ${request.url}",
+                "Login WebView load error $errorCode: $description @ ${request.url}",
             )
+            onMainFrameError(errorCode, description)
         }
     }
 
     private companion object {
         private const val TAG = "AuthWebViewClient"
+        private const val ERROR_UNKNOWN = -1
     }
 }

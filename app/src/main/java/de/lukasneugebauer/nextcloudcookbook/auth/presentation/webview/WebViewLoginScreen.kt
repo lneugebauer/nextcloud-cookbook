@@ -69,12 +69,17 @@ fun AnimatedVisibilityScope.WebViewLoginScreen(
                 WebViewLoginLayout(
                     url = webViewUrl,
                     allowSelfSignedCertificates = allowSelfSignedCertificates,
+                    onMainFrameError = viewModel::onWebViewLoadError,
                     modifier = Modifier.padding(innerPadding),
                 )
             }
             is WebViewScreenState.Error -> {
                 val message = (uiState as WebViewScreenState.Error).uiText
-                AbstractErrorScreen(uiText = message, modifier = Modifier.padding(innerPadding))
+                AbstractErrorScreen(
+                    uiText = message,
+                    modifier = Modifier.padding(innerPadding),
+                    onRetryClick = { viewModel.retry() },
+                )
             }
         }
     }
@@ -86,12 +91,17 @@ private fun WebViewLoginLayout(
     url: Uri,
     allowSelfSignedCertificates: Boolean,
     modifier: Modifier = Modifier,
+    onMainFrameError: (Int, CharSequence?) -> Unit = { _, _ -> },
 ) {
     AndroidView(
         factory = {
             WebView(it).apply {
                 settings.javaScriptEnabled = true
-                webViewClient = WebViewClient(allowSelfSignedCertificates = allowSelfSignedCertificates)
+                webViewClient =
+                    WebViewClient(
+                        allowSelfSignedCertificates = allowSelfSignedCertificates,
+                        onMainFrameError = onMainFrameError,
+                    )
                 loadUrl(url.toString())
             }
         },
