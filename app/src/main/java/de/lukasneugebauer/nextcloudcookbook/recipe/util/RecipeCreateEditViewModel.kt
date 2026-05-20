@@ -13,7 +13,6 @@ import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.NutritionDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipeDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.DurationComponents
-import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipeImageUpload
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.repository.RecipeRepository
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.RecipeCreateEditState
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.ifSuccess
@@ -133,7 +132,10 @@ abstract class RecipeCreateEditViewModel(
 
     private val imageUploadMutex = Mutex()
 
-    fun uploadImage(uri: Uri, context: Context) {
+    fun uploadImage(
+        uri: Uri,
+        context: Context,
+    ) {
         viewModelScope.launch {
             imageUploadMutex.withLock {
                 val appContext = context.applicationContext
@@ -141,10 +143,11 @@ abstract class RecipeCreateEditViewModel(
                 _imageUploadError.value = null
 
                 try {
-                    val image = compressRecipeImage(
-                        context = appContext,
-                        uri = uri,
-                    )
+                    val image =
+                        compressRecipeImage(
+                            context = appContext,
+                            uri = uri,
+                        )
 
                     if (image == null) {
                         _imageUploadError.value = UiText.StringResource(R.string.error_image_processing_failed)
