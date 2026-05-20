@@ -45,14 +45,12 @@ class SplashViewModel
         }
 
         private fun triggerInitialSync() {
-            viewModelScope.launch {
-                WorkManager
-                    .getInstance(context)
-                    .enqueueUniqueWork(
-                        "sync_initial",
-                        ExistingWorkPolicy.KEEP,
-                        SyncWorker.buildOneTimeRequest(),
-                    )
-            }
+            WorkManager
+                .getInstance(context)
+                .enqueueUniqueWork(
+                    "sync_initial",
+                    ExistingWorkPolicy.KEEP,
+                    SyncWorker.buildOneTimeRequest()
+                )
         }
     }

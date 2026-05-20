@@ -17,7 +17,7 @@ import de.lukasneugebauer.nextcloudcookbook.di.RecipePreviewsStore
 import de.lukasneugebauer.nextcloudcookbook.di.RecipeStore
 import org.mobilenativefoundation.store.store5.impl.extensions.fresh
 import timber.log.Timber
-import java.util.concurrent.CancellationException
+import kotlinx.coroutines.CancellationException
 import java.util.concurrent.TimeUnit
 
 @HiltWorker
