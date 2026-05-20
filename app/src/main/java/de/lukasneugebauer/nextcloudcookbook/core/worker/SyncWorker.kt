@@ -15,9 +15,9 @@ import dagger.assisted.AssistedInject
 import de.lukasneugebauer.nextcloudcookbook.di.CategoriesStore
 import de.lukasneugebauer.nextcloudcookbook.di.RecipePreviewsStore
 import de.lukasneugebauer.nextcloudcookbook.di.RecipeStore
+import kotlinx.coroutines.CancellationException
 import org.mobilenativefoundation.store.store5.impl.extensions.fresh
 import timber.log.Timber
-import kotlinx.coroutines.CancellationException
 import java.util.concurrent.TimeUnit
 
 @HiltWorker
@@ -40,7 +40,10 @@ class SyncWorker
                 var hadFailures = false
 
                 previews.forEach { previewDto ->
-                    val id = if (!previewDto.id.isNullOrBlank()) previewDto.id else previewDto.recipeId
+                    val id =
+                        previewDto.id.takeIf { !it.isNullOrBlank() }
+                            ?: previewDto.recipeId.takeIf { !it.isNullOrBlank() }
+
                     if (id != null) {
                         try {
                             recipeStore.fresh(id)
