@@ -29,7 +29,7 @@ class SplashViewModel
         private val _uiState = MutableStateFlow<SplashScreenState>(SplashScreenState.Initial)
         val uiState: StateFlow<SplashScreenState> = _uiState
 
-        fun initialize() {
+        init {
             accountRepository
                 .getAccount()
                 .distinctUntilChanged()
