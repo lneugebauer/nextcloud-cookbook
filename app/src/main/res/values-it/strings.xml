@@ -151,4 +151,12 @@
     <string name="settings_paypal">PayPal</string>
     <string name="settings_paypal_donation">Dona via PayPal</string>
     <string name="settings_sponsoring">Sponsorizzazione</string>
+    <string name="error_retry">Riprova</string>
+    <string name="info_headline">Scopri di più</string>
+    <string name="login_allow_self_signed_certificates">Consenti i certificati autofirmati</string>
+    <string name="login_instance_hint">Inserisci le tue credenziali di accesso per %1$s.</string>
+    <string name="recipe_ingredient_syntax_error">Non è possibile ricalcolare la dose dell\'ingrediente.</string>
+    <string name="recipe_keywords">Parole chiave</string>
+    <string name="settings_ingredient_syntax_indicator">Indicatore della sintassi degli ingredienti</string>
+    <string name="settings_show_indicator_if_recipe_syntax_is_invalid">Visualizza un indicatore se la sintassi degli ingredienti non è compatibile con il ricalcolo della dose.</string>
 </resources>
