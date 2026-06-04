@@ -26,8 +26,6 @@ fun AnimatedVisibilityScope.RecipeEditScreen(
     viewModel: RecipeEditViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val isImageUploading by viewModel.isImageUploading.collectAsState()
-    val imageUploadError by viewModel.imageUploadError.collectAsState()
     val context = LocalContext.current
 
     HideBottomNavigation()
@@ -41,6 +39,8 @@ fun AnimatedVisibilityScope.RecipeEditScreen(
             val totalTime = (uiState as RecipeCreateEditState.Success).totalTime
             val categories = (uiState as RecipeCreateEditState.Success).categories
             val keywords = (uiState as RecipeCreateEditState.Success).keywords
+            val isImageUploading = (uiState as RecipeCreateEditState.Success).isImageUploading
+            val imageUploadError = (uiState as RecipeCreateEditState.Success).imageUploadError
 
             CreateEditRecipeForm(
                 recipe = recipe,

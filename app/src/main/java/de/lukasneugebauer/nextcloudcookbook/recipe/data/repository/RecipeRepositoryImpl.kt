@@ -8,8 +8,8 @@ import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
 import de.lukasneugebauer.nextcloudcookbook.core.data.api.NcCookbookApiProvider
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.NcAccount
 import de.lukasneugebauer.nextcloudcookbook.core.domain.repository.BaseRepository
+import de.lukasneugebauer.nextcloudcookbook.core.util.Constants
 import de.lukasneugebauer.nextcloudcookbook.core.util.IoDispatcher
-import de.lukasneugebauer.nextcloudcookbook.core.util.OkHttpClientProvider
 import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import de.lukasneugebauer.nextcloudcookbook.core.util.SimpleResource
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
@@ -28,19 +28,17 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
-import okhttp3.Credentials
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.Response
 import org.mobilenativefoundation.store.store5.ExperimentalStoreApi
 import org.mobilenativefoundation.store.store5.StoreReadRequest
 import org.mobilenativefoundation.store.store5.StoreReadResponse
 import org.mobilenativefoundation.store.store5.impl.extensions.fresh
 import org.mobilenativefoundation.store.store5.impl.extensions.get
 import javax.inject.Inject
+import retrofit2.Response
 
 class RecipeRepositoryImpl
     @Inject
@@ -49,7 +47,6 @@ class RecipeRepositoryImpl
         private val imageLoader: ImageLoader,
         @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
         private val preferencesManager: PreferencesManager,
-        private val clientProvider: OkHttpClientProvider,
         private val recipePreviewsByCategoryStore: RecipePreviewsByCategoryStore,
         private val recipePreviewsStore: RecipePreviewsStore,
         private val recipeStore: RecipeStore,
@@ -103,58 +100,43 @@ class RecipeRepositoryImpl
                     return@withContext Resource.Error(message = UiText.StringResource(R.string.error_invalid_image_payload))
                 }
 
-                val ncAccount = preferencesManager.preferencesFlow.first().ncAccount
+                val preferences = preferencesManager.preferencesFlow.first()
+                val ncAccount = preferences.ncAccount
                 if (ncAccount.username.isBlank() || ncAccount.token.isBlank() || ncAccount.url.isBlank()) {
                     return@withContext Resource.Error(message = UiText.StringResource(R.string.error_no_account_data))
                 }
 
+                val uploadFolderName = preferences.recipeImageUploadFolder.trim().ifEmpty {
+                    Constants.DEFAULT_RECIPE_IMAGE_UPLOAD_FOLDER
+                }
+
                 try {
-                    val client = clientProvider.getCurrentClient()
-                    val authHeader = Credentials.basic(ncAccount.username, ncAccount.token)
+                    val api = apiProvider.getApi()
+                    if (api == null) {
+                        return@withContext Resource.Error(message = UiText.StringResource(R.string.error_api_not_initialized))
+                    }
                     val userId = getWebDavUserId(fallback = ncAccount.username)
                     val uploadFolderUrl =
                         ncAccount.toWebDavUrl(
                             userId = userId,
-                            pathSegments = listOf(RECIPE_IMAGE_UPLOAD_FOLDER),
+                            pathSegments = listOf(uploadFolderName),
                         )
                     val fileUrl =
                         ncAccount.toWebDavUrl(
                             userId = userId,
-                            pathSegments = listOf(RECIPE_IMAGE_UPLOAD_FOLDER, image.fileName),
+                            pathSegments = listOf(uploadFolderName, image.fileName),
                         )
-
-                    client
-                        .newCall(
-                            Request
-                                .Builder()
-                                .url(uploadFolderUrl)
-                                .header("Authorization", authHeader)
-                                .method("MKCOL", null)
-                                .build(),
-                        ).execute()
-                        .use { response ->
-                            if (!response.isSuccessful && response.code != HTTP_METHOD_NOT_ALLOWED) {
-                                return@withContext handleUploadError(response)
-                            }
-                        }
-
+                    // Create folder if needed
+                    val mkcolResponse = api.createWebDavFolder(uploadFolderUrl.toString())
+                    if (!mkcolResponse.isSuccessful && mkcolResponse.code() != HTTP_METHOD_NOT_ALLOWED) {
+                        return@withContext handleUploadError(mkcolResponse)
+                    }
                     val body = image.bytes.toRequestBody(image.mimeType.toMediaType())
-                    client
-                        .newCall(
-                            Request
-                                .Builder()
-                                .url(fileUrl)
-                                .header("Authorization", authHeader)
-                                .put(body)
-                                .build(),
-                        ).execute()
-                        .use { response ->
-                            if (!response.isSuccessful) {
-                                return@withContext handleUploadError(response)
-                            }
-                        }
-
-                    Resource.Success(data = "/$RECIPE_IMAGE_UPLOAD_FOLDER/${image.fileName}")
+                    val putResponse = api.uploadRecipeImage(fileUrl.toString(), body)
+                    if (!putResponse.isSuccessful) {
+                        return@withContext handleUploadError(putResponse)
+                    }
+                    Resource.Success(data = "/$uploadFolderName/${image.fileName}")
                 } catch (e: Exception) {
                     handleResponseError(e.fillInStackTrace())
                 }
@@ -269,7 +251,7 @@ class RecipeRepositoryImpl
             return builder.build()
         }
 
-        private fun <T> handleUploadError(response: Response): Resource.Error<T> = handleResponseError(t = null, code = response.code)
+        private fun <T> handleUploadError(response: Response<*>): Resource.Error<T> = handleResponseError(t = null, code = response.code())
 
         @OptIn(ExperimentalStoreApi::class)
         private suspend fun refreshCaches(
@@ -291,6 +273,5 @@ class RecipeRepositoryImpl
 
         private companion object {
             const val HTTP_METHOD_NOT_ALLOWED = 405
-            const val RECIPE_IMAGE_UPLOAD_FOLDER = "Cookbook uploads"
         }
     }

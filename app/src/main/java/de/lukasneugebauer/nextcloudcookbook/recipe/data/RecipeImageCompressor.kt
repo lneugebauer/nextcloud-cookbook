@@ -1,4 +1,4 @@
-package de.lukasneugebauer.nextcloudcookbook.recipe.presentation.components
+package de.lukasneugebauer.nextcloudcookbook.recipe.data
 
 import android.content.Context
 import android.graphics.Bitmap

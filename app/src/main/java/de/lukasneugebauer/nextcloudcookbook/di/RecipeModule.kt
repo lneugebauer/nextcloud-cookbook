@@ -10,7 +10,6 @@ import dagger.hilt.components.SingletonComponent
 import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
 import de.lukasneugebauer.nextcloudcookbook.core.data.api.NcCookbookApiProvider
 import de.lukasneugebauer.nextcloudcookbook.core.util.IoDispatcher
-import de.lukasneugebauer.nextcloudcookbook.core.util.OkHttpClientProvider
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.RecipeFormatterImpl
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.YieldCalculatorImpl
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipeDto
@@ -80,7 +79,6 @@ object RecipeModule {
         @ApplicationContext context: Context,
         @IoDispatcher ioDispatcher: CoroutineDispatcher,
         preferencesManager: PreferencesManager,
-        clientProvider: OkHttpClientProvider,
         recipesByCategoryStore: RecipePreviewsByCategoryStore,
         recipePreviewsStore: RecipePreviewsStore,
         recipeStore: RecipeStore,
@@ -91,7 +89,6 @@ object RecipeModule {
             context.imageLoader,
             ioDispatcher,
             preferencesManager,
-            clientProvider,
             recipesByCategoryStore,
             recipePreviewsStore,
             recipeStore,

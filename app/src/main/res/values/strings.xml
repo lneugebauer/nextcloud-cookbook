@@ -141,6 +141,9 @@
     <string name="settings_account">Account</string>
     <string name="settings_contribution">Contribution</string>
     <string name="settings_general">General</string>
+    <string name="settings_recipe_image_upload_folder">Recipe image upload folder</string>
+    <string name="settings_recipe_image_upload_folder_placeholder">Cookbook uploads</string>
+    <string name="settings_recipe_image_upload_folder_description">Folder used when uploading recipe images to Nextcloud. Leave blank to use the default.</string>
     <string name="settings_github">GitHub</string>
     <string name="settings_github_sponsor">Become a GitHub sponsor</string>
     <string name="settings_hosted_on_github">This project is hosted on GitHub</string>

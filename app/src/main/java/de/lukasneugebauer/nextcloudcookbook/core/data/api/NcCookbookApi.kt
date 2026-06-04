@@ -18,6 +18,10 @@ import retrofit2.http.Headers
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
+import retrofit2.http.HTTP
+import retrofit2.http.Url
+import retrofit2.Response
+import okhttp3.RequestBody
 
 interface NcCookbookApi {
     @Headers(
@@ -75,4 +79,22 @@ interface NcCookbookApi {
 
     @GET("$API_ENDPOINT/version")
     suspend fun getCookbookVersion(): NetworkResponse<CookbookVersionDto, ErrorResponse>
+
+    /**
+     * Creates a WebDAV collection (folder). Uses the MKCOL method.
+     */
+    @HTTP(method = "MKCOL", path = "", hasBody = false)
+    suspend fun createWebDavFolder(
+        @Url url: String,
+    ): Response<Unit>
+
+    /**
+     * Uploads an image file to the specified WebDAV URL.
+     * The URL must include the full path to the target file.
+     */
+    @PUT
+    suspend fun uploadRecipeImage(
+        @Url url: String,
+        @Body body: RequestBody,
+    ): Response<Unit>
 }
