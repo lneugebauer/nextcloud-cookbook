@@ -1,10 +1,14 @@
 package de.lukasneugebauer.nextcloudcookbook.recipe.util
 
+import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.category.domain.model.Category
 import de.lukasneugebauer.nextcloudcookbook.category.domain.repository.CategoryRepository
+import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
+import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.NutritionDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipeDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.DurationComponents
@@ -12,6 +16,7 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.domain.repository.RecipeRepos
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.RecipeCreateEditState
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.ifSuccess
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.usecase.GetAllKeywordsUseCase
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.util.ImageCompressionService
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.RecipeConstants.DEFAULT_YIELD
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,6 +24,8 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import org.mobilenativefoundation.store.store5.StoreReadResponse
 import timber.log.Timber
 import java.lang.UnsupportedOperationException
@@ -27,6 +34,7 @@ import java.util.Collections
 abstract class RecipeCreateEditViewModel(
     private val categoryRepository: CategoryRepository,
     private val getAllKeywordsUseCase: GetAllKeywordsUseCase,
+    private val imageCompressionService: ImageCompressionService,
     private val recipeRepository: RecipeRepository,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
@@ -43,7 +51,9 @@ abstract class RecipeCreateEditViewModel(
     private var categories: List<Category> = emptyList()
         set(value) {
             field = value
-            _uiState.update {
+            _uiState.update { currentState ->
+                val imageUploading = (currentState as? RecipeCreateEditState.Success)?.isImageUploading ?: false
+                val imageUploadError = (currentState as? RecipeCreateEditState.Success)?.imageUploadError
                 RecipeCreateEditState.Success(
                     recipe = recipeDto.toRecipe(),
                     prepTime = prepTime,
@@ -51,6 +61,8 @@ abstract class RecipeCreateEditViewModel(
                     totalTime = totalTime,
                     categories = categories,
                     keywords = keywords,
+                    isImageUploading = imageUploading,
+                    imageUploadError = imageUploadError,
                 )
             }
         }
@@ -58,7 +70,9 @@ abstract class RecipeCreateEditViewModel(
     protected var keywords: Set<String> = emptySet()
         set(value) {
             field = value
-            _uiState.update {
+            _uiState.update { currentState ->
+                val imageUploading = (currentState as? RecipeCreateEditState.Success)?.isImageUploading ?: false
+                val imageUploadError = (currentState as? RecipeCreateEditState.Success)?.imageUploadError
                 RecipeCreateEditState.Success(
                     recipe = recipeDto.toRecipe(),
                     prepTime = prepTime,
@@ -66,6 +80,8 @@ abstract class RecipeCreateEditViewModel(
                     totalTime = totalTime,
                     categories = categories,
                     keywords = keywords,
+                    isImageUploading = imageUploading,
+                    imageUploadError = imageUploadError,
                 )
             }
         }
@@ -74,7 +90,9 @@ abstract class RecipeCreateEditViewModel(
         set(value) {
             field = value
             val recipe = recipeDto.toRecipe()
-            _uiState.update {
+            _uiState.update { currentState ->
+                val imageUploading = (currentState as? RecipeCreateEditState.Success)?.isImageUploading ?: false
+                val imageUploadError = (currentState as? RecipeCreateEditState.Success)?.imageUploadError
                 RecipeCreateEditState.Success(
                     recipe = recipe,
                     prepTime = prepTime,
@@ -82,6 +100,8 @@ abstract class RecipeCreateEditViewModel(
                     totalTime = totalTime,
                     categories = categories,
                     keywords = keywords,
+                    isImageUploading = imageUploading,
+                    imageUploadError = imageUploadError,
                 )
             }
         }
@@ -94,19 +114,101 @@ abstract class RecipeCreateEditViewModel(
         recipeId?.let {
             getRecipe(it)
         } ?: run {
-            _uiState.update {
-                RecipeCreateEditState.Success(
-                    recipeDto.toRecipe(),
-                    prepTime,
-                    cookTime,
-                    totalTime,
-                    categories,
-                )
-            }
+            _uiState.update { createSuccessState() }
         }
     }
 
     abstract fun save()
+
+    private fun createSuccessState() =
+        RecipeCreateEditState.Success(
+            recipe = recipeDto.toRecipe(),
+            prepTime = prepTime,
+            cookTime = cookTime,
+            totalTime = totalTime,
+            categories = categories,
+            keywords = keywords,
+        )
+
+    private fun updateUploadState(
+        isUploading: Boolean,
+        errorMessage: UiText? = null,
+    ) {
+        _uiState.update { currentState ->
+            if (currentState is RecipeCreateEditState.Success) {
+                currentState.copy(
+                    isImageUploading = isUploading,
+                    imageUploadError = errorMessage ?: currentState.imageUploadError,
+                )
+            } else {
+                currentState
+            }
+        }
+    }
+
+    private fun setUploadError(errorMessage: UiText) {
+        _uiState.update { currentState ->
+            if (currentState is RecipeCreateEditState.Success) {
+                currentState.copy(imageUploadError = errorMessage)
+            } else {
+                currentState
+            }
+        }
+    }
+
+    fun clearImageUploadError() {
+        _uiState.update { currentState ->
+            if (currentState is RecipeCreateEditState.Success) {
+                currentState.copy(imageUploadError = null)
+            } else {
+                currentState
+            }
+        }
+    }
+
+    fun setImageUploadError(errorResId: Int) {
+        setUploadError(UiText.StringResource(errorResId))
+    }
+
+    private val imageUploadMutex = Mutex()
+
+    fun uploadImage(uri: Uri) {
+        viewModelScope.launch {
+            imageUploadMutex.withLock {
+                updateUploadState(isUploading = true, errorMessage = null)
+
+                try {
+                    val image = imageCompressionService.compressRecipeImage(uri = uri)
+
+                    if (image == null) {
+                        setUploadError(UiText.StringResource(R.string.error_image_processing_failed))
+                        return@withLock
+                    }
+
+                    when (val result = recipeRepository.uploadRecipeImage(image)) {
+                        is Resource.Success -> {
+                            if (result.data != null) {
+                                changeImageOrigin(result.data)
+                            } else {
+                                setUploadError(UiText.StringResource(R.string.error_image_upload_failed))
+                            }
+                        }
+                        is Resource.Error -> {
+                            setUploadError(
+                                result.message ?: UiText.StringResource(R.string.error_image_upload_failed),
+                            )
+                        }
+                    }
+                } catch (e: kotlinx.coroutines.CancellationException) {
+                    throw e
+                } catch (e: Exception) {
+                    setUploadError(UiText.StringResource(R.string.error_image_upload_failed))
+                } finally {
+                    updateUploadState(isUploading = false)
+                }
+            }
+        }
+    }
 
     fun changeName(newName: String) {
         _uiState.value.ifSuccess {

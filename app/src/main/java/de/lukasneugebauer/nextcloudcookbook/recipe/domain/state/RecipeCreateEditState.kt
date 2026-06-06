@@ -15,6 +15,8 @@ sealed interface RecipeCreateEditState {
         val totalTime: DurationComponents,
         val categories: List<Category> = emptyList(),
         val keywords: Set<String> = emptySet(),
+        val isImageUploading: Boolean = false,
+        val imageUploadError: UiText? = null,
     ) : RecipeCreateEditState
 
     data class Updated(

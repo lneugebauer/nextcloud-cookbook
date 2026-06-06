@@ -7,6 +7,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
 import de.lukasneugebauer.nextcloudcookbook.core.data.api.NcCookbookApiProvider
 import de.lukasneugebauer.nextcloudcookbook.core.util.IoDispatcher
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.RecipeFormatterImpl
@@ -77,6 +78,7 @@ object RecipeModule {
         apiProvider: NcCookbookApiProvider,
         @ApplicationContext context: Context,
         @IoDispatcher ioDispatcher: CoroutineDispatcher,
+        preferencesManager: PreferencesManager,
         recipesByCategoryStore: RecipePreviewsByCategoryStore,
         recipePreviewsStore: RecipePreviewsStore,
         recipeStore: RecipeStore,
@@ -86,6 +88,7 @@ object RecipeModule {
             apiProvider,
             context.imageLoader,
             ioDispatcher,
+            preferencesManager,
             recipesByCategoryStore,
             recipePreviewsStore,
             recipeStore,

@@ -24,6 +24,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -93,6 +94,10 @@ fun AnimatedVisibilityScope.SettingsScreen(
                     onShowRecipeSyntaxIndicatorChange = { isShowRecipeSyntaxIndicator ->
                         viewModel.setShowRecipeSyntaxIndicator(isShowRecipeSyntaxIndicator)
                     },
+                    recipeImageUploadFolder = currentState.recipeImageUploadFolder,
+                    onRecipeImageUploadFolderChange = { folderName ->
+                        viewModel.setRecipeImageUploadFolder(folderName)
+                    },
                     onLogoutClick = {
                         viewModel.logout {
                             navigator.navigate(StartScreenDestination) {
@@ -157,6 +162,8 @@ fun SettingsLayout(
     onStayAwakeChange: (Boolean) -> Unit,
     isShowRecipeSyntaxIndicator: Boolean,
     onShowRecipeSyntaxIndicatorChange: (Boolean) -> Unit,
+    recipeImageUploadFolder: String,
+    onRecipeImageUploadFolderChange: (String) -> Unit,
     onLogoutClick: () -> Unit,
     onPrivacyClick: () -> Unit,
     onLicenseClick: () -> Unit,
@@ -180,6 +187,8 @@ fun SettingsLayout(
             onStayAwakeChange = onStayAwakeChange,
             isShowRecipeSyntaxIndicator = isShowRecipeSyntaxIndicator,
             onShowRecipeSyntaxIndicatorChange = onShowRecipeSyntaxIndicatorChange,
+            recipeImageUploadFolder = recipeImageUploadFolder,
+            onRecipeImageUploadFolderChange = onRecipeImageUploadFolderChange,
         )
         Spacer(modifier = Modifier.size(size = dimensionResource(R.dimen.padding_m)))
         SettingsGroupAccount(onLogoutClick = onLogoutClick)
@@ -213,6 +222,8 @@ fun ColumnScope.SettingsGroupGeneral(
     onStayAwakeChange: (Boolean) -> Unit,
     isShowRecipeSyntaxIndicator: Boolean,
     onShowRecipeSyntaxIndicatorChange: (Boolean) -> Unit,
+    recipeImageUploadFolder: String,
+    onRecipeImageUploadFolderChange: (String) -> Unit,
 ) {
     Text(
         text = stringResource(R.string.settings_general),
@@ -258,6 +269,30 @@ fun ColumnScope.SettingsGroupGeneral(
                 onCheckedChange = onShowRecipeSyntaxIndicatorChange,
             )
         },
+    )
+    OutlinedTextField(
+        value = recipeImageUploadFolder,
+        onValueChange = onRecipeImageUploadFolderChange,
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = dimensionResource(R.dimen.padding_m)),
+        label = {
+            Text(text = stringResource(R.string.settings_recipe_image_upload_folder))
+        },
+        placeholder = {
+            Text(text = stringResource(R.string.settings_recipe_image_upload_folder_placeholder))
+        },
+        singleLine = true,
+    )
+    Text(
+        text = stringResource(R.string.settings_recipe_image_upload_folder_description),
+        modifier =
+            Modifier.padding(
+                horizontal = dimensionResource(R.dimen.padding_m),
+                vertical = dimensionResource(R.dimen.padding_xs),
+            ),
+        style = MaterialTheme.typography.bodySmall,
     )
 }
 
@@ -471,6 +506,8 @@ private fun SettingsContentPreview() {
             onStayAwakeChange = {},
             isShowRecipeSyntaxIndicator = true,
             onShowRecipeSyntaxIndicatorChange = {},
+            recipeImageUploadFolder = "Cookbook uploads",
+            onRecipeImageUploadFolderChange = {},
             onLogoutClick = {},
             onPrivacyClick = {},
             onLicenseClick = {},

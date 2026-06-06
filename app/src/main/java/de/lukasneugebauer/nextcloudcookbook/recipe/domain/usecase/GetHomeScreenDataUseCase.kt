@@ -63,14 +63,46 @@ class GetHomeScreenDataUseCase
                 }
             }
 
-            // FIXME: 25.12.21 Get different recipe of the day if api returns 404 error.
-            //  E.g. after deleting recipe of the day.
+            // Attempt to load the stored recipe of the day. If it fails (e.g. the recipe
+            // was deleted and the store/api returns 404), pick a different recipe as
+            // fallback and update the stored recipe-of-the-day preference.
             withContext(ioDispatcher) {
                 try {
+                    val recipeDto =
+                        try {
+                            recipeStore.get(recipeOfTheDay.id)
+                        } catch (e: Exception) {
+                            Timber.w("Failed to load recipeOfTheDay id=${recipeOfTheDay.id}: ${e.message}")
+
+                            // Try to pick a random fallback recipe id from previews
+                            val fallbackId =
+                                try {
+                                    recipePreviewsStore
+                                        .get(Unit)
+                                        .randomOrNull()
+                                        ?.toRecipePreview()
+                                        ?.id
+                                } catch (pe: Exception) {
+                                    Timber.w("Failed to load recipe previews for fallback: ${pe.message}")
+                                    null
+                                }
+
+                            if (fallbackId == null) {
+                                throw e
+                            } else {
+                                val newRecipeDto = recipeStore.get(fallbackId)
+                                val newRecipeOfTheDay =
+                                    RecipeOfTheDay(id = fallbackId, updatedAt = LocalDateTime.now())
+                                // Persist new recipe of the day for future runs
+                                preferencesManager.updateRecipeOfTheDay(newRecipeOfTheDay)
+                                newRecipeDto
+                            }
+                        }
+
                     val result =
                         HomeScreenDataResult.Single(
                             R.string.home_recommendation,
-                            recipeStore.get(recipeOfTheDay.id).toRecipe(),
+                            recipeDto.toRecipe(),
                         )
                     homeScreenData.add(result)
                 } catch (e: Exception) {

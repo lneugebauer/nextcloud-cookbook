@@ -32,15 +32,15 @@ class SettingsViewModel
 
         init {
             preferencesManager.preferencesFlow
-                .map { it.isShowIngredientSyntaxIndicator }
-                .distinctUntilChanged()
-                .onEach { isShowRecipeSyntaxIndicator ->
-                    _uiState.update {
-                        SettingsScreenState.Loaded(
-                            isStayAwake = preferencesManager.getStayAwake(),
-                            isShowRecipeSyntaxIndicator = isShowRecipeSyntaxIndicator,
-                        )
-                    }
+                .map { preferences ->
+                    SettingsScreenState.Loaded(
+                        isStayAwake = preferencesManager.getStayAwake(),
+                        isShowRecipeSyntaxIndicator = preferences.isShowIngredientSyntaxIndicator,
+                        recipeImageUploadFolder = preferences.recipeImageUploadFolder,
+                    )
+                }.distinctUntilChanged()
+                .onEach { loadedState ->
+                    _uiState.value = loadedState
                 }.launchIn(viewModelScope)
         }
 
@@ -58,6 +58,12 @@ class SettingsViewModel
         fun setShowRecipeSyntaxIndicator(isShowRecipeSyntaxIndicator: Boolean) {
             viewModelScope.launch {
                 preferencesManager.updateShowIngredientSyntaxIndicator(isShowRecipeSyntaxIndicator)
+            }
+        }
+
+        fun setRecipeImageUploadFolder(recipeImageUploadFolder: String) {
+            viewModelScope.launch {
+                preferencesManager.updateRecipeImageUploadFolder(recipeImageUploadFolder)
             }
         }
 

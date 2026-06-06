@@ -5,6 +5,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.util.SimpleResource
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.ImportUrlDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipeDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipePreviewDto
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipeImageUpload
 import kotlinx.coroutines.flow.Flow
 import org.mobilenativefoundation.store.store5.StoreReadResponse
 
@@ -27,4 +28,6 @@ interface RecipeRepository {
     ): SimpleResource
 
     suspend fun importRecipe(url: ImportUrlDto): Resource<RecipeDto>
+
+    suspend fun uploadRecipeImage(image: RecipeImageUpload): Resource<String>
 }

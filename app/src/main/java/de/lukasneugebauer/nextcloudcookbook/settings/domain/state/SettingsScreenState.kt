@@ -6,5 +6,6 @@ sealed interface SettingsScreenState {
     data class Loaded(
         val isStayAwake: Boolean,
         val isShowRecipeSyntaxIndicator: Boolean,
+        val recipeImageUploadFolder: String,
     ) : SettingsScreenState
 }

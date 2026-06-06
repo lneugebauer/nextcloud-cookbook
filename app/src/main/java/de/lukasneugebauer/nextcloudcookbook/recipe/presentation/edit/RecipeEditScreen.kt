@@ -5,6 +5,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -25,6 +26,7 @@ fun AnimatedVisibilityScope.RecipeEditScreen(
     viewModel: RecipeEditViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
 
     HideBottomNavigation()
 
@@ -37,6 +39,8 @@ fun AnimatedVisibilityScope.RecipeEditScreen(
             val totalTime = (uiState as RecipeCreateEditState.Success).totalTime
             val categories = (uiState as RecipeCreateEditState.Success).categories
             val keywords = (uiState as RecipeCreateEditState.Success).keywords
+            val isImageUploading = (uiState as RecipeCreateEditState.Success).isImageUploading
+            val imageUploadError = (uiState as RecipeCreateEditState.Success).imageUploadError
 
             CreateEditRecipeForm(
                 recipe = recipe,
@@ -58,6 +62,17 @@ fun AnimatedVisibilityScope.RecipeEditScreen(
                 },
                 onImageOriginChanged = { newImageUrl ->
                     viewModel.changeImageOrigin(newImageUrl)
+                },
+                onUploadImage = { uri ->
+                    viewModel.uploadImage(uri)
+                },
+                isImageUploading = isImageUploading,
+                imageUploadError = imageUploadError,
+                onClearImageUploadError = {
+                    viewModel.clearImageUploadError()
+                },
+                onImageUploadError = { errorResId ->
+                    viewModel.setImageUploadError(errorResId)
                 },
                 onPrepTimeChanged = { newPrepTime ->
                     viewModel.changePrepTime(newPrepTime)

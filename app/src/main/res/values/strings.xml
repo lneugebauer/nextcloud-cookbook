@@ -41,9 +41,14 @@
     <string name="error_http_403">403 Forbidden</string>
     <string name="error_http_404">404 Not found</string>
     <string name="error_http_405">405 Method not allowed</string>
+    <string name="error_http_409">409 Conflict: Recipe already exists</string>
     <string name="error_http_500">500 Internal server error</string>
     <string name="error_http_503">503 Service Unavailable</string>
     <string name="error_http_unknown">Unknown HTTP error</string>
+    <string name="error_camera_permission_denied">Camera permission denied</string>
+    <string name="error_image_processing_failed">Could not process image</string>
+    <string name="error_image_upload_failed">Could not upload image</string>
+    <string name="error_invalid_image_payload">Invalid image data</string>
     <string name="error_invalid_protocol">Invalid protocol; URL must start with http:// or https://</string>
     <string name="error_invalid_url">Invalid URL</string>
     <string name="error_malformed_json">Malformed JSON</string>
@@ -75,6 +80,8 @@
     <string name="recipe_duration">%1$d min</string>
     <string name="recipe_edit">Edit recipe</string>
     <string name="recipe_image_url">Image URL</string>
+    <string name="recipe_image_select">Select image</string>
+    <string name="recipe_image_take_photo">Take photo</string>
     <string name="recipe_import_from_url">Import recipe from URL</string>
     <string name="recipe_ingredients">Ingredients</string>
     <plurals name="recipe_ingredients_copied">
@@ -134,6 +141,9 @@
     <string name="settings_account">Account</string>
     <string name="settings_contribution">Contribution</string>
     <string name="settings_general">General</string>
+    <string name="settings_recipe_image_upload_folder">Recipe image upload folder</string>
+    <string name="settings_recipe_image_upload_folder_placeholder">Cookbook uploads</string>
+    <string name="settings_recipe_image_upload_folder_description">Folder used when uploading recipe images to Nextcloud. Leave blank to use the default.</string>
     <string name="settings_github">GitHub</string>
     <string name="settings_github_sponsor">Become a GitHub sponsor</string>
     <string name="settings_hosted_on_github">This project is hosted on GitHub</string>
