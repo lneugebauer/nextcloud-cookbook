@@ -11,6 +11,7 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.domain.repository.RecipeRepos
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.RecipeCreateEditState
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.ifSuccess
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.usecase.GetAllKeywordsUseCase
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.util.ImageCompressionService
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.RecipeCreateEditViewModel
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -22,11 +23,13 @@ class RecipeCreateViewModel
     constructor(
         categoryRepository: CategoryRepository,
         getAllKeywordsUseCase: GetAllKeywordsUseCase,
+        imageCompressionService: ImageCompressionService,
         private val recipeRepository: RecipeRepository,
         savedStateHandle: SavedStateHandle,
     ) : RecipeCreateEditViewModel(
             categoryRepository,
             getAllKeywordsUseCase,
+            imageCompressionService,
             recipeRepository,
             savedStateHandle,
         ) {

@@ -1,6 +1,5 @@
 package de.lukasneugebauer.nextcloudcookbook.recipe.util
 
-import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -10,7 +9,6 @@ import de.lukasneugebauer.nextcloudcookbook.category.domain.model.Category
 import de.lukasneugebauer.nextcloudcookbook.category.domain.repository.CategoryRepository
 import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
-import de.lukasneugebauer.nextcloudcookbook.recipe.data.compressRecipeImage
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.NutritionDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipeDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.DurationComponents
@@ -18,6 +16,7 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.domain.repository.RecipeRepos
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.RecipeCreateEditState
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.ifSuccess
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.usecase.GetAllKeywordsUseCase
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.util.ImageCompressionService
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.RecipeConstants.DEFAULT_YIELD
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -35,6 +34,7 @@ import java.util.Collections
 abstract class RecipeCreateEditViewModel(
     private val categoryRepository: CategoryRepository,
     private val getAllKeywordsUseCase: GetAllKeywordsUseCase,
+    private val imageCompressionService: ImageCompressionService,
     private val recipeRepository: RecipeRepository,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
@@ -172,21 +172,13 @@ abstract class RecipeCreateEditViewModel(
 
     private val imageUploadMutex = Mutex()
 
-    fun uploadImage(
-        uri: Uri,
-        context: Context,
-    ) {
+    fun uploadImage(uri: Uri) {
         viewModelScope.launch {
             imageUploadMutex.withLock {
-                val appContext = context.applicationContext
                 updateUploadState(isUploading = true, errorMessage = null)
 
                 try {
-                    val image =
-                        compressRecipeImage(
-                            context = appContext,
-                            uri = uri,
-                        )
+                    val image = imageCompressionService.compressRecipeImage(uri = uri)
 
                     if (image == null) {
                         setUploadError(UiText.StringResource(R.string.error_image_processing_failed))
