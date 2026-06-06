@@ -58,6 +58,7 @@ captures/
 .idea/**/php.xml
 .idea/**/assetWizardSettings.xml
 .idea/**/deviceManager.xml
+.idea/**/markdown.xml
 
 # AWS User-specific
 .idea/**/aws.xml
