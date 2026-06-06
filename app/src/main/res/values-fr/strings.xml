@@ -84,7 +84,7 @@
     <string name="error_no_account_data">Données du compte non trouvées</string>
     <string name="error_http_500">500 Internal server error</string>
     <string name="error_http_503">503 Service Unavailable</string>
-    <string name="error_invalid_protocol">Protocole invalide ; l’URL doit commencer par https://</string>
+    <string name="error_invalid_protocol">Protocole invalide ; l’URL doit commencer par https://</string>
     <string name="error_invalid_url">URL invalide</string>
     <string name="error_http_unknown">Erreur HTTP inconnue</string>
     <string name="error_no_categories_found">Aucune catégorie trouvée</string>
