@@ -68,39 +68,42 @@ class GetHomeScreenDataUseCase
             // fallback and update the stored recipe-of-the-day preference.
             withContext(ioDispatcher) {
                 try {
-                    val recipeDto = try {
-                        recipeStore.get(recipeOfTheDay.id)
-                    } catch (e: Exception) {
-                        Timber.w("Failed to load recipeOfTheDay id=${recipeOfTheDay.id}: ${e.message}")
+                    val recipeDto =
+                        try {
+                            recipeStore.get(recipeOfTheDay.id)
+                        } catch (e: Exception) {
+                            Timber.w("Failed to load recipeOfTheDay id=${recipeOfTheDay.id}: ${e.message}")
 
-                        // Try to pick a random fallback recipe id from previews
-                        val fallbackId = try {
-                            recipePreviewsStore
-                                .get(Unit)
-                                .randomOrNull()
-                                ?.toRecipePreview()
-                                ?.id
-                        } catch (pe: Exception) {
-                            Timber.w("Failed to load recipe previews for fallback: ${pe.message}")
-                            null
+                            // Try to pick a random fallback recipe id from previews
+                            val fallbackId =
+                                try {
+                                    recipePreviewsStore
+                                        .get(Unit)
+                                        .randomOrNull()
+                                        ?.toRecipePreview()
+                                        ?.id
+                                } catch (pe: Exception) {
+                                    Timber.w("Failed to load recipe previews for fallback: ${pe.message}")
+                                    null
+                                }
+
+                            if (fallbackId == null) {
+                                throw e
+                            } else {
+                                val newRecipeDto = recipeStore.get(fallbackId)
+                                val newRecipeOfTheDay =
+                                    RecipeOfTheDay(id = fallbackId, updatedAt = LocalDateTime.now())
+                                // Persist new recipe of the day for future runs
+                                preferencesManager.updateRecipeOfTheDay(newRecipeOfTheDay)
+                                newRecipeDto
+                            }
                         }
 
-                        if (fallbackId == null) {
-                            throw e
-                        } else {
-                            val newRecipeDto = recipeStore.get(fallbackId)
-                            val newRecipeOfTheDay =
-                                RecipeOfTheDay(id = fallbackId, updatedAt = LocalDateTime.now())
-                            // Persist new recipe of the day for future runs
-                            preferencesManager.updateRecipeOfTheDay(newRecipeOfTheDay)
-                            newRecipeDto
-                        }
-                    }
-
-                    val result = HomeScreenDataResult.Single(
-                        R.string.home_recommendation,
-                        recipeDto.toRecipe(),
-                    )
+                    val result =
+                        HomeScreenDataResult.Single(
+                            R.string.home_recommendation,
+                            recipeDto.toRecipe(),
+                        )
                     homeScreenData.add(result)
                 } catch (e: Exception) {
                     Timber.e(e.stackTraceToString())

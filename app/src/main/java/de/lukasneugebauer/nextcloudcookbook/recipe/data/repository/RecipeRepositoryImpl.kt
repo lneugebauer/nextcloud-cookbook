@@ -37,8 +37,8 @@ import org.mobilenativefoundation.store.store5.StoreReadRequest
 import org.mobilenativefoundation.store.store5.StoreReadResponse
 import org.mobilenativefoundation.store.store5.impl.extensions.fresh
 import org.mobilenativefoundation.store.store5.impl.extensions.get
-import javax.inject.Inject
 import retrofit2.Response
+import javax.inject.Inject
 
 class RecipeRepositoryImpl
     @Inject
@@ -106,9 +106,10 @@ class RecipeRepositoryImpl
                     return@withContext Resource.Error(message = UiText.StringResource(R.string.error_no_account_data))
                 }
 
-                val uploadFolderName = preferences.recipeImageUploadFolder.trim().ifEmpty {
-                    Constants.DEFAULT_RECIPE_IMAGE_UPLOAD_FOLDER
-                }
+                val uploadFolderName =
+                    preferences.recipeImageUploadFolder.trim().ifEmpty {
+                        Constants.DEFAULT_RECIPE_IMAGE_UPLOAD_FOLDER
+                    }
 
                 try {
                     val api = apiProvider.getApi()

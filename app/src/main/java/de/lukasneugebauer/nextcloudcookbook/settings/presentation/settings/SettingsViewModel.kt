@@ -38,12 +38,10 @@ class SettingsViewModel
                         isShowRecipeSyntaxIndicator = preferences.isShowIngredientSyntaxIndicator,
                         recipeImageUploadFolder = preferences.recipeImageUploadFolder,
                     )
-                }
-                .distinctUntilChanged()
+                }.distinctUntilChanged()
                 .onEach { loadedState ->
                     _uiState.value = loadedState
-                }
-                .launchIn(viewModelScope)
+                }.launchIn(viewModelScope)
         }
 
         fun setStayAwake(isStayAwake: Boolean) {

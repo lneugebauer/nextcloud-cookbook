@@ -16,53 +16,55 @@ private const val IMAGE_UPLOAD_MIME_TYPE = "image/jpeg"
 private const val IMAGE_UPLOAD_QUALITY = 85
 private const val IMAGE_UPLOAD_MAX_SIZE = 1600
 
-class ImageCompressionService @Inject constructor(
-    @ApplicationContext
-    private val context: Context,
-) {
-    suspend fun compressRecipeImage(uri: Uri): RecipeImageUpload? =
-        withContext(Dispatchers.IO) {
-            val bounds =
-                BitmapFactory.Options().apply {
-                    inJustDecodeBounds = true
-                }
+class ImageCompressionService
+    @Inject
+    constructor(
+        @ApplicationContext
+        private val context: Context,
+    ) {
+        suspend fun compressRecipeImage(uri: Uri): RecipeImageUpload? =
+            withContext(Dispatchers.IO) {
+                val bounds =
+                    BitmapFactory.Options().apply {
+                        inJustDecodeBounds = true
+                    }
 
-            context.contentResolver.openInputStream(uri)?.use { inputStream ->
-                BitmapFactory.decodeStream(inputStream, null, bounds)
-                Unit
-            } ?: return@withContext null
-
-            if (bounds.outWidth <= 0 || bounds.outHeight <= 0) return@withContext null
-
-            val decodeOptions =
-                BitmapFactory.Options().apply {
-                    inSampleSize = bounds.calculateInSampleSize()
-                }
-
-            val bitmap =
                 context.contentResolver.openInputStream(uri)?.use { inputStream ->
-                    BitmapFactory.decodeStream(inputStream, null, decodeOptions)
+                    BitmapFactory.decodeStream(inputStream, null, bounds)
+                    Unit
                 } ?: return@withContext null
 
-            val scaledBitmap = bitmap.scaleToMaxSize()
-            val bytes =
-                ByteArrayOutputStream().use { outputStream ->
-                    scaledBitmap.compress(Bitmap.CompressFormat.JPEG, IMAGE_UPLOAD_QUALITY, outputStream)
-                    outputStream.toByteArray()
+                if (bounds.outWidth <= 0 || bounds.outHeight <= 0) return@withContext null
+
+                val decodeOptions =
+                    BitmapFactory.Options().apply {
+                        inSampleSize = bounds.calculateInSampleSize()
+                    }
+
+                val bitmap =
+                    context.contentResolver.openInputStream(uri)?.use { inputStream ->
+                        BitmapFactory.decodeStream(inputStream, null, decodeOptions)
+                    } ?: return@withContext null
+
+                val scaledBitmap = bitmap.scaleToMaxSize()
+                val bytes =
+                    ByteArrayOutputStream().use { outputStream ->
+                        scaledBitmap.compress(Bitmap.CompressFormat.JPEG, IMAGE_UPLOAD_QUALITY, outputStream)
+                        outputStream.toByteArray()
+                    }
+
+                if (scaledBitmap !== bitmap) {
+                    scaledBitmap.recycle()
                 }
+                bitmap.recycle()
 
-            if (scaledBitmap !== bitmap) {
-                scaledBitmap.recycle()
+                RecipeImageUpload(
+                    fileName = "recipe-image-${System.currentTimeMillis()}-${Random.nextInt(10000)}.jpg",
+                    mimeType = IMAGE_UPLOAD_MIME_TYPE,
+                    bytes = bytes,
+                )
             }
-            bitmap.recycle()
-
-            RecipeImageUpload(
-                fileName = "recipe-image-${System.currentTimeMillis()}-${Random.nextInt(10000)}.jpg",
-                mimeType = IMAGE_UPLOAD_MIME_TYPE,
-                bytes = bytes,
-            )
-        }
-}
+    }
 
 private fun BitmapFactory.Options.calculateInSampleSize(): Int {
     var inSampleSize = 1

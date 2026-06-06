@@ -273,9 +273,10 @@ fun ColumnScope.SettingsGroupGeneral(
     OutlinedTextField(
         value = recipeImageUploadFolder,
         onValueChange = onRecipeImageUploadFolderChange,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = dimensionResource(R.dimen.padding_m)),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = dimensionResource(R.dimen.padding_m)),
         label = {
             Text(text = stringResource(R.string.settings_recipe_image_upload_folder))
         },
@@ -286,10 +287,11 @@ fun ColumnScope.SettingsGroupGeneral(
     )
     Text(
         text = stringResource(R.string.settings_recipe_image_upload_folder_description),
-        modifier = Modifier.padding(
-            horizontal = dimensionResource(R.dimen.padding_m),
-            vertical = dimensionResource(R.dimen.padding_xs),
-        ),
+        modifier =
+            Modifier.padding(
+                horizontal = dimensionResource(R.dimen.padding_m),
+                vertical = dimensionResource(R.dimen.padding_xs),
+            ),
         style = MaterialTheme.typography.bodySmall,
     )
 }

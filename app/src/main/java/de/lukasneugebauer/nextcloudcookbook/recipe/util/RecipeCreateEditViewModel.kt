@@ -10,6 +10,7 @@ import de.lukasneugebauer.nextcloudcookbook.category.domain.model.Category
 import de.lukasneugebauer.nextcloudcookbook.category.domain.repository.CategoryRepository
 import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
+import de.lukasneugebauer.nextcloudcookbook.recipe.data.compressRecipeImage
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.NutritionDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipeDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.DurationComponents
@@ -17,7 +18,6 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.domain.repository.RecipeRepos
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.RecipeCreateEditState
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.ifSuccess
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.usecase.GetAllKeywordsUseCase
-import de.lukasneugebauer.nextcloudcookbook.recipe.data.compressRecipeImage
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.RecipeConstants.DEFAULT_YIELD
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -130,7 +130,10 @@ abstract class RecipeCreateEditViewModel(
             keywords = keywords,
         )
 
-    private fun updateUploadState(isUploading: Boolean, errorMessage: UiText? = null) {
+    private fun updateUploadState(
+        isUploading: Boolean,
+        errorMessage: UiText? = null,
+    ) {
         _uiState.update { currentState ->
             if (currentState is RecipeCreateEditState.Success) {
                 currentState.copy(
