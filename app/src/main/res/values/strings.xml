@@ -44,7 +44,7 @@
     <string name="error_http_500">500 Internal server error</string>
     <string name="error_http_503">503 Service Unavailable</string>
     <string name="error_http_unknown">Unknown HTTP error</string>
-    <string name="error_invalid_protocol">Invalid protocol; URL must start with https://</string>
+    <string name="error_invalid_protocol">Invalid protocol; URL must start with http:// or https://</string>
     <string name="error_invalid_url">Invalid URL</string>
     <string name="error_malformed_json">Malformed JSON</string>
     <string name="error_recipe_id_missing">Recipe ID missing</string>

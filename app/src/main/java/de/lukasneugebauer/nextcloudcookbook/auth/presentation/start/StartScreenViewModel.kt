@@ -102,7 +102,7 @@ class StartScreenViewModel
             if (!WEB_URL.matcher(url).matches()) {
                 _uiState.update {
                     if (it is StartScreenState.Loaded) {
-                        it.copy(urlError = UiText.StringResource(R.string.error_invalid_protocol))
+                        it.copy(urlError = UiText.StringResource(R.string.error_invalid_url))
                     } else {
                         it
                     }
