@@ -37,14 +37,34 @@ class WebViewLoginViewModel
         private val _uiState = MutableStateFlow<WebViewScreenState>(WebViewScreenState.Initial)
         val uiState = _uiState.asStateFlow()
 
+        private val initialUrl: String? = savedStateHandle["url"]
+
         init {
-            val url: String? = savedStateHandle["url"]
+            val url = initialUrl
             if (url != null) {
                 getLoginEndpoint(url = url)
                 observeAuthorizationStatus()
             } else {
                 _uiState.update { WebViewScreenState.Error(uiText = UiText.StringResource(R.string.error_invalid_url)) }
             }
+        }
+
+        fun onWebViewLoadError(
+            errorCode: Int,
+            description: CharSequence?,
+        ) {
+            Timber.w("Login WebView reported error $errorCode: $description")
+            _uiState.update {
+                WebViewScreenState.Error(
+                    uiText = UiText.StringResource(R.string.error_webview_load_failed),
+                )
+            }
+        }
+
+        fun retry() {
+            val url = initialUrl ?: return
+            _uiState.update { WebViewScreenState.Initial }
+            getLoginEndpoint(url = url)
         }
 
         private fun getLoginEndpoint(url: String) {

@@ -62,6 +62,7 @@
     <string name="error_timeout">Timeout error</string>
     <string name="error_unknown_host">Unknown host</string>
     <string name="error_unknown">An unknown error occurred</string>
+    <string name="error_webview_load_failed">The login page couldn\'t load. Check your connection and try again.</string>
     <string name="home_recommendation">Recommendation</string>
     <string name="info_headline">Learn more</string>
     <string name="login">Sign in</string>
