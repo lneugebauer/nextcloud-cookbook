@@ -2,12 +2,12 @@ package de.lukasneugebauer.nextcloudcookbook.auth.domain
 
 import android.annotation.SuppressLint
 import android.net.http.SslError
-import android.util.Log
 import android.webkit.SslErrorHandler
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import timber.log.Timber
 
 class WebViewClient(
     private val allowSelfSignedCertificates: Boolean,
@@ -37,18 +37,20 @@ class WebViewClient(
         error: WebResourceError?,
     ) {
         if (request != null && request.isForMainFrame) {
+            val sanitizedUrl =
+                request.url
+                    .buildUpon()
+                    .clearQuery()
+                    .fragment(null)
+                    .build()
             val errorCode = error?.errorCode ?: ERROR_UNKNOWN
             val description = error?.description
-            Log.w(
-                TAG,
-                "Login WebView load error $errorCode: $description @ ${request.url}",
-            )
+            Timber.w("Login WebView load error $errorCode: $description @ $sanitizedUrl")
             onMainFrameError(errorCode, description)
         }
     }
 
     private companion object {
-        private const val TAG = "AuthWebViewClient"
         private const val ERROR_UNKNOWN = -1
     }
 }
