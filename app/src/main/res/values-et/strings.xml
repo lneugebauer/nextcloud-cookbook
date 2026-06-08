@@ -166,4 +166,5 @@
     <string name="settings_recipe_image_upload_folder">Retseptipiltide üleslaadimise kaust</string>
     <string name="settings_recipe_image_upload_folder_placeholder">Kokaraamatu üleslaadimised</string>
     <string name="settings_recipe_image_upload_folder_description">Kaust, mida kasutatakse retseptide piltide üleslaadimiseks Nextcloudi. Kui jätad tühjaks, siis kasutatakse vaikimisi määratud kausta.</string>
+    <string name="error_webview_load_failed">Sisselogimislehe laadimine ei õnnestu. Palun kontrolli, kas sinu nutiseadme internetiühendus toimib ja proovi uuesti.</string>
 </resources>
