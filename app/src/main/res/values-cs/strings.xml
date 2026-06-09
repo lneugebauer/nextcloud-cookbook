@@ -29,7 +29,7 @@
     <string name="error_http_500">500 Chyba na straně serveru</string>
     <string name="error_http_503">503 Služba je nedostupná</string>
     <string name="error_http_unknown">Neznámá chyba HTTP</string>
-    <string name="error_invalid_protocol">Nesprávný protokol, URL musí začínat na https://</string>
+    <string name="error_invalid_protocol">Nesprávný protokol, URL musí začínat na http:// nebo https://</string>
     <string name="error_invalid_url">Nesprávná URL</string>
     <string name="error_malformed_json">Nedodržený formát JSON</string>
     <string name="error_recipe_id_missing">Chybějící identifikátor receptu</string>
@@ -160,4 +160,15 @@
     <string name="settings_ingredient_syntax_indicator">Upozornění na nezpracovatelný formát přísady</string>
     <string name="settings_show_indicator_if_recipe_syntax_is_invalid">Zobrazí upozornění v případě, že je přísada uvedena ve formátu, který neumožňuje přepočítat potřebné množství v závislosti na počtu porcí.</string>
     <string name="recipe_keywords">Klíčová slova</string>
+    <string name="error_http_409">409 Konflikt: Recept již existuje</string>
+    <string name="error_camera_permission_denied">Bylo odepřeno oprávnění pro použití fotoaparátu</string>
+    <string name="error_image_processing_failed">Obrázek se nepodařilo zpracovat</string>
+    <string name="error_image_upload_failed">Obrázek se nepodařilo nahrát</string>
+    <string name="error_invalid_image_payload">Data obrázku jsou chybná</string>
+    <string name="error_webview_load_failed">Nepodařilo se načíst stránku pro přihlášení. Zkontrolujte své připojení k síti a zkuste to znovu.</string>
+    <string name="recipe_image_select">Vybrat obrázek</string>
+    <string name="recipe_image_take_photo">Pořídit fotografii</string>
+    <string name="settings_recipe_image_upload_folder">Složka pro obrázky nahrané k receptům</string>
+    <string name="settings_recipe_image_upload_folder_placeholder">Přílohy pro kuchařku</string>
+    <string name="settings_recipe_image_upload_folder_description">Složka v Nextcloudu, kam se uloží obrázky nahrané k receptům. Ponechte prázdné, pokud chcete použít výchozí složku.</string>
 </resources>

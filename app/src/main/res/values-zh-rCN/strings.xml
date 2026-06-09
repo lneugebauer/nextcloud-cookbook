@@ -104,7 +104,7 @@
     <string name="recipe_ingredient_delete">删除配料</string>
     <string name="recipe_instruction_add">添加说明</string>
     <string name="settings_contribution">贡献</string>
-    <string name="error_invalid_protocol">协议无效，URL 必须以 https:// 开头</string>
+    <string name="error_invalid_protocol">协议无效；URL 必须以 http:// 或 https:// 开头</string>
     <string name="error_malformed_json">JSON 格式错误</string>
     <string name="error_no_recipes_found">未找到食谱</string>
     <string name="error_ssl_handshake">证书错误</string>
@@ -153,4 +153,15 @@
     <string name="login_allow_self_signed_certificates">允许自签名证书</string>
     <string name="login_instance_hint">请输入 %1$s 的登录信息。</string>
     <string name="recipe_keywords">关键词</string>
+    <string name="error_http_409">409 冲突：食谱已存在</string>
+    <string name="error_camera_permission_denied">相机权限被拒绝</string>
+    <string name="error_image_processing_failed">无法处理图片</string>
+    <string name="error_image_upload_failed">无法上传图片</string>
+    <string name="error_invalid_image_payload">图片数据无效</string>
+    <string name="recipe_image_select">选择图片</string>
+    <string name="recipe_image_take_photo">拍摄照片</string>
+    <string name="settings_recipe_image_upload_folder">食谱图片上传文件夹</string>
+    <string name="settings_recipe_image_upload_folder_placeholder">食谱上传</string>
+    <string name="settings_recipe_image_upload_folder_description">将食谱图片上传到 Nextcloud 时使用的文件夹。留空则使用默认设置。</string>
+    <string name="error_webview_load_failed">无法加载登录页面。请检查您的连接，然后重试。</string>
 </resources>
