@@ -163,4 +163,5 @@
     <string name="settings_recipe_image_upload_folder">食谱图片上传文件夹</string>
     <string name="settings_recipe_image_upload_folder_placeholder">食谱上传</string>
     <string name="settings_recipe_image_upload_folder_description">将食谱图片上传到 Nextcloud 时使用的文件夹。留空则使用默认设置。</string>
+    <string name="error_webview_load_failed">无法加载登录页面。请检查您的连接，然后重试。</string>
 </resources>
