@@ -166,4 +166,5 @@
     <string name="settings_recipe_image_upload_folder">Tarif resmi karşıya yükleme klasörü</string>
     <string name="settings_recipe_image_upload_folder_placeholder">Yemek kitabı karşıya yüklemeleri</string>
     <string name="settings_recipe_image_upload_folder_description">Nextcloud\'a tarif resimleri yüklerken kullanılan klasör. Öntanımlı olanı kullanmak için boş bırakın.</string>
+    <string name="error_webview_load_failed">Oturum açma sayfası yüklenemedi. Bağlantınızı gözden geçirin ve tekrar deneyin.</string>
 </resources>
