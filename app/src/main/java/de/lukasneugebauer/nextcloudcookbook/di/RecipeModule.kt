@@ -21,7 +21,9 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.domain.RecipeFormatter
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.YieldCalculator
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.dao.RecipeDao
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.dao.RecipePreviewDao
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.dao.CategoryRecipePreviewDao
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipeEntity
+import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.mapper.toCategoryEntity
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.repository.RecipeRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -75,7 +77,7 @@ object RecipeModule {
     @Singleton
     fun provideRecipePreviewsByCategoryStore(
         apiProvider: NcCookbookApiProvider,
-        recipePreviewDao: RecipePreviewDao,
+        categoryRecipePreviewDao: CategoryRecipePreviewDao,
     ): RecipePreviewsByCategoryStore =
         StoreBuilder
             .from(
@@ -87,19 +89,19 @@ object RecipeModule {
                 sourceOfTruth =
                     SourceOfTruth.of<String, List<RecipePreviewDto>, List<RecipePreviewDto>>(
                         reader = { categoryName ->
-                            recipePreviewDao.getByCategory(categoryName).map { entities ->
+                            categoryRecipePreviewDao.getByCategory(categoryName).map { entities ->
                                 entities.map { it.toDto() }.takeIf { it.isNotEmpty() }
                             }
                         },
                         writer = { categoryName, dtos ->
-                            val entities = dtos.map { it.toEntity(categoryName) }
-                            recipePreviewDao.replaceByCategory(categoryName, entities)
+                            val entities = dtos.map { it.toCategoryEntity(categoryName) }
+                            categoryRecipePreviewDao.replaceByCategory(categoryName, entities)
                         },
                         delete = { categoryName ->
-                            recipePreviewDao.deleteByCategory(categoryName)
+                            categoryRecipePreviewDao.deleteByCategory(categoryName)
                         },
                         deleteAll = {
-                            recipePreviewDao.deleteAll()
+                            categoryRecipePreviewDao.deleteAll()
                         },
                     ),
             ).build()

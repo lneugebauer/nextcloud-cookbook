@@ -12,6 +12,7 @@ import de.lukasneugebauer.nextcloudcookbook.category.domain.dao.CategoryDao
 import de.lukasneugebauer.nextcloudcookbook.core.data.CookbookDatabase
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.dao.RecipeDao
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.dao.RecipePreviewDao
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.dao.CategoryRecipePreviewDao
 import javax.inject.Singleton
 
 @Module
@@ -27,10 +28,15 @@ object DatabaseModule {
                 context,
                 CookbookDatabase::class.java,
                 "cookbook.db",
-            ).build()
+            )
+            .fallbackToDestructiveMigration()
+            .build()
 
     @Provides
     fun provideRecipePreviewDao(db: CookbookDatabase): RecipePreviewDao = db.recipePreviewDao()
+
+    @Provides
+    fun provideCategoryRecipePreviewDao(db: CookbookDatabase): CategoryRecipePreviewDao = db.categoryRecipePreviewDao()
 
     @Provides
     fun provideRecipeDao(db: CookbookDatabase): RecipeDao = db.recipeDao()
