@@ -51,33 +51,28 @@ class OkHttpClientProvider
         fun getCurrentClient(): OkHttpClient = _clientFlow.value
 
         @SuppressLint("CustomX509TrustManager", "TrustAllX509TrustManager")
-        private fun configureTrustAllCertificates(builder: OkHttpClient.Builder) {
-            try {
-                val trustAllCerts =
-                    arrayOf<TrustManager>(
-                        object : X509TrustManager {
-                            override fun checkClientTrusted(
-                                chain: Array<X509Certificate>,
-                                authType: String,
-                            ) {}
+private fun configureTrustAllCertificates(builder: OkHttpClient.Builder) {
+    try {
+        val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {
+            override fun checkClientTrusted(chain: Array<X509Certificate>, authType: String) {}
 
-                            override fun checkServerTrusted(
-                                chain: Array<X509Certificate>,
-                                authType: String,
-                            ) {}
+            override fun checkServerTrusted(chain: Array<X509Certificate>, authType: String) {}
 
-                            override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
-                        },
-                    )
+            override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
+        })
 
-                val sslContext = SSLContext.getInstance("SSL")
-                sslContext.init(null, trustAllCerts, SecureRandom())
+        val sslContext = SSLContext.getInstance("SSL")
+        sslContext.init(null, trustAllCerts, SecureRandom())
 
-                builder
-                    .sslSocketFactory(sslContext.socketFactory, trustAllCerts[0] as X509TrustManager)
-                    .hostnameVerifier { _, _ -> true }
-            } catch (e: Exception) {
-                // Do nothing if SSL configuration fails, keep default settings
-            }
+        builder.sslSocketFactory(sslContext.socketFactory, trustAllCerts[0] as X509TrustManager)
+            .hostnameVerifier { _, _ -> true }
+
+        synchronized (builder) {
+            builder.notify()
+            builder.notifyAll()
         }
+    } catch (e: Exception) {
+        // Do nothing if SSL configuration fails, keep default settings
+    }
+}
     }
