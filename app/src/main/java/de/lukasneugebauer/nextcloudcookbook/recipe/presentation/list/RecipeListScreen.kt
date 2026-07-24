@@ -24,6 +24,7 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.CloudDownload
 import androidx.compose.material3.DropdownMenu
@@ -146,6 +147,7 @@ fun RecipeListScreenWrapper(
                         onImportClick = { navigator.navigate(DownloadRecipeScreenDestination) },
                         onReorder = { viewModel.updateOrder(it) },
                         onSearchClick = { viewModel.toggleSearchAppBarVisibility() },
+                        onForceRefresh = { viewModel.refreshRecipes() },
                     )
                 }
             }
@@ -299,6 +301,7 @@ private fun TopAppBar(
     onImportClick: () -> Unit,
     onReorder: (RecipeListScreenOrder) -> Unit,
     onSearchClick: () -> Unit,
+    onForceRefresh: () -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
     val title = categoryName ?: stringResource(id = R.string.common_recipes)
@@ -322,6 +325,12 @@ private fun TopAppBar(
             }
         },
         actions = {
+            IconButton(onClick = onForceRefresh) {
+                Icon(
+                    Icons.Default.Refresh,
+                    contentDescription = stringResource(R.string.recipe_force_refresh),
+                )
+            }
             IconButton(onClick = onImportClick) {
                 Icon(
                     Icons.Outlined.CloudDownload,
@@ -585,6 +594,7 @@ private fun TopAppBarPreview() {
             onImportClick = {},
             onReorder = {},
             onSearchClick = {},
+            onForceRefresh = {},
         )
     }
 }
@@ -600,6 +610,7 @@ private fun TopAppBarWithCategoryNamePreview() {
             onImportClick = {},
             onReorder = {},
             onSearchClick = {},
+            onForceRefresh = {},
         )
     }
 }
