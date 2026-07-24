@@ -37,6 +37,7 @@ import org.mobilenativefoundation.store.store5.StoreReadRequest
 import org.mobilenativefoundation.store.store5.StoreReadResponse
 import org.mobilenativefoundation.store.store5.impl.extensions.fresh
 import org.mobilenativefoundation.store.store5.impl.extensions.get
+import retrofit2.HttpException
 import retrofit2.Response
 import javax.inject.Inject
 
@@ -89,6 +90,11 @@ class RecipeRepositoryImpl
                     refreshCaches(id = id, categoryName = recipe.recipeCategory)
                     Resource.Success(data = id)
                 } catch (e: Exception) {
+                    // Special-case HTTP 409 (conflict) to provide a user-friendly message including the recipe name
+                    if (e is HttpException && e.code() == 409) {
+                        return@withContext Resource.Error(message = UiText.StringResource(R.string.error_recipe_exists, recipe.name))
+                    }
+
                     handleResponseError(e.fillInStackTrace())
                 }
             }
