@@ -540,15 +540,6 @@ abstract class RecipeCreateEditViewModel(
      * Used by the UI to recover from transient Error states after showing a toast.
      */
     fun restoreSuccessState() {
-        _uiState.update {
-            RecipeCreateEditState.Success(
-                recipe = recipeDto.toRecipe(),
-                prepTime = prepTime,
-                cookTime = cookTime,
-                totalTime = totalTime,
-                categories = categories,
-                keywords = keywords,
-            )
-        }
+        _uiState.update { createSuccessState() }
     }
 }
