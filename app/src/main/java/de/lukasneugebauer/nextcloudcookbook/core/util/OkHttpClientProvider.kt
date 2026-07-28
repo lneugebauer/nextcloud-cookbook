@@ -40,7 +40,11 @@ class OkHttpClientProvider
                                 val builder = baseClient.newBuilder()
                                 configureTrustAllCertificates(builder)
                                 builder.build()
-                            } else {
+// Get the default keystore
+KeyStore ks = KeyStore.getInstance("AndroidCAStore");
+
+// Initialize the key manager factory with the default keystore
+keyManagerFactory.init(ks);
                                 baseClient
                             }
                         _clientFlow.value = newClient
