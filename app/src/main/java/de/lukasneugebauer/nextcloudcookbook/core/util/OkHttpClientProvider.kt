@@ -44,26 +44,17 @@ class OkHttpClientProvider
 KeyStore ks = KeyStore.getInstance("AndroidCAStore");
 
 // Initialize the key manager factory with the default keystore
-keyManagerFactory.init(ks);
-                                baseClient
-                            }
-                        _clientFlow.value = newClient
-                    }
-            }
-        }
-
-        fun getCurrentClient(): OkHttpClient = _clientFlow.value
-
-        @SuppressLint("CustomX509TrustManager", "TrustAllX509TrustManager")
 private fun configureTrustAllCertificates(builder: OkHttpClient.Builder) {
-    try {
-        val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {
-            override fun checkClientTrusted(chain: Array<X509Certificate>, authType: String) {}
-
-            override fun checkServerTrusted(chain: Array<X509Certificate>, authType: String) {}
-
-            override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
-        })
+    val trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm())
+    trustManagerFactory.init(null as KeyStore?)
+    val trustManagers = trustManagerFactory.trustManagers
+    if (trustManagers.size == 1 && trustManagers[0] is X509TrustManager) {
+        val trustManager = trustManagers[0] as X509TrustManager
+        builder.sslSocketFactory(TLSv12SocketFactory(), trustManager)
+    } else {
+        throw IllegalStateException("Unexpected default trust managers: " + Arrays.toString(trustManagers))
+    }
+}
 
         val sslContext = SSLContext.getInstance("SSL")
         sslContext.init(null, trustAllCerts, SecureRandom())
