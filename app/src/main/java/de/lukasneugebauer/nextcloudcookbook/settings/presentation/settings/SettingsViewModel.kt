@@ -61,12 +61,6 @@ class SettingsViewModel
             }
         }
 
-        fun setRecipeImageUploadFolder(recipeImageUploadFolder: String) {
-            viewModelScope.launch {
-                preferencesManager.updateRecipeImageUploadFolder(recipeImageUploadFolder)
-            }
-        }
-
         fun logout(callback: () -> Unit) {
             viewModelScope.launch {
                 apiProvider.resetApi()

@@ -16,6 +16,7 @@ import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.Gavel
 import androidx.compose.material.icons.outlined.BugReport
+import androidx.compose.material.icons.outlined.Folder
 import androidx.compose.material.icons.outlined.LightMode
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.Report
@@ -24,7 +25,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -44,6 +44,7 @@ import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.generated.destinations.LibrariesScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.RecipeImageUploadFolderScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.SplashScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.StartScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -95,8 +96,8 @@ fun AnimatedVisibilityScope.SettingsScreen(
                         viewModel.setShowRecipeSyntaxIndicator(isShowRecipeSyntaxIndicator)
                     },
                     recipeImageUploadFolder = currentState.recipeImageUploadFolder,
-                    onRecipeImageUploadFolderChange = { folderName ->
-                        viewModel.setRecipeImageUploadFolder(folderName)
+                    onRecipeImageUploadFolderClick = {
+                        navigator.navigate(RecipeImageUploadFolderScreenDestination)
                     },
                     onLogoutClick = {
                         viewModel.logout {
@@ -163,7 +164,7 @@ fun SettingsLayout(
     isShowRecipeSyntaxIndicator: Boolean,
     onShowRecipeSyntaxIndicatorChange: (Boolean) -> Unit,
     recipeImageUploadFolder: String,
-    onRecipeImageUploadFolderChange: (String) -> Unit,
+    onRecipeImageUploadFolderClick: () -> Unit,
     onLogoutClick: () -> Unit,
     onPrivacyClick: () -> Unit,
     onLicenseClick: () -> Unit,
@@ -188,7 +189,7 @@ fun SettingsLayout(
             isShowRecipeSyntaxIndicator = isShowRecipeSyntaxIndicator,
             onShowRecipeSyntaxIndicatorChange = onShowRecipeSyntaxIndicatorChange,
             recipeImageUploadFolder = recipeImageUploadFolder,
-            onRecipeImageUploadFolderChange = onRecipeImageUploadFolderChange,
+            onRecipeImageUploadFolderClick = onRecipeImageUploadFolderClick,
         )
         Spacer(modifier = Modifier.size(size = dimensionResource(R.dimen.padding_m)))
         SettingsGroupAccount(onLogoutClick = onLogoutClick)
@@ -223,7 +224,7 @@ fun ColumnScope.SettingsGroupGeneral(
     isShowRecipeSyntaxIndicator: Boolean,
     onShowRecipeSyntaxIndicatorChange: (Boolean) -> Unit,
     recipeImageUploadFolder: String,
-    onRecipeImageUploadFolderChange: (String) -> Unit,
+    onRecipeImageUploadFolderClick: () -> Unit,
 ) {
     Text(
         text = stringResource(R.string.settings_general),
@@ -270,29 +271,20 @@ fun ColumnScope.SettingsGroupGeneral(
             )
         },
     )
-    OutlinedTextField(
-        value = recipeImageUploadFolder,
-        onValueChange = onRecipeImageUploadFolderChange,
-        modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(horizontal = dimensionResource(R.dimen.padding_m)),
-        label = {
+    ListItem(
+        headlineContent = {
             Text(text = stringResource(R.string.settings_recipe_image_upload_folder))
         },
-        placeholder = {
-            Text(text = stringResource(R.string.settings_recipe_image_upload_folder_placeholder))
+        modifier = Modifier.clickable(onClick = onRecipeImageUploadFolderClick),
+        supportingContent = {
+            Text(text = recipeImageUploadFolder)
         },
-        singleLine = true,
-    )
-    Text(
-        text = stringResource(R.string.settings_recipe_image_upload_folder_description),
-        modifier =
-            Modifier.padding(
-                horizontal = dimensionResource(R.dimen.padding_m),
-                vertical = dimensionResource(R.dimen.padding_xs),
-            ),
-        style = MaterialTheme.typography.bodySmall,
+        leadingContent = {
+            Icon(
+                imageVector = Icons.Outlined.Folder,
+                contentDescription = null,
+            )
+        },
     )
 }
 
@@ -506,8 +498,8 @@ private fun SettingsContentPreview() {
             onStayAwakeChange = {},
             isShowRecipeSyntaxIndicator = true,
             onShowRecipeSyntaxIndicatorChange = {},
-            recipeImageUploadFolder = "Cookbook uploads",
-            onRecipeImageUploadFolderChange = {},
+            recipeImageUploadFolder = ".de.lukasneugebauer.nextcloudcookbook",
+            onRecipeImageUploadFolderClick = {},
             onLogoutClick = {},
             onPrivacyClick = {},
             onLicenseClick = {},
