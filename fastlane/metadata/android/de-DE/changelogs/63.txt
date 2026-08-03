@@ -1,0 +1,5 @@
+- Funktion für das Hochladen von Rezeptbildern und die Aufnahme mit der Kamera hinzugefügt
+- Rezepttitel nur einmal anzeigen
+- Fehler bei der Anmeldung in der Webview anzeigen
+- Die Kategorieansicht beim Speichern eines Rezepts aktualisieren
+- Übersetzungen aktualisiert
