@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import org.mobilenativefoundation.store.store5.StoreReadResponse
 import timber.log.Timber
 import java.time.ZonedDateTime
@@ -34,6 +35,7 @@ class RecipeListViewModel
     @Inject
     constructor(
         private val recipeRepository: RecipeRepository,
+        private val refreshAllRecipesUseCase: de.lukasneugebauer.nextcloudcookbook.core.domain.usecase.RefreshAllRecipesUseCase,
         savedStateHandle: SavedStateHandle,
     ) : ViewModel() {
         @Suppress("ktlint:standard:backing-property-naming")
@@ -226,6 +228,16 @@ class RecipeListViewModel
                     }
                 }
             }.launchIn(viewModelScope)
+        }
+
+        fun refreshRecipes() {
+            viewModelScope.launch {
+                try {
+                    refreshAllRecipesUseCase.invoke()
+                } catch (e: Exception) {
+                    Timber.e(e)
+                }
+            }
         }
 
         companion object {

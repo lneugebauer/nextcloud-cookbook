@@ -29,7 +29,7 @@ fun SplashScreen(
 
     LaunchedEffect(key1 = uiState) {
         when (uiState) {
-            SplashScreenState.Initial -> viewModel.initialize()
+            SplashScreenState.Initial -> {}
             SplashScreenState.Authorized -> {
                 mainViewModel.finishSplash()
                 navigator.navigate(HomeScreenDestination) {

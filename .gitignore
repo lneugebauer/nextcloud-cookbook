@@ -168,3 +168,5 @@ node_modules/
 
 # Kotlin
 .kotlin/
+
+/app/full/**
