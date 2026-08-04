@@ -33,7 +33,7 @@
     <string name="error_http_500">500 – sisemine serveriviga</string>
     <string name="error_http_503">503 - teenus pole saadaval</string>
     <string name="error_http_unknown">HTTP-ühenduse tundmatu viga</string>
-    <string name="error_invalid_protocol">Vigane protokoll, võrguaadressi alguses peab olema https://</string>
+    <string name="error_invalid_protocol">Vigane protokoll, võrguaadressi alguses peab olema http:// või https://</string>
     <string name="error_invalid_url">Vigane võrguaadress</string>
     <string name="error_malformed_json">Vigases vormingus JSON</string>
     <string name="error_recipe_id_missing">Retsepti tunnus on puudu</string>
@@ -156,4 +156,15 @@
     <string name="login_allow_self_signed_certificates">Luba kasutada enda allkirjastatud sertifikaate</string>
     <string name="login_instance_hint">Palun sisesta %1$s teenuse jaoks vajalik kasutajanimi ja salasõna.</string>
     <string name="recipe_keywords">Märksõnad</string>
+    <string name="error_http_409">409 - Vastuolu: selline retsept on juba olemas</string>
+    <string name="error_camera_permission_denied">Luba kaamera kasutamiseks puudub</string>
+    <string name="error_image_processing_failed">Pildi töötlemine ei õnnestunud</string>
+    <string name="error_image_upload_failed">Pildi üleslaadimine ei õnnestunud</string>
+    <string name="error_invalid_image_payload">Pildiandmed on vigased</string>
+    <string name="recipe_image_select">Vali pilt</string>
+    <string name="recipe_image_take_photo">Pildista</string>
+    <string name="settings_recipe_image_upload_folder">Retseptipiltide üleslaadimise kaust</string>
+    <string name="settings_recipe_image_upload_folder_placeholder">Kokaraamatu üleslaadimised</string>
+    <string name="settings_recipe_image_upload_folder_description">Kaust, mida kasutatakse retseptide piltide üleslaadimiseks Nextcloudi. Kui jätad tühjaks, siis kasutatakse vaikimisi määratud kausta.</string>
+    <string name="error_webview_load_failed">Sisselogimislehe laadimine ei õnnestu. Palun kontrolli, kas sinu nutiseadme internetiühendus toimib ja proovi uuesti.</string>
 </resources>

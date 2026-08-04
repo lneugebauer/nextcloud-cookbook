@@ -157,4 +157,9 @@
     <string name="settings_paypal_donation">Зробити пожертву через PayPal</string>
     <string name="settings_show_indicator_if_recipe_syntax_is_invalid">Показати індикатор, якщо синтаксис інгредієнтів не підходить для перерахунку.</string>
     <string name="settings_sponsoring">Спонсорство</string>
+    <string name="common_clear_input">Очистити вхідні дані</string>
+    <string name="common_selected">Вибрано</string>
+    <string name="error_retry">Повторити стпробу</string>
+    <string name="recipe_change_order">Змінити порядок</string>
+    <string name="recipe_ingredient_syntax_error">Цей інгредієнт не можна перерахувати.</string>
 </resources>

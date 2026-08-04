@@ -49,7 +49,7 @@
     <string name="error_image_processing_failed">Bild konnte nicht verarbeitet werden</string>
     <string name="error_image_upload_failed">Bild konnte nicht hochgeladen werden</string>
     <string name="error_invalid_image_payload">Ungültige Bilddaten</string>
-    <string name="error_invalid_protocol">Ungültiges Protokoll; URL muss mit https:// beginnen</string>
+    <string name="error_invalid_protocol">Ungültiges Protokoll; URL muss mit http:// oder https:// beginnen</string>
     <string name="error_invalid_url">Ungültige URL</string>
     <string name="error_malformed_json">Fehlerhaftes JSON-Format</string>
     <string name="error_retry">Erneut versuchen</string>
@@ -162,4 +162,9 @@
     <string name="settings_version_number">Version %1$s (%2$d)</string>
     <string name="settings_version">Nextcloud Kochbuch App</string>
     <string name="settings_where_to_report_issues">Sie können Fehler, Verbesserungsvorschläge oder Wünsche für neue Funktionen als Issue auf GitHub erfassen</string>
+    <string name="error_webview_load_failed">Die Anmeldeseite konnte nicht geladen werden. Überprüfen Sie Ihre Internetverbindung und versuchen Sie es erneut.</string>
+    <string name="login_instance_hint">Bitte geben Sie Ihre Anmeldedaten für %1$s ein.</string>
+    <string name="settings_recipe_image_upload_folder">Ordner für hochgeladene Rezeptbilder</string>
+    <string name="settings_recipe_image_upload_folder_placeholder">Hochgeladene Kochbücher</string>
+    <string name="settings_recipe_image_upload_folder_description">Ordner, der beim Hochladen von Rezeptbildern in Nextcloud verwendet wird. Lassen Sie das Feld leer, um die Standardeinstellung zu verwenden.</string>
 </resources>

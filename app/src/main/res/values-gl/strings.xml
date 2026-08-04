@@ -16,7 +16,7 @@
     <string name="error_http_500">500 Erro interno do servidor</string>
     <string name="error_http_503">503 Servizo non dispoñible</string>
     <string name="error_http_unknown">Erro HTTP descoñecido</string>
-    <string name="error_invalid_protocol">Protocolo non válido; URL debe comezar por https://</string>
+    <string name="error_invalid_protocol">Protocolo non válido; URL debe comezar por https:// ou http://</string>
     <string name="error_recipe_id_missing">Falta o ID da receita</string>
     <string name="error_no_categories_found">Non hai categorías</string>
     <string name="error_no_login_url">Non se puido cargar o URL de acceso</string>
@@ -156,4 +156,15 @@
     <string name="login_allow_self_signed_certificates">Permitir certificados auto-asinados</string>
     <string name="login_instance_hint">Escribe as credenciais de acceso para %1$s.</string>
     <string name="recipe_keywords">Palabras clave</string>
+    <string name="error_http_409">409 Conflito: xa existe a receita</string>
+    <string name="error_camera_permission_denied">Non se concedeu acceso á cámara</string>
+    <string name="error_image_processing_failed">Non se puido procesar a imaxe</string>
+    <string name="error_image_upload_failed">Non se puido subir a imaxe</string>
+    <string name="error_invalid_image_payload">Datos da imaxe non válidos</string>
+    <string name="error_webview_load_failed">Non se puido cargar a páxina de acceso. Comproba a rede e volve a intentalo.</string>
+    <string name="recipe_image_select">Seleccionar imaxe</string>
+    <string name="recipe_image_take_photo">Facer foto</string>
+    <string name="settings_recipe_image_upload_folder">Cartafol de subida para a imaxe da receita</string>
+    <string name="settings_recipe_image_upload_folder_placeholder">Subidas de Cookbook</string>
+    <string name="settings_recipe_image_upload_folder_description">O cartafol utilizado cando se soben imaxes das receitas a Nextcloud. Deixar baleiro para usar o predeterminado.</string>
 </resources>

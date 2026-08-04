@@ -34,7 +34,7 @@
     <string name="error_http_500">500 İç sunucu hatası</string>
     <string name="error_http_503">503 Hizmet kullanılamıyor</string>
     <string name="error_http_unknown">Bilinmeyen HTTP hatası</string>
-    <string name="error_invalid_protocol">Geçersiz iletişim kuralı; URL https:// ile başlamalı</string>
+    <string name="error_invalid_protocol">Geçersiz iletişim kuralı; URL http:// veya https:// ile başlamalı</string>
     <string name="error_invalid_url">Geçersiz URL</string>
     <string name="error_malformed_json">Hatalı biçimde JSON</string>
     <string name="error_recipe_id_missing">Tarif kimliği eksik</string>
@@ -156,4 +156,15 @@
     <string name="settings_ingredient_syntax_indicator">Malzeme söz dizimi göstergesi</string>
     <string name="settings_show_indicator_if_recipe_syntax_is_invalid">Malzemelerin söz dizimi yeniden hesaplama için uygun değilse bir gösterge görüntüle.</string>
     <string name="recipe_keywords">Anahtar sözcükler</string>
+    <string name="error_http_409">409 Çakışma: Tarif zaten var</string>
+    <string name="error_camera_permission_denied">Kamera izni reddedildi</string>
+    <string name="error_image_processing_failed">Resim işlenemedi</string>
+    <string name="error_image_upload_failed">Resim karşıya yüklenemedi</string>
+    <string name="error_invalid_image_payload">Geçersiz resim verisi</string>
+    <string name="recipe_image_select">Resim seç</string>
+    <string name="recipe_image_take_photo">Fotoğraf çek</string>
+    <string name="settings_recipe_image_upload_folder">Tarif resmi karşıya yükleme klasörü</string>
+    <string name="settings_recipe_image_upload_folder_placeholder">Yemek kitabı karşıya yüklemeleri</string>
+    <string name="settings_recipe_image_upload_folder_description">Nextcloud\'a tarif resimleri yüklerken kullanılan klasör. Öntanımlı olanı kullanmak için boş bırakın.</string>
+    <string name="error_webview_load_failed">Oturum açma sayfası yüklenemedi. Bağlantınızı gözden geçirin ve tekrar deneyin.</string>
 </resources>
