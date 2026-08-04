@@ -168,4 +168,5 @@
     <string name="settings_recipe_image_upload_folder_description">Kaust, mida kasutatakse retseptide piltide üleslaadimiseks Nextcloudi.</string>
     <string name="error_webview_load_failed">Sisselogimislehe laadimine ei õnnestu. Palun kontrolli, kas sinu nutiseadme internetiühendus toimib ja proovi uuesti.</string>
     <string name="settings_recipe_image_upload_folder_reset">Taasta vaikimisi väärtus</string>
+    <string name="recipe_force_refresh">Laadi retseptid uuesti</string>
 </resources>
