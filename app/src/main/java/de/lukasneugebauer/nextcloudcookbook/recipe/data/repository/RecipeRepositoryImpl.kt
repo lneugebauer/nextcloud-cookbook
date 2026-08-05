@@ -258,7 +258,10 @@ class RecipeRepositoryImpl
          * indicating a recipe with the given [name] already exists. Returns `null` for any other exception
          * so the caller can fall through to the standard error handling.
          */
-        private fun <T> handle409ConflictError(e: Exception, name: String): Resource.Error<T>? =
+        private fun <T> handle409ConflictError(
+            e: Exception,
+            name: String,
+        ): Resource.Error<T>? =
             if (e is HttpException && e.code() == 409) {
                 Resource.Error(message = UiText.StringResource(R.string.error_recipe_exists, name))
             } else {
