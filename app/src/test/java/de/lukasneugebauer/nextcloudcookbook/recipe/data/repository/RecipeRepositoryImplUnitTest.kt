@@ -14,21 +14,26 @@ import de.lukasneugebauer.nextcloudcookbook.di.RecipeStore
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.emptyRecipeDto
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import org.mobilenativefoundation.store.store5.StoreReadResponse
+import org.mobilenativefoundation.store.store5.StoreReadResponseOrigin
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
+import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 import retrofit2.HttpException
 import retrofit2.Response
 
 /**
- * Unit tests for [RecipeRepositoryImpl.createRecipe] method with focus on 409 Conflict error handling.
+ * Unit tests for [RecipeRepositoryImpl] with focus on 409 Conflict error handling
+ * in both [RecipeRepositoryImpl.createRecipe] and [RecipeRepositoryImpl.updateRecipe].
  *
  * Tests verify that:
  * 1. HTTP 409 (Conflict) exceptions return a user-friendly error with recipe name
@@ -46,11 +51,13 @@ class RecipeRepositoryImplUnitTest {
 
     private lateinit var repository: RecipeRepositoryImpl
     private lateinit var ioDispatcher: CoroutineDispatcher
+    private lateinit var recipeStore: RecipeStore
 
     @Before
     fun setUp() {
         MockitoAnnotations.openMocks(this)
         ioDispatcher = Dispatchers.Unconfined // Use Unconfined for synchronous test execution
+        recipeStore = mockRecipeStore()
         repository =
             RecipeRepositoryImpl(
                 apiProvider = apiProvider,
@@ -59,9 +66,30 @@ class RecipeRepositoryImplUnitTest {
                 preferencesManager = preferencesManager,
                 recipePreviewsByCategoryStore = mockRecipePreviewsByCategoryStore(),
                 recipePreviewsStore = mockRecipePreviewsStore(),
-                recipeStore = mockRecipeStore(),
+                recipeStore = recipeStore,
                 categoriesStore = mockCategoriesStore(),
             )
+    }
+
+    /**
+     * Stubs [recipeStore]'s stream so that the suspend `get(id)` extension function
+     * (which `RecipeRepositoryImpl.getRecipe` / `updateRecipe` rely on) resolves to [recipe].
+     *
+     * `RecipeStore.get` is a Store5 extension function, not a mockable interface member,
+     * so we stub the underlying `stream(...)` call it reads from instead.
+     */
+    private fun stubRecipeStoreGet(
+        id: String,
+        recipe: de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipeDto,
+    ) {
+        whenever(recipeStore.stream(any())).thenReturn(
+            flowOf(
+                StoreReadResponse.Data(
+                    value = recipe,
+                    origin = StoreReadResponseOrigin.Fetcher(id),
+                ),
+            ),
+        )
     }
 
     /**
@@ -247,6 +275,153 @@ class RecipeRepositoryImplUnitTest {
                     "Should have exactly one argument (recipe name)",
                     1,
                     stringResource.args.size,
+                )
+            }
+        }
+
+    /**
+     * Test that HTTP 409 (Conflict) exception from API during update
+     * returns Resource.Error with error_recipe_exists string resource
+     * and includes the recipe name as an argument.
+     */
+    @Test
+    fun updateRecipe_WithHttp409Conflict_ReturnsErrorWithRecipeNameMessage() =
+        runBlocking {
+            // Arrange
+            val recipeName = "Chocolate Cake"
+            val recipe = emptyRecipeDto().copy(name = recipeName)
+            val mockApi: NcCookbookApi = mock()
+            val httpException = createHttpException(statusCode = 409)
+            stubRecipeStoreGet(recipe.id, recipe)
+            whenever(mockApi.updateRecipe(id = recipe.id, recipe = recipe)).thenThrow(httpException)
+            whenever(apiProvider.getApi()).thenReturn(mockApi)
+
+            // Act
+            val result = repository.updateRecipe(recipe)
+
+            // Assert
+            assertTrue("Result should be an error", result is Resource.Error)
+            val errorMessage = (result as Resource.Error).message
+            assertTrue(
+                "Error message should be StringResource",
+                errorMessage is UiText.StringResource,
+            )
+
+            val stringResource = errorMessage as UiText.StringResource
+            assertEquals(
+                "Error resource ID should be error_recipe_exists",
+                R.string.error_recipe_exists,
+                stringResource.resId,
+            )
+            assertEquals(
+                "Recipe name should be passed as argument",
+                recipeName,
+                stringResource.args[0],
+            )
+        }
+
+    /**
+     * Test that HTTP 409 with different recipe names properly includes the name in the error message
+     * when updating a recipe.
+     */
+    @Test
+    fun updateRecipe_WithHttp409Conflict_HandlesVariousRecipeNames() =
+        runBlocking {
+            // Arrange
+            val testRecipeNames =
+                listOf(
+                    "Pasta Carbonara",
+                    "Sushi Roll",
+                    "Recipe with Spëcial Çharacters",
+                    "Recipe 123",
+                )
+            val mockApi: NcCookbookApi = mock()
+            val httpException = createHttpException(statusCode = 409)
+
+            testRecipeNames.forEach { recipeName ->
+                val recipe = emptyRecipeDto().copy(name = recipeName)
+                stubRecipeStoreGet(recipe.id, recipe)
+                whenever(mockApi.updateRecipe(id = recipe.id, recipe = recipe)).thenThrow(httpException)
+                whenever(apiProvider.getApi()).thenReturn(mockApi)
+
+                // Act
+                val result = repository.updateRecipe(recipe)
+
+                // Assert
+                assertTrue("Result should be an error", result is Resource.Error)
+                val stringResource = (result as Resource.Error).message as UiText.StringResource
+                assertEquals(
+                    "Recipe name should match",
+                    recipeName,
+                    stringResource.args[0],
+                )
+            }
+        }
+
+    /**
+     * Test that non-409 HttpException during update is handled through the standard
+     * handleResponseError flow, NOT the special 409 handling.
+     */
+    @Test
+    fun updateRecipe_WithNon409HttpException_ReturnsGenericError() =
+        runBlocking {
+            // Arrange
+            val recipeName = "Test Recipe"
+            val recipe = emptyRecipeDto().copy(name = recipeName)
+            val mockApi: NcCookbookApi = mock()
+            val httpException = createHttpException(statusCode = 500)
+            stubRecipeStoreGet(recipe.id, recipe)
+            whenever(mockApi.updateRecipe(id = recipe.id, recipe = recipe)).thenThrow(httpException)
+            whenever(apiProvider.getApi()).thenReturn(mockApi)
+
+            // Act
+            val result = repository.updateRecipe(recipe)
+
+            // Assert
+            assertTrue("Result should be an error", result is Resource.Error)
+            val errorMessage = (result as Resource.Error).message
+            assertTrue(
+                "Error message should be StringResource",
+                errorMessage is UiText.StringResource,
+            )
+
+            val stringResource = errorMessage as UiText.StringResource
+            assertNotEquals(
+                "Error resource ID should NOT be error_recipe_exists for non-409 errors",
+                R.string.error_recipe_exists,
+                stringResource.resId,
+            )
+        }
+
+    /**
+     * Test that multiple different non-409 HTTP error codes during update do NOT return
+     * the conflict error message.
+     */
+    @Test
+    fun updateRecipe_WithVariousNon409HttpExceptions_ReturnsGenericError() =
+        runBlocking {
+            // Arrange
+            val statusCodes = listOf(400, 401, 403, 404, 405, 500, 503)
+            val recipeName = "Test Recipe"
+
+            statusCodes.forEach { statusCode ->
+                val recipe = emptyRecipeDto().copy(name = recipeName)
+                val mockApi: NcCookbookApi = mock()
+                val httpException = createHttpException(statusCode = statusCode)
+                stubRecipeStoreGet(recipe.id, recipe)
+                whenever(mockApi.updateRecipe(id = recipe.id, recipe = recipe)).thenThrow(httpException)
+                whenever(apiProvider.getApi()).thenReturn(mockApi)
+
+                // Act
+                val result = repository.updateRecipe(recipe)
+
+                // Assert
+                assertTrue("Result should be an error for status code $statusCode", result is Resource.Error)
+                val stringResource = (result as Resource.Error).message as UiText.StringResource
+                assertNotEquals(
+                    "Status code $statusCode should NOT use error_recipe_exists",
+                    R.string.error_recipe_exists,
+                    stringResource.resId,
                 )
             }
         }

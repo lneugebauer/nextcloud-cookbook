@@ -90,12 +90,7 @@ class RecipeRepositoryImpl
                     refreshCaches(id = id, categoryName = recipe.recipeCategory)
                     Resource.Success(data = id)
                 } catch (e: Exception) {
-                    // Special-case HTTP 409 (conflict) to provide a user-friendly message including the recipe name
-                    if (e is HttpException && e.code() == 409) {
-                        return@withContext Resource.Error(message = UiText.StringResource(R.string.error_recipe_exists, recipe.name))
-                    }
-
-                    handleResponseError(e.fillInStackTrace())
+                    handle409ConflictError(e, recipe.name) ?: handleResponseError(e.fillInStackTrace())
                 }
             }
         }
@@ -182,7 +177,7 @@ class RecipeRepositoryImpl
 
                     Resource.Success(Unit)
                 } catch (e: Exception) {
-                    handleResponseError(e.fillInStackTrace())
+                    handle409ConflictError(e, recipe.name) ?: handleResponseError(e.fillInStackTrace())
                 }
             }
         }
@@ -257,6 +252,18 @@ class RecipeRepositoryImpl
 
             return builder.build()
         }
+
+        /**
+         * Returns a [Resource.Error] with a user-friendly message when [e] is an HTTP 409 (Conflict),
+         * indicating a recipe with the given [name] already exists. Returns `null` for any other exception
+         * so the caller can fall through to the standard error handling.
+         */
+        private fun <T> handle409ConflictError(e: Exception, name: String): Resource.Error<T>? =
+            if (e is HttpException && e.code() == 409) {
+                Resource.Error(message = UiText.StringResource(R.string.error_recipe_exists, name))
+            } else {
+                null
+            }
 
         private fun <T> handleUploadError(response: Response<*>): Resource.Error<T> = handleResponseError(t = null, code = response.code())
 
