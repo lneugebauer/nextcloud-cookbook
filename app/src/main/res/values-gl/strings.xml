@@ -168,4 +168,5 @@
     <string name="settings_recipe_image_upload_folder_placeholder">Subidas de Cookbook</string>
     <string name="settings_recipe_image_upload_folder_description">O cartafol utilizado cando se soben imaxes das receitas a Nextcloud.</string>
     <string name="settings_recipe_image_upload_folder_reset">Restablecer predeterminado</string>
+    <string name="recipe_force_refresh">Actualizar receitas</string>
 </resources>
