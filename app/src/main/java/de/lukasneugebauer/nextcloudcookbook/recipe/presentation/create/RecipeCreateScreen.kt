@@ -1,8 +1,9 @@
 package de.lukasneugebauer.nextcloudcookbook.recipe.presentation.create
 
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibilityScope
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
@@ -176,8 +177,13 @@ fun AnimatedVisibilityScope.RecipeCreateScreen(
 
         is RecipeCreateEditState.Error -> {
             val text = (uiState as RecipeCreateEditState.Error).error.asString()
+            val context = LocalContext.current
 
-            Text(text = "Error: $text")
+            // Show error as a toast and restore the form UI so the user can correct inputs.
+            LaunchedEffect(text) {
+                Toast.makeText(context, text, Toast.LENGTH_LONG).show()
+                viewModel.restoreSuccessState()
+            }
         }
     }
 }

@@ -37,6 +37,7 @@ import org.mobilenativefoundation.store.store5.StoreReadRequest
 import org.mobilenativefoundation.store.store5.StoreReadResponse
 import org.mobilenativefoundation.store.store5.impl.extensions.fresh
 import org.mobilenativefoundation.store.store5.impl.extensions.get
+import retrofit2.HttpException
 import retrofit2.Response
 import javax.inject.Inject
 
@@ -89,7 +90,7 @@ class RecipeRepositoryImpl
                     refreshCaches(id = id, categoryName = recipe.recipeCategory)
                     Resource.Success(data = id)
                 } catch (e: Exception) {
-                    handleResponseError(e.fillInStackTrace())
+                    handle409ConflictError(e, recipe.name) ?: handleResponseError(e.fillInStackTrace())
                 }
             }
         }
@@ -176,7 +177,7 @@ class RecipeRepositoryImpl
 
                     Resource.Success(Unit)
                 } catch (e: Exception) {
-                    handleResponseError(e.fillInStackTrace())
+                    handle409ConflictError(e, recipe.name) ?: handleResponseError(e.fillInStackTrace())
                 }
             }
         }
@@ -251,6 +252,21 @@ class RecipeRepositoryImpl
 
             return builder.build()
         }
+
+        /**
+         * Returns a [Resource.Error] with a user-friendly message when [e] is an HTTP 409 (Conflict),
+         * indicating a recipe with the given [name] already exists. Returns `null` for any other exception
+         * so the caller can fall through to the standard error handling.
+         */
+        private fun <T> handle409ConflictError(
+            e: Exception,
+            name: String,
+        ): Resource.Error<T>? =
+            if (e is HttpException && e.code() == 409) {
+                Resource.Error(message = UiText.StringResource(R.string.error_recipe_exists, name))
+            } else {
+                null
+            }
 
         private fun <T> handleUploadError(response: Response<*>): Resource.Error<T> = handleResponseError(t = null, code = response.code())
 

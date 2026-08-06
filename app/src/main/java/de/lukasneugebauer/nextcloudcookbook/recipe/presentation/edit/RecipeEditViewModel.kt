@@ -9,6 +9,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.repository.RecipeRepository
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.RecipeCreateEditState
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.ifSuccess
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.usecase.GetAllKeywordsUseCase
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.util.ImageCompressionService
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.RecipeCreateEditViewModel
@@ -33,7 +34,7 @@ class RecipeEditViewModel
             savedStateHandle,
         ) {
         override fun save() {
-            if (_uiState.value is RecipeCreateEditState.Success) {
+            _uiState.value.ifSuccess {
                 _uiState.update { RecipeCreateEditState.Loading }
                 viewModelScope.launch {
                     _uiState.update {
