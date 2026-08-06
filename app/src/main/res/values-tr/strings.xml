@@ -168,4 +168,5 @@
     <string name="settings_recipe_image_upload_folder_description">Nextcloud\'a tarif resimleri yüklerken kullanılan klasör.</string>
     <string name="error_webview_load_failed">Oturum açma sayfası yüklenemedi. Bağlantınızı gözden geçirin ve tekrar deneyin.</string>
     <string name="settings_recipe_image_upload_folder_reset">Öntanımlıyı geri yükle</string>
+    <string name="recipe_force_refresh">Tarifleri yenile</string>
 </resources>
