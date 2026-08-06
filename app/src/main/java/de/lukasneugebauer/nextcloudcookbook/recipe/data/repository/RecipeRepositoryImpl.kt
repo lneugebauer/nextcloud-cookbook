@@ -272,11 +272,12 @@ class RecipeRepositoryImpl
 
                 if (existingRecipe != null) {
                     Resource.Error(
-                        message = UiText.StringResource(
-                            R.string.error_recipe_exists,
-                            existingRecipe.id as Any,
-                            existingRecipe.name as Any,
-                        ),
+                        message =
+                            UiText.StringResource(
+                                R.string.error_recipe_exists,
+                                existingRecipe.id as Any,
+                                existingRecipe.name as Any,
+                            ),
                     )
                 } else {
                     Resource.Error(

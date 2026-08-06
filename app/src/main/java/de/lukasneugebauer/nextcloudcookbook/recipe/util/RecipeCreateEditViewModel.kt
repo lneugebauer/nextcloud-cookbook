@@ -563,4 +563,3 @@ data class ConflictInfo(
     val name: String,
     val conflictingRecipeId: String?,
 )
-
