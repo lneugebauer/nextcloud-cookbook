@@ -5,8 +5,6 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -24,18 +22,20 @@ fun ConflictSnackbar(
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val messageText = stringResource(id = R.string.error_recipe_exists, conflictingRecipeName)
-    val actionLabelText = if (conflictingRecipeId != null) {
-        stringResource(id = R.string.banner_action_view_original, conflictingRecipeName)
-    } else {
-        null
-    }
+    val actionLabelText =
+        if (conflictingRecipeId != null) {
+            stringResource(id = R.string.banner_action_view_original, conflictingRecipeName)
+        } else {
+            null
+        }
 
     LaunchedEffect(conflictingRecipeName, conflictingRecipeId) {
-        val result = snackbarHostState.showSnackbar(
-            message = messageText,
-            actionLabel = actionLabelText,
-            duration = SnackbarDuration.Indefinite,
-        )
+        val result =
+            snackbarHostState.showSnackbar(
+                message = messageText,
+                actionLabel = actionLabelText,
+                duration = SnackbarDuration.Indefinite,
+            )
         when (result) {
             SnackbarResult.ActionPerformed -> {
                 if (conflictingRecipeId != null) {
