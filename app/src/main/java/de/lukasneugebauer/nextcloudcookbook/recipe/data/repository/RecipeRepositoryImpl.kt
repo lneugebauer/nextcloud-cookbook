@@ -217,7 +217,39 @@ class RecipeRepositoryImpl
                     }
 
                     is NetworkResponse.Error -> {
-                        handleResponseError(response.error, response.body?.msg)
+                        val serverError = response as? NetworkResponse.ServerError
+                        val statusCode =
+                            (response.error as? retrofit2.HttpException)?.code()
+                                ?: serverError?.response?.code()
+                        if (statusCode == 409) {
+                            val previews = getRecipePreviewsFlow().first().dataOrNull().orEmpty()
+                            val serverMsg = response.body?.msg
+                            val existingRecipe =
+                                serverMsg?.let { msg ->
+                                    previews.firstOrNull { it.name.equals(msg, ignoreCase = true) }
+                                }
+
+                            if (existingRecipe != null) {
+                                Resource.Error(
+                                    message =
+                                        UiText.StringResource(
+                                            R.string.error_recipe_exists,
+                                            existingRecipe.id as Any,
+                                            existingRecipe.name as Any,
+                                        ),
+                                )
+                            } else {
+                                Resource.Error(
+                                    message =
+                                        UiText.StringResource(
+                                            R.string.error_recipe_exists,
+                                            url.url as Any,
+                                        ),
+                                )
+                            }
+                        } else {
+                            handleResponseError(response.error, response.body?.msg)
+                        }
                     }
                 }
             }

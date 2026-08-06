@@ -37,6 +37,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.DownloadRecipeScreenState
+import de.lukasneugebauer.nextcloudcookbook.recipe.presentation.components.ConflictSnackbar
 
 @Destination<MainGraph>
 @Composable
@@ -45,6 +46,7 @@ fun AnimatedVisibilityScope.DownloadRecipeScreen(
     viewModel: DownloadRecipeViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val conflictInfo by viewModel.conflict.collectAsState()
 
     HideBottomNavigation()
 
@@ -52,6 +54,20 @@ fun AnimatedVisibilityScope.DownloadRecipeScreen(
         topBar = {
             RecipeDownloadTopBar {
                 navigator.navigateUp()
+            }
+        },
+        snackbarHost = {
+            conflictInfo?.let { conflict ->
+                ConflictSnackbar(
+                    conflictingRecipeName = conflict.name,
+                    conflictingRecipeId = conflict.conflictingRecipeId,
+                    onViewOriginal = { recipeId ->
+                        navigator.navigate(RecipeDetailScreenDestination(recipeId = recipeId))
+                    },
+                    onDismiss = {
+                        viewModel.dismissConflict()
+                    },
+                )
             }
         },
     ) { innerPadding ->
