@@ -257,13 +257,32 @@ class RecipeRepositoryImpl
          * Returns a [Resource.Error] with a user-friendly message when [e] is an HTTP 409 (Conflict),
          * indicating a recipe with the given [name] already exists. Returns `null` for any other exception
          * so the caller can fall through to the standard error handling.
+         *
+         * Includes existing recipe ID as argument if found in local recipe previews cache.
          */
-        private fun <T> handle409ConflictError(
+        private suspend fun <T> handle409ConflictError(
             e: Exception,
             name: String,
         ): Resource.Error<T>? =
             if (e is HttpException && e.code() == 409) {
-                Resource.Error(message = UiText.StringResource(R.string.error_recipe_exists, name))
+                val previews = getRecipePreviewsFlow().first().dataOrNull().orEmpty()
+                val existingRecipe =
+                    previews.firstOrNull { it.name == name }
+                        ?: previews.firstOrNull { it.name.equals(name, ignoreCase = true) }
+
+                if (existingRecipe != null) {
+                    Resource.Error(
+                        message = UiText.StringResource(
+                            R.string.error_recipe_exists,
+                            existingRecipe.id as Any,
+                            existingRecipe.name as Any,
+                        ),
+                    )
+                } else {
+                    Resource.Error(
+                        message = UiText.StringResource(R.string.error_recipe_exists, name as Any),
+                    )
+                }
             } else {
                 null
             }

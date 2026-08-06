@@ -58,6 +58,15 @@ class RecipeRepositoryImplUnitTest {
         MockitoAnnotations.openMocks(this)
         ioDispatcher = Dispatchers.Unconfined // Use Unconfined for synchronous test execution
         recipeStore = mockRecipeStore()
+        val recipePreviewsStore: RecipePreviewsStore = mockRecipePreviewsStore()
+        whenever(recipePreviewsStore.stream(any())).thenReturn(
+            flowOf(
+                StoreReadResponse.Data(
+                    value = emptyList(),
+                    origin = StoreReadResponseOrigin.Fetcher(null),
+                ),
+            ),
+        )
         repository =
             RecipeRepositoryImpl(
                 apiProvider = apiProvider,
@@ -65,7 +74,7 @@ class RecipeRepositoryImplUnitTest {
                 ioDispatcher = ioDispatcher,
                 preferencesManager = preferencesManager,
                 recipePreviewsByCategoryStore = mockRecipePreviewsByCategoryStore(),
-                recipePreviewsStore = mockRecipePreviewsStore(),
+                recipePreviewsStore = recipePreviewsStore,
                 recipeStore = recipeStore,
                 categoriesStore = mockCategoriesStore(),
             )
