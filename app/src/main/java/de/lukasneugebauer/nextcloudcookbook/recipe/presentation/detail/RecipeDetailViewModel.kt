@@ -16,11 +16,13 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Ingredient
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Recipe
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.repository.RecipeRepository
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.RecipeDetailState
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.ShoppingListResult
+import de.lukasneugebauer.nextcloudcookbook.tasks.domain.repository.TasksRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -35,6 +37,7 @@ class RecipeDetailViewModel
         private val recipeFormatter: RecipeFormatter,
         private val recipeRepository: RecipeRepository,
         savedStateHandle: SavedStateHandle,
+        private val tasksRepository: TasksRepository,
         private val yieldCalculator: YieldCalculator,
     ) : ViewModel() {
         private val _state = MutableStateFlow(RecipeDetailState())
@@ -55,17 +58,19 @@ class RecipeDetailViewModel
         private fun getRecipe(id: String) {
             _state.value = _state.value.copy(loading = true)
             combine(
-                preferencesManager.preferencesFlow.map { it.isShowIngredientSyntaxIndicator },
+                preferencesManager.preferencesFlow,
                 recipeRepository.getRecipeFlow(id),
                 recipeRepository.getRecipePreviewsFlow(),
-            ) { isShowIngredientSyntaxIndicator, recipeResponse, recipePreviewsResponse ->
+            ) { preferences, recipeResponse, recipePreviewsResponse ->
                 val recipePreviewDtos =
                     when (recipePreviewsResponse) {
                         is StoreReadResponse.Data -> recipePreviewsResponse.dataOrNull()
                         else -> null
                     }
-                Triple(isShowIngredientSyntaxIndicator, recipeResponse, recipePreviewDtos)
-            }.onEach { (isShowIngredientSyntaxIndicator, recipeResponse, recipePreviewDtos) ->
+                Triple(preferences, recipeResponse, recipePreviewDtos)
+            }.onEach { (preferences, recipeResponse, recipePreviewDtos) ->
+                val isShowIngredientSyntaxIndicator = preferences.isShowIngredientSyntaxIndicator
+                _state.update { it.copy(isShoppingListConfigured = preferences.shoppingList != null) }
                 when (recipeResponse) {
                     is StoreReadResponse.Loading ->
                         _state.value =
@@ -186,6 +191,48 @@ class RecipeDetailViewModel
 
         fun hideFullScreenImage() {
             _state.value = _state.value.copy(showFullScreenImage = false)
+        }
+
+        fun onAddToShoppingListClick() {
+            if (_state.value.isShoppingListConfigured) {
+                _state.update { it.copy(showShoppingListDialog = true) }
+            } else {
+                _state.update {
+                    it.copy(
+                        shoppingListResult =
+                            ShoppingListResult.Error(UiText.StringResource(R.string.shopping_list_not_configured)),
+                    )
+                }
+            }
+        }
+
+        fun hideShoppingListDialog() {
+            _state.update { it.copy(showShoppingListDialog = false) }
+        }
+
+        fun addIngredientsToShoppingList(entries: List<String>) {
+            _state.update { it.copy(showShoppingListDialog = false) }
+            if (entries.isEmpty()) return
+            viewModelScope.launch {
+                val listUrl =
+                    preferencesManager.preferencesFlow
+                        .first()
+                        .shoppingList
+                        ?.url ?: return@launch
+                val result =
+                    when (val resource = tasksRepository.createTasks(listUrl, entries)) {
+                        is Resource.Success -> ShoppingListResult.Success(resource.data ?: entries.size)
+                        is Resource.Error ->
+                            ShoppingListResult.Error(
+                                resource.message ?: UiText.StringResource(R.string.shopping_list_error_adding),
+                            )
+                    }
+                _state.update { it.copy(shoppingListResult = result) }
+            }
+        }
+
+        fun clearShoppingListResult() {
+            _state.update { it.copy(shoppingListResult = null) }
         }
 
         private fun enrichRecipeLinks(

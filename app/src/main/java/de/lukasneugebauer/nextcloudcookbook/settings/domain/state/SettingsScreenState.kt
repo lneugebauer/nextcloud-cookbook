@@ -7,5 +7,6 @@ sealed interface SettingsScreenState {
         val isStayAwake: Boolean,
         val isShowRecipeSyntaxIndicator: Boolean,
         val recipeImageUploadFolder: String,
+        val shoppingListName: String? = null,
     ) : SettingsScreenState
 }
