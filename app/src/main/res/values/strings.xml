@@ -5,6 +5,7 @@
     <string name="common_add">Add</string>
     <string name="common_ascending">Ascending</string>
     <string name="common_back">Back</string>
+    <string name="common_cancel">Cancel</string>
     <string name="common_categories">Categories</string>
     <string name="common_clear_input">Clear input</string>
     <string name="common_close">Close</string>
@@ -92,6 +93,7 @@
         <item quantity="other">Copied ingredients</item>
     </plurals>
     <string name="recipe_ingredients_copy">Copy ingredients to clipboard</string>
+    <string name="recipe_ingredients_add_to_shopping_list">Add ingredients to shopping list</string>
     <plurals name="recipe_ingredients_servings">
         <item quantity="one">Ingredients for %1$d serving</item>
         <item quantity="other">Ingredients for %1$d servings</item>
@@ -162,7 +164,20 @@
     <string name="settings_paypal">PayPal</string>
     <string name="settings_paypal_donation">Donate via PayPal</string>
     <string name="settings_privacy">Privacy</string>
+    <string name="settings_shopping_list">Shopping list</string>
+    <string name="settings_shopping_list_none_selected">No list selected</string>
+    <string name="settings_shopping_list_dialog_title">Select shopping list</string>
+    <string name="settings_shopping_list_empty">No task lists found.</string>
+    <string name="settings_shopping_list_error">Task lists couldn\'t be loaded.</string>
     <string name="settings_show_indicator_if_recipe_syntax_is_invalid">Show an indicator if the syntax of the ingredients is unsuitable for recalculation.</string>
+    <string name="shopping_list_dialog_title">Add to shopping list</string>
+    <string name="shopping_list_dialog_amount">Amount</string>
+    <string name="shopping_list_not_configured">Select a shopping list in the settings first.</string>
+    <string name="shopping_list_error_adding">Ingredients couldn\'t be added to the shopping list.</string>
+    <plurals name="shopping_list_ingredients_added">
+        <item quantity="one">Added %1$d ingredient to the shopping list</item>
+        <item quantity="other">Added %1$d ingredients to the shopping list</item>
+    </plurals>
     <string name="settings_source_code">Get source code</string>
     <string name="settings_sponsoring">Sponsoring</string>
     <string name="settings_stay_awake_on_recipe_screen">Screen stays on while you are on the recipe screen</string>

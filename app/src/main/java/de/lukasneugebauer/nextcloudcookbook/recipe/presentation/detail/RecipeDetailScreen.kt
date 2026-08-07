@@ -37,6 +37,7 @@ import androidx.compose.material.icons.filled.Report
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.AddShoppingCart
 import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.outlined.Remove
@@ -120,7 +121,9 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Instruction
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Nutrition
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Recipe
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Tool
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.ShoppingListResult
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.emptyRecipe
+import de.lukasneugebauer.nextcloudcookbook.tasks.presentation.AddToShoppingListDialog
 import kotlinx.coroutines.launch
 import java.time.Duration
 
@@ -157,6 +160,35 @@ fun AnimatedVisibilityScope.RecipeDetailScreen(
             contentDescription = recipe.name,
             onDismiss = { viewModel.hideFullScreenImage() },
         )
+    }
+
+    if (state.showShoppingListDialog) {
+        AddToShoppingListDialog(
+            ingredients =
+                state.calculatedIngredients
+                    .ifEmpty { recipe.ingredients.map { CalculatedIngredient(it.value, it.hasCorrectSyntax) } }
+                    .map { it.ingredient }
+                    .filterNot { it.startsWith("##") },
+            onConfirm = { viewModel.addIngredientsToShoppingList(it) },
+            onDismiss = { viewModel.hideShoppingListDialog() },
+        )
+    }
+
+    state.shoppingListResult?.let { result ->
+        val message =
+            when (result) {
+                is ShoppingListResult.Success ->
+                    context.resources.getQuantityString(
+                        R.plurals.shopping_list_ingredients_added,
+                        result.count,
+                        result.count,
+                    )
+                is ShoppingListResult.Error -> result.message.asString()
+            }
+        LaunchedEffect(result) {
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            viewModel.clearShoppingListResult()
+        }
     }
 
     RecipeDetailLayout(
@@ -211,6 +243,9 @@ fun AnimatedVisibilityScope.RecipeDetailScreen(
             viewModel.resetYield()
         },
         isShowIngredientSyntaxIndicator = state.isShowIngredientSyntaxIndicator,
+        onAddToShoppingListClick = {
+            viewModel.onAddToShoppingListClick()
+        },
     )
 }
 
@@ -347,6 +382,7 @@ fun RecipeDetailLayout(
     onKeywordClick: (keyword: String) -> Unit,
     onResetYield: () -> Unit,
     isShowIngredientSyntaxIndicator: Boolean,
+    onAddToShoppingListClick: () -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
@@ -415,6 +451,7 @@ fun RecipeDetailLayout(
                         currentYield,
                         recipe.yield != currentYield,
                         isShowIngredientSyntaxIndicator,
+                        onAddToShoppingListClick,
                     )
                 }
                 if (recipe.nutrition != null) {
@@ -593,6 +630,7 @@ private fun Ingredients(
     currentYield: Int,
     showResetButton: Boolean,
     isShowIngredientSyntaxIndicator: Boolean,
+    onAddToShoppingListClick: () -> Unit,
 ) {
     val clipboard = LocalClipboard.current
     val context = LocalContext.current
@@ -638,6 +676,12 @@ private fun Ingredients(
             Icon(
                 imageVector = Icons.Outlined.ContentCopy,
                 contentDescription = stringResource(R.string.recipe_ingredients_copy),
+            )
+        }
+        IconButton(onClick = onAddToShoppingListClick) {
+            Icon(
+                imageVector = Icons.Outlined.AddShoppingCart,
+                contentDescription = stringResource(R.string.recipe_ingredients_add_to_shopping_list),
             )
         }
     }
@@ -980,6 +1024,7 @@ private fun IngredientsPreview() {
                 currentYield = 2,
                 showResetButton = false,
                 isShowIngredientSyntaxIndicator = true,
+                onAddToShoppingListClick = {},
             )
         }
     }
@@ -1066,6 +1111,7 @@ private fun RecipeDetailLayoutPreview() {
             onKeywordClick = {},
             onResetYield = {},
             isShowIngredientSyntaxIndicator = true,
+            onAddToShoppingListClick = {},
         )
     }
 }
