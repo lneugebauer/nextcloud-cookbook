@@ -482,6 +482,45 @@ class RecipeRepositoryImplUnitTest {
         }
 
     /**
+     * The server has already stored the recipe by the time the caches are refreshed, so a refresh
+     * that fails must not be reported back as a failed create. The cache catches up on the next
+     * sync; telling the user their recipe wasn't saved when it was does not heal.
+     */
+    @Test
+    fun createRecipe_WhenCacheRefreshFails_StillReportsSuccess() =
+        runBlocking {
+            val recipe = emptyRecipeDto().copy(id = "42", name = "Chocolate Cake")
+            val mockApi: NcCookbookApi = mock()
+            whenever(mockApi.createRecipe(recipe = recipe)).thenReturn("42")
+            whenever(apiProvider.getApi()).thenReturn(mockApi)
+            whenever(recipePreviewsStore.stream(any())).thenThrow(RuntimeException("boom"))
+
+            val result = repository.createRecipe(recipe)
+
+            assertTrue("Create succeeded on the server, so the result must be a success", result is Resource.Success)
+            assertEquals("42", (result as Resource.Success).data)
+        }
+
+    /**
+     * The eviction is local and cannot fail on the network, so it runs before the preview refresh.
+     * A refresh that throws afterwards must neither resurrect the deleted recipe nor escape to the
+     * caller — before this, the exception propagated straight out of `deleteRecipe`.
+     */
+    @Test
+    fun deleteRecipe_WhenPreviewRefreshFails_StillClearsTheRecipeAndReportsSuccess() =
+        runBlocking {
+            val mockApi: NcCookbookApi = mock()
+            whenever(mockApi.deleteRecipe("42")).thenReturn(NetworkResponse.Success("42", Response.success("42")))
+            whenever(apiProvider.getApi()).thenReturn(mockApi)
+            whenever(recipePreviewsStore.stream(any())).thenThrow(RuntimeException("boom"))
+
+            val result = repository.deleteRecipe("42")
+
+            verify(recipeStore).clear("42")
+            assertTrue(result is Resource.Success)
+        }
+
+    /**
      * Stubs [recipePreviewsStore]'s stream with [previews], as if `GET /recipes` had returned them.
      */
     private fun stubRecipePreviews(previews: List<RecipePreviewDto>) {

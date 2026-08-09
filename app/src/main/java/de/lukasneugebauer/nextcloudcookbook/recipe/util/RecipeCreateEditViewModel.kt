@@ -496,16 +496,21 @@ abstract class RecipeCreateEditViewModel(
         }
     }
 
+    /**
+     * Loads the categories offered by the picker from the server rather than from the cached
+     * previews, so a category created on another device can be picked here too.
+     *
+     * Deliberately not filtered by `recipeCount`: the count comes straight from `/categories`
+     * and a freshly created category can be reported as empty, which would hide exactly the
+     * categories this fetch exists to surface.
+     */
     private fun getCategories() {
         categoryRepository
             .getRemoteCategories()
             .onEach { categoriesResult ->
                 when (categoriesResult) {
                     is DataResult.Success ->
-                        categories =
-                            categoriesResult.data
-                                .filter { it.recipeCount > 0 }
-                                .filter { it.name != UNCATEGORIZED_RECIPE }
+                        categories = categoriesResult.data.filter { it.name != UNCATEGORIZED_RECIPE }
 
                     else -> Unit
                 }

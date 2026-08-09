@@ -26,6 +26,7 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipeImageUploa
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipePreview
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.repository.RecipeRepository
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.emptyRecipeDto
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -42,6 +43,7 @@ import org.mobilenativefoundation.store.store5.impl.extensions.fresh
 import org.mobilenativefoundation.store.store5.impl.extensions.get
 import retrofit2.HttpException
 import retrofit2.Response
+import timber.log.Timber
 import javax.inject.Inject
 
 class RecipeRepositoryImpl
@@ -297,16 +299,31 @@ class RecipeRepositoryImpl
         /**
          * Refreshes every cache a recipe mutation can invalidate. Refreshing the previews also
          * updates the category list and its counts, since both are derived from the previews.
+         *
+         * Best effort by design: the server has already accepted the mutation by the time this
+         * runs, so a failure here must not be reported as a failed create, update or delete. A
+         * stale cache is corrected by the next sync; a spurious error is not.
+         *
+         * The local eviction runs first for the same reason — it cannot fail on the network, so
+         * doing it up front keeps a deleted recipe out of the cache even if the refresh below
+         * never lands.
          */
         private suspend fun refreshCaches(
             id: String,
             deleted: Boolean = false,
         ) {
-            recipePreviewsStore.fresh(Unit)
-            if (deleted) {
-                recipeStore.clear(id)
-            } else if (id != emptyRecipeDto().id) {
-                recipeStore.fresh(id)
+            try {
+                if (deleted) {
+                    recipeStore.clear(id)
+                }
+                recipePreviewsStore.fresh(Unit)
+                if (!deleted && id != emptyRecipeDto().id) {
+                    recipeStore.fresh(id)
+                }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Timber.w(e, "Failed to refresh caches after mutating recipe $id")
             }
         }
 
