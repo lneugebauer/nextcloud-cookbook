@@ -93,7 +93,13 @@ object RecipeModule {
                             }
                         },
                         writer = { _: String, dto: RecipeDto ->
-                            recipeDao.upsert(RecipeEntity(id = dto.id, json = gson.toJson(dto)))
+                            recipeDao.upsert(
+                                RecipeEntity(
+                                    id = dto.id,
+                                    json = gson.toJson(dto),
+                                    dateModified = dto.dateModified,
+                                ),
+                            )
                         },
                         delete = { id: String -> recipeDao.deleteById(id) },
                         deleteAll = { recipeDao.deleteAll() },

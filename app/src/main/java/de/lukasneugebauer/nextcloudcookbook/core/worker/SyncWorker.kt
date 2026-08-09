@@ -37,9 +37,7 @@ class SyncWorker
                 var hadFailures = false
 
                 previews.forEach { previewDto ->
-                    val id =
-                        previewDto.id.takeIf { !it.isNullOrBlank() }
-                            ?: previewDto.recipeId.takeIf { !it.isNullOrBlank() }
+                    val id = previewDto.idOrNull
 
                     if (id != null) {
                         try {
