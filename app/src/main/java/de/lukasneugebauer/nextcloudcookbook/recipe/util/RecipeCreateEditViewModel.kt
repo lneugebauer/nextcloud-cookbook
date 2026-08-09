@@ -94,9 +94,10 @@ abstract class RecipeCreateEditViewModel(
     /**
      * Rebuilds the form from the current field values, but only while the form is the thing on
      * screen. The picker's categories are fetched from the server, so their emission can land
-     * after a save has already set [RecipeCreateEditState.Updated] or [RecipeCreateEditState.Error];
-     * overwriting those would swallow the navigation back and the error message. The fields
-     * themselves are always up to date, so [restoreSuccessState] picks the new values up.
+     * after a save has already set [RecipeCreateEditState.Updated] or [RecipeCreateEditState.Error],
+     * or while the save is still running ([RecipeCreateEditState.Saving]); overwriting those would
+     * swallow the navigation back, the error message, or let the recipe be submitted twice. The
+     * fields themselves are always up to date, so [restoreSuccessState] picks the new values up.
      */
     private fun showForm() {
         _uiState.update { currentState ->
