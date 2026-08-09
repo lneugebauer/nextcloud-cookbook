@@ -38,6 +38,7 @@ import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
@@ -458,6 +459,25 @@ class RecipeRepositoryImplUnitTest {
             val result = repository.createRecipe(recipe)
 
             verify(recipePreviewsStore).stream(any())
+            assertTrue(result is Resource.Success)
+        }
+
+    /**
+     * Deleting one recipe used to clear the whole recipe cache, which meant the next sync
+     * refetched every recipe in the library.
+     */
+    @Test
+    fun deleteRecipe_OnSuccess_ClearsOnlyTheDeletedRecipe() =
+        runBlocking {
+            val mockApi: NcCookbookApi = mock()
+            whenever(mockApi.deleteRecipe("42")).thenReturn(NetworkResponse.Success("42", Response.success("42")))
+            whenever(apiProvider.getApi()).thenReturn(mockApi)
+            stubRecipePreviews(emptyList())
+
+            val result = repository.deleteRecipe("42")
+
+            verify(recipeStore).clear("42")
+            verify(recipeStore, never()).clear()
             assertTrue(result is Resource.Success)
         }
 

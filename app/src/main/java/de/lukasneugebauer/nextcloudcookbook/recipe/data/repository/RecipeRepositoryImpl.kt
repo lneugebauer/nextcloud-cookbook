@@ -36,7 +36,6 @@ import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
-import org.mobilenativefoundation.store.store5.ExperimentalStoreApi
 import org.mobilenativefoundation.store.store5.StoreReadRequest
 import org.mobilenativefoundation.store.store5.StoreReadResponse
 import org.mobilenativefoundation.store.store5.impl.extensions.fresh
@@ -299,15 +298,13 @@ class RecipeRepositoryImpl
          * Refreshes every cache a recipe mutation can invalidate. Refreshing the previews also
          * updates the category list and its counts, since both are derived from the previews.
          */
-        @OptIn(ExperimentalStoreApi::class)
         private suspend fun refreshCaches(
             id: String,
             deleted: Boolean = false,
         ) {
             recipePreviewsStore.fresh(Unit)
             if (deleted) {
-                // FIXME: Only clear specific recipe. Something like recipeStore.clear(key = id)
-                recipeStore.clear()
+                recipeStore.clear(id)
             } else if (id != emptyRecipeDto().id) {
                 recipeStore.fresh(id)
             }
