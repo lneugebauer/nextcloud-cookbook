@@ -34,11 +34,13 @@ import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import org.mobilenativefoundation.store.store5.StoreReadRequest
 import org.mobilenativefoundation.store.store5.StoreReadResponse
 import org.mobilenativefoundation.store.store5.StoreReadResponseOrigin
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 import org.mockito.kotlin.any
+import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.times
@@ -460,7 +462,10 @@ class RecipeRepositoryImplUnitTest {
 
             val result = repository.createRecipe(recipe)
 
-            verify(recipePreviewsStore).stream(any())
+            val request = argumentCaptor<StoreReadRequest<Unit>>()
+            verify(recipePreviewsStore).stream(request.capture())
+            // A cached read would leave the counts stale, so the request has to force a fetch.
+            assertEquals(StoreReadRequest.fresh(Unit), request.firstValue)
             assertTrue(result is Resource.Success)
         }
 
