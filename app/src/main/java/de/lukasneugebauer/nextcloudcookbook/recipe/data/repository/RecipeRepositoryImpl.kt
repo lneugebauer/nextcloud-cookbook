@@ -173,10 +173,6 @@ class RecipeRepositoryImpl
 
                     refreshCaches(id = recipe.id)
 
-                    if (currentRecipe.recipeCategory != recipe.recipeCategory) {
-                        categoriesStore.fresh(Unit)
-                    }
-
                     Resource.Success(Unit)
                 } catch (e: Exception) {
                     handle409ConflictError(e, recipe.name) ?: handleResponseError(e.fillInStackTrace())
@@ -269,12 +265,18 @@ class RecipeRepositoryImpl
 
         private fun <T> handleUploadError(response: Response<*>): Resource.Error<T> = handleResponseError(t = null, code = response.code())
 
+        /**
+         * Refreshes every cache a recipe mutation can invalidate. Categories are included because
+         * their recipe counts are maintained server side, so adding, moving or removing a recipe
+         * can change both the counts and the set of categories itself.
+         */
         @OptIn(ExperimentalStoreApi::class)
         private suspend fun refreshCaches(
             id: String,
             deleted: Boolean = false,
         ) {
             recipePreviewsStore.fresh(Unit)
+            categoriesStore.fresh(Unit)
             if (deleted) {
                 // FIXME: Only clear specific recipe. Something like recipeStore.clear(key = id)
                 recipeStore.clear()

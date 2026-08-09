@@ -2,6 +2,7 @@ package de.lukasneugebauer.nextcloudcookbook.recipe.data.repository
 
 import coil3.ImageLoader
 import de.lukasneugebauer.nextcloudcookbook.R
+import de.lukasneugebauer.nextcloudcookbook.category.data.dto.CategoryDto
 import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
 import de.lukasneugebauer.nextcloudcookbook.core.data.api.NcCookbookApi
 import de.lukasneugebauer.nextcloudcookbook.core.data.api.NcCookbookApiProvider
@@ -29,6 +30,7 @@ import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import retrofit2.HttpException
 import retrofit2.Response
@@ -55,6 +57,7 @@ class RecipeRepositoryImplUnitTest {
     private lateinit var ioDispatcher: CoroutineDispatcher
     private lateinit var recipeStore: RecipeStore
     private lateinit var recipePreviewsStore: RecipePreviewsStore
+    private lateinit var categoriesStore: CategoriesStore
 
     @Before
     fun setUp() {
@@ -62,6 +65,7 @@ class RecipeRepositoryImplUnitTest {
         ioDispatcher = Dispatchers.Unconfined // Use Unconfined for synchronous test execution
         recipeStore = mockRecipeStore()
         recipePreviewsStore = mockRecipePreviewsStore()
+        categoriesStore = mockCategoriesStore()
         repository =
             RecipeRepositoryImpl(
                 apiProvider = apiProvider,
@@ -70,7 +74,7 @@ class RecipeRepositoryImplUnitTest {
                 preferencesManager = preferencesManager,
                 recipePreviewsStore = recipePreviewsStore,
                 recipeStore = recipeStore,
-                categoriesStore = mockCategoriesStore(),
+                categoriesStore = categoriesStore,
             )
     }
 
@@ -427,6 +431,35 @@ class RecipeRepositoryImplUnitTest {
                     stringResource.resId,
                 )
             }
+        }
+
+    /**
+     * Category recipe counts are maintained server side, so every recipe mutation has to
+     * invalidate the category cache. `createRecipe` stands in for the whole group here, since
+     * `importRecipe` and `deleteRecipe` share the same `refreshCaches` call.
+     */
+    @Test
+    fun createRecipe_OnSuccess_RefreshesCategories() =
+        runBlocking {
+            val recipe = emptyRecipeDto().copy(id = "42", name = "Chocolate Cake")
+            val mockApi: NcCookbookApi = mock()
+            whenever(mockApi.createRecipe(recipe = recipe)).thenReturn("42")
+            whenever(apiProvider.getApi()).thenReturn(mockApi)
+            stubRecipePreviews(emptyList())
+            stubRecipeStoreGet(id = "42", recipe = recipe)
+            whenever(categoriesStore.stream(any())).thenReturn(
+                flowOf(
+                    StoreReadResponse.Data(
+                        value = emptyList<CategoryDto>(),
+                        origin = StoreReadResponseOrigin.Fetcher(),
+                    ),
+                ),
+            )
+
+            val result = repository.createRecipe(recipe)
+
+            verify(categoriesStore).stream(any())
+            assertTrue(result is Resource.Success)
         }
 
     /**
