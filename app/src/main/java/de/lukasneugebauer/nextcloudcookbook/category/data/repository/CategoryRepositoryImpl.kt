@@ -4,7 +4,7 @@ import de.lukasneugebauer.nextcloudcookbook.category.domain.model.Category
 import de.lukasneugebauer.nextcloudcookbook.category.domain.repository.CategoryRepository
 import de.lukasneugebauer.nextcloudcookbook.core.data.asDataResult
 import de.lukasneugebauer.nextcloudcookbook.core.util.DataResult
-import de.lukasneugebauer.nextcloudcookbook.di.CategoriesStore
+import de.lukasneugebauer.nextcloudcookbook.di.RecipePreviewsStore
 import kotlinx.coroutines.flow.Flow
 import org.mobilenativefoundation.store.store5.StoreReadRequest
 import javax.inject.Inject
@@ -12,10 +12,16 @@ import javax.inject.Inject
 class CategoryRepositoryImpl
     @Inject
     constructor(
-        private val categoriesStore: CategoriesStore,
+        private val recipePreviewsStore: RecipePreviewsStore,
     ) : CategoryRepository {
         override fun getCategories(): Flow<DataResult<List<Category>>> =
-            categoriesStore
+            recipePreviewsStore
                 .stream(StoreReadRequest.cached(key = Unit, refresh = false))
-                .asDataResult { dtos -> dtos.map { it.toCategory() } }
+                .asDataResult { previews ->
+                    previews
+                        .groupingBy { it.categoryOrUncategorized }
+                        .eachCount()
+                        .map { (name, recipeCount) -> Category(name = name, recipeCount = recipeCount) }
+                        .sortedBy { it.name }
+                }
     }

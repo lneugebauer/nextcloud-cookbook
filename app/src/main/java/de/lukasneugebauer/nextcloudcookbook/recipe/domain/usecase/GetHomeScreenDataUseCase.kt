@@ -5,7 +5,6 @@ import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.RecipeOfTheDay
 import de.lukasneugebauer.nextcloudcookbook.core.util.Constants.DEFAULT_RECIPE_OF_THE_DAY_ID
 import de.lukasneugebauer.nextcloudcookbook.core.util.IoDispatcher
-import de.lukasneugebauer.nextcloudcookbook.di.CategoriesStore
 import de.lukasneugebauer.nextcloudcookbook.di.RecipePreviewsStore
 import de.lukasneugebauer.nextcloudcookbook.di.RecipeStore
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.HomeScreenDataResult
@@ -24,7 +23,6 @@ import javax.inject.Singleton
 class GetHomeScreenDataUseCase
     @Inject
     constructor(
-        private val categoriesStore: CategoriesStore,
         @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
         private val preferencesManager: PreferencesManager,
         private val recipePreviewsStore: RecipePreviewsStore,
@@ -110,26 +108,20 @@ class GetHomeScreenDataUseCase
 
             withContext(ioDispatcher) {
                 try {
-                    // All previews are fetched once and grouped locally, rather than issuing one
-                    // request per category.
-                    val previewsByCategory =
-                        recipePreviewsStore
-                            .get(Unit)
-                            .groupBy { it.categoryOrUncategorized }
-
-                    categoriesStore
+                    // Categories are derived from the previews rather than fetched, so the rows
+                    // cost no extra requests and always agree with the recipe list.
+                    recipePreviewsStore
                         .get(Unit)
-                        .sortedByDescending { it.recipeCount }
+                        .groupBy { it.categoryOrUncategorized }
+                        .entries
+                        .sortedByDescending { it.value.size }
                         .take(RecipeConstants.HOME_SCREEN_CATEGORIES)
-                        .forEach { categoryDto ->
-                            val recipePreviews =
-                                previewsByCategory[categoryDto.name]
-                                    ?.map { it.toRecipePreview() }
-                                    .orEmpty()
+                        .forEach { (categoryName, previews) ->
+                            val recipePreviews = previews.map { it.toRecipePreview() }
                             if (recipePreviews.isNotEmpty()) {
                                 val result =
                                     HomeScreenDataResult.Row(
-                                        categoryDto.name,
+                                        categoryName,
                                         recipePreviews,
                                     )
                                 homeScreenData.add(result)
