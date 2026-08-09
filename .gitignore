@@ -170,3 +170,6 @@ node_modules/
 .kotlin/
 
 /app/full/**
+
+# Claude Code (local settings and worktrees)
+.claude/
