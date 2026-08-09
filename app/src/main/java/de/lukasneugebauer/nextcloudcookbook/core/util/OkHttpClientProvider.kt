@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
+import timber.log.Timber
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
 import javax.inject.Inject
@@ -53,31 +54,30 @@ class OkHttpClientProvider
         @SuppressLint("CustomX509TrustManager", "TrustAllX509TrustManager")
         private fun configureTrustAllCertificates(builder: OkHttpClient.Builder) {
             try {
-                val trustAllCerts =
-                    arrayOf<TrustManager>(
-                        object : X509TrustManager {
-                            override fun checkClientTrusted(
-                                chain: Array<X509Certificate>,
-                                authType: String,
-                            ) {}
+                val trustManager =
+                    object : X509TrustManager {
+                        override fun checkClientTrusted(
+                            chain: Array<X509Certificate>,
+                            authType: String,
+                        ) {}
 
-                            override fun checkServerTrusted(
-                                chain: Array<X509Certificate>,
-                                authType: String,
-                            ) {}
+                        override fun checkServerTrusted(
+                            chain: Array<X509Certificate>,
+                            authType: String,
+                        ) {}
 
-                            override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
-                        },
-                    )
+                        override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
+                    }
+                val trustAllCerts = arrayOf<TrustManager>(trustManager)
 
-                val sslContext = SSLContext.getInstance("SSL")
+                val sslContext = SSLContext.getInstance("TLS")
                 sslContext.init(null, trustAllCerts, SecureRandom())
 
                 builder
-                    .sslSocketFactory(sslContext.socketFactory, trustAllCerts[0] as X509TrustManager)
+                    .sslSocketFactory(sslContext.socketFactory, trustManager)
                     .hostnameVerifier { _, _ -> true }
             } catch (e: Exception) {
-                // Do nothing if SSL configuration fails, keep default settings
+                Timber.e(e, "Could not configure trust-all TLS")
             }
         }
     }
