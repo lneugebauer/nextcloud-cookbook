@@ -1,11 +1,18 @@
 package de.lukasneugebauer.nextcloudcookbook.recipe.data.repository
 
 import coil3.ImageLoader
+import com.haroldadmin.cnradapter.NetworkResponse
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.category.data.dto.CategoryDto
 import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
 import de.lukasneugebauer.nextcloudcookbook.core.data.api.NcCookbookApi
 import de.lukasneugebauer.nextcloudcookbook.core.data.api.NcCookbookApiProvider
+import de.lukasneugebauer.nextcloudcookbook.core.data.dto.OcsDto
+import de.lukasneugebauer.nextcloudcookbook.core.data.dto.UserMetadataDto
+import de.lukasneugebauer.nextcloudcookbook.core.data.remote.response.UserMetadataResponse
+import de.lukasneugebauer.nextcloudcookbook.core.domain.model.NcAccount
+import de.lukasneugebauer.nextcloudcookbook.core.domain.model.Preferences
+import de.lukasneugebauer.nextcloudcookbook.core.domain.model.RecipeOfTheDay
 import de.lukasneugebauer.nextcloudcookbook.core.util.DataResult
 import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
@@ -13,6 +20,7 @@ import de.lukasneugebauer.nextcloudcookbook.di.CategoriesStore
 import de.lukasneugebauer.nextcloudcookbook.di.RecipePreviewsStore
 import de.lukasneugebauer.nextcloudcookbook.di.RecipeStore
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipePreviewDto
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipeImageUpload
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.RecipeConstants.UNCATEGORIZED_RECIPE
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.emptyRecipeDto
 import kotlinx.coroutines.CoroutineDispatcher
@@ -32,10 +40,12 @@ import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import retrofit2.HttpException
 import retrofit2.Response
+import java.time.LocalDateTime
 
 /**
  * Unit tests for [RecipeRepositoryImpl] with focus on 409 Conflict error handling
@@ -580,6 +590,86 @@ class RecipeRepositoryImplUnitTest {
         }
 
     private fun <T> DataResult<T>.successData(): T = (this as DataResult.Success<T>).data
+
+    /**
+     * The WebDAV user id is fixed per account, so uploading several images must not re-issue
+     * `GET /cloud/user` for each one.
+     */
+    @Test
+    fun uploadRecipeImage_CalledTwice_ResolvesTheWebDavUserIdOnce() {
+        runBlocking {
+            val mockApi = stubApiForImageUpload(userId = "alice")
+
+            repository.uploadRecipeImage(recipeImageUpload())
+            repository.uploadRecipeImage(recipeImageUpload())
+
+            verify(mockApi, times(1)).getCurrentUser()
+        }
+    }
+
+    /**
+     * A failed lookup falls back to the account's username, but must not be cached: otherwise one
+     * transient failure would pin a possibly wrong id for the rest of the session.
+     */
+    @Test
+    fun uploadRecipeImage_WhenUserLookupFails_DoesNotCacheTheFallback() {
+        runBlocking {
+            val mockApi = stubApiForImageUpload(userId = null)
+
+            repository.uploadRecipeImage(recipeImageUpload())
+            repository.uploadRecipeImage(recipeImageUpload())
+
+            verify(mockApi, times(2)).getCurrentUser()
+        }
+    }
+
+    private fun recipeImageUpload() =
+        RecipeImageUpload(
+            fileName = "image.jpg",
+            mimeType = "image/jpeg",
+            bytes = byteArrayOf(1, 2, 3),
+        )
+
+    /**
+     * Stubs everything [RecipeRepositoryImpl.uploadRecipeImage] touches. A [userId] of `null` makes
+     * the `GET /cloud/user` lookup fail so that the username fallback kicks in.
+     */
+    private suspend fun stubApiForImageUpload(userId: String?): NcCookbookApi {
+        val account =
+            NcAccount(
+                name = "Alice",
+                username = "alice-login",
+                token = "token",
+                url = "https://cloud.example.com",
+            )
+        whenever(preferencesManager.preferencesFlow).thenReturn(
+            flowOf(
+                Preferences(
+                    isShowIngredientSyntaxIndicator = false,
+                    ncAccount = account,
+                    recipeOfTheDay = RecipeOfTheDay(id = "0", updatedAt = LocalDateTime.MIN),
+                    allowSelfSignedCertificates = false,
+                ),
+            ),
+        )
+
+        val mockApi: NcCookbookApi = mock()
+        whenever(mockApi.getCurrentUser()).thenReturn(
+            if (userId == null) {
+                NetworkResponse.UnknownError(RuntimeException("boom"), null)
+            } else {
+                NetworkResponse.Success(
+                    body = UserMetadataResponse(ocs = OcsDto(data = UserMetadataDto(id = userId))),
+                    response = Response.success(Unit),
+                )
+            },
+        )
+        whenever(mockApi.createWebDavFolder(any())).thenReturn(Response.success(Unit))
+        whenever(mockApi.uploadRecipeImage(any(), any())).thenReturn(Response.success(Unit))
+        whenever(apiProvider.getApi()).thenReturn(mockApi)
+
+        return mockApi
+    }
 
     /**
      * Creates a mock HttpException with the specified status code.

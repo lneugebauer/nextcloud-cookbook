@@ -30,7 +30,8 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.util.emptyRecipeDto
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
@@ -57,6 +58,11 @@ class RecipeRepositoryImpl
         private val categoriesStore: CategoriesStore,
     ) : BaseRepository(),
         RecipeRepository {
+        private val webDavUserIdMutex = Mutex()
+
+        /** Account key to WebDAV user id, see [getWebDavUserId]. */
+        private var cachedWebDavUserId: Pair<String, String>? = null
+
         override fun getRecipePreviewsFlow(): Flow<DataResult<List<RecipePreview>>> =
             recipePreviewDtosFlow().asDataResult { previews -> previews.map { it.toRecipePreview() } }
 
@@ -127,7 +133,7 @@ class RecipeRepositoryImpl
                     if (api == null) {
                         return@withContext Resource.Error(message = UiText.StringResource(R.string.error_api_not_initialized))
                     }
-                    val userId = getWebDavUserId(fallback = ncAccount.username)
+                    val userId = getWebDavUserId(account = ncAccount)
                     val uploadFolderUrl =
                         ncAccount.toWebDavUrl(
                             userId = userId,
@@ -230,10 +236,29 @@ class RecipeRepositoryImpl
             imageLoader.diskCache?.remove(cacheKey)
         }
 
-        private suspend fun getWebDavUserId(fallback: String): String =
-            when (val response = apiProvider.getApi()?.getCurrentUser()) {
-                is NetworkResponse.Success -> response.body.ocs.data.id
-                else -> fallback
+        /**
+         * Resolves the WebDAV user id of [account], remembering it for subsequent uploads instead
+         * of asking the server again for every image.
+         *
+         * Only a successful lookup is cached. Falling back to the account's username is a guess, so
+         * caching it would pin a possibly wrong id for the rest of the session after one transient
+         * failure. The cache is keyed on the account, so switching accounts invalidates it.
+         */
+        private suspend fun getWebDavUserId(account: NcAccount): String =
+            webDavUserIdMutex.withLock {
+                val accountKey = "${account.url}|${account.username}"
+                cachedWebDavUserId?.let { (cachedKey, cachedUserId) ->
+                    if (cachedKey == accountKey) return@withLock cachedUserId
+                }
+
+                when (val response = apiProvider.getApi()?.getCurrentUser()) {
+                    is NetworkResponse.Success ->
+                        response.body.ocs.data.id.also {
+                            cachedWebDavUserId = accountKey to it
+                        }
+
+                    else -> account.username
+                }
             }
 
         private fun NcAccount.toWebDavUrl(
