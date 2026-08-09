@@ -8,12 +8,14 @@ import de.lukasneugebauer.nextcloudcookbook.core.data.api.NcCookbookApiProvider
 import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
 import de.lukasneugebauer.nextcloudcookbook.di.CategoriesStore
-import de.lukasneugebauer.nextcloudcookbook.di.RecipePreviewsByCategoryStore
 import de.lukasneugebauer.nextcloudcookbook.di.RecipePreviewsStore
 import de.lukasneugebauer.nextcloudcookbook.di.RecipeStore
+import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipePreviewDto
+import de.lukasneugebauer.nextcloudcookbook.recipe.util.RecipeConstants.UNCATEGORIZED_RECIPE
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.emptyRecipeDto
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
@@ -52,20 +54,21 @@ class RecipeRepositoryImplUnitTest {
     private lateinit var repository: RecipeRepositoryImpl
     private lateinit var ioDispatcher: CoroutineDispatcher
     private lateinit var recipeStore: RecipeStore
+    private lateinit var recipePreviewsStore: RecipePreviewsStore
 
     @Before
     fun setUp() {
         MockitoAnnotations.openMocks(this)
         ioDispatcher = Dispatchers.Unconfined // Use Unconfined for synchronous test execution
         recipeStore = mockRecipeStore()
+        recipePreviewsStore = mockRecipePreviewsStore()
         repository =
             RecipeRepositoryImpl(
                 apiProvider = apiProvider,
                 imageLoader = imageLoader,
                 ioDispatcher = ioDispatcher,
                 preferencesManager = preferencesManager,
-                recipePreviewsByCategoryStore = mockRecipePreviewsByCategoryStore(),
-                recipePreviewsStore = mockRecipePreviewsStore(),
+                recipePreviewsStore = recipePreviewsStore,
                 recipeStore = recipeStore,
                 categoriesStore = mockCategoriesStore(),
             )
@@ -427,6 +430,104 @@ class RecipeRepositoryImplUnitTest {
         }
 
     /**
+     * Stubs [recipePreviewsStore]'s stream with [previews], as if `GET /recipes` had returned them.
+     */
+    private fun stubRecipePreviews(previews: List<RecipePreviewDto>) {
+        whenever(recipePreviewsStore.stream(any())).thenReturn(
+            flowOf(
+                StoreReadResponse.Data(
+                    value = previews,
+                    origin = StoreReadResponseOrigin.SourceOfTruth,
+                ),
+            ),
+        )
+    }
+
+    private fun recipePreviewDto(
+        id: String,
+        category: String?,
+    ) = RecipePreviewDto(
+        recipeId = null,
+        id = id,
+        name = "Recipe $id",
+        keywords = null,
+        category = category,
+        dateCreated = null,
+        dateModified = null,
+        imageUrl = null,
+        imagePlaceholderUrl = null,
+    )
+
+    @Test
+    fun getRecipePreviewsByCategory_WithNamedCategory_ReturnsOnlyThatCategory() =
+        runBlocking {
+            stubRecipePreviews(
+                listOf(
+                    recipePreviewDto(id = "1", category = "Dessert"),
+                    recipePreviewDto(id = "2", category = "Main"),
+                    recipePreviewDto(id = "3", category = "Dessert"),
+                    recipePreviewDto(id = "4", category = null),
+                ),
+            )
+
+            val result = repository.getRecipePreviewsByCategory("Dessert").first().requireData()
+
+            assertEquals(listOf("1", "3"), result.map { it.id })
+        }
+
+    /**
+     * The server exposes uncategorized recipes under the "*" pseudo category in `GET /categories`,
+     * so filtering locally has to map both `null` and blank categories onto it.
+     */
+    @Test
+    fun getRecipePreviewsByCategory_WithUncategorized_ReturnsRecipesWithoutCategory() =
+        runBlocking {
+            stubRecipePreviews(
+                listOf(
+                    recipePreviewDto(id = "1", category = "Dessert"),
+                    recipePreviewDto(id = "2", category = null),
+                    recipePreviewDto(id = "3", category = ""),
+                    recipePreviewDto(id = "4", category = "   "),
+                ),
+            )
+
+            val result = repository.getRecipePreviewsByCategory(UNCATEGORIZED_RECIPE).first().requireData()
+
+            assertEquals(listOf("2", "3", "4"), result.map { it.id })
+        }
+
+    @Test
+    fun getRecipePreviewsByCategory_WithUnknownCategory_ReturnsEmptyList() =
+        runBlocking {
+            stubRecipePreviews(listOf(recipePreviewDto(id = "1", category = "Dessert")))
+
+            val result = repository.getRecipePreviewsByCategory("Soup").first().requireData()
+
+            assertTrue(result.isEmpty())
+        }
+
+    /**
+     * Non-data responses must pass through untouched so consumers still see loading and error states.
+     */
+    @Test
+    fun getRecipePreviewsByCategory_WithErrorResponse_PassesErrorThrough() =
+        runBlocking {
+            whenever(recipePreviewsStore.stream(any())).thenReturn(
+                flowOf(
+                    StoreReadResponse.Error.Message(
+                        message = "boom",
+                        origin = StoreReadResponseOrigin.Fetcher(),
+                    ),
+                ),
+            )
+
+            val result = repository.getRecipePreviewsByCategory("Dessert").first()
+
+            assertTrue(result is StoreReadResponse.Error.Message)
+            assertEquals("boom", result.errorMessageOrNull())
+        }
+
+    /**
      * Creates a mock HttpException with the specified status code.
      */
     private fun createHttpException(statusCode: Int): HttpException {
@@ -437,8 +538,6 @@ class RecipeRepositoryImplUnitTest {
 
         return HttpException(mockResponse)
     }
-
-    private fun mockRecipePreviewsByCategoryStore(): RecipePreviewsByCategoryStore = mock()
 
     private fun mockRecipePreviewsStore(): RecipePreviewsStore = mock()
 

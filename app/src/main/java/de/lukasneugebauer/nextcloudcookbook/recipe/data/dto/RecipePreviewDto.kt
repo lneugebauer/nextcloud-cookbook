@@ -2,6 +2,7 @@ package de.lukasneugebauer.nextcloudcookbook.recipe.data.dto
 
 import com.google.gson.annotations.SerializedName
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipePreview
+import de.lukasneugebauer.nextcloudcookbook.recipe.util.RecipeConstants.UNCATEGORIZED_RECIPE
 import kotlin.jvm.Throws
 
 data class RecipePreviewDto(
@@ -25,6 +26,13 @@ data class RecipePreviewDto(
     @SerializedName("imagePlaceholderUrl")
     val imagePlaceholderUrl: String?,
 ) {
+    /**
+     * The category this recipe belongs to, with recipes lacking one mapped to the
+     * [UNCATEGORIZED_RECIPE] pseudo category the server itself uses in `GET /categories`.
+     */
+    val categoryOrUncategorized: String
+        get() = category?.takeIf { it.isNotBlank() } ?: UNCATEGORIZED_RECIPE
+
     @Throws(IllegalStateException::class)
     fun toRecipePreview() =
         RecipePreview(

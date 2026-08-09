@@ -43,11 +43,6 @@ interface NcCookbookApi {
     @GET("$FULL_PATH/categories")
     suspend fun getCategories(): List<CategoryDto>
 
-    @GET("$FULL_PATH/category/{categoryName}")
-    suspend fun getRecipesByCategory(
-        @Path("categoryName") categoryName: String,
-    ): List<RecipePreviewDto>
-
     @GET("$FULL_PATH/recipes")
     suspend fun getRecipes(): List<RecipePreviewDto>
 

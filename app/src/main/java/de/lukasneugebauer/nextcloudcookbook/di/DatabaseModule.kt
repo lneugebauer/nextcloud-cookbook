@@ -10,7 +10,6 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import de.lukasneugebauer.nextcloudcookbook.category.domain.dao.CategoryDao
 import de.lukasneugebauer.nextcloudcookbook.core.data.CookbookDatabase
-import de.lukasneugebauer.nextcloudcookbook.recipe.domain.dao.CategoryRecipePreviewDao
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.dao.RecipeDao
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.dao.RecipePreviewDao
 import javax.inject.Singleton
@@ -33,9 +32,6 @@ object DatabaseModule {
 
     @Provides
     fun provideRecipePreviewDao(db: CookbookDatabase): RecipePreviewDao = db.recipePreviewDao()
-
-    @Provides
-    fun provideCategoryRecipePreviewDao(db: CookbookDatabase): CategoryRecipePreviewDao = db.categoryRecipePreviewDao()
 
     @Provides
     fun provideRecipeDao(db: CookbookDatabase): RecipeDao = db.recipeDao()

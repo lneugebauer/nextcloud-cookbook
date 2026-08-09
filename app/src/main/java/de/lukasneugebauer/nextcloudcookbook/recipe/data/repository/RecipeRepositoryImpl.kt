@@ -15,7 +15,6 @@ import de.lukasneugebauer.nextcloudcookbook.core.util.SimpleResource
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
 import de.lukasneugebauer.nextcloudcookbook.core.util.addSuffix
 import de.lukasneugebauer.nextcloudcookbook.di.CategoriesStore
-import de.lukasneugebauer.nextcloudcookbook.di.RecipePreviewsByCategoryStore
 import de.lukasneugebauer.nextcloudcookbook.di.RecipePreviewsStore
 import de.lukasneugebauer.nextcloudcookbook.di.RecipeStore
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.ImportUrlDto
@@ -27,6 +26,7 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.util.emptyRecipeDto
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
@@ -48,7 +48,6 @@ class RecipeRepositoryImpl
         private val imageLoader: ImageLoader,
         @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
         private val preferencesManager: PreferencesManager,
-        private val recipePreviewsByCategoryStore: RecipePreviewsByCategoryStore,
         private val recipePreviewsStore: RecipePreviewsStore,
         private val recipeStore: RecipeStore,
         private val categoriesStore: CategoriesStore,
@@ -57,13 +56,17 @@ class RecipeRepositoryImpl
         override fun getRecipePreviewsFlow(): Flow<StoreReadResponse<List<RecipePreviewDto>>> =
             recipePreviewsStore.stream(StoreReadRequest.cached(key = Unit, refresh = false))
 
+        /**
+         * Recipes of a single category are filtered out of the full preview list instead of being
+         * fetched separately. `GET /recipes` already returns every preview together with its
+         * category, so a dedicated request would only duplicate data that is cached locally anyway.
+         */
         override fun getRecipePreviewsByCategory(categoryName: String): Flow<StoreReadResponse<List<RecipePreviewDto>>> =
-            recipePreviewsByCategoryStore.stream(
-                StoreReadRequest.cached(
-                    key = categoryName,
-                    refresh = false,
-                ),
-            )
+            getRecipePreviewsFlow().map { response ->
+                response.mapData { previews ->
+                    previews.filter { it.categoryOrUncategorized == categoryName }
+                }
+            }
 
         override fun getRecipeFlow(id: String): Flow<StoreReadResponse<RecipeDto>> =
             recipeStore.stream(
@@ -87,7 +90,7 @@ class RecipeRepositoryImpl
 
                 try {
                     val id = api.createRecipe(recipe = recipe)
-                    refreshCaches(id = id, categoryName = recipe.recipeCategory)
+                    refreshCaches(id = id)
                     Resource.Success(data = id)
                 } catch (e: Exception) {
                     handle409ConflictError(e, recipe.name) ?: handleResponseError(e.fillInStackTrace())
@@ -168,10 +171,9 @@ class RecipeRepositoryImpl
                             }
                     }
 
-                    refreshCaches(id = recipe.id, categoryName = recipe.recipeCategory)
+                    refreshCaches(id = recipe.id)
 
                     if (currentRecipe.recipeCategory != recipe.recipeCategory) {
-                        recipePreviewsByCategoryStore.fresh(currentRecipe.recipeCategory)
                         categoriesStore.fresh(Unit)
                     }
 
@@ -182,10 +184,7 @@ class RecipeRepositoryImpl
             }
         }
 
-        override suspend fun deleteRecipe(
-            id: String,
-            categoryName: String,
-        ): SimpleResource {
+        override suspend fun deleteRecipe(id: String): SimpleResource {
             return withContext(ioDispatcher) {
                 val api =
                     apiProvider.getApi()
@@ -193,7 +192,7 @@ class RecipeRepositoryImpl
 
                 when (val response = api.deleteRecipe(id)) {
                     is NetworkResponse.Success -> {
-                        refreshCaches(id = id, categoryName = categoryName, deleted = true)
+                        refreshCaches(id = id, deleted = true)
                         Resource.Success(Unit)
                     }
 
@@ -212,7 +211,7 @@ class RecipeRepositoryImpl
 
                 when (val response = api.importRecipe(url = url)) {
                     is NetworkResponse.Success -> {
-                        refreshCaches(id = response.body.id, categoryName = response.body.recipeCategory)
+                        refreshCaches(id = response.body.id)
                         Resource.Success(response.body)
                     }
 
@@ -273,12 +272,8 @@ class RecipeRepositoryImpl
         @OptIn(ExperimentalStoreApi::class)
         private suspend fun refreshCaches(
             id: String,
-            categoryName: String,
             deleted: Boolean = false,
         ) {
-            if (categoryName.isNotBlank()) {
-                recipePreviewsByCategoryStore.fresh(categoryName)
-            }
             recipePreviewsStore.fresh(Unit)
             if (deleted) {
                 // FIXME: Only clear specific recipe. Something like recipeStore.clear(key = id)
@@ -287,6 +282,20 @@ class RecipeRepositoryImpl
                 recipeStore.fresh(id)
             }
         }
+
+        /**
+         * Applies [transform] to the payload of a [StoreReadResponse.Data], passing every other
+         * response type through unchanged. Store5's own `swapType()` is internal, so the
+         * non-data cases have to be rebuilt by hand.
+         */
+        private fun <In, Out> StoreReadResponse<In>.mapData(transform: (In) -> Out): StoreReadResponse<Out> =
+            when (this) {
+                is StoreReadResponse.Data -> StoreReadResponse.Data(transform(value), origin)
+                is StoreReadResponse.Loading -> StoreReadResponse.Loading(origin)
+                is StoreReadResponse.NoNewData -> StoreReadResponse.NoNewData(origin)
+                is StoreReadResponse.Error.Exception -> StoreReadResponse.Error.Exception(error, origin)
+                is StoreReadResponse.Error.Message -> StoreReadResponse.Error.Message(message, origin)
+            }
 
         private companion object {
             const val HTTP_METHOD_NOT_ALLOWED = 405

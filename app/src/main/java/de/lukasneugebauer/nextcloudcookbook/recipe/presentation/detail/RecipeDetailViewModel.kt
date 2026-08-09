@@ -160,12 +160,9 @@ class RecipeDetailViewModel
             return ""
         }
 
-        fun deleteRecipe(
-            id: String,
-            categoryName: String,
-        ) {
+        fun deleteRecipe(id: String) {
             viewModelScope.launch {
-                when (val deleteRecipeResource = recipeRepository.deleteRecipe(id, categoryName)) {
+                when (val deleteRecipeResource = recipeRepository.deleteRecipe(id)) {
                     is Resource.Success -> {
                         _state.value = _state.value.copy(deleted = true)
                     }

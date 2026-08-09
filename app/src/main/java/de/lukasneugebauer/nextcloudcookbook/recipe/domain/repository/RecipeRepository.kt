@@ -22,10 +22,7 @@ interface RecipeRepository {
 
     suspend fun updateRecipe(recipe: RecipeDto): SimpleResource
 
-    suspend fun deleteRecipe(
-        id: String,
-        categoryName: String,
-    ): SimpleResource
+    suspend fun deleteRecipe(id: String): SimpleResource
 
     suspend fun importRecipe(url: ImportUrlDto): Resource<RecipeDto>
 

@@ -15,13 +15,11 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.data.RecipeFormatterImpl
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.YieldCalculatorImpl
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipeDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipePreviewDto
-import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.mapper.toCategoryEntity
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.mapper.toDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.mapper.toEntity
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.repository.RecipeRepositoryImpl
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.RecipeFormatter
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.YieldCalculator
-import de.lukasneugebauer.nextcloudcookbook.recipe.domain.dao.CategoryRecipePreviewDao
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.dao.RecipeDao
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.dao.RecipePreviewDao
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipeEntity
@@ -36,7 +34,6 @@ import org.mobilenativefoundation.store.store5.Store
 import org.mobilenativefoundation.store.store5.StoreBuilder
 import javax.inject.Singleton
 
-typealias RecipePreviewsByCategoryStore = Store<String, List<RecipePreviewDto>>
 typealias RecipePreviewsStore = Store<Unit, List<RecipePreviewDto>>
 typealias RecipeStore = Store<String, RecipeDto>
 
@@ -76,39 +73,6 @@ object RecipeModule {
 
     @Provides
     @Singleton
-    fun provideRecipePreviewsByCategoryStore(
-        apiProvider: NcCookbookApiProvider,
-        categoryRecipePreviewDao: CategoryRecipePreviewDao,
-    ): RecipePreviewsByCategoryStore =
-        StoreBuilder
-            .from(
-                fetcher =
-                    Fetcher.of { categoryName: String ->
-                        apiProvider.getApi()?.getRecipesByCategory(categoryName)
-                            ?: throw NullPointerException("Nextcloud Cookbook API is null.")
-                    },
-                sourceOfTruth =
-                    SourceOfTruth.of<String, List<RecipePreviewDto>, List<RecipePreviewDto>>(
-                        reader = { categoryName ->
-                            categoryRecipePreviewDao.getByCategory(categoryName).map { entities ->
-                                entities.map { it.toDto() }.takeIf { it.isNotEmpty() }
-                            }
-                        },
-                        writer = { categoryName, dtos ->
-                            val entities = dtos.map { it.toCategoryEntity(categoryName) }
-                            categoryRecipePreviewDao.replaceByCategory(categoryName, entities)
-                        },
-                        delete = { categoryName ->
-                            categoryRecipePreviewDao.deleteByCategory(categoryName)
-                        },
-                        deleteAll = {
-                            categoryRecipePreviewDao.deleteAll()
-                        },
-                    ),
-            ).build()
-
-    @Provides
-    @Singleton
     fun provideRecipeStore(
         apiProvider: NcCookbookApiProvider,
         recipeDao: RecipeDao,
@@ -143,7 +107,6 @@ object RecipeModule {
         @ApplicationContext context: Context,
         @IoDispatcher ioDispatcher: CoroutineDispatcher,
         preferencesManager: PreferencesManager,
-        recipesByCategoryStore: RecipePreviewsByCategoryStore,
         recipePreviewsStore: RecipePreviewsStore,
         recipeStore: RecipeStore,
         categoriesStore: CategoriesStore,
@@ -153,7 +116,6 @@ object RecipeModule {
             context.imageLoader,
             ioDispatcher,
             preferencesManager,
-            recipesByCategoryStore,
             recipePreviewsStore,
             recipeStore,
             categoriesStore,

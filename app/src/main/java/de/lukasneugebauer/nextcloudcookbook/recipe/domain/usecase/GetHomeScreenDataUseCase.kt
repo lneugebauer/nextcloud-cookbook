@@ -6,7 +6,6 @@ import de.lukasneugebauer.nextcloudcookbook.core.domain.model.RecipeOfTheDay
 import de.lukasneugebauer.nextcloudcookbook.core.util.Constants.DEFAULT_RECIPE_OF_THE_DAY_ID
 import de.lukasneugebauer.nextcloudcookbook.core.util.IoDispatcher
 import de.lukasneugebauer.nextcloudcookbook.di.CategoriesStore
-import de.lukasneugebauer.nextcloudcookbook.di.RecipePreviewsByCategoryStore
 import de.lukasneugebauer.nextcloudcookbook.di.RecipePreviewsStore
 import de.lukasneugebauer.nextcloudcookbook.di.RecipeStore
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.HomeScreenDataResult
@@ -28,7 +27,6 @@ class GetHomeScreenDataUseCase
         private val categoriesStore: CategoriesStore,
         @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
         private val preferencesManager: PreferencesManager,
-        private val recipePreviewsByCategoryStore: RecipePreviewsByCategoryStore,
         private val recipePreviewsStore: RecipePreviewsStore,
         private val recipeStore: RecipeStore,
     ) {
@@ -112,15 +110,22 @@ class GetHomeScreenDataUseCase
 
             withContext(ioDispatcher) {
                 try {
+                    // All previews are fetched once and grouped locally, rather than issuing one
+                    // request per category.
+                    val previewsByCategory =
+                        recipePreviewsStore
+                            .get(Unit)
+                            .groupBy { it.categoryOrUncategorized }
+
                     categoriesStore
                         .get(Unit)
                         .sortedByDescending { it.recipeCount }
                         .take(RecipeConstants.HOME_SCREEN_CATEGORIES)
                         .forEach { categoryDto ->
                             val recipePreviews =
-                                recipePreviewsByCategoryStore
-                                    .get(categoryDto.name)
-                                    .map { it.toRecipePreview() }
+                                previewsByCategory[categoryDto.name]
+                                    ?.map { it.toRecipePreview() }
+                                    .orEmpty()
                             if (recipePreviews.isNotEmpty()) {
                                 val result =
                                     HomeScreenDataResult.Row(
