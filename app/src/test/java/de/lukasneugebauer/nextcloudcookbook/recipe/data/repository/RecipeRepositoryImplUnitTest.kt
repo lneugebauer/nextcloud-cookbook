@@ -21,6 +21,7 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipePreviewDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipeImageUpload
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.RecipeConstants.UNCATEGORIZED_RECIPE
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.emptyRecipeDto
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -521,6 +522,24 @@ class RecipeRepositoryImplUnitTest {
         }
 
     /**
+     * Best effort covers failures, not cancellation: a cancelled refresh means the caller is going
+     * away, so it has to keep unwinding instead of being reported as a failed create.
+     */
+    @Test(expected = CancellationException::class)
+    fun createRecipe_WhenCacheRefreshIsCancelled_PropagatesTheCancellation() =
+        runBlocking {
+            val recipe = emptyRecipeDto().copy(id = "42", name = "Chocolate Cake")
+            val mockApi: NcCookbookApi = mock()
+            whenever(mockApi.createRecipe(recipe = recipe)).thenReturn("42")
+            whenever(apiProvider.getApi()).thenReturn(mockApi)
+            whenever(recipePreviewsStore.stream(any())).thenThrow(CancellationException("cancelled"))
+
+            repository.createRecipe(recipe)
+
+            Unit
+        }
+
+    /**
      * Stubs [recipePreviewsStore]'s stream with [previews], as if `GET /recipes` had returned them.
      */
     private fun stubRecipePreviews(previews: List<RecipePreviewDto>) {
@@ -647,8 +666,10 @@ class RecipeRepositoryImplUnitTest {
             val mockApi = stubApiForImageUpload(userId = "alice")
 
             repository.uploadRecipeImage(recipeImageUpload())
-            repository.uploadRecipeImage(recipeImageUpload())
+            verify(mockApi, times(1)).getCurrentUser()
 
+            repository.uploadRecipeImage(recipeImageUpload())
+            // Still one in total, so the second upload read the cache instead of looking up again.
             verify(mockApi, times(1)).getCurrentUser()
         }
     }
@@ -663,8 +684,10 @@ class RecipeRepositoryImplUnitTest {
             val mockApi = stubApiForImageUpload(userId = null)
 
             repository.uploadRecipeImage(recipeImageUpload())
-            repository.uploadRecipeImage(recipeImageUpload())
+            verify(mockApi, times(1)).getCurrentUser()
 
+            repository.uploadRecipeImage(recipeImageUpload())
+            // One more, so the failed lookup was retried rather than served from the cache.
             verify(mockApi, times(2)).getCurrentUser()
         }
     }
