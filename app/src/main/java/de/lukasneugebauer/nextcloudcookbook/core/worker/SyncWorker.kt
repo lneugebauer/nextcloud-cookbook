@@ -12,10 +12,8 @@ import androidx.work.WorkRequest
 import androidx.work.WorkerParameters
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import de.lukasneugebauer.nextcloudcookbook.di.RecipePreviewsStore
-import de.lukasneugebauer.nextcloudcookbook.di.RecipeStore
+import de.lukasneugebauer.nextcloudcookbook.core.domain.usecase.SyncRecipesUseCase
 import kotlinx.coroutines.CancellationException
-import org.mobilenativefoundation.store.store5.impl.extensions.fresh
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
@@ -25,33 +23,11 @@ class SyncWorker
     constructor(
         @Assisted context: Context,
         @Assisted params: WorkerParameters,
-        private val recipePreviewsStore: RecipePreviewsStore,
-        private val recipeStore: RecipeStore,
+        private val syncRecipesUseCase: SyncRecipesUseCase,
     ) : CoroutineWorker(context, params) {
         override suspend fun doWork(): Result =
             try {
-                val previews =
-                    recipePreviewsStore.fresh(
-                        Unit,
-                    )
-                var hadFailures = false
-
-                previews.forEach { previewDto ->
-                    val id = previewDto.idOrNull
-
-                    if (id != null) {
-                        try {
-                            recipeStore.fresh(id)
-                        } catch (e: CancellationException) {
-                            throw e
-                        } catch (e: Exception) {
-                            hadFailures = true
-                            Timber.w(e, "Failed to sync recipe $id")
-                        }
-                    }
-                }
-
-                if (hadFailures) Result.retry() else Result.success()
+                if (syncRecipesUseCase().hadFailures) Result.retry() else Result.success()
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
