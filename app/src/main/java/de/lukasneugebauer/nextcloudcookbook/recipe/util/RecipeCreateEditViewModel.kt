@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.category.domain.model.Category
 import de.lukasneugebauer.nextcloudcookbook.category.domain.repository.CategoryRepository
+import de.lukasneugebauer.nextcloudcookbook.core.util.DataResult
 import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.NutritionDto
@@ -18,6 +19,7 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.ifSuccess
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.usecase.GetAllKeywordsUseCase
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.util.ImageCompressionService
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.RecipeConstants.DEFAULT_YIELD
+import de.lukasneugebauer.nextcloudcookbook.recipe.util.RecipeConstants.UNCATEGORIZED_RECIPE
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
@@ -26,7 +28,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import org.mobilenativefoundation.store.store5.StoreReadResponse
 import timber.log.Timber
 import java.lang.UnsupportedOperationException
 import java.util.Collections
@@ -498,14 +499,13 @@ abstract class RecipeCreateEditViewModel(
     private fun getCategories() {
         categoryRepository
             .getCategories()
-            .onEach { categoriesResponse ->
-                when (categoriesResponse) {
-                    is StoreReadResponse.Data ->
+            .onEach { categoriesResult ->
+                when (categoriesResult) {
+                    is DataResult.Success ->
                         categories =
-                            categoriesResponse.value
+                            categoriesResult.data
                                 .filter { it.recipeCount > 0 }
-                                .filter { it.name != "*" }
-                                .map { it.toCategory() }
+                                .filter { it.name != UNCATEGORIZED_RECIPE }
 
                     else -> Unit
                 }

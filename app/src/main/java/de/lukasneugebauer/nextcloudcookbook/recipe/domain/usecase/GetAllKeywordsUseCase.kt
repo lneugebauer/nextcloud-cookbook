@@ -1,9 +1,9 @@
 package de.lukasneugebauer.nextcloudcookbook.recipe.domain.usecase
 
+import de.lukasneugebauer.nextcloudcookbook.core.util.DataResult
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.repository.RecipeRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapNotNull
-import org.mobilenativefoundation.store.store5.StoreReadResponse
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -21,14 +21,9 @@ class GetAllKeywordsUseCase
                     recipeRepository.getRecipePreviewsByCategory(filterByCategory)
                 }
 
-            return recipePreviewsFlow.mapNotNull { recipePreviewsResponse ->
-                when (recipePreviewsResponse) {
-                    is StoreReadResponse.Data -> {
-                        recipePreviewsResponse.value
-                            .flatMap { it.toRecipePreview().keywords }
-                            .toSet()
-                    }
-
+            return recipePreviewsFlow.mapNotNull { recipePreviewsResult ->
+                when (recipePreviewsResult) {
+                    is DataResult.Success -> recipePreviewsResult.data.flatMap { it.keywords }.toSet()
                     else -> null
                 }
             }

@@ -1,20 +1,21 @@
 package de.lukasneugebauer.nextcloudcookbook.recipe.domain.repository
 
+import de.lukasneugebauer.nextcloudcookbook.core.util.DataResult
 import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import de.lukasneugebauer.nextcloudcookbook.core.util.SimpleResource
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.ImportUrlDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipeDto
-import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipePreviewDto
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Recipe
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipeImageUpload
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipePreview
 import kotlinx.coroutines.flow.Flow
-import org.mobilenativefoundation.store.store5.StoreReadResponse
 
 interface RecipeRepository {
-    fun getRecipePreviewsFlow(): Flow<StoreReadResponse<List<RecipePreviewDto>>>
+    fun getRecipePreviewsFlow(): Flow<DataResult<List<RecipePreview>>>
 
-    fun getRecipePreviewsByCategory(categoryName: String): Flow<StoreReadResponse<List<RecipePreviewDto>>>
+    fun getRecipePreviewsByCategory(categoryName: String): Flow<DataResult<List<RecipePreview>>>
 
-    fun getRecipeFlow(id: String): Flow<StoreReadResponse<RecipeDto>>
+    fun getRecipeFlow(id: String): Flow<DataResult<Recipe>>
 
     suspend fun getRecipe(id: String): RecipeDto
 

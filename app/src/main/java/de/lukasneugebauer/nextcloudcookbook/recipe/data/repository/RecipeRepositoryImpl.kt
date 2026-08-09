@@ -6,9 +6,11 @@ import com.haroldadmin.cnradapter.NetworkResponse
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
 import de.lukasneugebauer.nextcloudcookbook.core.data.api.NcCookbookApiProvider
+import de.lukasneugebauer.nextcloudcookbook.core.data.asDataResult
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.NcAccount
 import de.lukasneugebauer.nextcloudcookbook.core.domain.repository.BaseRepository
 import de.lukasneugebauer.nextcloudcookbook.core.util.Constants
+import de.lukasneugebauer.nextcloudcookbook.core.util.DataResult
 import de.lukasneugebauer.nextcloudcookbook.core.util.IoDispatcher
 import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import de.lukasneugebauer.nextcloudcookbook.core.util.SimpleResource
@@ -20,7 +22,9 @@ import de.lukasneugebauer.nextcloudcookbook.di.RecipeStore
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.ImportUrlDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipeDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipePreviewDto
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Recipe
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipeImageUpload
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipePreview
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.repository.RecipeRepository
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.emptyRecipeDto
 import kotlinx.coroutines.CoroutineDispatcher
@@ -53,25 +57,28 @@ class RecipeRepositoryImpl
         private val categoriesStore: CategoriesStore,
     ) : BaseRepository(),
         RecipeRepository {
-        override fun getRecipePreviewsFlow(): Flow<StoreReadResponse<List<RecipePreviewDto>>> =
-            recipePreviewsStore.stream(StoreReadRequest.cached(key = Unit, refresh = false))
+        override fun getRecipePreviewsFlow(): Flow<DataResult<List<RecipePreview>>> =
+            recipePreviewDtosFlow().asDataResult { previews -> previews.map { it.toRecipePreview() } }
 
         /**
          * Recipes of a single category are filtered out of the full preview list instead of being
          * fetched separately. `GET /recipes` already returns every preview together with its
          * category, so a dedicated request would only duplicate data that is cached locally anyway.
          */
-        override fun getRecipePreviewsByCategory(categoryName: String): Flow<StoreReadResponse<List<RecipePreviewDto>>> =
-            getRecipePreviewsFlow().map { response ->
-                response.mapData { previews ->
-                    previews.filter { it.categoryOrUncategorized == categoryName }
-                }
+        override fun getRecipePreviewsByCategory(categoryName: String): Flow<DataResult<List<RecipePreview>>> =
+            recipePreviewDtosFlow().asDataResult { previews ->
+                previews
+                    .filter { it.categoryOrUncategorized == categoryName }
+                    .map { it.toRecipePreview() }
             }
 
-        override fun getRecipeFlow(id: String): Flow<StoreReadResponse<RecipeDto>> =
-            recipeStore.stream(
-                StoreReadRequest.cached(key = id, refresh = false),
-            )
+        override fun getRecipeFlow(id: String): Flow<DataResult<Recipe>> =
+            recipeStore
+                .stream(StoreReadRequest.cached(key = id, refresh = false))
+                .asDataResult { it.toRecipe() }
+
+        private fun recipePreviewDtosFlow(): Flow<StoreReadResponse<List<RecipePreviewDto>>> =
+            recipePreviewsStore.stream(StoreReadRequest.cached(key = Unit, refresh = false))
 
         override suspend fun getRecipe(id: String): RecipeDto = recipeStore.get(id)
 
@@ -161,7 +168,7 @@ class RecipeRepositoryImpl
                     if (recipe.image != currentRecipe.image && !recipe.imageUrl.isNullOrBlank()) {
                         refreshImageCache(cacheKey = recipe.imageUrl)
 
-                        getRecipePreviewsFlow()
+                        recipePreviewDtosFlow()
                             .first()
                             .dataOrNull()
                             ?.firstOrNull { it.id == recipe.id }
@@ -284,20 +291,6 @@ class RecipeRepositoryImpl
                 recipeStore.fresh(id)
             }
         }
-
-        /**
-         * Applies [transform] to the payload of a [StoreReadResponse.Data], passing every other
-         * response type through unchanged. Store5's own `swapType()` is internal, so the
-         * non-data cases have to be rebuilt by hand.
-         */
-        private fun <In, Out> StoreReadResponse<In>.mapData(transform: (In) -> Out): StoreReadResponse<Out> =
-            when (this) {
-                is StoreReadResponse.Data -> StoreReadResponse.Data(transform(value), origin)
-                is StoreReadResponse.Loading -> StoreReadResponse.Loading(origin)
-                is StoreReadResponse.NoNewData -> StoreReadResponse.NoNewData(origin)
-                is StoreReadResponse.Error.Exception -> StoreReadResponse.Error.Exception(error, origin)
-                is StoreReadResponse.Error.Message -> StoreReadResponse.Error.Message(message, origin)
-            }
 
         private companion object {
             const val HTTP_METHOD_NOT_ALLOWED = 405

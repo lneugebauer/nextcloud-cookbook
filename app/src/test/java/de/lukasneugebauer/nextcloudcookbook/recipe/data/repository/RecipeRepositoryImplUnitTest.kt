@@ -6,6 +6,7 @@ import de.lukasneugebauer.nextcloudcookbook.category.data.dto.CategoryDto
 import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
 import de.lukasneugebauer.nextcloudcookbook.core.data.api.NcCookbookApi
 import de.lukasneugebauer.nextcloudcookbook.core.data.api.NcCookbookApiProvider
+import de.lukasneugebauer.nextcloudcookbook.core.util.DataResult
 import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
 import de.lukasneugebauer.nextcloudcookbook.di.CategoriesStore
@@ -18,6 +19,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
@@ -503,7 +505,7 @@ class RecipeRepositoryImplUnitTest {
                 ),
             )
 
-            val result = repository.getRecipePreviewsByCategory("Dessert").first().requireData()
+            val result = repository.getRecipePreviewsByCategory("Dessert").first().successData()
 
             assertEquals(listOf("1", "3"), result.map { it.id })
         }
@@ -524,7 +526,7 @@ class RecipeRepositoryImplUnitTest {
                 ),
             )
 
-            val result = repository.getRecipePreviewsByCategory(UNCATEGORIZED_RECIPE).first().requireData()
+            val result = repository.getRecipePreviewsByCategory(UNCATEGORIZED_RECIPE).first().successData()
 
             assertEquals(listOf("2", "3", "4"), result.map { it.id })
         }
@@ -534,13 +536,13 @@ class RecipeRepositoryImplUnitTest {
         runBlocking {
             stubRecipePreviews(listOf(recipePreviewDto(id = "1", category = "Dessert")))
 
-            val result = repository.getRecipePreviewsByCategory("Soup").first().requireData()
+            val result = repository.getRecipePreviewsByCategory("Soup").first().successData()
 
             assertTrue(result.isEmpty())
         }
 
     /**
-     * Non-data responses must pass through untouched so consumers still see loading and error states.
+     * Store errors have to surface as [DataResult.Error] so consumers can still show them.
      */
     @Test
     fun getRecipePreviewsByCategory_WithErrorResponse_PassesErrorThrough() =
@@ -556,9 +558,28 @@ class RecipeRepositoryImplUnitTest {
 
             val result = repository.getRecipePreviewsByCategory("Dessert").first()
 
-            assertTrue(result is StoreReadResponse.Error.Message)
-            assertEquals("boom", result.errorMessageOrNull())
+            assertEquals(DataResult.Error(UiText.DynamicString("boom")), result)
         }
+
+    /**
+     * `NoNewData` only reports that a fetch returned nothing new, so it must not reach consumers
+     * as a state of its own.
+     */
+    @Test
+    fun getRecipePreviewsByCategory_WithNoNewData_EmitsNothing() =
+        runBlocking {
+            whenever(recipePreviewsStore.stream(any())).thenReturn(
+                flowOf(
+                    StoreReadResponse.NoNewData(origin = StoreReadResponseOrigin.Fetcher()),
+                ),
+            )
+
+            val results = repository.getRecipePreviewsByCategory("Dessert").toList()
+
+            assertTrue(results.isEmpty())
+        }
+
+    private fun <T> DataResult<T>.successData(): T = (this as DataResult.Success<T>).data
 
     /**
      * Creates a mock HttpException with the specified status code.
