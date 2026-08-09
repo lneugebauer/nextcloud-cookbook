@@ -165,6 +165,9 @@
     <string name="recipe_image_take_photo">Pildista</string>
     <string name="settings_recipe_image_upload_folder">Retseptipiltide üleslaadimise kaust</string>
     <string name="settings_recipe_image_upload_folder_placeholder">Kokaraamatu üleslaadimised</string>
-    <string name="settings_recipe_image_upload_folder_description">Kaust, mida kasutatakse retseptide piltide üleslaadimiseks Nextcloudi. Kui jätad tühjaks, siis kasutatakse vaikimisi määratud kausta.</string>
+    <string name="settings_recipe_image_upload_folder_description">Kaust, mida kasutatakse retseptide piltide üleslaadimiseks Nextcloudi.</string>
     <string name="error_webview_load_failed">Sisselogimislehe laadimine ei õnnestu. Palun kontrolli, kas sinu nutiseadme internetiühendus toimib ja proovi uuesti.</string>
+    <string name="settings_recipe_image_upload_folder_reset">Taasta vaikimisi väärtus</string>
+    <string name="recipe_force_refresh">Laadi retseptid uuesti</string>
+    <string name="error_recipe_exists">„%1$s“ retsept on juba olemas</string>
 </resources>

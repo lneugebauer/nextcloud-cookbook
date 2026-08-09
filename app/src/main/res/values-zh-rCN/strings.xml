@@ -162,6 +162,9 @@
     <string name="recipe_image_take_photo">拍摄照片</string>
     <string name="settings_recipe_image_upload_folder">食谱图片上传文件夹</string>
     <string name="settings_recipe_image_upload_folder_placeholder">食谱上传</string>
-    <string name="settings_recipe_image_upload_folder_description">将食谱图片上传到 Nextcloud 时使用的文件夹。留空则使用默认设置。</string>
+    <string name="settings_recipe_image_upload_folder_description">将食谱图片上传到 Nextcloud 时使用的文件夹。</string>
     <string name="error_webview_load_failed">无法加载登录页面。请检查您的连接，然后重试。</string>
+    <string name="settings_recipe_image_upload_folder_reset">恢复默认</string>
+    <string name="recipe_force_refresh">刷新食谱</string>
+    <string name="error_recipe_exists">食谱 %1$s 已存在</string>
 </resources>

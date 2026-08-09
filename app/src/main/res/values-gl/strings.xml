@@ -137,7 +137,7 @@
     <string name="recipe_modified_at">Data de modificación</string>
     <string name="recipe_created_at">Data de creación</string>
     <string name="common_selected">Seleccionado</string>
-    <string name="common_clear_input">LImpar entrada</string>
+    <string name="common_clear_input">Limpar entrada</string>
     <string name="common_error">Erro</string>
     <string name="login_nextcloud_logo">Logo de Nextcloud</string>
     <string name="recipe_change_order">Cambiar orde</string>
@@ -166,5 +166,8 @@
     <string name="recipe_image_take_photo">Facer foto</string>
     <string name="settings_recipe_image_upload_folder">Cartafol de subida para a imaxe da receita</string>
     <string name="settings_recipe_image_upload_folder_placeholder">Subidas de Cookbook</string>
-    <string name="settings_recipe_image_upload_folder_description">O cartafol utilizado cando se soben imaxes das receitas a Nextcloud. Deixar baleiro para usar o predeterminado.</string>
+    <string name="settings_recipe_image_upload_folder_description">O cartafol utilizado cando se soben imaxes das receitas a Nextcloud.</string>
+    <string name="settings_recipe_image_upload_folder_reset">Restablecer predeterminado</string>
+    <string name="recipe_force_refresh">Actualizar receitas</string>
+    <string name="error_recipe_exists">Xa existe a receita %1$s</string>
 </resources>
