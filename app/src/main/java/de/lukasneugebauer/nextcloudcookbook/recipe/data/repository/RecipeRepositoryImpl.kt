@@ -63,7 +63,7 @@ class RecipeRepositoryImpl
         private var cachedWebDavUserId: Pair<String, String>? = null
 
         override fun getRecipePreviewsFlow(): Flow<DataResult<List<RecipePreview>>> =
-            recipePreviewDtosFlow().asDataResult { previews -> previews.map { it.toRecipePreview() } }
+            recipePreviewDtosFlow().asDataResult { previews -> previews.orEmpty().map { it.toRecipePreview() } }
 
         /**
          * Recipes of a single category are filtered out of the full preview list instead of being
@@ -73,6 +73,7 @@ class RecipeRepositoryImpl
         override fun getRecipePreviewsByCategory(categoryName: String): Flow<DataResult<List<RecipePreview>>> =
             recipePreviewDtosFlow().asDataResult { previews ->
                 previews
+                    .orEmpty()
                     .filter { it.categoryOrUncategorized == categoryName }
                     .map { it.toRecipePreview() }
             }
@@ -80,7 +81,9 @@ class RecipeRepositoryImpl
         override fun getRecipeFlow(id: String): Flow<DataResult<Recipe>> =
             recipeStore
                 .stream(StoreReadRequest.cached(key = id, refresh = false))
-                .asDataResult { it.toRecipe() }
+                // A missing row means the recipe was deleted between the fetcher's write and this
+                // read; there is nothing to show, so leave the previous state alone.
+                .asDataResult { dto -> dto?.toRecipe() }
 
         private fun recipePreviewDtosFlow(): Flow<StoreReadResponse<List<RecipePreviewDto>>> =
             recipePreviewsStore.stream(StoreReadRequest.cached(key = Unit, refresh = false))

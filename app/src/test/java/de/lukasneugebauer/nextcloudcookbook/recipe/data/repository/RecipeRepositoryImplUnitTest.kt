@@ -24,6 +24,7 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.util.emptyRecipeDto
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
@@ -653,6 +654,64 @@ class RecipeRepositoryImplUnitTest {
 
             assertTrue(results.isEmpty())
         }
+
+    /**
+     * An account without a single recipe: the previews reader maps the empty table to `null` and
+     * Store5 forwards that first read after the fetch as `Data(value = null)`. The list screens have
+     * to see an empty success for their empty state, and mapping the `null` must not blow up.
+     */
+    @Test
+    fun getRecipePreviewsFlow_WithEmptyCacheAfterFetch_EmitsAnEmptyList() =
+        runBlocking {
+            stubEmptyPreviewsCacheAfterFetch()
+
+            val result = repository.getRecipePreviewsFlow().first().successData()
+
+            assertTrue(result.isEmpty())
+        }
+
+    @Test
+    fun getRecipePreviewsByCategory_WithEmptyCacheAfterFetch_EmitsAnEmptyList() =
+        runBlocking {
+            stubEmptyPreviewsCacheAfterFetch()
+
+            val result = repository.getRecipePreviewsByCategory("Dessert").first().successData()
+
+            assertTrue(result.isEmpty())
+        }
+
+    /**
+     * The same `Data(value = null)` for a single recipe means the row is gone, and there is no empty
+     * recipe to show — so the emission is dropped rather than turned into a state.
+     */
+    @Test
+    fun getRecipeFlow_WithEmptyCacheAfterFetch_EmitsNothing() =
+        runBlocking {
+            whenever(recipeStore.stream(any())).thenReturn(nullValueAfterFetch())
+
+            val results = repository.getRecipeFlow("1").toList()
+
+            assertTrue(results.isEmpty())
+        }
+
+    private fun stubEmptyPreviewsCacheAfterFetch() {
+        whenever(recipePreviewsStore.stream(any())).thenReturn(nullValueAfterFetch())
+    }
+
+    /**
+     * Store5 emits the first read after a fetch whatever its value is, and casts it to the store's
+     * output type on the way out — so a reader that maps an empty cache to `null` (see
+     * `RecipeModule`) produces a `Data` whose value is `null` despite the non-null type. The cast
+     * here reproduces exactly that.
+     */
+    @Suppress("UNCHECKED_CAST")
+    private fun <T : Any> nullValueAfterFetch(): Flow<StoreReadResponse<T>> =
+        flowOf(
+            StoreReadResponse.Data(
+                value = null,
+                origin = StoreReadResponseOrigin.Fetcher(),
+            ) as StoreReadResponse<T>,
+        )
 
     private fun <T> DataResult<T>.successData(): T = (this as DataResult.Success<T>).data
 

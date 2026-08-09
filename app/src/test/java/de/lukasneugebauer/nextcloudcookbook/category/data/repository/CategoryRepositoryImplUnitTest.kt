@@ -117,6 +117,29 @@ class CategoryRepositoryImplUnitTest {
             assertEquals(listOf(Category(name = "Empty", recipeCount = 0)), result)
         }
 
+    /**
+     * A server without any categories: the reader maps the empty table to `null` so the fetcher runs
+     * at all, and Store5 forwards that read after the fetch as `Data(value = null)`. The picker has
+     * to end up with an empty list instead of the mapping blowing up on the `null`.
+     */
+    @Test
+    fun getRemoteCategories_WithEmptyCacheAfterFetch_EmitsAnEmptyList() =
+        runBlocking {
+            @Suppress("UNCHECKED_CAST")
+            whenever(categoriesStore.stream(any())).thenReturn(
+                flowOf(
+                    StoreReadResponse.Data(
+                        value = null,
+                        origin = StoreReadResponseOrigin.Fetcher(),
+                    ) as StoreReadResponse<List<CategoryDto>>,
+                ),
+            )
+
+            val result = repository.getRemoteCategories().first().successData()
+
+            assertEquals(emptyList<Category>(), result)
+        }
+
     private fun stubPreviews(vararg previews: RecipePreviewDto) {
         whenever(recipePreviewsStore.stream(any())).thenReturn(
             flowOf(

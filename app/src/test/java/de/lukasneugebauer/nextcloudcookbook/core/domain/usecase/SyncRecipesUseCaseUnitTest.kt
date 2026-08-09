@@ -204,6 +204,32 @@ class SyncRecipesUseCaseUnitTest {
         }
     }
 
+    /**
+     * The last recipe was deleted, so the previews reader maps the empty table to `null` and Store5
+     * hands that back from the fetch. That is an empty library, not a failure: the cached copies go
+     * and the sync reports success rather than blowing up and putting the worker into a retry loop.
+     */
+    @Test
+    fun invoke_WhenTheServerHasNoRecipes_ClearsTheCacheWithoutFailing() {
+        runBlocking {
+            @Suppress("UNCHECKED_CAST")
+            whenever(recipePreviewsStore.stream(any())).thenReturn(
+                flowOf(
+                    StoreReadResponse.Data(
+                        value = null,
+                        origin = StoreReadResponseOrigin.Fetcher(),
+                    ) as StoreReadResponse<List<RecipePreviewDto>>,
+                ),
+            )
+            stubCache(syncState("1", "t1"))
+
+            val result = useCase()
+
+            verify(recipeStore).clear("1")
+            assertFalse(result.hadFailures)
+        }
+    }
+
     private suspend fun stubPreviews(vararg previews: RecipePreviewDto) {
         whenever(recipePreviewsStore.stream(any())).thenReturn(
             flowOf(

@@ -1,5 +1,6 @@
 package de.lukasneugebauer.nextcloudcookbook.core.domain.usecase
 
+import de.lukasneugebauer.nextcloudcookbook.core.data.freshOrNull
 import de.lukasneugebauer.nextcloudcookbook.di.RecipePreviewsStore
 import de.lukasneugebauer.nextcloudcookbook.di.RecipeStore
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.dao.RecipeDao
@@ -26,7 +27,8 @@ class SyncRecipesUseCase
         suspend operator fun invoke(): Result {
             val previewsById =
                 recipePreviewsStore
-                    .fresh(Unit)
+                    .freshOrNull(Unit)
+                    .orEmpty()
                     .mapNotNull { preview -> preview.idOrNull?.let { it to preview } }
                     .toMap()
             val cached = recipeDao.getSyncStates().associateBy { it.id }

@@ -23,6 +23,7 @@ class CategoryRepositoryImpl
                 .stream(StoreReadRequest.cached(key = Unit, refresh = false))
                 .asDataResult { previews ->
                     previews
+                        .orEmpty()
                         .groupingBy { it.categoryOrUncategorized }
                         .eachCount()
                         .map { (name, recipeCount) -> Category(name = name, recipeCount = recipeCount) }
@@ -44,5 +45,5 @@ class CategoryRepositoryImpl
         override fun getRemoteCategories(): Flow<DataResult<List<Category>>> =
             categoriesStore
                 .stream(StoreReadRequest.cached(key = Unit, refresh = true))
-                .asDataResult { dtos -> dtos.map { it.toCategory() } }
+                .asDataResult { dtos -> dtos.orEmpty().map { it.toCategory() } }
     }
