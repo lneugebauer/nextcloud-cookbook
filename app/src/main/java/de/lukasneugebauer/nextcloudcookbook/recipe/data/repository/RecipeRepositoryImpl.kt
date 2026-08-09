@@ -176,7 +176,7 @@ class RecipeRepositoryImpl
                         recipePreviewDtosFlow()
                             .first()
                             .dataOrNull()
-                            ?.firstOrNull { it.id == recipe.id }
+                            ?.firstOrNull { it.idOrNull == recipe.id }
                             ?.imageUrl
                             ?.let { imageUrl ->
                                 refreshImageCache(cacheKey = imageUrl)
