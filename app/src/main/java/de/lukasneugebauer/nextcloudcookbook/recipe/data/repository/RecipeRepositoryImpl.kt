@@ -16,7 +16,6 @@ import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import de.lukasneugebauer.nextcloudcookbook.core.util.SimpleResource
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
 import de.lukasneugebauer.nextcloudcookbook.core.util.addSuffix
-import de.lukasneugebauer.nextcloudcookbook.di.CategoriesStore
 import de.lukasneugebauer.nextcloudcookbook.di.RecipePreviewsStore
 import de.lukasneugebauer.nextcloudcookbook.di.RecipeStore
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.ImportUrlDto
@@ -55,7 +54,6 @@ class RecipeRepositoryImpl
         private val preferencesManager: PreferencesManager,
         private val recipePreviewsStore: RecipePreviewsStore,
         private val recipeStore: RecipeStore,
-        private val categoriesStore: CategoriesStore,
     ) : BaseRepository(),
         RecipeRepository {
         private val webDavUserIdMutex = Mutex()
@@ -298,9 +296,8 @@ class RecipeRepositoryImpl
         private fun <T> handleUploadError(response: Response<*>): Resource.Error<T> = handleResponseError(t = null, code = response.code())
 
         /**
-         * Refreshes every cache a recipe mutation can invalidate. Categories are included because
-         * their recipe counts are maintained server side, so adding, moving or removing a recipe
-         * can change both the counts and the set of categories itself.
+         * Refreshes every cache a recipe mutation can invalidate. Refreshing the previews also
+         * updates the category list and its counts, since both are derived from the previews.
          */
         @OptIn(ExperimentalStoreApi::class)
         private suspend fun refreshCaches(
@@ -308,7 +305,6 @@ class RecipeRepositoryImpl
             deleted: Boolean = false,
         ) {
             recipePreviewsStore.fresh(Unit)
-            categoriesStore.fresh(Unit)
             if (deleted) {
                 // FIXME: Only clear specific recipe. Something like recipeStore.clear(key = id)
                 recipeStore.clear()

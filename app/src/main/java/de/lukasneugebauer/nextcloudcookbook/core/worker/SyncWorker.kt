@@ -12,7 +12,6 @@ import androidx.work.WorkRequest
 import androidx.work.WorkerParameters
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import de.lukasneugebauer.nextcloudcookbook.di.CategoriesStore
 import de.lukasneugebauer.nextcloudcookbook.di.RecipePreviewsStore
 import de.lukasneugebauer.nextcloudcookbook.di.RecipeStore
 import kotlinx.coroutines.CancellationException
@@ -27,7 +26,6 @@ class SyncWorker
         @Assisted context: Context,
         @Assisted params: WorkerParameters,
         private val recipePreviewsStore: RecipePreviewsStore,
-        private val categoriesStore: CategoriesStore,
         private val recipeStore: RecipeStore,
     ) : CoroutineWorker(context, params) {
         override suspend fun doWork(): Result =
@@ -36,7 +34,6 @@ class SyncWorker
                     recipePreviewsStore.fresh(
                         Unit,
                     )
-                categoriesStore.fresh(Unit)
                 var hadFailures = false
 
                 previews.forEach { previewDto ->

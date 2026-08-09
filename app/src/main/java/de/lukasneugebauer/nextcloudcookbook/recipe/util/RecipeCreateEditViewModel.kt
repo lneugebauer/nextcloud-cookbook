@@ -498,7 +498,7 @@ abstract class RecipeCreateEditViewModel(
 
     private fun getCategories() {
         categoryRepository
-            .getCategories()
+            .getRemoteCategories()
             .onEach { categoriesResult ->
                 when (categoriesResult) {
                     is DataResult.Success ->

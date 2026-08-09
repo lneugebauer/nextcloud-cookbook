@@ -109,7 +109,6 @@ object RecipeModule {
         preferencesManager: PreferencesManager,
         recipePreviewsStore: RecipePreviewsStore,
         recipeStore: RecipeStore,
-        categoriesStore: CategoriesStore,
     ): RecipeRepository =
         RecipeRepositoryImpl(
             apiProvider,
@@ -118,7 +117,6 @@ object RecipeModule {
             preferencesManager,
             recipePreviewsStore,
             recipeStore,
-            categoriesStore,
         )
 
     @Provides

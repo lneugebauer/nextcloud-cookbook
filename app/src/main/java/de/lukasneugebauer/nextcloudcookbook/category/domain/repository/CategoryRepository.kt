@@ -10,4 +10,11 @@ interface CategoryRepository {
      * rather than `GET /categories`, so the counts can never disagree with the recipe list.
      */
     fun getCategories(): Flow<DataResult<List<Category>>>
+
+    /**
+     * The server's own category list from `GET /categories`, emitted from cache first and
+     * then again once the request lands. Use this where the list must include categories
+     * this device has never seen — the create and edit screens' category picker.
+     */
+    fun getRemoteCategories(): Flow<DataResult<List<Category>>>
 }

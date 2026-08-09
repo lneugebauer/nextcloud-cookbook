@@ -3,7 +3,6 @@ package de.lukasneugebauer.nextcloudcookbook.recipe.data.repository
 import coil3.ImageLoader
 import com.haroldadmin.cnradapter.NetworkResponse
 import de.lukasneugebauer.nextcloudcookbook.R
-import de.lukasneugebauer.nextcloudcookbook.category.data.dto.CategoryDto
 import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
 import de.lukasneugebauer.nextcloudcookbook.core.data.api.NcCookbookApi
 import de.lukasneugebauer.nextcloudcookbook.core.data.api.NcCookbookApiProvider
@@ -16,7 +15,6 @@ import de.lukasneugebauer.nextcloudcookbook.core.domain.model.RecipeOfTheDay
 import de.lukasneugebauer.nextcloudcookbook.core.util.DataResult
 import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
-import de.lukasneugebauer.nextcloudcookbook.di.CategoriesStore
 import de.lukasneugebauer.nextcloudcookbook.di.RecipePreviewsStore
 import de.lukasneugebauer.nextcloudcookbook.di.RecipeStore
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipePreviewDto
@@ -69,7 +67,6 @@ class RecipeRepositoryImplUnitTest {
     private lateinit var ioDispatcher: CoroutineDispatcher
     private lateinit var recipeStore: RecipeStore
     private lateinit var recipePreviewsStore: RecipePreviewsStore
-    private lateinit var categoriesStore: CategoriesStore
 
     @Before
     fun setUp() {
@@ -77,7 +74,6 @@ class RecipeRepositoryImplUnitTest {
         ioDispatcher = Dispatchers.Unconfined // Use Unconfined for synchronous test execution
         recipeStore = mockRecipeStore()
         recipePreviewsStore = mockRecipePreviewsStore()
-        categoriesStore = mockCategoriesStore()
         repository =
             RecipeRepositoryImpl(
                 apiProvider = apiProvider,
@@ -86,7 +82,6 @@ class RecipeRepositoryImplUnitTest {
                 preferencesManager = preferencesManager,
                 recipePreviewsStore = recipePreviewsStore,
                 recipeStore = recipeStore,
-                categoriesStore = categoriesStore,
             )
     }
 
@@ -446,12 +441,12 @@ class RecipeRepositoryImplUnitTest {
         }
 
     /**
-     * Category recipe counts are maintained server side, so every recipe mutation has to
-     * invalidate the category cache. `createRecipe` stands in for the whole group here, since
-     * `importRecipe` and `deleteRecipe` share the same `refreshCaches` call.
+     * The category list and its counts are derived from the previews, so refreshing the previews
+     * is what keeps them current after a mutation. `createRecipe` stands in for the whole group
+     * here, since `importRecipe` and `deleteRecipe` share the same `refreshCaches` call.
      */
     @Test
-    fun createRecipe_OnSuccess_RefreshesCategories() =
+    fun createRecipe_OnSuccess_RefreshesRecipePreviews() =
         runBlocking {
             val recipe = emptyRecipeDto().copy(id = "42", name = "Chocolate Cake")
             val mockApi: NcCookbookApi = mock()
@@ -459,18 +454,10 @@ class RecipeRepositoryImplUnitTest {
             whenever(apiProvider.getApi()).thenReturn(mockApi)
             stubRecipePreviews(emptyList())
             stubRecipeStoreGet(id = "42", recipe = recipe)
-            whenever(categoriesStore.stream(any())).thenReturn(
-                flowOf(
-                    StoreReadResponse.Data(
-                        value = emptyList<CategoryDto>(),
-                        origin = StoreReadResponseOrigin.Fetcher(),
-                    ),
-                ),
-            )
 
             val result = repository.createRecipe(recipe)
 
-            verify(categoriesStore).stream(any())
+            verify(recipePreviewsStore).stream(any())
             assertTrue(result is Resource.Success)
         }
 
@@ -686,6 +673,4 @@ class RecipeRepositoryImplUnitTest {
     private fun mockRecipePreviewsStore(): RecipePreviewsStore = mock()
 
     private fun mockRecipeStore(): RecipeStore = mock()
-
-    private fun mockCategoriesStore(): CategoriesStore = mock()
 }
