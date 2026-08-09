@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
+import timber.log.Timber
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
 import javax.inject.Inject
@@ -76,7 +77,7 @@ class OkHttpClientProvider
                     .sslSocketFactory(sslContext.socketFactory, trustManager)
                     .hostnameVerifier { _, _ -> true }
             } catch (e: Exception) {
-                // Do nothing if SSL configuration fails, keep default settings
+                Timber.e(e, "Could not configure trust-all TLS")
             }
         }
     }
