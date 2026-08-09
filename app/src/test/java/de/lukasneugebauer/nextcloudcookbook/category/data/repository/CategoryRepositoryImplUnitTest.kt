@@ -70,18 +70,30 @@ class CategoryRepositoryImplUnitTest {
             assertEquals(listOf("apfel", "Brot", "Zucchini"), result.map { it.name })
         }
 
-    /** The uncategorized bucket belongs at the end, not wherever "*" happens to sort. */
+    /**
+     * The uncategorized bucket belongs at the end, not wherever "*" happens to sort — and a
+     * category that is blank rather than absent belongs in it, since the server treats both the
+     * same way.
+     */
     @Test
-    fun getCategories_PutsUncategorizedLast() =
+    fun getCategories_GroupsBlankCategoriesUnderUncategorizedAndPutsThemLast() =
         runBlocking {
             stubPreviews(
                 preview(id = "1", category = null),
-                preview(id = "2", category = "Dessert"),
+                preview(id = "2", category = ""),
+                preview(id = "3", category = "   "),
+                preview(id = "4", category = "Dessert"),
             )
 
             val result = repository.getCategories().first().successData()
 
-            assertEquals(listOf("Dessert", UNCATEGORIZED_RECIPE), result.map { it.name })
+            assertEquals(
+                listOf(
+                    Category(name = "Dessert", recipeCount = 1),
+                    Category(name = UNCATEGORIZED_RECIPE, recipeCount = 3),
+                ),
+                result,
+            )
         }
 
     /**
