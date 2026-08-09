@@ -38,8 +38,8 @@ android {
         applicationId "de.lukasneugebauer.nextcloudcookbook"
         minSdk 25
         targetSdk 36
-        versionCode 63
-        versionName "0.29.0"
+        versionCode 64
+        versionName "0.30.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

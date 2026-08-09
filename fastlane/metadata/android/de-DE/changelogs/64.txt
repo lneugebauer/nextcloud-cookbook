@@ -1,0 +1,4 @@
+- Offline-Cache hinzugefügt
+- Fehler bei doppelten Rezepten behoben
+- Sicherheit selbstsignierter Zertifikate verbessert
+- Übersetzungen aktualisiert

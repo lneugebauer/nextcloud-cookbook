@@ -1,0 +1,4 @@
+- Add offline cache
+- Improve duplicate recipe errors
+- Improve self-signed certificate security
+- Update translations
