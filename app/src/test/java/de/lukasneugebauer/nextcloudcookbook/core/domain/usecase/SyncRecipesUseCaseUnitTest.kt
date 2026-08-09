@@ -18,6 +18,7 @@ import org.mobilenativefoundation.store.store5.StoreReadResponse
 import org.mobilenativefoundation.store.store5.StoreReadResponseOrigin
 import org.mockito.kotlin.any
 import org.mockito.kotlin.argThat
+import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
@@ -47,7 +48,7 @@ class SyncRecipesUseCaseUnitTest {
     fun invoke_WhenNothingChanged_FetchesNoRecipes() {
         runBlocking {
             stubPreviews(preview(id = "1", dateModified = "t1"), preview(id = "2", dateModified = "t2"))
-            stubCache(RecipeSyncState("1", "t1"), RecipeSyncState("2", "t2"))
+            stubCache(syncState("1", "t1"), syncState("2", "t2"))
 
             val result = useCase()
 
@@ -60,7 +61,7 @@ class SyncRecipesUseCaseUnitTest {
     fun invoke_WhenDateModifiedChanged_FetchesOnlyThatRecipe() {
         runBlocking {
             stubPreviews(preview(id = "1", dateModified = "t1"), preview(id = "2", dateModified = "t2-new"))
-            stubCache(RecipeSyncState("1", "t1"), RecipeSyncState("2", "t2"))
+            stubCache(syncState("1", "t1"), syncState("2", "t2"))
             stubRecipeFetch()
 
             useCase()
@@ -74,7 +75,7 @@ class SyncRecipesUseCaseUnitTest {
     fun invoke_WhenRecipeIsNotCached_FetchesIt() {
         runBlocking {
             stubPreviews(preview(id = "1", dateModified = "t1"), preview(id = "2", dateModified = "t2"))
-            stubCache(RecipeSyncState("1", "t1"))
+            stubCache(syncState("1", "t1"))
             stubRecipeFetch()
 
             useCase()
@@ -87,7 +88,7 @@ class SyncRecipesUseCaseUnitTest {
     fun invoke_WhenRecipeIsGoneFromPreviews_ClearsItWithoutFetching() {
         runBlocking {
             stubPreviews(preview(id = "1", dateModified = "t1"))
-            stubCache(RecipeSyncState("1", "t1"), RecipeSyncState("2", "t2"))
+            stubCache(syncState("1", "t1"), syncState("2", "t2"))
 
             useCase()
 
@@ -98,20 +99,58 @@ class SyncRecipesUseCaseUnitTest {
 
     /**
      * A server that omits `dateModified` leaves nothing to compare against. Refetching every
-     * sync is exactly what this use case exists to avoid, so a cached recipe is left alone —
-     * but one that was never cached still has to be fetched.
+     * sync is exactly what this use case exists to avoid, so a recently synced recipe is left
+     * alone — but one that was never cached still has to be fetched.
      */
     @Test
     fun invoke_WithoutDateModified_FetchesOnlyTheUncachedRecipe() {
         runBlocking {
             stubPreviews(preview(id = "1", dateModified = null), preview(id = "2", dateModified = null))
-            stubCache(RecipeSyncState("1", null))
+            stubCache(syncState("1", null))
             stubRecipeFetch()
 
             useCase()
 
             verifyFetched("2")
             verify(recipeStore, never()).stream(argThat { key == "1" })
+        }
+    }
+
+    /**
+     * Leaving markerless recipes alone forever would mean an edit made on another device never
+     * arrives, since opening a recipe reads the cache too. They are refreshed once the cached
+     * copy has gone unchecked for longer than [SyncRecipesUseCase.MAX_UNVERIFIED_AGE_MS].
+     */
+    @Test
+    fun invoke_WithoutDateModifiedAndAStaleCopy_FetchesItAnyway() {
+        runBlocking {
+            stubPreviews(preview(id = "1", dateModified = null))
+            stubCache(
+                syncState(
+                    id = "1",
+                    dateModified = null,
+                    syncedAt = System.currentTimeMillis() - SyncRecipesUseCase.MAX_UNVERIFIED_AGE_MS - 1,
+                ),
+            )
+            stubRecipeFetch()
+
+            useCase()
+
+            verifyFetched("1")
+        }
+    }
+
+    /** A recipe cached outside the sync — by opening it — has no timestamp to age off of. */
+    @Test
+    fun invoke_WithoutDateModifiedAndNoSyncTimestamp_FetchesIt() {
+        runBlocking {
+            stubPreviews(preview(id = "1", dateModified = null))
+            stubCache(syncState(id = "1", dateModified = null, syncedAt = null))
+            stubRecipeFetch()
+
+            useCase()
+
+            verifyFetched("1")
         }
     }
 
@@ -124,12 +163,12 @@ class SyncRecipesUseCaseUnitTest {
     fun invoke_AfterFetching_RecordsThePreviewsDateModified() {
         runBlocking {
             stubPreviews(preview(id = "1", dateModified = "t1-new"))
-            stubCache(RecipeSyncState("1", "t1"))
+            stubCache(syncState("1", "t1"))
             stubRecipeFetch(emptyRecipeDto().copy(id = "1", dateModified = "a totally different format"))
 
             useCase()
 
-            verify(recipeDao).markSynced(id = "1", dateModified = "t1-new")
+            verify(recipeDao).markSynced(id = eq("1"), dateModified = eq("t1-new"), syncedAt = any())
         }
     }
 
@@ -138,12 +177,12 @@ class SyncRecipesUseCaseUnitTest {
     fun invoke_WhenFetchFails_DoesNotRecordTheMarker() {
         runBlocking {
             stubPreviews(preview(id = "1", dateModified = "t1-new"))
-            stubCache(RecipeSyncState("1", "t1"))
+            stubCache(syncState("1", "t1"))
             whenever(recipeStore.stream(any())).thenThrow(RuntimeException("boom"))
 
             val result = useCase()
 
-            verify(recipeDao, never()).markSynced(any(), any())
+            verify(recipeDao, never()).markSynced(any(), any(), any())
             assertTrue(result.hadFailures)
         }
     }
@@ -179,6 +218,13 @@ class SyncRecipesUseCaseUnitTest {
     private suspend fun stubCache(vararg states: RecipeSyncState) {
         whenever(recipeDao.getSyncStates()).thenReturn(states.toList())
     }
+
+    /** Synced just now by default, so only the tests that care about ageing have to say so. */
+    private fun syncState(
+        id: String,
+        dateModified: String?,
+        syncedAt: Long? = System.currentTimeMillis(),
+    ) = RecipeSyncState(id = id, syncedDateModified = dateModified, syncedAt = syncedAt)
 
     /** `RecipeStore.fresh(id)` is a Store5 extension, so stub the `stream` it reads from. */
     private fun stubRecipeFetch(recipe: RecipeDto = emptyRecipeDto()) {

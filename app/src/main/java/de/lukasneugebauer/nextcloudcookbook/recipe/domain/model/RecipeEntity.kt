@@ -16,6 +16,13 @@ data class RecipeEntity(
      * the check hold.
      */
     val syncedDateModified: String?,
+    /**
+     * When the sync last fetched this recipe, in epoch milliseconds, or `null` if it never did.
+     *
+     * Only needed for servers that omit `dateModified` from the preview list: without a marker
+     * there is nothing to compare, so this bounds how long a copy can stay unverified.
+     */
+    val syncedAt: Long?,
 )
 
 /**
@@ -24,4 +31,5 @@ data class RecipeEntity(
 data class RecipeSyncState(
     val id: String,
     val syncedDateModified: String?,
+    val syncedAt: Long?,
 )

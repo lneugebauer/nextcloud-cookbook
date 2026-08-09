@@ -14,7 +14,7 @@ interface RecipeDao {
     @Query("SELECT * FROM recipes WHERE id = :id")
     fun getById(id: String): Flow<RecipeEntity?>
 
-    @Query("SELECT id, syncedDateModified FROM recipes")
+    @Query("SELECT id, syncedDateModified, syncedAt FROM recipes")
     suspend fun getSyncStates(): List<RecipeSyncState>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
@@ -26,23 +26,26 @@ interface RecipeDao {
         json: String,
     )
 
-    @Query("UPDATE recipes SET syncedDateModified = :dateModified WHERE id = :id")
+    @Query("UPDATE recipes SET syncedDateModified = :dateModified, syncedAt = :syncedAt WHERE id = :id")
     suspend fun markSynced(
         id: String,
         dateModified: String?,
+        syncedAt: Long,
     )
 
     /**
-     * Stores the recipe body, leaving [RecipeEntity.syncedDateModified] untouched on an existing
-     * row. Fetching a recipe outside the sync — opening it, say — must not discard the marker,
-     * or the next sync would fetch it all over again.
+     * Stores the recipe body, leaving [RecipeEntity.syncedDateModified] and
+     * [RecipeEntity.syncedAt] untouched on an existing row. Fetching a recipe outside the sync —
+     * opening it, say — must not discard the marker, or the next sync would fetch it all over
+     * again.
      */
     @Transaction
     suspend fun upsertJson(
         id: String,
         json: String,
     ) {
-        val insertedRowId = insertIfAbsent(RecipeEntity(id = id, json = json, syncedDateModified = null))
+        val insertedRowId =
+            insertIfAbsent(RecipeEntity(id = id, json = json, syncedDateModified = null, syncedAt = null))
         if (insertedRowId == -1L) {
             updateJson(id = id, json = json)
         }

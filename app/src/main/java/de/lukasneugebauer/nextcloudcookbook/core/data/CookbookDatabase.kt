@@ -10,7 +10,7 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipeEntity
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipePreviewEntity
 
 @Database(
-    version = 5,
+    version = 6,
     entities = [RecipePreviewEntity::class, RecipeEntity::class, CategoryEntity::class],
     exportSchema = true,
 )
