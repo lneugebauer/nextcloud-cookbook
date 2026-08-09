@@ -31,7 +31,7 @@ fun AnimatedVisibilityScope.RecipeCreateScreen(
     HideBottomNavigation()
 
     when (uiState) {
-        is RecipeCreateEditState.Loading -> Loader()
+        is RecipeCreateEditState.Loading, is RecipeCreateEditState.Saving -> Loader()
         is RecipeCreateEditState.Success -> {
             val recipe = (uiState as RecipeCreateEditState.Success).recipe
             val prepTime = (uiState as RecipeCreateEditState.Success).prepTime

@@ -35,7 +35,7 @@ class RecipeCreateViewModel
         ) {
         override fun save() {
             _uiState.value.ifSuccess {
-                _uiState.update { RecipeCreateEditState.Loading }
+                _uiState.update { RecipeCreateEditState.Saving }
                 viewModelScope.launch {
                     val result = recipeRepository.createRecipe(recipeDto)
                     _uiState.update {

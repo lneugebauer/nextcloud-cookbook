@@ -1,35 +1,54 @@
 package de.lukasneugebauer.nextcloudcookbook.recipe.data.repository
 
 import coil3.ImageLoader
+import com.haroldadmin.cnradapter.NetworkResponse
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
 import de.lukasneugebauer.nextcloudcookbook.core.data.api.NcCookbookApi
 import de.lukasneugebauer.nextcloudcookbook.core.data.api.NcCookbookApiProvider
+import de.lukasneugebauer.nextcloudcookbook.core.data.dto.OcsDto
+import de.lukasneugebauer.nextcloudcookbook.core.data.dto.UserMetadataDto
+import de.lukasneugebauer.nextcloudcookbook.core.data.remote.response.UserMetadataResponse
+import de.lukasneugebauer.nextcloudcookbook.core.domain.model.NcAccount
+import de.lukasneugebauer.nextcloudcookbook.core.domain.model.Preferences
+import de.lukasneugebauer.nextcloudcookbook.core.domain.model.RecipeOfTheDay
+import de.lukasneugebauer.nextcloudcookbook.core.util.DataResult
 import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
-import de.lukasneugebauer.nextcloudcookbook.di.CategoriesStore
-import de.lukasneugebauer.nextcloudcookbook.di.RecipePreviewsByCategoryStore
 import de.lukasneugebauer.nextcloudcookbook.di.RecipePreviewsStore
 import de.lukasneugebauer.nextcloudcookbook.di.RecipeStore
+import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipePreviewDto
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipeImageUpload
+import de.lukasneugebauer.nextcloudcookbook.recipe.util.RecipeConstants.UNCATEGORIZED_RECIPE
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.emptyRecipeDto
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import org.mobilenativefoundation.store.store5.StoreReadRequest
 import org.mobilenativefoundation.store.store5.StoreReadResponse
 import org.mobilenativefoundation.store.store5.StoreReadResponseOrigin
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 import org.mockito.kotlin.any
+import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import retrofit2.HttpException
 import retrofit2.Response
+import java.time.LocalDateTime
 
 /**
  * Unit tests for [RecipeRepositoryImpl] with focus on 409 Conflict error handling
@@ -52,22 +71,22 @@ class RecipeRepositoryImplUnitTest {
     private lateinit var repository: RecipeRepositoryImpl
     private lateinit var ioDispatcher: CoroutineDispatcher
     private lateinit var recipeStore: RecipeStore
+    private lateinit var recipePreviewsStore: RecipePreviewsStore
 
     @Before
     fun setUp() {
         MockitoAnnotations.openMocks(this)
         ioDispatcher = Dispatchers.Unconfined // Use Unconfined for synchronous test execution
         recipeStore = mockRecipeStore()
+        recipePreviewsStore = mockRecipePreviewsStore()
         repository =
             RecipeRepositoryImpl(
                 apiProvider = apiProvider,
                 imageLoader = imageLoader,
                 ioDispatcher = ioDispatcher,
                 preferencesManager = preferencesManager,
-                recipePreviewsByCategoryStore = mockRecipePreviewsByCategoryStore(),
-                recipePreviewsStore = mockRecipePreviewsStore(),
+                recipePreviewsStore = recipePreviewsStore,
                 recipeStore = recipeStore,
-                categoriesStore = mockCategoriesStore(),
             )
     }
 
@@ -427,6 +446,365 @@ class RecipeRepositoryImplUnitTest {
         }
 
     /**
+     * The category list and its counts are derived from the previews, so refreshing the previews
+     * is what keeps them current after a mutation. `createRecipe` stands in for the whole group
+     * here, since `importRecipe` and `deleteRecipe` share the same `refreshCaches` call.
+     */
+    @Test
+    fun createRecipe_OnSuccess_RefreshesRecipePreviews() =
+        runBlocking {
+            val recipe = emptyRecipeDto().copy(id = "42", name = "Chocolate Cake")
+            val mockApi: NcCookbookApi = mock()
+            whenever(mockApi.createRecipe(recipe = recipe)).thenReturn("42")
+            whenever(apiProvider.getApi()).thenReturn(mockApi)
+            stubRecipePreviews(emptyList())
+            stubRecipeStoreGet(id = "42", recipe = recipe)
+
+            val result = repository.createRecipe(recipe)
+
+            val request = argumentCaptor<StoreReadRequest<Unit>>()
+            verify(recipePreviewsStore).stream(request.capture())
+            // A cached read would leave the counts stale, so the request has to force a fetch.
+            assertEquals(StoreReadRequest.fresh(Unit), request.firstValue)
+            assertTrue(result is Resource.Success)
+        }
+
+    /**
+     * Deleting one recipe used to clear the whole recipe cache, which meant the next sync
+     * refetched every recipe in the library.
+     */
+    @Test
+    fun deleteRecipe_OnSuccess_ClearsOnlyTheDeletedRecipe() =
+        runBlocking {
+            val mockApi: NcCookbookApi = mock()
+            whenever(mockApi.deleteRecipe("42")).thenReturn(NetworkResponse.Success("42", Response.success("42")))
+            whenever(apiProvider.getApi()).thenReturn(mockApi)
+            stubRecipePreviews(emptyList())
+
+            val result = repository.deleteRecipe("42")
+
+            verify(recipeStore).clear("42")
+            verify(recipeStore, never()).clear()
+            assertTrue(result is Resource.Success)
+        }
+
+    /**
+     * The server has already stored the recipe by the time the caches are refreshed, so a refresh
+     * that fails must not be reported back as a failed create. The cache catches up on the next
+     * sync; telling the user their recipe wasn't saved when it was does not heal.
+     */
+    @Test
+    fun createRecipe_WhenCacheRefreshFails_StillReportsSuccess() =
+        runBlocking {
+            val recipe = emptyRecipeDto().copy(id = "42", name = "Chocolate Cake")
+            val mockApi: NcCookbookApi = mock()
+            whenever(mockApi.createRecipe(recipe = recipe)).thenReturn("42")
+            whenever(apiProvider.getApi()).thenReturn(mockApi)
+            whenever(recipePreviewsStore.stream(any())).thenThrow(RuntimeException("boom"))
+
+            val result = repository.createRecipe(recipe)
+
+            assertTrue("Create succeeded on the server, so the result must be a success", result is Resource.Success)
+            assertEquals("42", (result as Resource.Success).data)
+        }
+
+    /**
+     * The eviction is local and cannot fail on the network, so it runs before the preview refresh.
+     * A refresh that throws afterwards must neither resurrect the deleted recipe nor escape to the
+     * caller — before this, the exception propagated straight out of `deleteRecipe`.
+     */
+    @Test
+    fun deleteRecipe_WhenPreviewRefreshFails_StillClearsTheRecipeAndReportsSuccess() =
+        runBlocking {
+            val mockApi: NcCookbookApi = mock()
+            whenever(mockApi.deleteRecipe("42")).thenReturn(NetworkResponse.Success("42", Response.success("42")))
+            whenever(apiProvider.getApi()).thenReturn(mockApi)
+            whenever(recipePreviewsStore.stream(any())).thenThrow(RuntimeException("boom"))
+
+            val result = repository.deleteRecipe("42")
+
+            verify(recipeStore).clear("42")
+            assertTrue(result is Resource.Success)
+        }
+
+    /**
+     * Best effort covers failures, not cancellation: a cancelled refresh means the caller is going
+     * away, so it has to keep unwinding instead of being reported as a failed create.
+     */
+    @Test(expected = CancellationException::class)
+    fun createRecipe_WhenCacheRefreshIsCancelled_PropagatesTheCancellation() =
+        runBlocking {
+            val recipe = emptyRecipeDto().copy(id = "42", name = "Chocolate Cake")
+            val mockApi: NcCookbookApi = mock()
+            whenever(mockApi.createRecipe(recipe = recipe)).thenReturn("42")
+            whenever(apiProvider.getApi()).thenReturn(mockApi)
+            whenever(recipePreviewsStore.stream(any())).thenThrow(CancellationException("cancelled"))
+
+            repository.createRecipe(recipe)
+
+            Unit
+        }
+
+    /**
+     * Stubs [recipePreviewsStore]'s stream with [previews], as if `GET /recipes` had returned them.
+     */
+    private fun stubRecipePreviews(previews: List<RecipePreviewDto>) {
+        whenever(recipePreviewsStore.stream(any())).thenReturn(
+            flowOf(
+                StoreReadResponse.Data(
+                    value = previews,
+                    origin = StoreReadResponseOrigin.SourceOfTruth,
+                ),
+            ),
+        )
+    }
+
+    private fun recipePreviewDto(
+        id: String,
+        category: String?,
+    ) = RecipePreviewDto(
+        recipeId = null,
+        id = id,
+        name = "Recipe $id",
+        keywords = null,
+        category = category,
+        dateCreated = null,
+        dateModified = null,
+        imageUrl = null,
+        imagePlaceholderUrl = null,
+    )
+
+    @Test
+    fun getRecipePreviewsByCategory_WithNamedCategory_ReturnsOnlyThatCategory() =
+        runBlocking {
+            stubRecipePreviews(
+                listOf(
+                    recipePreviewDto(id = "1", category = "Dessert"),
+                    recipePreviewDto(id = "2", category = "Main"),
+                    recipePreviewDto(id = "3", category = "Dessert"),
+                    recipePreviewDto(id = "4", category = null),
+                ),
+            )
+
+            val result = repository.getRecipePreviewsByCategory("Dessert").first().successData()
+
+            assertEquals(listOf("1", "3"), result.map { it.id })
+        }
+
+    /**
+     * The server exposes uncategorized recipes under the "*" pseudo category in `GET /categories`,
+     * so filtering locally has to map both `null` and blank categories onto it.
+     */
+    @Test
+    fun getRecipePreviewsByCategory_WithUncategorized_ReturnsRecipesWithoutCategory() =
+        runBlocking {
+            stubRecipePreviews(
+                listOf(
+                    recipePreviewDto(id = "1", category = "Dessert"),
+                    recipePreviewDto(id = "2", category = null),
+                    recipePreviewDto(id = "3", category = ""),
+                    recipePreviewDto(id = "4", category = "   "),
+                ),
+            )
+
+            val result = repository.getRecipePreviewsByCategory(UNCATEGORIZED_RECIPE).first().successData()
+
+            assertEquals(listOf("2", "3", "4"), result.map { it.id })
+        }
+
+    @Test
+    fun getRecipePreviewsByCategory_WithUnknownCategory_ReturnsEmptyList() =
+        runBlocking {
+            stubRecipePreviews(listOf(recipePreviewDto(id = "1", category = "Dessert")))
+
+            val result = repository.getRecipePreviewsByCategory("Soup").first().successData()
+
+            assertTrue(result.isEmpty())
+        }
+
+    /**
+     * Store errors have to surface as [DataResult.Error] so consumers can still show them.
+     */
+    @Test
+    fun getRecipePreviewsByCategory_WithErrorResponse_PassesErrorThrough() =
+        runBlocking {
+            whenever(recipePreviewsStore.stream(any())).thenReturn(
+                flowOf(
+                    StoreReadResponse.Error.Message(
+                        message = "boom",
+                        origin = StoreReadResponseOrigin.Fetcher(),
+                    ),
+                ),
+            )
+
+            val result = repository.getRecipePreviewsByCategory("Dessert").first()
+
+            assertEquals(DataResult.Error(UiText.DynamicString("boom")), result)
+        }
+
+    /**
+     * `NoNewData` only reports that a fetch returned nothing new, so it must not reach consumers
+     * as a state of its own.
+     */
+    @Test
+    fun getRecipePreviewsByCategory_WithNoNewData_EmitsNothing() =
+        runBlocking {
+            whenever(recipePreviewsStore.stream(any())).thenReturn(
+                flowOf(
+                    StoreReadResponse.NoNewData(origin = StoreReadResponseOrigin.Fetcher()),
+                ),
+            )
+
+            val results = repository.getRecipePreviewsByCategory("Dessert").toList()
+
+            assertTrue(results.isEmpty())
+        }
+
+    /**
+     * An account without a single recipe: the previews reader maps the empty table to `null` and
+     * Store5 forwards that first read after the fetch as `Data(value = null)`. The list screens have
+     * to see an empty success for their empty state, and mapping the `null` must not blow up.
+     */
+    @Test
+    fun getRecipePreviewsFlow_WithEmptyCacheAfterFetch_EmitsAnEmptyList() =
+        runBlocking {
+            stubEmptyPreviewsCacheAfterFetch()
+
+            val result = repository.getRecipePreviewsFlow().first().successData()
+
+            assertTrue(result.isEmpty())
+        }
+
+    @Test
+    fun getRecipePreviewsByCategory_WithEmptyCacheAfterFetch_EmitsAnEmptyList() =
+        runBlocking {
+            stubEmptyPreviewsCacheAfterFetch()
+
+            val result = repository.getRecipePreviewsByCategory("Dessert").first().successData()
+
+            assertTrue(result.isEmpty())
+        }
+
+    /**
+     * The same `Data(value = null)` for a single recipe means the row is gone, and there is no empty
+     * recipe to show — so the emission is dropped rather than turned into a state.
+     */
+    @Test
+    fun getRecipeFlow_WithEmptyCacheAfterFetch_EmitsNothing() =
+        runBlocking {
+            whenever(recipeStore.stream(any())).thenReturn(nullValueAfterFetch())
+
+            val results = repository.getRecipeFlow("1").toList()
+
+            assertTrue(results.isEmpty())
+        }
+
+    private fun stubEmptyPreviewsCacheAfterFetch() {
+        whenever(recipePreviewsStore.stream(any())).thenReturn(nullValueAfterFetch())
+    }
+
+    /**
+     * Store5 emits the first read after a fetch whatever its value is, and casts it to the store's
+     * output type on the way out — so a reader that maps an empty cache to `null` (see
+     * `RecipeModule`) produces a `Data` whose value is `null` despite the non-null type. The cast
+     * here reproduces exactly that.
+     */
+    @Suppress("UNCHECKED_CAST")
+    private fun <T : Any> nullValueAfterFetch(): Flow<StoreReadResponse<T>> =
+        flowOf(
+            StoreReadResponse.Data(
+                value = null,
+                origin = StoreReadResponseOrigin.Fetcher(),
+            ) as StoreReadResponse<T>,
+        )
+
+    private fun <T> DataResult<T>.successData(): T = (this as DataResult.Success<T>).data
+
+    /**
+     * The WebDAV user id is fixed per account, so uploading several images must not re-issue
+     * `GET /cloud/user` for each one.
+     */
+    @Test
+    fun uploadRecipeImage_CalledTwice_ResolvesTheWebDavUserIdOnce() {
+        runBlocking {
+            val mockApi = stubApiForImageUpload(userId = "alice")
+
+            repository.uploadRecipeImage(recipeImageUpload())
+            verify(mockApi, times(1)).getCurrentUser()
+
+            repository.uploadRecipeImage(recipeImageUpload())
+            // Still one in total, so the second upload read the cache instead of looking up again.
+            verify(mockApi, times(1)).getCurrentUser()
+        }
+    }
+
+    /**
+     * A failed lookup falls back to the account's username, but must not be cached: otherwise one
+     * transient failure would pin a possibly wrong id for the rest of the session.
+     */
+    @Test
+    fun uploadRecipeImage_WhenUserLookupFails_DoesNotCacheTheFallback() {
+        runBlocking {
+            val mockApi = stubApiForImageUpload(userId = null)
+
+            repository.uploadRecipeImage(recipeImageUpload())
+            verify(mockApi, times(1)).getCurrentUser()
+
+            repository.uploadRecipeImage(recipeImageUpload())
+            // One more, so the failed lookup was retried rather than served from the cache.
+            verify(mockApi, times(2)).getCurrentUser()
+        }
+    }
+
+    private fun recipeImageUpload() =
+        RecipeImageUpload(
+            fileName = "image.jpg",
+            mimeType = "image/jpeg",
+            bytes = byteArrayOf(1, 2, 3),
+        )
+
+    /**
+     * Stubs everything [RecipeRepositoryImpl.uploadRecipeImage] touches. A [userId] of `null` makes
+     * the `GET /cloud/user` lookup fail so that the username fallback kicks in.
+     */
+    private suspend fun stubApiForImageUpload(userId: String?): NcCookbookApi {
+        val account =
+            NcAccount(
+                name = "Alice",
+                username = "alice-login",
+                token = "token",
+                url = "https://cloud.example.com",
+            )
+        whenever(preferencesManager.preferencesFlow).thenReturn(
+            flowOf(
+                Preferences(
+                    isShowIngredientSyntaxIndicator = false,
+                    ncAccount = account,
+                    recipeOfTheDay = RecipeOfTheDay(id = "0", updatedAt = LocalDateTime.MIN),
+                    allowSelfSignedCertificates = false,
+                ),
+            ),
+        )
+
+        val mockApi: NcCookbookApi = mock()
+        whenever(mockApi.getCurrentUser()).thenReturn(
+            if (userId == null) {
+                NetworkResponse.UnknownError(RuntimeException("boom"), null)
+            } else {
+                NetworkResponse.Success(
+                    body = UserMetadataResponse(ocs = OcsDto(data = UserMetadataDto(id = userId))),
+                    response = Response.success(Unit),
+                )
+            },
+        )
+        whenever(mockApi.createWebDavFolder(any())).thenReturn(Response.success(Unit))
+        whenever(mockApi.uploadRecipeImage(any(), any())).thenReturn(Response.success(Unit))
+        whenever(apiProvider.getApi()).thenReturn(mockApi)
+
+        return mockApi
+    }
+
+    /**
      * Creates a mock HttpException with the specified status code.
      */
     private fun createHttpException(statusCode: Int): HttpException {
@@ -438,11 +816,7 @@ class RecipeRepositoryImplUnitTest {
         return HttpException(mockResponse)
     }
 
-    private fun mockRecipePreviewsByCategoryStore(): RecipePreviewsByCategoryStore = mock()
-
     private fun mockRecipePreviewsStore(): RecipePreviewsStore = mock()
 
     private fun mockRecipeStore(): RecipeStore = mock()
-
-    private fun mockCategoriesStore(): CategoriesStore = mock()
 }

@@ -3,17 +3,14 @@ package de.lukasneugebauer.nextcloudcookbook.category.presentation.list
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.category.domain.repository.CategoryRepository
 import de.lukasneugebauer.nextcloudcookbook.category.domain.state.CategoryListScreenState
-import de.lukasneugebauer.nextcloudcookbook.core.util.UiText.DynamicString
-import de.lukasneugebauer.nextcloudcookbook.core.util.UiText.StringResource
+import de.lukasneugebauer.nextcloudcookbook.core.util.DataResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
-import org.mobilenativefoundation.store.store5.StoreReadResponse
 import javax.inject.Inject
 
 @HiltViewModel
@@ -29,28 +26,17 @@ class CategoryListViewModel
         init {
             categoryRepository
                 .getCategories()
-                .onEach { categoriesResponse ->
-                    when (categoriesResponse) {
-                        is StoreReadResponse.Loading -> _uiState.update { CategoryListScreenState.Initial }
-                        is StoreReadResponse.Data ->
+                .onEach { categoriesResult ->
+                    when (categoriesResult) {
+                        is DataResult.Loading -> _uiState.update { CategoryListScreenState.Initial }
+                        is DataResult.Success ->
                             _uiState.update {
                                 CategoryListScreenState.Loaded(
-                                    categoriesResponse.value
-                                        .filter { it.recipeCount > 0 }
-                                        .map { it.toCategory() },
+                                    categoriesResult.data.filter { it.recipeCount > 0 },
                                 )
                             }
 
-                        is StoreReadResponse.NoNewData -> Unit
-
-                        is StoreReadResponse.Error -> {
-                            val message =
-                                categoriesResponse
-                                    .errorMessageOrNull()
-                                    ?.let { DynamicString(it) }
-                                    ?: run { StringResource(R.string.error_unknown) }
-                            _uiState.update { CategoryListScreenState.Error(message) }
-                        }
+                        is DataResult.Error -> _uiState.update { CategoryListScreenState.Error(categoriesResult.message) }
                     }
                 }.launchIn(viewModelScope)
         }

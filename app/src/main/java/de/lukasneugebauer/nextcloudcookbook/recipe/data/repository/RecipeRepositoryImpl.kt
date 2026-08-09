@@ -6,39 +6,44 @@ import com.haroldadmin.cnradapter.NetworkResponse
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
 import de.lukasneugebauer.nextcloudcookbook.core.data.api.NcCookbookApiProvider
+import de.lukasneugebauer.nextcloudcookbook.core.data.asDataResult
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.NcAccount
 import de.lukasneugebauer.nextcloudcookbook.core.domain.repository.BaseRepository
 import de.lukasneugebauer.nextcloudcookbook.core.util.Constants
+import de.lukasneugebauer.nextcloudcookbook.core.util.DataResult
 import de.lukasneugebauer.nextcloudcookbook.core.util.IoDispatcher
 import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import de.lukasneugebauer.nextcloudcookbook.core.util.SimpleResource
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
 import de.lukasneugebauer.nextcloudcookbook.core.util.addSuffix
-import de.lukasneugebauer.nextcloudcookbook.di.CategoriesStore
-import de.lukasneugebauer.nextcloudcookbook.di.RecipePreviewsByCategoryStore
 import de.lukasneugebauer.nextcloudcookbook.di.RecipePreviewsStore
 import de.lukasneugebauer.nextcloudcookbook.di.RecipeStore
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.ImportUrlDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipeDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipePreviewDto
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Recipe
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipeImageUpload
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipePreview
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.repository.RecipeRepository
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.emptyRecipeDto
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
-import org.mobilenativefoundation.store.store5.ExperimentalStoreApi
 import org.mobilenativefoundation.store.store5.StoreReadRequest
 import org.mobilenativefoundation.store.store5.StoreReadResponse
 import org.mobilenativefoundation.store.store5.impl.extensions.fresh
 import org.mobilenativefoundation.store.store5.impl.extensions.get
 import retrofit2.HttpException
 import retrofit2.Response
+import timber.log.Timber
 import javax.inject.Inject
 
 class RecipeRepositoryImpl
@@ -48,27 +53,40 @@ class RecipeRepositoryImpl
         private val imageLoader: ImageLoader,
         @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
         private val preferencesManager: PreferencesManager,
-        private val recipePreviewsByCategoryStore: RecipePreviewsByCategoryStore,
         private val recipePreviewsStore: RecipePreviewsStore,
         private val recipeStore: RecipeStore,
-        private val categoriesStore: CategoriesStore,
     ) : BaseRepository(),
         RecipeRepository {
-        override fun getRecipePreviewsFlow(): Flow<StoreReadResponse<List<RecipePreviewDto>>> =
+        private val webDavUserIdMutex = Mutex()
+
+        /** Account key to WebDAV user id, see [getWebDavUserId]. */
+        private var cachedWebDavUserId: Pair<String, String>? = null
+
+        override fun getRecipePreviewsFlow(): Flow<DataResult<List<RecipePreview>>> =
+            recipePreviewDtosFlow().asDataResult { previews -> previews.orEmpty().map { it.toRecipePreview() } }
+
+        /**
+         * Recipes of a single category are filtered out of the full preview list instead of being
+         * fetched separately. `GET /recipes` already returns every preview together with its
+         * category, so a dedicated request would only duplicate data that is cached locally anyway.
+         */
+        override fun getRecipePreviewsByCategory(categoryName: String): Flow<DataResult<List<RecipePreview>>> =
+            recipePreviewDtosFlow().asDataResult { previews ->
+                previews
+                    .orEmpty()
+                    .filter { it.categoryOrUncategorized == categoryName }
+                    .map { it.toRecipePreview() }
+            }
+
+        override fun getRecipeFlow(id: String): Flow<DataResult<Recipe>> =
+            recipeStore
+                .stream(StoreReadRequest.cached(key = id, refresh = false))
+                // A missing row means the recipe was deleted between the fetcher's write and this
+                // read; there is nothing to show, so leave the previous state alone.
+                .asDataResult { dto -> dto?.toRecipe() }
+
+        private fun recipePreviewDtosFlow(): Flow<StoreReadResponse<List<RecipePreviewDto>>> =
             recipePreviewsStore.stream(StoreReadRequest.cached(key = Unit, refresh = false))
-
-        override fun getRecipePreviewsByCategory(categoryName: String): Flow<StoreReadResponse<List<RecipePreviewDto>>> =
-            recipePreviewsByCategoryStore.stream(
-                StoreReadRequest.cached(
-                    key = categoryName,
-                    refresh = false,
-                ),
-            )
-
-        override fun getRecipeFlow(id: String): Flow<StoreReadResponse<RecipeDto>> =
-            recipeStore.stream(
-                StoreReadRequest.cached(key = id, refresh = false),
-            )
 
         override suspend fun getRecipe(id: String): RecipeDto = recipeStore.get(id)
 
@@ -87,8 +105,10 @@ class RecipeRepositoryImpl
 
                 try {
                     val id = api.createRecipe(recipe = recipe)
-                    refreshCaches(id = id, categoryName = recipe.recipeCategory)
+                    refreshCaches(id = id)
                     Resource.Success(data = id)
+                } catch (e: CancellationException) {
+                    throw e
                 } catch (e: Exception) {
                     handle409ConflictError(e, recipe.name) ?: handleResponseError(e.fillInStackTrace())
                 }
@@ -117,7 +137,7 @@ class RecipeRepositoryImpl
                     if (api == null) {
                         return@withContext Resource.Error(message = UiText.StringResource(R.string.error_api_not_initialized))
                     }
-                    val userId = getWebDavUserId(fallback = ncAccount.username)
+                    val userId = getWebDavUserId(account = ncAccount)
                     val uploadFolderUrl =
                         ncAccount.toWebDavUrl(
                             userId = userId,
@@ -139,6 +159,8 @@ class RecipeRepositoryImpl
                         return@withContext handleUploadError(putResponse)
                     }
                     Resource.Success(data = "/$uploadFolderName/${image.fileName}")
+                } catch (e: CancellationException) {
+                    throw e
                 } catch (e: Exception) {
                     handleResponseError(e.fillInStackTrace())
                 }
@@ -158,34 +180,28 @@ class RecipeRepositoryImpl
                     if (recipe.image != currentRecipe.image && !recipe.imageUrl.isNullOrBlank()) {
                         refreshImageCache(cacheKey = recipe.imageUrl)
 
-                        getRecipePreviewsFlow()
+                        recipePreviewDtosFlow()
                             .first()
                             .dataOrNull()
-                            ?.firstOrNull { it.id == recipe.id }
+                            ?.firstOrNull { it.idOrNull == recipe.id }
                             ?.imageUrl
                             ?.let { imageUrl ->
                                 refreshImageCache(cacheKey = imageUrl)
                             }
                     }
 
-                    refreshCaches(id = recipe.id, categoryName = recipe.recipeCategory)
-
-                    if (currentRecipe.recipeCategory != recipe.recipeCategory) {
-                        recipePreviewsByCategoryStore.fresh(currentRecipe.recipeCategory)
-                        categoriesStore.fresh(Unit)
-                    }
+                    refreshCaches(id = recipe.id)
 
                     Resource.Success(Unit)
+                } catch (e: CancellationException) {
+                    throw e
                 } catch (e: Exception) {
                     handle409ConflictError(e, recipe.name) ?: handleResponseError(e.fillInStackTrace())
                 }
             }
         }
 
-        override suspend fun deleteRecipe(
-            id: String,
-            categoryName: String,
-        ): SimpleResource {
+        override suspend fun deleteRecipe(id: String): SimpleResource {
             return withContext(ioDispatcher) {
                 val api =
                     apiProvider.getApi()
@@ -193,7 +209,7 @@ class RecipeRepositoryImpl
 
                 when (val response = api.deleteRecipe(id)) {
                     is NetworkResponse.Success -> {
-                        refreshCaches(id = id, categoryName = categoryName, deleted = true)
+                        refreshCaches(id = id, deleted = true)
                         Resource.Success(Unit)
                     }
 
@@ -212,7 +228,7 @@ class RecipeRepositoryImpl
 
                 when (val response = api.importRecipe(url = url)) {
                     is NetworkResponse.Success -> {
-                        refreshCaches(id = response.body.id, categoryName = response.body.recipeCategory)
+                        refreshCaches(id = response.body.id)
                         Resource.Success(response.body)
                     }
 
@@ -228,10 +244,29 @@ class RecipeRepositoryImpl
             imageLoader.diskCache?.remove(cacheKey)
         }
 
-        private suspend fun getWebDavUserId(fallback: String): String =
-            when (val response = apiProvider.getApi()?.getCurrentUser()) {
-                is NetworkResponse.Success -> response.body.ocs.data.id
-                else -> fallback
+        /**
+         * Resolves the WebDAV user id of [account], remembering it for subsequent uploads instead
+         * of asking the server again for every image.
+         *
+         * Only a successful lookup is cached. Falling back to the account's username is a guess, so
+         * caching it would pin a possibly wrong id for the rest of the session after one transient
+         * failure. The cache is keyed on the account, so switching accounts invalidates it.
+         */
+        private suspend fun getWebDavUserId(account: NcAccount): String =
+            webDavUserIdMutex.withLock {
+                val accountKey = "${account.url}|${account.username}"
+                cachedWebDavUserId?.let { (cachedKey, cachedUserId) ->
+                    if (cachedKey == accountKey) return@withLock cachedUserId
+                }
+
+                when (val response = apiProvider.getApi()?.getCurrentUser()) {
+                    is NetworkResponse.Success ->
+                        response.body.ocs.data.id.also {
+                            cachedWebDavUserId = accountKey to it
+                        }
+
+                    else -> account.username
+                }
             }
 
         private fun NcAccount.toWebDavUrl(
@@ -270,21 +305,34 @@ class RecipeRepositoryImpl
 
         private fun <T> handleUploadError(response: Response<*>): Resource.Error<T> = handleResponseError(t = null, code = response.code())
 
-        @OptIn(ExperimentalStoreApi::class)
+        /**
+         * Refreshes every cache a recipe mutation can invalidate. Refreshing the previews also
+         * updates the category list and its counts, since both are derived from the previews.
+         *
+         * Best effort by design: the server has already accepted the mutation by the time this
+         * runs, so a failure here must not be reported as a failed create, update or delete. A
+         * stale cache is corrected by the next sync; a spurious error is not.
+         *
+         * The local eviction runs first for the same reason — it cannot fail on the network, so
+         * doing it up front keeps a deleted recipe out of the cache even if the refresh below
+         * never lands.
+         */
         private suspend fun refreshCaches(
             id: String,
-            categoryName: String,
             deleted: Boolean = false,
         ) {
-            if (categoryName.isNotBlank()) {
-                recipePreviewsByCategoryStore.fresh(categoryName)
-            }
-            recipePreviewsStore.fresh(Unit)
-            if (deleted) {
-                // FIXME: Only clear specific recipe. Something like recipeStore.clear(key = id)
-                recipeStore.clear()
-            } else if (id != emptyRecipeDto().id) {
-                recipeStore.fresh(id)
+            try {
+                if (deleted) {
+                    recipeStore.clear(id)
+                }
+                recipePreviewsStore.fresh(Unit)
+                if (!deleted && id != emptyRecipeDto().id) {
+                    recipeStore.fresh(id)
+                }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Timber.w(e, "Failed to refresh caches after mutating recipe $id")
             }
         }
 

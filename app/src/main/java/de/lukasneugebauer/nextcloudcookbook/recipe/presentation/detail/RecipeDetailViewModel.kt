@@ -6,14 +6,14 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
+import de.lukasneugebauer.nextcloudcookbook.core.util.DataResult
 import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
-import de.lukasneugebauer.nextcloudcookbook.core.util.asUiText
-import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipePreviewDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.RecipeFormatter
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.YieldCalculator
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Ingredient
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Recipe
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipePreview
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.repository.RecipeRepository
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.RecipeDetailState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,7 +24,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.mobilenativefoundation.store.store5.StoreReadResponse
 import javax.inject.Inject
 
 @HiltViewModel
@@ -58,23 +57,20 @@ class RecipeDetailViewModel
                 preferencesManager.preferencesFlow.map { it.isShowIngredientSyntaxIndicator },
                 recipeRepository.getRecipeFlow(id),
                 recipeRepository.getRecipePreviewsFlow(),
-            ) { isShowIngredientSyntaxIndicator, recipeResponse, recipePreviewsResponse ->
-                val recipePreviewDtos =
-                    when (recipePreviewsResponse) {
-                        is StoreReadResponse.Data -> recipePreviewsResponse.dataOrNull()
-                        else -> null
-                    }
-                Triple(isShowIngredientSyntaxIndicator, recipeResponse, recipePreviewDtos)
-            }.onEach { (isShowIngredientSyntaxIndicator, recipeResponse, recipePreviewDtos) ->
-                when (recipeResponse) {
-                    is StoreReadResponse.Loading ->
+            ) { isShowIngredientSyntaxIndicator, recipeResult, recipePreviewsResult ->
+                val recipePreviews = (recipePreviewsResult as? DataResult.Success)?.data
+                Triple(isShowIngredientSyntaxIndicator, recipeResult, recipePreviews)
+            }.onEach { (isShowIngredientSyntaxIndicator, recipeResult, recipePreviews) ->
+                when (recipeResult) {
+                    is DataResult.Loading ->
                         _state.value =
                             _state.value.copy(
                                 loading = true,
                                 isShowIngredientSyntaxIndicator = isShowIngredientSyntaxIndicator,
                             )
-                    is StoreReadResponse.Data -> {
-                        val recipe = enrichRecipeLinks(recipeResponse.value.toRecipe(), recipePreviewDtos)
+
+                    is DataResult.Success -> {
+                        val recipe = enrichRecipeLinks(recipeResult.data, recipePreviews)
                         _state.value =
                             _state.value.copy(
                                 calculatedIngredients =
@@ -90,24 +86,10 @@ class RecipeDetailViewModel
                             )
                     }
 
-                    is StoreReadResponse.NoNewData ->
+                    is DataResult.Error ->
                         _state.value =
                             _state.value.copy(
-                                loading = false,
-                                isShowIngredientSyntaxIndicator = isShowIngredientSyntaxIndicator,
-                            )
-                    is StoreReadResponse.Error.Exception ->
-                        _state.value =
-                            _state.value.copy(
-                                error = recipeResponse.errorMessageOrNull()?.asUiText(),
-                                loading = false,
-                                isShowIngredientSyntaxIndicator = isShowIngredientSyntaxIndicator,
-                            )
-
-                    is StoreReadResponse.Error.Message ->
-                        _state.value =
-                            _state.value.copy(
-                                error = recipeResponse.message.asUiText(),
+                                error = recipeResult.message,
                                 loading = false,
                                 isShowIngredientSyntaxIndicator = isShowIngredientSyntaxIndicator,
                             )
@@ -160,12 +142,9 @@ class RecipeDetailViewModel
             return ""
         }
 
-        fun deleteRecipe(
-            id: String,
-            categoryName: String,
-        ) {
+        fun deleteRecipe(id: String) {
             viewModelScope.launch {
-                when (val deleteRecipeResource = recipeRepository.deleteRecipe(id, categoryName)) {
+                when (val deleteRecipeResource = recipeRepository.deleteRecipe(id)) {
                     is Resource.Success -> {
                         _state.value = _state.value.copy(deleted = true)
                     }
@@ -190,20 +169,20 @@ class RecipeDetailViewModel
 
         private fun enrichRecipeLinks(
             recipe: Recipe,
-            recipePreviewDtos: List<RecipePreviewDto>?,
+            recipePreviews: List<RecipePreview>?,
         ): Recipe {
             fun replace(text: String): String =
                 RECIPE_URL_REGEX.replace(text) { matchResult ->
                     val (shortId, fullId) = matchResult.destructured
 
                     if (shortId.isNotBlank()) {
-                        val recipePreviewDto =
-                            recipePreviewDtos?.firstOrNull { recipePreviewDto ->
-                                recipePreviewDto.id == shortId
+                        val recipePreview =
+                            recipePreviews?.firstOrNull { recipePreview ->
+                                recipePreview.id == shortId
                             }
 
-                        if (recipePreviewDto?.name?.isNotBlank() == true) {
-                            "[${recipePreviewDto.name} (#r/$shortId)](nccookbook://lneugebauer.github.io/recipe/$shortId)"
+                        if (recipePreview?.name?.isNotBlank() == true) {
+                            "[${recipePreview.name} (#r/$shortId)](nccookbook://lneugebauer.github.io/recipe/$shortId)"
                         } else {
                             "[#r/$shortId](nccookbook://lneugebauer.github.io/recipe/$shortId)"
                         }

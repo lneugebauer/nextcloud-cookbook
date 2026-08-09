@@ -184,10 +184,7 @@ fun AnimatedVisibilityScope.RecipeDetailScreen(
         },
         onDeleteClick = {
             if (recipe.isNotEmpty()) {
-                viewModel.deleteRecipe(
-                    recipe.id,
-                    recipe.category,
-                )
+                viewModel.deleteRecipe(recipe.id)
             }
         },
         shareText = viewModel.getShareText(),

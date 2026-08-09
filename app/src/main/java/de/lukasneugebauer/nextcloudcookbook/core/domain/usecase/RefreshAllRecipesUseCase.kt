@@ -1,6 +1,5 @@
 package de.lukasneugebauer.nextcloudcookbook.core.domain.usecase
 
-import de.lukasneugebauer.nextcloudcookbook.di.RecipePreviewsByCategoryStore
 import de.lukasneugebauer.nextcloudcookbook.di.RecipePreviewsStore
 import de.lukasneugebauer.nextcloudcookbook.di.RecipeStore
 import org.mobilenativefoundation.store.store5.ExperimentalStoreApi
@@ -10,7 +9,6 @@ import javax.inject.Inject
 class RefreshAllRecipesUseCase
     @Inject
     constructor(
-        private val recipePreviewsByCategoryStore: RecipePreviewsByCategoryStore,
         private val recipePreviewsStore: RecipePreviewsStore,
         private val recipeStore: RecipeStore,
     ) {
@@ -18,7 +16,6 @@ class RefreshAllRecipesUseCase
         suspend operator fun invoke() {
             // Clear stores so that previously cached data is discarded
             listOf(
-                recipePreviewsByCategoryStore,
                 recipePreviewsStore,
                 recipeStore,
             ).forEach { store ->

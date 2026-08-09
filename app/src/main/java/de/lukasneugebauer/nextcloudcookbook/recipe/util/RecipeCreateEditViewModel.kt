@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.category.domain.model.Category
 import de.lukasneugebauer.nextcloudcookbook.category.domain.repository.CategoryRepository
+import de.lukasneugebauer.nextcloudcookbook.core.util.DataResult
 import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.NutritionDto
@@ -18,6 +19,7 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.ifSuccess
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.usecase.GetAllKeywordsUseCase
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.util.ImageCompressionService
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.RecipeConstants.DEFAULT_YIELD
+import de.lukasneugebauer.nextcloudcookbook.recipe.util.RecipeConstants.UNCATEGORIZED_RECIPE
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
@@ -26,7 +28,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import org.mobilenativefoundation.store.store5.StoreReadResponse
 import timber.log.Timber
 import java.lang.UnsupportedOperationException
 import java.util.Collections
@@ -51,59 +52,19 @@ abstract class RecipeCreateEditViewModel(
     private var categories: List<Category> = emptyList()
         set(value) {
             field = value
-            _uiState.update { currentState ->
-                val imageUploading = (currentState as? RecipeCreateEditState.Success)?.isImageUploading ?: false
-                val imageUploadError = (currentState as? RecipeCreateEditState.Success)?.imageUploadError
-                RecipeCreateEditState.Success(
-                    recipe = recipeDto.toRecipe(),
-                    prepTime = prepTime,
-                    cookTime = cookTime,
-                    totalTime = totalTime,
-                    categories = categories,
-                    keywords = keywords,
-                    isImageUploading = imageUploading,
-                    imageUploadError = imageUploadError,
-                )
-            }
+            showForm()
         }
 
     protected var keywords: Set<String> = emptySet()
         set(value) {
             field = value
-            _uiState.update { currentState ->
-                val imageUploading = (currentState as? RecipeCreateEditState.Success)?.isImageUploading ?: false
-                val imageUploadError = (currentState as? RecipeCreateEditState.Success)?.imageUploadError
-                RecipeCreateEditState.Success(
-                    recipe = recipeDto.toRecipe(),
-                    prepTime = prepTime,
-                    cookTime = cookTime,
-                    totalTime = totalTime,
-                    categories = categories,
-                    keywords = keywords,
-                    isImageUploading = imageUploading,
-                    imageUploadError = imageUploadError,
-                )
-            }
+            showForm()
         }
 
     protected var recipeDto: RecipeDto = emptyRecipeDto()
         set(value) {
             field = value
-            val recipe = recipeDto.toRecipe()
-            _uiState.update { currentState ->
-                val imageUploading = (currentState as? RecipeCreateEditState.Success)?.isImageUploading ?: false
-                val imageUploadError = (currentState as? RecipeCreateEditState.Success)?.imageUploadError
-                RecipeCreateEditState.Success(
-                    recipe = recipe,
-                    prepTime = prepTime,
-                    cookTime = cookTime,
-                    totalTime = totalTime,
-                    categories = categories,
-                    keywords = keywords,
-                    isImageUploading = imageUploading,
-                    imageUploadError = imageUploadError,
-                )
-            }
+            showForm()
         }
 
     init {
@@ -129,6 +90,29 @@ abstract class RecipeCreateEditViewModel(
             categories = categories,
             keywords = keywords,
         )
+
+    /**
+     * Rebuilds the form from the current field values, but only while the form is the thing on
+     * screen. The picker's categories are fetched from the server, so their emission can land
+     * after a save has already set [RecipeCreateEditState.Updated] or [RecipeCreateEditState.Error],
+     * or while the save is still running ([RecipeCreateEditState.Saving]); overwriting those would
+     * swallow the navigation back, the error message, or let the recipe be submitted twice. The
+     * fields themselves are always up to date, so [restoreSuccessState] picks the new values up.
+     */
+    private fun showForm() {
+        _uiState.update { currentState ->
+            when (currentState) {
+                RecipeCreateEditState.Loading -> createSuccessState()
+                is RecipeCreateEditState.Success ->
+                    createSuccessState().copy(
+                        isImageUploading = currentState.isImageUploading,
+                        imageUploadError = currentState.imageUploadError,
+                    )
+
+                else -> currentState
+            }
+        }
+    }
 
     private fun updateUploadState(
         isUploading: Boolean,
@@ -495,17 +479,21 @@ abstract class RecipeCreateEditViewModel(
         }
     }
 
+    /**
+     * Loads the categories offered by the picker from the server rather than from the cached
+     * previews, so a category created on another device can be picked here too.
+     *
+     * Deliberately not filtered by `recipeCount`: the count comes straight from `/categories`
+     * and a freshly created category can be reported as empty, which would hide exactly the
+     * categories this fetch exists to surface.
+     */
     private fun getCategories() {
         categoryRepository
-            .getCategories()
-            .onEach { categoriesResponse ->
-                when (categoriesResponse) {
-                    is StoreReadResponse.Data ->
-                        categories =
-                            categoriesResponse.value
-                                .filter { it.recipeCount > 0 }
-                                .filter { it.name != "*" }
-                                .map { it.toCategory() }
+            .getRemoteCategories()
+            .onEach { categoriesResult ->
+                when (categoriesResult) {
+                    is DataResult.Success ->
+                        categories = categoriesResult.data.filter { it.name != UNCATEGORIZED_RECIPE }
 
                     else -> Unit
                 }

@@ -44,7 +44,9 @@ object CategoryModule {
                     SourceOfTruth.of<Any, List<CategoryDto>, List<CategoryDto>>(
                         reader = { _: Any ->
                             categoryDao.getAll().map { entities ->
-                                entities.map { it.toDto() }
+                                // Store5 reads a non-null value as "cached data exists", so an
+                                // empty table must map to null for the fetcher to run at all.
+                                entities.map { it.toDto() }.takeIf { it.isNotEmpty() }
                             }
                         },
                         writer = { _: Any, dtos: List<CategoryDto> ->
@@ -58,5 +60,8 @@ object CategoryModule {
 
     @Provides
     @Singleton
-    fun provideCategoryRepository(categoriesStore: CategoriesStore): CategoryRepository = CategoryRepositoryImpl(categoriesStore)
+    fun provideCategoryRepository(
+        recipePreviewsStore: RecipePreviewsStore,
+        categoriesStore: CategoriesStore,
+    ): CategoryRepository = CategoryRepositoryImpl(recipePreviewsStore, categoriesStore)
 }

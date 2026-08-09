@@ -61,6 +61,7 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.HomeScreenDataRe
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipePreview
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.HomeScreenState
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.RecipeConstants.MORE_BUTTON_THRESHOLD
+import de.lukasneugebauer.nextcloudcookbook.recipe.util.RecipeConstants.UNCATEGORIZED_RECIPE
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.emptyRecipe
 import kotlinx.coroutines.launch
 
@@ -168,7 +169,12 @@ fun HomeScreen(
                             when (item) {
                                 is HomeScreenDataResult.Row -> {
                                     Headline(
-                                        text = item.headline,
+                                        text =
+                                            if (item.headline == UNCATEGORIZED_RECIPE) {
+                                                stringResource(R.string.recipe_uncategorised)
+                                            } else {
+                                                item.headline
+                                            },
                                         clickable = item.recipes.size > MORE_BUTTON_THRESHOLD,
                                         onClick = { onHeadlineClick.invoke(item.headline) },
                                     )

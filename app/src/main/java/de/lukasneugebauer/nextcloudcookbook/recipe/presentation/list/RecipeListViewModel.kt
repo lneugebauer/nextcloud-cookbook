@@ -6,14 +6,12 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import de.lukasneugebauer.nextcloudcookbook.R
-import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
+import de.lukasneugebauer.nextcloudcookbook.core.util.DataResult
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipeListScreenFlowData
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipeListScreenOrder
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.repository.RecipeRepository
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.RecipeListScreenState
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.SearchAppBarState
-import de.lukasneugebauer.nextcloudcookbook.recipe.util.RecipeConstants.UNCATEGORIZED_RECIPE
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -22,7 +20,6 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.mobilenativefoundation.store.store5.StoreReadResponse
 import timber.log.Timber
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -96,9 +93,8 @@ class RecipeListViewModel
         }
 
         private fun getRecipePreviews() {
-            // Fetch all recipes to list uncategorized recipes.
             val recipePreviewsFlow =
-                if (categoryName == null || categoryName == UNCATEGORIZED_RECIPE) {
+                if (categoryName == null) {
                     recipeRepository.getRecipePreviewsFlow()
                 } else {
                     recipeRepository.getRecipePreviewsByCategory(categoryName)
@@ -109,23 +105,20 @@ class RecipeListViewModel
                 _searchQueryState,
                 _selectedKeywordsState,
                 _orderState,
-            ) { recipePreviewsResponse, query, selectedKeywords, order ->
-                RecipeListScreenFlowData(recipePreviewsResponse, query, selectedKeywords, order)
-            }.onEach { (recipePreviewsResponse, query, selectedKeywords, order) ->
-                when (recipePreviewsResponse) {
-                    is StoreReadResponse.Loading -> _uiState.update { RecipeListScreenState.Initial }
-                    is StoreReadResponse.Data ->
+            ) { recipePreviewsResult, query, selectedKeywords, order ->
+                RecipeListScreenFlowData(recipePreviewsResult, query, selectedKeywords, order)
+            }.onEach { (recipePreviewsResult, query, selectedKeywords, order) ->
+                when (recipePreviewsResult) {
+                    is DataResult.Loading -> _uiState.update { RecipeListScreenState.Initial }
+                    is DataResult.Success ->
                         _uiState.update {
                             val recipePreviews =
-                                recipePreviewsResponse.value
+                                recipePreviewsResult.data
                                     .filter {
-                                        // Custom filter for uncategorized recipes as they can not be directly fetch via API
-                                        if (categoryName == UNCATEGORIZED_RECIPE && it.category != null) return@filter false
-
                                         val inFilter =
                                             selectedKeywords.isEmpty() ||
                                                 selectedKeywords.any { keyword ->
-                                                    it.keywords?.contains(keyword) ?: false
+                                                    it.keywords.contains(keyword)
                                                 }
                                         val inQuery =
                                             query.isBlank() ||
@@ -134,11 +127,10 @@ class RecipeListViewModel
                                                     .contains(query.lowercase())
 
                                         inFilter && inQuery
-                                    }.map { it.toRecipePreview() }
+                                    }
 
                             val keywords =
-                                recipePreviewsResponse.value
-                                    .map { it.toRecipePreview() }
+                                recipePreviewsResult.data
                                     .flatMap { it.keywords }
                                     .toSortedSet()
 
@@ -217,15 +209,7 @@ class RecipeListViewModel
                             )
                         }
 
-                    is StoreReadResponse.NoNewData -> Unit
-                    is StoreReadResponse.Error -> {
-                        val message =
-                            recipePreviewsResponse
-                                .errorMessageOrNull()
-                                ?.let { UiText.DynamicString(it) }
-                                ?: run { UiText.StringResource(R.string.error_unknown) }
-                        _uiState.update { RecipeListScreenState.Error(message) }
-                    }
+                    is DataResult.Error -> _uiState.update { RecipeListScreenState.Error(recipePreviewsResult.message) }
                 }
             }.launchIn(viewModelScope)
         }
