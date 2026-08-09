@@ -22,7 +22,6 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.domain.RecipeFormatter
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.YieldCalculator
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.dao.RecipeDao
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.dao.RecipePreviewDao
-import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipeEntity
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.repository.RecipeRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -93,13 +92,7 @@ object RecipeModule {
                             }
                         },
                         writer = { _: String, dto: RecipeDto ->
-                            recipeDao.upsert(
-                                RecipeEntity(
-                                    id = dto.id,
-                                    json = gson.toJson(dto),
-                                    dateModified = dto.dateModified,
-                                ),
-                            )
+                            recipeDao.upsertJson(id = dto.id, json = gson.toJson(dto))
                         },
                         delete = { id: String -> recipeDao.deleteById(id) },
                         deleteAll = { recipeDao.deleteAll() },

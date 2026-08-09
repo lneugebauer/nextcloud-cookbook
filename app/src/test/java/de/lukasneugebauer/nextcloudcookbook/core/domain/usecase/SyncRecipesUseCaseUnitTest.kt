@@ -115,6 +115,39 @@ class SyncRecipesUseCaseUnitTest {
         }
     }
 
+    /**
+     * The marker has to be the value the next sync will compare against — the preview's
+     * `dateModified`, not the fetched recipe's. The two endpoints report the field differently,
+     * and storing the recipe's own value is what made every recipe look changed on every sync.
+     */
+    @Test
+    fun invoke_AfterFetching_RecordsThePreviewsDateModified() {
+        runBlocking {
+            stubPreviews(preview(id = "1", dateModified = "t1-new"))
+            stubCache(RecipeSyncState("1", "t1"))
+            stubRecipeFetch(emptyRecipeDto().copy(id = "1", dateModified = "a totally different format"))
+
+            useCase()
+
+            verify(recipeDao).markSynced(id = "1", dateModified = "t1-new")
+        }
+    }
+
+    /** A transient failure must not pin a marker, or the recipe would never be retried. */
+    @Test
+    fun invoke_WhenFetchFails_DoesNotRecordTheMarker() {
+        runBlocking {
+            stubPreviews(preview(id = "1", dateModified = "t1-new"))
+            stubCache(RecipeSyncState("1", "t1"))
+            whenever(recipeStore.stream(any())).thenThrow(RuntimeException("boom"))
+
+            val result = useCase()
+
+            verify(recipeDao, never()).markSynced(any(), any())
+            assertTrue(result.hadFailures)
+        }
+    }
+
     @Test
     fun invoke_WhenOneFetchFails_StillFetchesTheRestAndReportsFailure() {
         runBlocking {

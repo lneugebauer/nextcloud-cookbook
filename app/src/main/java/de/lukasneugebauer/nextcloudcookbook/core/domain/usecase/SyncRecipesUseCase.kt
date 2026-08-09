@@ -28,7 +28,7 @@ class SyncRecipesUseCase
                     .fresh(Unit)
                     .mapNotNull { preview -> preview.idOrNull?.let { it to preview } }
                     .toMap()
-            val cached = recipeDao.getSyncStates().associate { it.id to it.dateModified }
+            val cached = recipeDao.getSyncStates().associate { it.id to it.syncedDateModified }
 
             // Recipes that vanished from the preview list no longer exist on the server.
             // clear(key) drops the in-memory entry too, which deleting the row would not.
@@ -36,20 +36,25 @@ class SyncRecipesUseCase
                 recipeStore.clear(id)
             }
 
-            var hadFailures = false
-            previewsById
-                .filter { (id, preview) -> needsFetch(id = id, cached = cached, dateModified = preview.dateModified) }
-                .keys
-                .forEach { id ->
-                    try {
-                        recipeStore.fresh(id)
-                    } catch (e: CancellationException) {
-                        throw e
-                    } catch (e: Exception) {
-                        hadFailures = true
-                        Timber.w(e, "Failed to sync recipe $id")
-                    }
+            val outdated =
+                previewsById.filter { (id, preview) ->
+                    needsFetch(id = id, cached = cached, dateModified = preview.dateModified)
                 }
+            Timber.d("Syncing ${outdated.size} of ${previewsById.size} recipes")
+
+            var hadFailures = false
+            outdated.forEach { (id, preview) ->
+                try {
+                    recipeStore.fresh(id)
+                    // Record what we compared against, not the fetched recipe's own dateModified.
+                    recipeDao.markSynced(id = id, dateModified = preview.dateModified)
+                } catch (e: CancellationException) {
+                    throw e
+                } catch (e: Exception) {
+                    hadFailures = true
+                    Timber.w(e, "Failed to sync recipe $id")
+                }
+            }
 
             return Result(hadFailures = hadFailures)
         }
