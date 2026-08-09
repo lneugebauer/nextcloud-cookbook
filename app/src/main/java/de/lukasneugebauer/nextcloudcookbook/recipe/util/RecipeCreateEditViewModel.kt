@@ -52,59 +52,19 @@ abstract class RecipeCreateEditViewModel(
     private var categories: List<Category> = emptyList()
         set(value) {
             field = value
-            _uiState.update { currentState ->
-                val imageUploading = (currentState as? RecipeCreateEditState.Success)?.isImageUploading ?: false
-                val imageUploadError = (currentState as? RecipeCreateEditState.Success)?.imageUploadError
-                RecipeCreateEditState.Success(
-                    recipe = recipeDto.toRecipe(),
-                    prepTime = prepTime,
-                    cookTime = cookTime,
-                    totalTime = totalTime,
-                    categories = categories,
-                    keywords = keywords,
-                    isImageUploading = imageUploading,
-                    imageUploadError = imageUploadError,
-                )
-            }
+            showForm()
         }
 
     protected var keywords: Set<String> = emptySet()
         set(value) {
             field = value
-            _uiState.update { currentState ->
-                val imageUploading = (currentState as? RecipeCreateEditState.Success)?.isImageUploading ?: false
-                val imageUploadError = (currentState as? RecipeCreateEditState.Success)?.imageUploadError
-                RecipeCreateEditState.Success(
-                    recipe = recipeDto.toRecipe(),
-                    prepTime = prepTime,
-                    cookTime = cookTime,
-                    totalTime = totalTime,
-                    categories = categories,
-                    keywords = keywords,
-                    isImageUploading = imageUploading,
-                    imageUploadError = imageUploadError,
-                )
-            }
+            showForm()
         }
 
     protected var recipeDto: RecipeDto = emptyRecipeDto()
         set(value) {
             field = value
-            val recipe = recipeDto.toRecipe()
-            _uiState.update { currentState ->
-                val imageUploading = (currentState as? RecipeCreateEditState.Success)?.isImageUploading ?: false
-                val imageUploadError = (currentState as? RecipeCreateEditState.Success)?.imageUploadError
-                RecipeCreateEditState.Success(
-                    recipe = recipe,
-                    prepTime = prepTime,
-                    cookTime = cookTime,
-                    totalTime = totalTime,
-                    categories = categories,
-                    keywords = keywords,
-                    isImageUploading = imageUploading,
-                    imageUploadError = imageUploadError,
-                )
-            }
+            showForm()
         }
 
     init {
@@ -130,6 +90,28 @@ abstract class RecipeCreateEditViewModel(
             categories = categories,
             keywords = keywords,
         )
+
+    /**
+     * Rebuilds the form from the current field values, but only while the form is the thing on
+     * screen. The picker's categories are fetched from the server, so their emission can land
+     * after a save has already set [RecipeCreateEditState.Updated] or [RecipeCreateEditState.Error];
+     * overwriting those would swallow the navigation back and the error message. The fields
+     * themselves are always up to date, so [restoreSuccessState] picks the new values up.
+     */
+    private fun showForm() {
+        _uiState.update { currentState ->
+            when (currentState) {
+                RecipeCreateEditState.Loading -> createSuccessState()
+                is RecipeCreateEditState.Success ->
+                    createSuccessState().copy(
+                        isImageUploading = currentState.isImageUploading,
+                        imageUploadError = currentState.imageUploadError,
+                    )
+
+                else -> currentState
+            }
+        }
+    }
 
     private fun updateUploadState(
         isUploading: Boolean,
