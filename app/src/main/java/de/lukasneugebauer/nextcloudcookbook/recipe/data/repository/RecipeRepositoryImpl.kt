@@ -34,6 +34,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.CancellationException
+import timber.log.Timber
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.MediaType.Companion.toMediaType
@@ -108,8 +110,8 @@ class RecipeRepositoryImpl
                     val id = api.createRecipe(recipe = recipe)
                     refreshCaches(id = id)
                     Resource.Success(data = id)
-                } catch (e: CancellationException) {
-                    throw e
+                } catch (ce: CancellationException) {
+                    throw ce
                 } catch (e: Exception) {
                     handle409ConflictError(e, recipe.name) ?: handleResponseError(e.fillInStackTrace())
                 }
@@ -160,8 +162,8 @@ class RecipeRepositoryImpl
                         return@withContext handleUploadError(putResponse)
                     }
                     Resource.Success(data = "/$uploadFolderName/${image.fileName}")
-                } catch (e: CancellationException) {
-                    throw e
+                } catch (ce: CancellationException) {
+                    throw ce
                 } catch (e: Exception) {
                     handleResponseError(e.fillInStackTrace())
                 }
@@ -193,8 +195,8 @@ class RecipeRepositoryImpl
                     refreshCaches(id = recipe.id)
 
                     Resource.Success(Unit)
-                } catch (e: CancellationException) {
-                    throw e
+                } catch (ce: CancellationException) {
+                    throw ce
                 } catch (e: Exception) {
                     handle409ConflictError(e, recipe.name) ?: handleResponseError(e.fillInStackTrace())
                 }
