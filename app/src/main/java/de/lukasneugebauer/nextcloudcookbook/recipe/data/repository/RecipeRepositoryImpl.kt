@@ -19,6 +19,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.util.addSuffix
 import de.lukasneugebauer.nextcloudcookbook.di.RecipePreviewsStore
 import de.lukasneugebauer.nextcloudcookbook.di.RecipeStore
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.ImportUrlDto
+import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipeConflictDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipeDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipePreviewDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Recipe
@@ -288,11 +289,12 @@ class RecipeRepositoryImpl
         }
 
         /**
-         * Returns a [Resource.Error] with a user-friendly message when [e] is an HTTP 409 (Conflict),
-         * indicating a recipe with the given [name] already exists. Returns `null` for any other exception
-         * so the caller can fall through to the standard error handling.
+         * Returns a [Resource.Error] when [e] is an HTTP 409 (Conflict), indicating a recipe with
+         * the given [name] already exists. Returns `null` for any other exception so the caller can
+         * fall through to the standard error handling.
          *
-         * Includes existing recipe ID as argument if found in local recipe previews cache.
+         * Conflict details are attached via [Resource.Error.errorData] as a [RecipeConflictDto],
+         * including the conflicting recipe's ID if it was found in the local previews cache.
          */
         private suspend fun <T> handle409ConflictError(
             e: Exception,

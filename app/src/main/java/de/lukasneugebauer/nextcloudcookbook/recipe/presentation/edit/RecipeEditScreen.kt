@@ -191,7 +191,6 @@ fun AnimatedVisibilityScope.RecipeEditScreen(
         is RecipeCreateEditState.Updated -> resultNavigator.navigateBack(true)
         is RecipeCreateEditState.Error -> {
             val text = (uiState as RecipeCreateEditState.Error).error.asString()
-            val context = LocalContext.current
 
             // Show error as a toast and restore the form UI so the user can correct inputs.
             LaunchedEffect(text) {

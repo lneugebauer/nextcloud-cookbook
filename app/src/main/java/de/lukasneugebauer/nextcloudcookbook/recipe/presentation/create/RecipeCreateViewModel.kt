@@ -7,6 +7,7 @@ import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.category.domain.repository.CategoryRepository
 import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
+import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipeConflictDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.repository.RecipeRepository
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.RecipeCreateEditState
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.ifSuccess
@@ -43,16 +44,9 @@ class RecipeCreateViewModel
                         val recipeId = result.data
                         _uiState.update { RecipeCreateEditState.Updated(recipeId) }
                     } else {
-                        val messageRes = result.message as? UiText.StringResource
-                        if (messageRes?.resId == R.string.error_recipe_exists) {
-                            val idArg = messageRes.args.getOrNull(0) as? String
-                            val nameArg = messageRes.args.getOrNull(1) as? String
-                            if (nameArg != null && idArg != null) {
-                                handleConflict(name = nameArg, id = idArg)
-                            } else {
-                                val name = (messageRes.args.getOrNull(0) as? String) ?: recipeDto.name
-                                handleConflict(name = name, id = null)
-                            }
+                        val conflict = result.data as? RecipeConflictDto
+                        if (conflict != null) {
+                            handleConflict(name = conflict.name, id = conflict.id)
                         } else {
                             _uiState.update {
                                 RecipeCreateEditState.Error(
