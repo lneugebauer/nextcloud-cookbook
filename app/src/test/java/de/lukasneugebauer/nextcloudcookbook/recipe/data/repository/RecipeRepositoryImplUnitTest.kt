@@ -78,14 +78,14 @@ class RecipeRepositoryImplUnitTest {
         MockitoAnnotations.openMocks(this)
         ioDispatcher = Dispatchers.Unconfined // Use Unconfined for synchronous test execution
         recipeStore = mockRecipeStore()
-        recipePreviewsStore = mockRecipePreviewsStore()
         repository =
             RecipeRepositoryImpl(
                 apiProvider = apiProvider,
                 imageLoader = imageLoader,
                 ioDispatcher = ioDispatcher,
                 preferencesManager = preferencesManager,
-                recipePreviewsStore = recipePreviewsStore,
+                recipePreviewsByCategoryStore = mockRecipePreviewsByCategoryStore(),
+                recipePreviewsStore = mockRecipePreviewsStore(),
                 recipeStore = recipeStore,
             )
     }

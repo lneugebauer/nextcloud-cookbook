@@ -131,6 +131,7 @@ fun CreateEditRecipeForm(
     onAddInstruction: () -> Unit,
     onSwapInstruction: (fromIndex: Int, toIndex: Int) -> Unit,
     onSaveClick: () -> Unit,
+    snackbarHost: @Composable () -> Unit = {},
 ) {
     val context = LocalContext.current
     val scrollState = rememberScrollState()
@@ -175,6 +176,7 @@ fun CreateEditRecipeForm(
                 onSaveClick = onSaveClick,
             )
         },
+        snackbarHost = snackbarHost,
     ) { innerPadding ->
         Column(
             modifier =

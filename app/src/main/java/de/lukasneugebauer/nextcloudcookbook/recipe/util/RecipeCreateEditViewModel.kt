@@ -523,6 +523,21 @@ abstract class RecipeCreateEditViewModel(
         }
     }
 
+    private val _conflict = MutableStateFlow<ConflictInfo?>(null)
+    val conflict: StateFlow<ConflictInfo?> = _conflict
+
+    fun handleConflict(
+        name: String,
+        id: String?,
+    ) {
+        _conflict.value = ConflictInfo(name = name, conflictingRecipeId = id)
+        restoreSuccessState()
+    }
+
+    fun dismissConflict() {
+        _conflict.value = null
+    }
+
     /**
      * Re-emit the current success UI state so the form becomes visible again.
      * Used by the UI to recover from transient Error states after showing a toast.
@@ -531,3 +546,8 @@ abstract class RecipeCreateEditViewModel(
         _uiState.update { createSuccessState() }
     }
 }
+
+data class ConflictInfo(
+    val name: String,
+    val conflictingRecipeId: String?,
+)

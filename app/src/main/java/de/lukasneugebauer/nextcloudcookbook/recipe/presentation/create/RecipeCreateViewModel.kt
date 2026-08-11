@@ -35,17 +35,30 @@ class RecipeCreateViewModel
         ) {
         override fun save() {
             _uiState.value.ifSuccess {
-                _uiState.update { RecipeCreateEditState.Saving }
+                dismissConflict()
+                _uiState.update { RecipeCreateEditState.Loading }
                 viewModelScope.launch {
                     val result = recipeRepository.createRecipe(recipeDto)
-                    _uiState.update {
-                        if (result is Resource.Success && result.data != null) {
-                            val recipeId = result.data
-                            RecipeCreateEditState.Updated(recipeId)
+                    if (result is Resource.Success && result.data != null) {
+                        val recipeId = result.data
+                        _uiState.update { RecipeCreateEditState.Updated(recipeId) }
+                    } else {
+                        val messageRes = result.message as? UiText.StringResource
+                        if (messageRes?.resId == R.string.error_recipe_exists) {
+                            val idArg = messageRes.args.getOrNull(0) as? String
+                            val nameArg = messageRes.args.getOrNull(1) as? String
+                            if (nameArg != null && idArg != null) {
+                                handleConflict(name = nameArg, id = idArg)
+                            } else {
+                                val name = (messageRes.args.getOrNull(0) as? String) ?: recipeDto.name
+                                handleConflict(name = name, id = null)
+                            }
                         } else {
-                            RecipeCreateEditState.Error(
-                                result.message ?: UiText.StringResource(R.string.error_unknown),
-                            )
+                            _uiState.update {
+                                RecipeCreateEditState.Error(
+                                    result.message ?: UiText.StringResource(R.string.error_unknown),
+                                )
+                            }
                         }
                     }
                 }
