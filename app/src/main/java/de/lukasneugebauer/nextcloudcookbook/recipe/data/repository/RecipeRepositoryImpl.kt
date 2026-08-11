@@ -293,7 +293,7 @@ class RecipeRepositoryImpl
          * the given [name] already exists. Returns `null` for any other exception so the caller can
          * fall through to the standard error handling.
          *
-         * Conflict details are attached via [Resource.Error.errorData] as a [RecipeConflictDto],
+         * Conflict details are attached via [Resource.Error.data] as a [RecipeConflictDto],
          * including the conflicting recipe's ID if it was found in the local previews cache.
          */
         private suspend fun <T> handle409ConflictError(
