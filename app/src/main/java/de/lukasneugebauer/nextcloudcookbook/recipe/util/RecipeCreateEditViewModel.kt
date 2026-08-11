@@ -102,7 +102,8 @@ abstract class RecipeCreateEditViewModel(
     private fun showForm() {
         _uiState.update { currentState ->
             when (currentState) {
-                RecipeCreateEditState.Loading -> createSuccessState()
+                // Do not transition Loading -> Success here. Loading must stay until getRecipe()
+                // finishes or the init branch for a new recipe explicitly sets the success state.
                 is RecipeCreateEditState.Success ->
                     createSuccessState().copy(
                         isImageUploading = currentState.isImageUploading,
@@ -520,6 +521,22 @@ abstract class RecipeCreateEditViewModel(
                         it.totalTime?.toDurationComponents()?.run { totalTime = this }
                     }
                 }
+
+            // Only here (when the recipe has been fetched) do we allow a Loading -> Success
+            // transition. Preserve any existing upload flags if the state is already Success.
+            _uiState.update { currentState ->
+                when (currentState) {
+                    is RecipeCreateEditState.Success ->
+                        createSuccessState().copy(
+                            isImageUploading = currentState.isImageUploading,
+                            imageUploadError = currentState.imageUploadError,
+                        )
+
+                    RecipeCreateEditState.Loading -> createSuccessState()
+
+                    else -> currentState
+                }
+            }
         }
     }
 
