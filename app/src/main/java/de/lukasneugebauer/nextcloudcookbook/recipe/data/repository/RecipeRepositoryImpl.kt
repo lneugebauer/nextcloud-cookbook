@@ -34,8 +34,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
-import kotlinx.coroutines.CancellationException
-import timber.log.Timber
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.MediaType.Companion.toMediaType
@@ -185,7 +183,8 @@ class RecipeRepositoryImpl
 
                         val previewsResponse = recipePreviewDtosFlow().first()
                         val previews = if (previewsResponse is StoreReadResponse.Data) previewsResponse.value.orEmpty() else emptyList()
-                        previews.firstOrNull { it.idOrNull == recipe.id }
+                        previews
+                            .firstOrNull { it.idOrNull == recipe.id }
                             ?.imageUrl
                             ?.let { imageUrl ->
                                 refreshImageCache(cacheKey = imageUrl)
