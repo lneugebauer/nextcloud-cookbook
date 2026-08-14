@@ -540,19 +540,19 @@ abstract class RecipeCreateEditViewModel(
         }
     }
 
-    private val _conflict = MutableStateFlow<ConflictInfo?>(null)
-    val conflict: StateFlow<ConflictInfo?> = _conflict
+    private val _conflict = MutableStateFlow<ConflictState>(ConflictState.None)
+    val conflict: StateFlow<ConflictState> = _conflict
 
     fun handleConflict(
         name: String,
         id: String?,
     ) {
-        _conflict.value = ConflictInfo(name = name, conflictingRecipeId = id)
+        _conflict.value = ConflictState.Active(name = name, conflictingRecipeId = id)
         restoreSuccessState()
     }
 
     fun dismissConflict() {
-        _conflict.value = null
+        _conflict.value = ConflictState.None
     }
 
     /**
@@ -564,7 +564,11 @@ abstract class RecipeCreateEditViewModel(
     }
 }
 
-data class ConflictInfo(
-    val name: String,
-    val conflictingRecipeId: String?,
-)
+sealed class ConflictState {
+    object None : ConflictState()
+
+    data class Active(
+        val name: String,
+        val conflictingRecipeId: String?,
+    ) : ConflictState()
+}

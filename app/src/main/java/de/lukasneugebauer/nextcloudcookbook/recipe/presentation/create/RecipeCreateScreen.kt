@@ -19,6 +19,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.RecipeCreateEditState
 import de.lukasneugebauer.nextcloudcookbook.recipe.presentation.components.ConflictSnackbar
 import de.lukasneugebauer.nextcloudcookbook.recipe.presentation.components.CreateEditRecipeForm
+import de.lukasneugebauer.nextcloudcookbook.recipe.util.ConflictState
 
 @Destination<MainGraph>
 @Composable
@@ -171,17 +172,21 @@ fun AnimatedVisibilityScope.RecipeCreateScreen(
                     viewModel.save()
                 },
                 snackbarHost = {
-                    conflictInfo?.let { conflict ->
-                        ConflictSnackbar(
-                            conflictingRecipeName = conflict.name,
-                            conflictingRecipeId = conflict.conflictingRecipeId,
-                            onViewOriginal = { recipeId ->
-                                navigator.navigate(RecipeDetailScreenDestination(recipeId = recipeId))
-                            },
-                            onDismiss = {
-                                viewModel.dismissConflict()
-                            },
-                        )
+                    when (val conflict = conflictInfo) {
+                        is ConflictState.Active -> {
+                            ConflictSnackbar(
+                                conflictingRecipeName = conflict.name,
+                                conflictingRecipeId = conflict.conflictingRecipeId,
+                                onViewOriginal = { recipeId ->
+                                    navigator.navigate(RecipeDetailScreenDestination(recipeId = recipeId))
+                                },
+                                onDismiss = {
+                                    viewModel.dismissConflict()
+                                },
+                            )
+                        }
+
+                        else -> {}
                     }
                 },
             )
