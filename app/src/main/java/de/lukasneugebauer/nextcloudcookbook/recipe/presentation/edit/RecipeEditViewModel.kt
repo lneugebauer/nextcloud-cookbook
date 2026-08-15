@@ -7,6 +7,7 @@ import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.category.domain.repository.CategoryRepository
 import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
+import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipeConflictDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.repository.RecipeRepository
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.RecipeCreateEditState
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.ifSuccess
@@ -35,17 +36,24 @@ class RecipeEditViewModel
         ) {
         override fun save() {
             _uiState.value.ifSuccess {
-                _uiState.update { RecipeCreateEditState.Saving }
+                dismissConflict()
+                _uiState.update { RecipeCreateEditState.Loading }
                 viewModelScope.launch {
-                    _uiState.update {
-                        when (val result = recipeRepository.updateRecipe(recipeDto)) {
-                            is Resource.Error ->
-                                RecipeCreateEditState.Error(
-                                    result.message ?: UiText.StringResource(R.string.error_unknown),
-                                )
-
-                            is Resource.Success -> RecipeCreateEditState.Updated(recipeDto.id)
+                    when (val result = recipeRepository.updateRecipe(recipeDto)) {
+                        is Resource.Error -> {
+                            val conflict = result.data as? RecipeConflictDto
+                            if (conflict != null) {
+                                handleConflict(name = conflict.name, id = conflict.id)
+                            } else {
+                                _uiState.update {
+                                    RecipeCreateEditState.Error(
+                                        result.message ?: UiText.StringResource(R.string.error_unknown),
+                                    )
+                                }
+                            }
                         }
+
+                        is Resource.Success -> _uiState.update { RecipeCreateEditState.Updated(recipeDto.id) }
                     }
                 }
             }

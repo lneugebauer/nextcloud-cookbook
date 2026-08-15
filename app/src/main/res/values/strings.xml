@@ -65,6 +65,7 @@
     <string name="error_unknown">An unknown error occurred</string>
     <string name="error_webview_load_failed">The login page couldn\'t load. Check your connection and try again.</string>
     <string name="error_recipe_exists">Recipe %1$s already exists</string>
+    <string name="banner_action_view_original">View</string>
     <string name="home_recommendation">Recommendation</string>
     <string name="info_headline">Learn more</string>
     <string name="login">Sign in</string>

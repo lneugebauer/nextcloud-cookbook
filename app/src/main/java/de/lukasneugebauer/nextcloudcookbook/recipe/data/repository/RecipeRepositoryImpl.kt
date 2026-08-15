@@ -19,6 +19,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.util.addSuffix
 import de.lukasneugebauer.nextcloudcookbook.di.RecipePreviewsStore
 import de.lukasneugebauer.nextcloudcookbook.di.RecipeStore
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.ImportUrlDto
+import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipeConflictDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipeDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipePreviewDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Recipe
@@ -107,8 +108,8 @@ class RecipeRepositoryImpl
                     val id = api.createRecipe(recipe = recipe)
                     refreshCaches(id = id)
                     Resource.Success(data = id)
-                } catch (e: CancellationException) {
-                    throw e
+                } catch (ce: CancellationException) {
+                    throw ce
                 } catch (e: Exception) {
                     handle409ConflictError(e, recipe.name) ?: handleResponseError(e.fillInStackTrace())
                 }
@@ -159,8 +160,8 @@ class RecipeRepositoryImpl
                         return@withContext handleUploadError(putResponse)
                     }
                     Resource.Success(data = "/$uploadFolderName/${image.fileName}")
-                } catch (e: CancellationException) {
-                    throw e
+                } catch (ce: CancellationException) {
+                    throw ce
                 } catch (e: Exception) {
                     handleResponseError(e.fillInStackTrace())
                 }
@@ -180,10 +181,10 @@ class RecipeRepositoryImpl
                     if (recipe.image != currentRecipe.image && !recipe.imageUrl.isNullOrBlank()) {
                         refreshImageCache(cacheKey = recipe.imageUrl)
 
-                        recipePreviewDtosFlow()
-                            .first()
-                            .dataOrNull()
-                            ?.firstOrNull { it.idOrNull == recipe.id }
+                        val previewsResponse = recipePreviewDtosFlow().first()
+                        val previews = if (previewsResponse is StoreReadResponse.Data) previewsResponse.value.orEmpty() else emptyList()
+                        previews
+                            .firstOrNull { it.idOrNull == recipe.id }
                             ?.imageUrl
                             ?.let { imageUrl ->
                                 refreshImageCache(cacheKey = imageUrl)
@@ -193,8 +194,8 @@ class RecipeRepositoryImpl
                     refreshCaches(id = recipe.id)
 
                     Resource.Success(Unit)
-                } catch (e: CancellationException) {
-                    throw e
+                } catch (ce: CancellationException) {
+                    throw ce
                 } catch (e: Exception) {
                     handle409ConflictError(e, recipe.name) ?: handleResponseError(e.fillInStackTrace())
                 }
@@ -289,16 +290,43 @@ class RecipeRepositoryImpl
         }
 
         /**
-         * Returns a [Resource.Error] with a user-friendly message when [e] is an HTTP 409 (Conflict),
-         * indicating a recipe with the given [name] already exists. Returns `null` for any other exception
-         * so the caller can fall through to the standard error handling.
+         * Returns a [Resource.Error] when [e] is an HTTP 409 (Conflict), indicating a recipe with
+         * the given [name] already exists. Returns `null` for any other exception so the caller can
+         * fall through to the standard error handling.
+         *
+         * Conflict details are attached via [Resource.Error.data] as a [RecipeConflictDto],
+         * including the conflicting recipe's ID if it was found in the local previews cache.
          */
-        private fun <T> handle409ConflictError(
+        private suspend fun <T> handle409ConflictError(
             e: Exception,
             name: String,
         ): Resource.Error<T>? =
             if (e is HttpException && e.code() == 409) {
-                Resource.Error(message = UiText.StringResource(R.string.error_recipe_exists, name))
+                try {
+                    val previews = recipePreviewsStore.get(Unit)
+                    val existingRecipe = previews.firstOrNull { it.name == name }
+
+                    val conflictDto =
+                        RecipeConflictDto(
+                            id = existingRecipe?.id,
+                            name = existingRecipe?.name ?: name,
+                        )
+                    @Suppress("UNCHECKED_CAST")
+                    Resource.Error(
+                        message = UiText.StringResource(R.string.error_recipe_exists, conflictDto.name as Any),
+                        data = conflictDto as T?,
+                    )
+                } catch (ce: CancellationException) {
+                    throw ce
+                } catch (previewEx: Exception) {
+                    Timber.e(previewEx, "Failed to lookup previews for conflict handling")
+                    val conflictDto = RecipeConflictDto(id = null, name = name)
+                    @Suppress("UNCHECKED_CAST")
+                    Resource.Error(
+                        message = UiText.StringResource(R.string.error_recipe_exists, conflictDto.name as Any),
+                        data = conflictDto as T?,
+                    )
+                }
             } else {
                 null
             }

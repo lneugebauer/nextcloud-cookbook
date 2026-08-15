@@ -7,6 +7,7 @@ import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.category.domain.repository.CategoryRepository
 import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
+import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipeConflictDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.repository.RecipeRepository
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.RecipeCreateEditState
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.ifSuccess
@@ -35,17 +36,23 @@ class RecipeCreateViewModel
         ) {
         override fun save() {
             _uiState.value.ifSuccess {
-                _uiState.update { RecipeCreateEditState.Saving }
+                dismissConflict()
+                _uiState.update { RecipeCreateEditState.Loading }
                 viewModelScope.launch {
                     val result = recipeRepository.createRecipe(recipeDto)
-                    _uiState.update {
-                        if (result is Resource.Success && result.data != null) {
-                            val recipeId = result.data
-                            RecipeCreateEditState.Updated(recipeId)
+                    if (result is Resource.Success && result.data != null) {
+                        val recipeId = result.data
+                        _uiState.update { RecipeCreateEditState.Updated(recipeId) }
+                    } else {
+                        val conflict = result.data as? RecipeConflictDto
+                        if (conflict != null) {
+                            handleConflict(name = conflict.name, id = conflict.id)
                         } else {
-                            RecipeCreateEditState.Error(
-                                result.message ?: UiText.StringResource(R.string.error_unknown),
-                            )
+                            _uiState.update {
+                                RecipeCreateEditState.Error(
+                                    result.message ?: UiText.StringResource(R.string.error_unknown),
+                                )
+                            }
                         }
                     }
                 }
