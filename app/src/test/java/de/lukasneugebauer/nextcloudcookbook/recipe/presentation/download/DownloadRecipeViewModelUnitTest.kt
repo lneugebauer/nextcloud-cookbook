@@ -122,6 +122,5 @@ class DownloadRecipeViewModelUnitTest {
      * while the compiler warning is explicitly suppressed.
      */
     @Suppress("UNCHECKED_CAST")
-    private fun <T> conflictResource(dto: RecipeConflictDto): Resource<T> =
-        Resource.Error(message = dto.toUiText(), data = dto as T?)
+    private fun <T> conflictResource(dto: RecipeConflictDto): Resource<T> = Resource.Error(message = dto.toUiText(), data = dto as T?)
 }
