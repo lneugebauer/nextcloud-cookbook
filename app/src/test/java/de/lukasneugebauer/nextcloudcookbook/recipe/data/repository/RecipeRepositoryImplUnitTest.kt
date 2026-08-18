@@ -8,6 +8,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.data.api.NcCookbookApi
 import de.lukasneugebauer.nextcloudcookbook.core.data.api.NcCookbookApiProvider
 import de.lukasneugebauer.nextcloudcookbook.core.data.dto.OcsDto
 import de.lukasneugebauer.nextcloudcookbook.core.data.dto.UserMetadataDto
+import de.lukasneugebauer.nextcloudcookbook.core.data.remote.response.ErrorResponse
 import de.lukasneugebauer.nextcloudcookbook.core.data.remote.response.UserMetadataResponse
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.NcAccount
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.Preferences
@@ -17,6 +18,8 @@ import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
 import de.lukasneugebauer.nextcloudcookbook.di.RecipePreviewsStore
 import de.lukasneugebauer.nextcloudcookbook.di.RecipeStore
+import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.ImportUrlDto
+import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipeConflictDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipePreviewDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipeImageUpload
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.RecipeConstants.UNCATEGORIZED_RECIPE
@@ -443,6 +446,74 @@ class RecipeRepositoryImplUnitTest {
                     stringResource.resId,
                 )
             }
+        }
+
+    /**
+     * Test that NetworkResponse 409 Conflict during importRecipe returns Resource.Error with
+     * error_http_409 string resource and attaches RecipeConflictDto in data.
+     */
+    @Test
+    fun importRecipe_WithHttp409Conflict_ReturnsErrorWithRecipeConflictDto() =
+        runBlocking {
+            // Arrange
+            val mockApi: NcCookbookApi = mock()
+            val url = ImportUrlDto("https://example.com/recipe")
+            val mockResponse: Response<Nothing> = mock()
+            whenever(mockResponse.code()).thenReturn(409)
+            val serverError =
+                NetworkResponse.ServerError<de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipeDto, ErrorResponse>(
+                    body = null,
+                    response = mockResponse,
+                )
+            whenever(mockApi.importRecipe(url = url)).thenReturn(serverError)
+            whenever(apiProvider.getApi()).thenReturn(mockApi)
+
+            // Act
+            val result = repository.importRecipe(url)
+
+            // Assert
+            assertTrue("Result should be an error", result is Resource.Error)
+            val errorResult = result as Resource.Error
+            val stringResource = errorResult.message as UiText.StringResource
+            assertEquals(
+                "Error resource ID should be error_http_409",
+                R.string.error_http_409,
+                stringResource.resId,
+            )
+            val conflictDto = errorResult.data as? RecipeConflictDto
+            assertEquals("", conflictDto?.name)
+        }
+
+    /**
+     * Test that non-409 NetworkResponse errors during importRecipe fall back to standard error handling.
+     */
+    @Test
+    fun importRecipe_WithNon409Error_ReturnsGenericError() =
+        runBlocking {
+            // Arrange
+            val mockApi: NcCookbookApi = mock()
+            val url = ImportUrlDto("https://example.com/recipe")
+            val mockResponse: Response<Nothing> = mock()
+            whenever(mockResponse.code()).thenReturn(500)
+            val serverError =
+                NetworkResponse.ServerError<de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipeDto, ErrorResponse>(
+                    body = ErrorResponse(msg = "Internal Server Error"),
+                    response = mockResponse,
+                )
+            whenever(mockApi.importRecipe(url = url)).thenReturn(serverError)
+            whenever(apiProvider.getApi()).thenReturn(mockApi)
+
+            // Act
+            val result = repository.importRecipe(url)
+
+            // Assert
+            assertTrue("Result should be an error", result is Resource.Error)
+            val errorResult = result as Resource.Error
+            assertNotEquals(
+                "Non-409 error should NOT use error_recipe_exists",
+                R.string.error_recipe_exists,
+                (errorResult.message as? UiText.StringResource)?.resId,
+            )
         }
 
     /**
