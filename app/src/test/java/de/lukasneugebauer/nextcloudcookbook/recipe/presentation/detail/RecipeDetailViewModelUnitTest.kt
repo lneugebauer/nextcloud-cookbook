@@ -88,6 +88,35 @@ class RecipeDetailViewModelUnitTest {
         Dispatchers.resetMain()
     }
 
+    /** The regression behind #208: the copied text has to follow the servings, not the recipe. */
+    @Test
+    fun getIngredientAt_afterIncreaseYield_returnsRecalculatedIngredient() {
+        viewModel.increaseYield()
+
+        assertEquals("500 g flour", viewModel.getIngredientAt(0))
+        assertEquals("2.5 eggs", viewModel.getIngredientAt(1))
+    }
+
+    @Test
+    fun getIngredientAt_withUnparsableIngredient_returnsIngredientUnchanged() {
+        viewModel.increaseYield()
+
+        assertEquals("salt", viewModel.getIngredientAt(2))
+    }
+
+    @Test
+    fun getIngredientAt_afterResetYield_returnsOriginalIngredient() {
+        viewModel.increaseYield()
+        viewModel.resetYield()
+
+        assertEquals("400 g flour", viewModel.getIngredientAt(0))
+    }
+
+    @Test
+    fun getIngredientAt_withOutOfRangeIndex_returnsEmptyString() {
+        assertEquals("", viewModel.getIngredientAt(99))
+    }
+
     /**
      * The share path substitutes the recalculated ingredients and the current yield into the recipe
      * before formatting it. It is correct today; this pins it so it cannot silently regress.
