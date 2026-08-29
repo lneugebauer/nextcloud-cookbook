@@ -30,11 +30,14 @@ import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import org.mockito.Mockito.mockStatic
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
@@ -104,6 +107,49 @@ class BrowserLoginViewModelUnitTest {
 
             assertErrorState(viewModel.uiState.value, R.string.error_invalid_url)
             verifyNoInteractions(authRepository)
+        }
+
+    @Test
+    fun init_withSavedPollToken_resumesPollingWithoutNewEndpointRequest() =
+        runTest {
+            // `String.toUri()` is `Uri.parse()`, an Android framework call with no JVM implementation.
+            mockStatic(Uri::class.java).use { uri ->
+                uri.`when`<Uri> { Uri.parse(SAVED_LOGIN_URL) }.thenReturn(LOGIN_URI)
+
+                val viewModel =
+                    createViewModel(
+                        SavedStateHandle(
+                            mapOf(
+                                "url" to URL,
+                                "pollUrl" to SAVED_POLL_URL,
+                                "pollToken" to SAVED_TOKEN,
+                                "loginUrl" to SAVED_LOGIN_URL,
+                                "browserLaunched" to true,
+                            ),
+                        ),
+                    )
+                advanceUntilIdle()
+
+                verify(authRepository, never()).getLoginEndpoint(any())
+                verify(authRepository).tryLogin(SAVED_POLL_URL, SAVED_TOKEN)
+                val state = viewModel.uiState.value
+                assertTrue(state is BrowserLoginScreenState.Loaded)
+                // Restored as launched, so the screen's collector does not re-open the tab.
+                assertTrue((state as BrowserLoginScreenState.Loaded).browserLaunched)
+            }
+        }
+
+    @Test
+    fun getLoginEndpoint_onSuccess_persistsPollTokenToSavedStateHandle() =
+        runTest {
+            val savedStateHandle = SavedStateHandle(mapOf("url" to URL))
+
+            createViewModel(savedStateHandle)
+            advanceUntilIdle()
+
+            assertEquals(TOKEN, savedStateHandle.get<String>("pollToken"))
+            assertEquals(POLL_URL, savedStateHandle.get<String>("pollUrl"))
+            assertEquals(LOGIN_URI.toString(), savedStateHandle.get<String>("loginUrl"))
         }
 
     @Test
@@ -180,6 +226,39 @@ class BrowserLoginViewModelUnitTest {
             verify(authRepository, times(1)).tryLogin(POLL_URL, TOKEN)
         }
 
+    @Test
+    fun retry_clearsSavedPollTokenAndRequestsNewEndpoint() =
+        runTest {
+            val savedStateHandle = SavedStateHandle(mapOf("url" to URL))
+            val viewModel = createViewModel(savedStateHandle)
+            advanceUntilIdle()
+
+            viewModel.retry()
+
+            // Cleared synchronously, otherwise a restart mid-retry would resume the dead token.
+            assertNull(savedStateHandle.get<String>("pollToken"))
+            assertNull(savedStateHandle.get<String>("pollUrl"))
+            assertNull(savedStateHandle.get<String>("loginUrl"))
+            advanceUntilIdle()
+            verify(authRepository, times(2)).getLoginEndpoint(URL)
+        }
+
+    @Test
+    fun onBrowserLaunched_persistsFlagToSavedStateHandle() =
+        runTest {
+            val savedStateHandle = SavedStateHandle(mapOf("url" to URL))
+            val viewModel = createViewModel(savedStateHandle)
+            advanceUntilIdle()
+
+            viewModel.onBrowserLaunched()
+
+            assertEquals(true, savedStateHandle.get<Boolean>("browserLaunched"))
+
+            viewModel.onOpenBrowserClick()
+
+            assertEquals(false, savedStateHandle.get<Boolean>("browserLaunched"))
+        }
+
     private fun createViewModel(savedStateHandle: SavedStateHandle = SavedStateHandle(mapOf("url" to URL))) =
         BrowserLoginViewModel(
             accountRepository = accountRepository,
@@ -205,6 +284,11 @@ class BrowserLoginViewModelUnitTest {
         private const val URL = "https://cloud.example.tld"
         private const val POLL_URL = "https://cloud.example.tld/index.php/login/v2/poll"
         private const val TOKEN = "token-1"
+
+        /** A poll token minted before the process was killed, distinct from the fresh-request one. */
+        private const val SAVED_POLL_URL = "https://cloud.example.tld/index.php/login/v2/poll/saved"
+        private const val SAVED_TOKEN = "token-saved"
+        private const val SAVED_LOGIN_URL = "https://cloud.example.tld/index.php/login/v2/flow/saved"
 
         /** `Uri` is an Android framework type, so mock it rather than calling `Uri.parse` on the JVM. */
         private val LOGIN_URI: Uri =

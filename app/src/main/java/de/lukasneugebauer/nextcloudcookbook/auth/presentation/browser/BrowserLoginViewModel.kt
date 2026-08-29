@@ -1,5 +1,6 @@
 package de.lukasneugebauer.nextcloudcookbook.auth.presentation.browser
 
+import androidx.core.net.toUri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -32,24 +33,46 @@ class BrowserLoginViewModel
         private val clearPreferencesUseCase: ClearPreferencesUseCase,
         private val ncCookbookApiProvider: NcCookbookApiProvider,
         private val preferencesManager: PreferencesManager,
-        savedStateHandle: SavedStateHandle,
+        private val savedStateHandle: SavedStateHandle,
     ) : ViewModel() {
         private val _uiState = MutableStateFlow<BrowserLoginScreenState>(BrowserLoginScreenState.Initial)
         val uiState = _uiState.asStateFlow()
 
-        private val initialUrl: String? = savedStateHandle["url"]
+        private val initialUrl: String? = savedStateHandle[KEY_URL]
 
         init {
             val url = initialUrl
-            if (url != null) {
-                getLoginEndpoint(url = url)
-                observeAuthorizationStatus()
-            } else {
-                _uiState.update { BrowserLoginScreenState.Error(uiText = UiText.StringResource(R.string.error_invalid_url)) }
+            val savedPollUrl: String? = savedStateHandle[KEY_POLL_URL]
+            val savedPollToken: String? = savedStateHandle[KEY_POLL_TOKEN]
+            val savedLoginUrl: String? = savedStateHandle[KEY_LOGIN_URL]
+
+            when {
+                url == null ->
+                    _uiState.update { BrowserLoginScreenState.Error(uiText = UiText.StringResource(R.string.error_invalid_url)) }
+
+                savedPollUrl != null && savedPollToken != null && savedLoginUrl != null -> {
+                    // The process was reclaimed while the user was signing in in the browser.
+                    // Resume the token they authenticated against instead of minting a fresh one.
+                    Timber.v("Resume polling saved login token")
+                    _uiState.update {
+                        BrowserLoginScreenState.Loaded(
+                            loginUrl = savedLoginUrl.toUri(),
+                            browserLaunched = savedStateHandle[KEY_BROWSER_LAUNCHED] ?: false,
+                        )
+                    }
+                    viewModelScope.launch { pollLoginServer(savedPollUrl, savedPollToken) }
+                    observeAuthorizationStatus()
+                }
+
+                else -> {
+                    getLoginEndpoint(url = url)
+                    observeAuthorizationStatus()
+                }
             }
         }
 
         fun onBrowserLaunched() {
+            savedStateHandle[KEY_BROWSER_LAUNCHED] = true
             _uiState.update { state ->
                 if (state is BrowserLoginScreenState.Loaded) state.copy(browserLaunched = true) else state
             }
@@ -63,6 +86,7 @@ class BrowserLoginViewModel
 
         /** Clearing the flag is what makes the screen's collector open the tab again. */
         fun onOpenBrowserClick() {
+            savedStateHandle[KEY_BROWSER_LAUNCHED] = false
             _uiState.update { state ->
                 if (state is BrowserLoginScreenState.Loaded) state.copy(browserLaunched = false) else state
             }
@@ -70,6 +94,11 @@ class BrowserLoginViewModel
 
         fun retry() {
             val url = initialUrl ?: return
+            // Without this the retry would resume the dead token forever.
+            savedStateHandle.remove<String>(KEY_POLL_URL)
+            savedStateHandle.remove<String>(KEY_POLL_TOKEN)
+            savedStateHandle.remove<String>(KEY_LOGIN_URL)
+            savedStateHandle.remove<Boolean>(KEY_BROWSER_LAUNCHED)
             _uiState.update { BrowserLoginScreenState.Initial }
             getLoginEndpoint(url = url)
         }
@@ -80,6 +109,10 @@ class BrowserLoginViewModel
                     is Resource.Success -> {
                         result.data?.loginUrl?.let { loginUrl ->
                             Timber.v("Open browser with url $loginUrl")
+                            // `Uri` is not stored as-is; keep it a `String` and `toUri()` it on read.
+                            savedStateHandle[KEY_POLL_URL] = result.data.pollUrl
+                            savedStateHandle[KEY_POLL_TOKEN] = result.data.token
+                            savedStateHandle[KEY_LOGIN_URL] = loginUrl.toString()
                             _uiState.update { BrowserLoginScreenState.Loaded(loginUrl = loginUrl) }
                             pollLoginServer(result.data.pollUrl, result.data.token)
                         } ?: run {
@@ -150,5 +183,11 @@ class BrowserLoginViewModel
 
         companion object {
             const val POLL_DELAY = 5_000L
+
+            private const val KEY_URL = "url"
+            private const val KEY_POLL_URL = "pollUrl"
+            private const val KEY_POLL_TOKEN = "pollToken"
+            private const val KEY_LOGIN_URL = "loginUrl"
+            private const val KEY_BROWSER_LAUNCHED = "browserLaunched"
         }
     }
