@@ -1,5 +1,6 @@
 package de.lukasneugebauer.nextcloudcookbook.auth.presentation.browser
 
+import android.content.Intent
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -31,12 +32,14 @@ import com.ramcosta.composedestinations.generated.destinations.StartScreenDestin
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.auth.domain.state.BrowserLoginScreenState
+import de.lukasneugebauer.nextcloudcookbook.core.presentation.MainActivity
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.MainGraph
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.DefaultTextButton
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.HideBottomNavigation
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.error.AbstractErrorScreen
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
+import de.lukasneugebauer.nextcloudcookbook.core.util.getActivity
 import de.lukasneugebauer.nextcloudcookbook.core.util.openInCustomTab
 
 @Destination<MainGraph>
@@ -68,12 +71,24 @@ fun AnimatedVisibilityScope.BrowserLoginScreen(
                         }
                     }
 
-                BrowserLoginScreenState.Authenticated ->
+                BrowserLoginScreenState.Authenticated -> {
                     navigator.navigate(HomeScreenDestination) {
                         popUpTo(StartScreenDestination) {
                             inclusive = true
                         }
                     }
+                    // Best effort: there is no public API to close a Custom Tab, so re-start
+                    // MainActivity to finish everything above it in the task. CLEAR_TOP closes the
+                    // tab, SINGLE_TOP delivers onNewIntent to the existing instance instead of
+                    // recreating it, keeping the navigation back stack intact. This is a background
+                    // activity start and may be blocked silently; if it is, the user presses Back
+                    // once and is already signed in on Home.
+                    context.getActivity()?.startActivity(
+                        Intent(context, MainActivity::class.java).addFlags(
+                            Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP,
+                        ),
+                    )
+                }
 
                 else -> Unit
             }
