@@ -37,9 +37,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.generated.destinations.BrowserLoginScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.InfoScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.ManualLoginScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.WebViewLoginScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.auth.domain.state.StartScreenSignInEvent
@@ -68,14 +68,9 @@ fun AnimatedVisibilityScope.StartScreen(
             val data = uiState as StartScreenState.Loaded
 
             when (data.event) {
-                StartScreenSignInEvent.WebView -> {
+                StartScreenSignInEvent.SignIn -> {
                     viewModel.onNavigate()
-                    navigator.navigate(
-                        WebViewLoginScreenDestination(
-                            url = data.url,
-                            allowSelfSignedCertificates = data.allowSelfSignedCertificates,
-                        ),
-                    )
+                    navigator.navigate(BrowserLoginScreenDestination(url = data.url))
                 }
                 StartScreenSignInEvent.Manual -> {
                     viewModel.onNavigate()
@@ -108,7 +103,7 @@ fun AnimatedVisibilityScope.StartScreen(
                     onAllowSelfSignedCertificatesChange = { allowSelfSignedCertificates ->
                         viewModel.onAllowSelfSignedCertificatesChange(allowSelfSignedCertificates)
                     },
-                    onWebViewLoginClick = { viewModel.onLoginClick(event = StartScreenSignInEvent.WebView) },
+                    onSignInClick = { viewModel.onLoginClick(event = StartScreenSignInEvent.SignIn) },
                     onManualLoginClick = { viewModel.onLoginClick(event = StartScreenSignInEvent.Manual) },
                 )
             }
@@ -128,7 +123,7 @@ fun StartLayout(
     urlError: UiText? = null,
     onUrlChange: (String) -> Unit,
     onAllowSelfSignedCertificatesChange: (Boolean) -> Unit,
-    onWebViewLoginClick: () -> Unit,
+    onSignInClick: () -> Unit,
     onManualLoginClick: () -> Unit,
 ) {
     Column(
@@ -176,7 +171,7 @@ fun StartLayout(
                 ),
             keyboardActions =
                 KeyboardActions(
-                    onDone = { onWebViewLoginClick.invoke() },
+                    onDone = { onSignInClick.invoke() },
                 ),
             singleLine = true,
         )
@@ -194,7 +189,7 @@ fun StartLayout(
             Text(text = stringResource(R.string.login_allow_self_signed_certificates))
         }
         DefaultButton(
-            onClick = onWebViewLoginClick,
+            onClick = onSignInClick,
             modifier =
                 Modifier
                     .fillMaxWidth()
@@ -239,7 +234,7 @@ private fun StartLayoutPreview() {
             allowSelfSignedCertificates = false,
             onUrlChange = {},
             onAllowSelfSignedCertificatesChange = {},
-            onWebViewLoginClick = {},
+            onSignInClick = {},
             onManualLoginClick = {},
         )
     }

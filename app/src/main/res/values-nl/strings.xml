@@ -136,7 +136,6 @@
     <string name="recipe_created_at">Aanmaakdatum</string>
     <string name="recipe_modified_at">Wijzigingsdatum</string>
     <string name="error_retry">Opnieuw proberen</string>
-    <string name="error_webview_load_failed">Inlog pagina niet geladen. Controleer verbinding en probeer opnieuw.</string>
     <string name="info_headline">Meer informatie</string>
     <string name="login_allow_self_signed_certificates">Accepteer zelf-gesigneerde certificaten</string>
     <string name="login_instance_hint">Voer login gegevens in voor %1$s.</string>

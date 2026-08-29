@@ -1,4 +1,4 @@
-package de.lukasneugebauer.nextcloudcookbook.auth.presentation.webview
+package de.lukasneugebauer.nextcloudcookbook.auth.presentation.browser
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.auth.domain.repository.AuthRepository
-import de.lukasneugebauer.nextcloudcookbook.auth.domain.state.WebViewScreenState
+import de.lukasneugebauer.nextcloudcookbook.auth.domain.state.BrowserLoginScreenState
 import de.lukasneugebauer.nextcloudcookbook.core.data.PreferencesManager
 import de.lukasneugebauer.nextcloudcookbook.core.data.api.NcCookbookApiProvider
 import de.lukasneugebauer.nextcloudcookbook.core.domain.repository.AccountRepository
@@ -24,7 +24,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class WebViewLoginViewModel
+class BrowserLoginViewModel
     @Inject
     constructor(
         private val accountRepository: AccountRepository,
@@ -34,7 +34,7 @@ class WebViewLoginViewModel
         private val preferencesManager: PreferencesManager,
         savedStateHandle: SavedStateHandle,
     ) : ViewModel() {
-        private val _uiState = MutableStateFlow<WebViewScreenState>(WebViewScreenState.Initial)
+        private val _uiState = MutableStateFlow<BrowserLoginScreenState>(BrowserLoginScreenState.Initial)
         val uiState = _uiState.asStateFlow()
 
         private val initialUrl: String? = savedStateHandle["url"]
@@ -45,25 +45,32 @@ class WebViewLoginViewModel
                 getLoginEndpoint(url = url)
                 observeAuthorizationStatus()
             } else {
-                _uiState.update { WebViewScreenState.Error(uiText = UiText.StringResource(R.string.error_invalid_url)) }
+                _uiState.update { BrowserLoginScreenState.Error(uiText = UiText.StringResource(R.string.error_invalid_url)) }
             }
         }
 
-        fun onWebViewLoadError(
-            errorCode: Int,
-            description: CharSequence?,
-        ) {
-            Timber.w("Login WebView reported error $errorCode: $description")
+        fun onBrowserLaunched() {
+            _uiState.update { state ->
+                if (state is BrowserLoginScreenState.Loaded) state.copy(browserLaunched = true) else state
+            }
+        }
+
+        fun onNoBrowserAvailable() {
             _uiState.update {
-                WebViewScreenState.Error(
-                    uiText = UiText.StringResource(R.string.error_webview_load_failed),
-                )
+                BrowserLoginScreenState.Error(uiText = UiText.StringResource(R.string.error_no_browser))
+            }
+        }
+
+        /** Clearing the flag is what makes the screen's collector open the tab again. */
+        fun onOpenBrowserClick() {
+            _uiState.update { state ->
+                if (state is BrowserLoginScreenState.Loaded) state.copy(browserLaunched = false) else state
             }
         }
 
         fun retry() {
             val url = initialUrl ?: return
-            _uiState.update { WebViewScreenState.Initial }
+            _uiState.update { BrowserLoginScreenState.Initial }
             getLoginEndpoint(url = url)
         }
 
@@ -71,18 +78,18 @@ class WebViewLoginViewModel
             viewModelScope.launch {
                 when (val result = authRepository.getLoginEndpoint(url)) {
                     is Resource.Success -> {
-                        result.data?.loginUrl?.let { webViewUrl ->
-                            Timber.v("Open web view with url $webViewUrl")
-                            _uiState.update { WebViewScreenState.Loaded(webViewUrl = webViewUrl, pollLoginServerIsActive = true) }
+                        result.data?.loginUrl?.let { loginUrl ->
+                            Timber.v("Open browser with url $loginUrl")
+                            _uiState.update { BrowserLoginScreenState.Loaded(loginUrl = loginUrl) }
                             pollLoginServer(result.data.pollUrl, result.data.token)
                         } ?: run {
-                            _uiState.update { WebViewScreenState.Error(uiText = UiText.StringResource(R.string.error_no_login_url)) }
+                            _uiState.update { BrowserLoginScreenState.Error(uiText = UiText.StringResource(R.string.error_no_login_url)) }
                         }
                     }
 
                     is Resource.Error ->
                         _uiState.update {
-                            WebViewScreenState.Error(
+                            BrowserLoginScreenState.Error(
                                 uiText = result.message ?: UiText.StringResource(R.string.error_unknown),
                             )
                         }
@@ -108,12 +115,12 @@ class WebViewLoginViewModel
                                 if (userMetadata is Resource.Error) {
                                     clearPreferencesUseCase()
                                     _uiState.update {
-                                        WebViewScreenState.Error(
+                                        BrowserLoginScreenState.Error(
                                             uiText = userMetadata.message ?: UiText.StringResource(R.string.error_unknown),
                                         )
                                     }
                                 } else {
-                                    _uiState.update { WebViewScreenState.Authenticated }
+                                    _uiState.update { BrowserLoginScreenState.Authenticated }
                                 }
                             }
                         }
@@ -134,7 +141,7 @@ class WebViewLoginViewModel
                 is Resource.Error -> {
                     delay(POLL_DELAY)
 
-                    if ((_uiState.value as? WebViewScreenState.Loaded)?.pollLoginServerIsActive == true) {
+                    if (_uiState.value is BrowserLoginScreenState.Loaded) {
                         pollLoginServer(url, token)
                     }
                 }

@@ -65,7 +65,7 @@ class ScreenshotsTestSuite {
                 allowSelfSignedCertificates = false,
                 onUrlChange = {},
                 onAllowSelfSignedCertificatesChange = {},
-                onWebViewLoginClick = {},
+                onSignInClick = {},
                 onManualLoginClick = {},
             )
         }
