@@ -167,4 +167,5 @@
     <string name="settings_recipe_image_upload_folder_reset">恢复默认</string>
     <string name="recipe_force_refresh">刷新食谱</string>
     <string name="error_recipe_exists">食谱 %1$s 已存在</string>
+    <string name="banner_action_view_original">视图</string>
 </resources>
