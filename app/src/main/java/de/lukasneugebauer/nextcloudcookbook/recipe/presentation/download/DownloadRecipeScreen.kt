@@ -37,6 +37,8 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.DownloadRecipeScreenState
+import de.lukasneugebauer.nextcloudcookbook.recipe.presentation.components.ConflictSnackbar
+import de.lukasneugebauer.nextcloudcookbook.recipe.util.ConflictState
 
 @Destination<MainGraph>
 @Composable
@@ -45,45 +47,89 @@ fun AnimatedVisibilityScope.DownloadRecipeScreen(
     viewModel: DownloadRecipeViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val conflictInfo by viewModel.conflict.collectAsState()
 
     HideBottomNavigation()
 
+    DownloadRecipeScreenContent(
+        uiState = uiState,
+        conflictInfo = conflictInfo,
+        onDownloadClick = { viewModel.importRecipe() },
+        onUrlChange = { viewModel.updateUrl(it) },
+        onNavIconClick = {
+            viewModel.dismissConflict()
+            navigator.navigateUp()
+        },
+        onViewOriginal = { recipeId ->
+            viewModel.dismissConflict()
+            navigator.navigate(RecipeDetailScreenDestination(recipeId = recipeId))
+        },
+        onDismissConflict = { viewModel.dismissConflict() },
+        onNavigateToDetail = { id ->
+            viewModel.dismissConflict()
+            navigator.navigate(RecipeDetailScreenDestination(id)) {
+                popUpTo(RecipeListScreenDestination)
+            }
+        },
+    )
+}
+
+@Composable
+private fun DownloadRecipeScreenContent(
+    uiState: DownloadRecipeScreenState,
+    conflictInfo: ConflictState,
+    onDownloadClick: () -> Unit,
+    onUrlChange: (String) -> Unit,
+    onNavIconClick: () -> Unit,
+    onViewOriginal: (String) -> Unit,
+    onDismissConflict: () -> Unit,
+    onNavigateToDetail: (String) -> Unit,
+) {
     Scaffold(
         topBar = {
-            RecipeDownloadTopBar {
-                navigator.navigateUp()
+            RecipeDownloadTopBar(onNavIconClick = onNavIconClick)
+        },
+        snackbarHost = {
+            when (val conflict = conflictInfo) {
+                is ConflictState.Active -> {
+                    ConflictSnackbar(
+                        conflictingRecipeName = conflict.name,
+                        conflictingRecipeId = conflict.conflictingRecipeId,
+                        onViewOriginal = onViewOriginal,
+                        onDismiss = onDismissConflict,
+                    )
+                }
+
+                else -> {}
             }
         },
     ) { innerPadding ->
         when (uiState) {
             is DownloadRecipeScreenState.Initial -> {
-                val url = (uiState as DownloadRecipeScreenState.Initial).url
-                DownloadRecipeScreen(
+                val url = uiState.url
+                DownloadRecipeForm(
                     url = url,
-                    onDownloadClick = { viewModel.importRecipe() },
-                    onUrlChange = { viewModel.updateUrl(it) },
+                    onDownloadClick = onDownloadClick,
+                    onUrlChange = onUrlChange,
                     modifier = Modifier.padding(innerPadding),
                 )
             }
             is DownloadRecipeScreenState.Error -> {
-                val errorState = (uiState as DownloadRecipeScreenState.Error)
-                DownloadRecipeScreen(
-                    url = errorState.url,
-                    onDownloadClick = { viewModel.importRecipe() },
-                    onUrlChange = { viewModel.updateUrl(it) },
+                DownloadRecipeForm(
+                    url = uiState.url,
+                    onDownloadClick = onDownloadClick,
+                    onUrlChange = onUrlChange,
                     modifier = Modifier.padding(innerPadding),
-                    error = errorState.uiText,
+                    error = uiState.uiText,
                 )
             }
             is DownloadRecipeScreenState.Loading -> {
                 Loader()
             }
             is DownloadRecipeScreenState.Loaded -> {
-                val id = (uiState as DownloadRecipeScreenState.Loaded).id
+                val id = uiState.id
                 LaunchedEffect(id) {
-                    navigator.navigate(RecipeDetailScreenDestination(id)) {
-                        popUpTo(RecipeListScreenDestination)
-                    }
+                    onNavigateToDetail(id)
                 }
             }
         }
@@ -91,7 +137,7 @@ fun AnimatedVisibilityScope.DownloadRecipeScreen(
 }
 
 @Composable
-private fun DownloadRecipeScreen(
+private fun DownloadRecipeForm(
     url: String,
     onDownloadClick: () -> Unit,
     onUrlChange: (String) -> Unit,
@@ -159,7 +205,7 @@ private fun RecipeDownloadTopBar(onNavIconClick: () -> Unit) {
 @Composable
 private fun DownloadRecipeScreenPreview() {
     NextcloudCookbookTheme {
-        DownloadRecipeScreen(
+        DownloadRecipeForm(
             url = "https://example.com/recipe",
             onDownloadClick = {},
             onUrlChange = {},

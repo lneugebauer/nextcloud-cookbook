@@ -7,9 +7,12 @@ import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.ImportUrlDto
+import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipeConflictDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.repository.RecipeRepository
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.DownloadRecipeScreenState
+import de.lukasneugebauer.nextcloudcookbook.recipe.util.ConflictState
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -24,6 +27,9 @@ class DownloadRecipeViewModel
         private val _uiState = MutableStateFlow<DownloadRecipeScreenState>(DownloadRecipeScreenState.Initial())
         val uiState = _uiState.asStateFlow()
 
+        private val _conflict = MutableStateFlow<ConflictState>(ConflictState.None)
+        val conflict: StateFlow<ConflictState> = _conflict.asStateFlow()
+
         fun updateUrl(newUrl: String) {
             _uiState.update {
                 when (it) {
@@ -35,6 +41,7 @@ class DownloadRecipeViewModel
         }
 
         fun importRecipe() {
+            dismissConflict()
             viewModelScope.launch {
                 val currentState = _uiState.value
                 if (currentState is DownloadRecipeScreenState.Initial) {
@@ -46,17 +53,35 @@ class DownloadRecipeViewModel
                             _uiState.update { DownloadRecipeScreenState.Loaded(id = result.data.id) }
                         }
                         else -> {
-                            _uiState.update {
-                                DownloadRecipeScreenState.Error(
-                                    url = currentState.url,
-                                    uiText =
-                                        result.message
-                                            ?: UiText.StringResource(R.string.error_unknown),
-                                )
+                            val conflictDto = result.data as? RecipeConflictDto
+                            if (conflictDto != null) {
+                                handleConflict(name = conflictDto.name, id = conflictDto.id, url = currentState.url)
+                            } else {
+                                _uiState.update {
+                                    DownloadRecipeScreenState.Error(
+                                        url = currentState.url,
+                                        uiText =
+                                            result.message
+                                                ?: UiText.StringResource(R.string.error_unknown),
+                                    )
+                                }
                             }
                         }
                     }
                 }
             }
+        }
+
+        private fun handleConflict(
+            name: String,
+            id: String?,
+            url: String,
+        ) {
+            _conflict.value = ConflictState.Active(name = name, conflictingRecipeId = id)
+            _uiState.update { DownloadRecipeScreenState.Initial(url = url) }
+        }
+
+        fun dismissConflict() {
+            _conflict.value = ConflictState.None
         }
     }
