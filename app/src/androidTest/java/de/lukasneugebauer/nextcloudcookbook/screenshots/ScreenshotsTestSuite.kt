@@ -160,6 +160,7 @@ class ScreenshotsTestSuite {
                     onKeywordClick = {},
                     onResetYield = {},
                     isShowIngredientSyntaxIndicator = true,
+                    getIngredientAt = { "" },
                 )
             }
         }

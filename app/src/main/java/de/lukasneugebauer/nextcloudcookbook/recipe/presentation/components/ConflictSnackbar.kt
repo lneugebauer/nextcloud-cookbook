@@ -11,6 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import de.lukasneugebauer.nextcloudcookbook.R
+import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipeConflictDto
 
 @Composable
 fun ConflictSnackbar(
@@ -22,7 +23,11 @@ fun ConflictSnackbar(
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val actionLabelText = stringResource(id = R.string.banner_action_view_original)
-    val recipeExistsMessage = stringResource(id = R.string.error_recipe_exists, conflictingRecipeName.orEmpty())
+    val recipeExistsMessage =
+        RecipeConflictDto(
+            id = conflictingRecipeId,
+            name = conflictingRecipeName.orEmpty(),
+        ).toUiText().asString()
 
     LaunchedEffect(conflictingRecipeName, conflictingRecipeId) {
         if (conflictingRecipeName != null) {

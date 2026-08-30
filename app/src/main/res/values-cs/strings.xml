@@ -169,5 +169,9 @@
     <string name="recipe_image_take_photo">Pořídit fotografii</string>
     <string name="settings_recipe_image_upload_folder">Složka pro obrázky nahrané k receptům</string>
     <string name="settings_recipe_image_upload_folder_placeholder">Přílohy pro kuchařku</string>
-    <string name="settings_recipe_image_upload_folder_description">Složka v Nextcloudu, kam se uloží obrázky nahrané k receptům. Ponechte prázdné, pokud chcete použít výchozí složku.</string>
+    <string name="settings_recipe_image_upload_folder_description">Složka v Nextcloudu, kam se uloží obrázky nahrané k receptům.</string>
+    <string name="recipe_force_refresh">Obnovit recepty</string>
+    <string name="error_recipe_exists">Recept %1$s již existuje</string>
+    <string name="settings_recipe_image_upload_folder_reset">Obnovit výchozí složku</string>
+    <string name="banner_action_view_original">Zobrazit</string>
 </resources>

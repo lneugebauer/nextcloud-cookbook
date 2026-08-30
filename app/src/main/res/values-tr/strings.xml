@@ -169,4 +169,5 @@
     <string name="settings_recipe_image_upload_folder_reset">Öntanımlıyı geri yükle</string>
     <string name="recipe_force_refresh">Tarifleri yenile</string>
     <string name="error_recipe_exists">%1$s tarifi zaten var</string>
+    <string name="banner_action_view_original">Görüntüle</string>
 </resources>

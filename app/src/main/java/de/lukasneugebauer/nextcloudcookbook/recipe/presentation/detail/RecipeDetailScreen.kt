@@ -8,7 +8,6 @@ import android.content.res.Configuration
 import android.os.Build
 import android.view.View
 import android.view.WindowManager
-import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibilityScope
@@ -69,6 +68,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -208,6 +208,7 @@ fun AnimatedVisibilityScope.RecipeDetailScreen(
             viewModel.resetYield()
         },
         isShowIngredientSyntaxIndicator = state.isShowIngredientSyntaxIndicator,
+        getIngredientAt = viewModel::getIngredientAt,
     )
 }
 
@@ -221,6 +222,30 @@ private fun KeepScreenOn() {
         onDispose {
             window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
+    }
+}
+
+/**
+ * Registers a long-click listener on the interop [View] that [viewId] identifies.
+ *
+ * [onLongClick] is held in [rememberUpdatedState], so the newest lambda is invoked rather than the
+ * one captured when the listener was registered — twain's `MarkdownText` builds its `TextView` in
+ * the `AndroidView` factory, so the listener outlives every recomposition of the slot.
+ */
+@Composable
+private fun BindLongClick(
+    viewId: Int,
+    onLongClick: () -> Unit,
+) {
+    val context = LocalContext.current
+    val currentOnLongClick by rememberUpdatedState(onLongClick)
+    DisposableEffect(viewId) {
+        val view = context.getActivity()?.findViewById<View>(viewId)
+        view?.setOnLongClickListener {
+            currentOnLongClick()
+            true
+        }
+        onDispose { view?.setOnLongClickListener(null) }
     }
 }
 
@@ -344,6 +369,7 @@ fun RecipeDetailLayout(
     onKeywordClick: (keyword: String) -> Unit,
     onResetYield: () -> Unit,
     isShowIngredientSyntaxIndicator: Boolean,
+    getIngredientAt: (index: Int) -> String,
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
@@ -405,13 +431,17 @@ fun RecipeDetailLayout(
                 }
                 if (recipe.ingredients.isNotEmpty()) {
                     Ingredients(
-                        calculatedIngredients.ifEmpty { recipe.ingredients.map { CalculatedIngredient(it.value, it.hasCorrectSyntax) } },
-                        onDecreaseYield,
-                        onIncreaseYield,
-                        onResetYield,
-                        currentYield,
-                        recipe.yield != currentYield,
-                        isShowIngredientSyntaxIndicator,
+                        ingredients =
+                            calculatedIngredients.ifEmpty {
+                                recipe.ingredients.map { CalculatedIngredient(it.value, it.hasCorrectSyntax) }
+                            },
+                        onDecreaseYield = onDecreaseYield,
+                        onIncreaseYield = onIncreaseYield,
+                        onResetYield = onResetYield,
+                        currentYield = currentYield,
+                        showResetButton = recipe.yield != currentYield,
+                        isShowIngredientSyntaxIndicator = isShowIngredientSyntaxIndicator,
+                        getIngredientAt = getIngredientAt,
                     )
                 }
                 if (recipe.nutrition != null) {
@@ -590,6 +620,7 @@ private fun Ingredients(
     currentYield: Int,
     showResetButton: Boolean,
     isShowIngredientSyntaxIndicator: Boolean,
+    getIngredientAt: (index: Int) -> String,
 ) {
     val clipboard = LocalClipboard.current
     val context = LocalContext.current
@@ -675,7 +706,7 @@ private fun Ingredients(
             }
         }
     }
-    ingredients.forEach { (ingredient, hasCorrectSyntax) ->
+    ingredients.forEachIndexed { index, (ingredient, hasCorrectSyntax) ->
         var checked by rememberSaveable { mutableStateOf(false) }
 
         Row {
@@ -717,14 +748,15 @@ private fun Ingredients(
                     Icon(imageVector = Icons.Default.Report, contentDescription = stringResource(R.string.recipe_ingredient_syntax_error))
                 }
             }
-            LaunchedEffect(Unit) {
-                context.getActivity()?.findViewById<TextView>(textViewId)?.setOnLongClickListener {
+            BindLongClick(viewId = textViewId) {
+                val ingredientToCopy = getIngredientAt(index)
+                if (ingredientToCopy.isNotBlank()) {
                     scope.launch {
                         clipboard.setClipEntry(
                             ClipEntry(
                                 ClipData.newPlainText(
                                     "ingredient",
-                                    ingredient,
+                                    ingredientToCopy,
                                 ),
                             ),
                         )
@@ -741,8 +773,6 @@ private fun Ingredients(
                                 ).show()
                         }
                     }
-
-                    true
                 }
             }
         }
@@ -977,6 +1007,7 @@ private fun IngredientsPreview() {
                 currentYield = 2,
                 showResetButton = false,
                 isShowIngredientSyntaxIndicator = true,
+                getIngredientAt = { "" },
             )
         }
     }
@@ -1063,6 +1094,7 @@ private fun RecipeDetailLayoutPreview() {
             onKeywordClick = {},
             onResetYield = {},
             isShowIngredientSyntaxIndicator = true,
+            getIngredientAt = { "" },
         )
     }
 }
