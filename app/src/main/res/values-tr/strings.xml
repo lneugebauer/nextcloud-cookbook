@@ -170,4 +170,7 @@
     <string name="recipe_force_refresh">Tarifleri yenile</string>
     <string name="error_recipe_exists">%1$s tarifi zaten var</string>
     <string name="banner_action_view_original">Görüntüle</string>
+    <string name="error_no_browser">Tarayıcı uygulaması bulunamadı. Bir tarayıcı kurun veya elle oturum açın.</string>
+    <string name="login_browser_open">Tarayıcıyı aç</string>
+    <string name="login_browser_waiting">Tarayıcınızda oturum açma işlemini tamamlayın. Bu ekran otomatik olarak güncellenir.</string>
 </resources>
