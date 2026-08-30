@@ -14,6 +14,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.domain.repository.AccountReposi
 import de.lukasneugebauer.nextcloudcookbook.core.domain.usecase.ClearPreferencesUseCase
 import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -40,6 +41,9 @@ class BrowserLoginViewModel
 
         private val initialUrl: String? = savedStateHandle[KEY_URL]
 
+        /** Only one attempt may poll at a time; a replacement attempt cancels its predecessor. */
+        private var pollJob: Job? = null
+
         init {
             val url = initialUrl
             val savedPollUrl: String? = savedStateHandle[KEY_POLL_URL]
@@ -60,7 +64,7 @@ class BrowserLoginViewModel
                             browserLaunched = savedStateHandle[KEY_BROWSER_LAUNCHED] ?: false,
                         )
                     }
-                    viewModelScope.launch { pollLoginServer(savedPollUrl, savedPollToken) }
+                    startPolling(savedPollUrl, savedPollToken)
                     observeAuthorizationStatus()
                 }
 
@@ -94,7 +98,10 @@ class BrowserLoginViewModel
 
         fun retry() {
             val url = initialUrl ?: return
-            // Without this the retry would resume the dead token forever.
+            // A poll parked in its delay would otherwise wake up on the fresh `Loaded` state and
+            // keep hammering the abandoned token alongside the new one.
+            pollJob?.cancel()
+            // And without clearing the keys the retry would resume the dead token forever.
             savedStateHandle.remove<String>(KEY_POLL_URL)
             savedStateHandle.remove<String>(KEY_POLL_TOKEN)
             savedStateHandle.remove<String>(KEY_LOGIN_URL)
@@ -108,13 +115,23 @@ class BrowserLoginViewModel
                 when (val result = authRepository.getLoginEndpoint(url)) {
                     is Resource.Success -> {
                         result.data?.loginUrl?.let { loginUrl ->
+                            // The URL comes straight from the server response and is handed to a
+                            // browser as-is, so anything that is not http(s) never gets launched.
+                            val scheme = loginUrl.scheme?.lowercase()
+                            if (scheme != "http" && scheme != "https") {
+                                Timber.w("Refused login url with scheme $scheme")
+                                _uiState.update {
+                                    BrowserLoginScreenState.Error(uiText = UiText.StringResource(R.string.error_invalid_protocol))
+                                }
+                                return@launch
+                            }
                             Timber.v("Open browser with url $loginUrl")
                             // `Uri` is not stored as-is; keep it a `String` and `toUri()` it on read.
                             savedStateHandle[KEY_POLL_URL] = result.data.pollUrl
                             savedStateHandle[KEY_POLL_TOKEN] = result.data.token
                             savedStateHandle[KEY_LOGIN_URL] = loginUrl.toString()
                             _uiState.update { BrowserLoginScreenState.Loaded(loginUrl = loginUrl) }
-                            pollLoginServer(result.data.pollUrl, result.data.token)
+                            startPolling(result.data.pollUrl, result.data.token)
                         } ?: run {
                             _uiState.update { BrowserLoginScreenState.Error(uiText = UiText.StringResource(R.string.error_no_login_url)) }
                         }
@@ -128,6 +145,14 @@ class BrowserLoginViewModel
                         }
                 }
             }
+        }
+
+        private fun startPolling(
+            url: String,
+            token: String,
+        ) {
+            pollJob?.cancel()
+            pollJob = viewModelScope.launch { pollLoginServer(url, token) }
         }
 
         private fun observeAuthorizationStatus() {

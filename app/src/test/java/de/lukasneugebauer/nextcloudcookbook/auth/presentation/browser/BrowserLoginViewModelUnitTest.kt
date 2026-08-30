@@ -36,6 +36,7 @@ import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito.mockStatic
 import org.mockito.kotlin.any
+import org.mockito.kotlin.atLeast
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.times
@@ -259,6 +260,47 @@ class BrowserLoginViewModelUnitTest {
             assertEquals(false, savedStateHandle.get<Boolean>("browserLaunched"))
         }
 
+    /** The login URL is server-controlled and goes straight to a browser, so it has to be a web URL. */
+    @Test
+    fun getLoginEndpoint_withNonWebLoginUrl_entersErrorState() =
+        runTest {
+            whenever(authRepository.getLoginEndpoint(any())).thenReturn(
+                Resource.Success(LOGIN_ENDPOINT.copy(loginUrl = NON_WEB_LOGIN_URI)),
+            )
+
+            val viewModel = createViewModel()
+            advanceUntilIdle()
+
+            assertErrorState(viewModel.uiState.value, R.string.error_invalid_protocol)
+            verify(authRepository, never()).tryLogin(any(), any())
+        }
+
+    /** Two live polling loops would keep the abandoned token in flight until the ViewModel dies. */
+    @Test
+    fun retry_cancelsThePreviousPollingLoop() =
+        runTest {
+            whenever(authRepository.getLoginEndpoint(any())).thenReturn(
+                Resource.Success(LOGIN_ENDPOINT),
+                Resource.Success(RETRY_LOGIN_ENDPOINT),
+            )
+            whenever(authRepository.tryLogin(any(), any())).thenReturn(
+                Resource.Error(UiText.DynamicString("Not yet")),
+            )
+
+            val viewModel = createViewModel()
+            runCurrent()
+
+            // The first loop is parked in its `POLL_DELAY` when the replacement attempt starts.
+            viewModel.retry()
+            advanceTimeBy(BrowserLoginViewModel.POLL_DELAY * 3)
+            runCurrent()
+            // The replacement loop never succeeds here; leave `Loaded` so it ends with the test.
+            viewModel.onNoBrowserAvailable()
+
+            verify(authRepository, times(1)).tryLogin(POLL_URL, TOKEN)
+            verify(authRepository, atLeast(2)).tryLogin(RETRY_POLL_URL, RETRY_TOKEN)
+        }
+
     private fun createViewModel(savedStateHandle: SavedStateHandle = SavedStateHandle(mapOf("url" to URL))) =
         BrowserLoginViewModel(
             accountRepository = accountRepository,
@@ -284,6 +326,8 @@ class BrowserLoginViewModelUnitTest {
         private const val URL = "https://cloud.example.tld"
         private const val POLL_URL = "https://cloud.example.tld/index.php/login/v2/poll"
         private const val TOKEN = "token-1"
+        private const val RETRY_POLL_URL = "https://cloud.example.tld/index.php/login/v2/poll/retry"
+        private const val RETRY_TOKEN = "token-2"
 
         /** A poll token minted before the process was killed, distinct from the fresh-request one. */
         private const val SAVED_POLL_URL = "https://cloud.example.tld/index.php/login/v2/poll/saved"
@@ -293,13 +337,29 @@ class BrowserLoginViewModelUnitTest {
         /** `Uri` is an Android framework type, so mock it rather than calling `Uri.parse` on the JVM. */
         private val LOGIN_URI: Uri =
             mock<Uri>().apply {
+                whenever(scheme).thenReturn("https")
                 whenever(toString()).thenReturn("https://cloud.example.tld/index.php/login/v2/flow/abc")
+            }
+
+        /** A server response that would send the browser somewhere other than the web. */
+        private val NON_WEB_LOGIN_URI: Uri =
+            mock<Uri>().apply {
+                whenever(scheme).thenReturn("javascript")
+                whenever(toString()).thenReturn("javascript:alert(1)")
             }
 
         private val LOGIN_ENDPOINT =
             LoginEndpointResult(
                 token = TOKEN,
                 pollUrl = POLL_URL,
+                loginUrl = LOGIN_URI,
+            )
+
+        /** The endpoint handed out by the second request, so a stale poll is distinguishable. */
+        private val RETRY_LOGIN_ENDPOINT =
+            LoginEndpointResult(
+                token = RETRY_TOKEN,
+                pollUrl = RETRY_POLL_URL,
                 loginUrl = LOGIN_URI,
             )
 
