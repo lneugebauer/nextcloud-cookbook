@@ -1,11 +1,13 @@
 package de.lukasneugebauer.nextcloudcookbook.recipe.presentation.download
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
+import de.lukasneugebauer.nextcloudcookbook.core.util.extractHttpUrl
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.ImportUrlDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.data.dto.RecipeConflictDto
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.repository.RecipeRepository
@@ -23,12 +25,25 @@ class DownloadRecipeViewModel
     @Inject
     constructor(
         private val recipeRepository: RecipeRepository,
+        savedStateHandle: SavedStateHandle,
     ) : ViewModel() {
         private val _uiState = MutableStateFlow<DownloadRecipeScreenState>(DownloadRecipeScreenState.Initial())
         val uiState = _uiState.asStateFlow()
 
         private val _conflict = MutableStateFlow<ConflictState>(ConflictState.None)
         val conflict: StateFlow<ConflictState> = _conflict.asStateFlow()
+
+        init {
+            val sharedText: String? = savedStateHandle["sharedText"]
+            if (!sharedText.isNullOrBlank()) {
+                val url = sharedText.extractHttpUrl()
+                _uiState.value = DownloadRecipeScreenState.Initial(url = url ?: sharedText)
+                if (url != null && savedStateHandle.get<Boolean>("autoImportTriggered") != true) {
+                    savedStateHandle["autoImportTriggered"] = true
+                    importRecipe()
+                }
+            }
+        }
 
         fun updateUrl(newUrl: String) {
             _uiState.update {

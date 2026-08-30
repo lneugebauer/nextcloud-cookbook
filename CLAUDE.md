@@ -14,9 +14,13 @@ Nextcloud Cookbook Android client is a Kotlin-based Android app using Jetpack Co
 - `./gradlew assembleRelease` - Build release APK
 
 ### Testing
-- `./gradlew test` - Run unit tests
+- `./gradlew test` - Run unit tests (lifecycle task, all variants)
 - `./gradlew connectedAndroidTest` - Run instrumented tests
-- `./gradlew testDebugUnitTest` - Run debug unit tests
+- `./gradlew testFullDebugUnitTest` - Run debug unit tests for the `full` flavor (use `testGooglePlayDebugUnitTest` for `googlePlay`)
+
+`test` and `connectedAndroidTest` are lifecycle tasks and reject `--tests`. To run a single class or
+pattern, use a concrete test task:
+`./gradlew testFullDebugUnitTest --tests '*MyClassUnitTest*'`
 
 ### Code Quality
 - `./gradlew ktlintCheck` - Check Kotlin code style

@@ -1,5 +1,6 @@
 package de.lukasneugebauer.nextcloudcookbook.recipe.presentation.download
 
+import androidx.lifecycle.SavedStateHandle
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.util.Resource
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
@@ -22,6 +23,8 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -34,7 +37,7 @@ class DownloadRecipeViewModelUnitTest {
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
         recipeRepository = mock()
-        viewModel = DownloadRecipeViewModel(recipeRepository)
+        viewModel = createViewModel(SavedStateHandle())
     }
 
     @After
@@ -114,6 +117,126 @@ class DownloadRecipeViewModelUnitTest {
 
             assertEquals(ConflictState.None, viewModel.conflict.value)
         }
+
+    @Test
+    fun `shared url is imported automatically and updates uiState to Loaded`() =
+        runTest {
+            val testUrl = "https://example.com/r"
+            whenever(recipeRepository.importRecipe(ImportUrlDto(testUrl)))
+                .thenReturn(Resource.Success(emptyRecipeDto().copy(id = "42")))
+
+            val viewModel = createViewModel(SavedStateHandle(mapOf("sharedText" to testUrl)))
+
+            val currentUiState = viewModel.uiState.value
+            assertTrue("UI state should be Loaded", currentUiState is DownloadRecipeScreenState.Loaded)
+            assertEquals("42", (currentUiState as DownloadRecipeScreenState.Loaded).id)
+            verify(recipeRepository).importRecipe(ImportUrlDto(testUrl))
+        }
+
+    @Test
+    fun `shared text with title imports only the extracted url`() =
+        runTest {
+            val testUrl = "https://example.com/r"
+            whenever(recipeRepository.importRecipe(ImportUrlDto(testUrl)))
+                .thenReturn(Resource.Success(emptyRecipeDto().copy(id = "42")))
+
+            createViewModel(SavedStateHandle(mapOf("sharedText" to "Title $testUrl")))
+
+            verify(recipeRepository).importRecipe(ImportUrlDto(testUrl))
+        }
+
+    @Test
+    fun `shared text without url seeds the form and starts no import`() =
+        runTest {
+            val sharedText = "just some text"
+
+            val viewModel = createViewModel(SavedStateHandle(mapOf("sharedText" to sharedText)))
+
+            val currentUiState = viewModel.uiState.value
+            assertTrue("UI state should be Initial", currentUiState is DownloadRecipeScreenState.Initial)
+            assertEquals(sharedText, (currentUiState as DownloadRecipeScreenState.Initial).url)
+            verifyNoInteractions(recipeRepository)
+        }
+
+    @Test
+    fun `without shared text uiState stays Initial with an empty url and starts no import`() =
+        runTest {
+            val viewModel = createViewModel(SavedStateHandle())
+
+            val currentUiState = viewModel.uiState.value
+            assertTrue("UI state should be Initial", currentUiState is DownloadRecipeScreenState.Initial)
+            assertEquals("", (currentUiState as DownloadRecipeScreenState.Initial).url)
+            verifyNoInteractions(recipeRepository)
+        }
+
+    @Test
+    fun `already triggered auto import is not repeated after process death`() =
+        runTest {
+            val testUrl = "https://example.com/r"
+
+            val viewModel =
+                createViewModel(
+                    SavedStateHandle(mapOf("sharedText" to testUrl, "autoImportTriggered" to true)),
+                )
+
+            val currentUiState = viewModel.uiState.value
+            assertTrue("UI state should be Initial", currentUiState is DownloadRecipeScreenState.Initial)
+            assertEquals(testUrl, (currentUiState as DownloadRecipeScreenState.Initial).url)
+            verifyNoInteractions(recipeRepository)
+        }
+
+    @Test
+    fun `automatic import persists the autoImportTriggered flag`() =
+        runTest {
+            val testUrl = "https://example.com/r"
+            whenever(recipeRepository.importRecipe(ImportUrlDto(testUrl)))
+                .thenReturn(Resource.Success(emptyRecipeDto().copy(id = "42")))
+            val savedStateHandle = SavedStateHandle(mapOf("sharedText" to testUrl))
+
+            createViewModel(savedStateHandle)
+
+            assertEquals(true, savedStateHandle.get<Boolean>("autoImportTriggered"))
+        }
+
+    @Test
+    fun `failing automatic import updates uiState to Error and keeps the url`() =
+        runTest {
+            val testUrl = "https://example.com/r"
+            val errorMessage = UiText.StringResource(R.string.error_unknown)
+            whenever(recipeRepository.importRecipe(ImportUrlDto(testUrl)))
+                .thenReturn(Resource.Error(message = errorMessage, data = null))
+
+            val viewModel = createViewModel(SavedStateHandle(mapOf("sharedText" to testUrl)))
+
+            val currentUiState = viewModel.uiState.value
+            assertTrue("UI state should be Error", currentUiState is DownloadRecipeScreenState.Error)
+            assertEquals(testUrl, (currentUiState as DownloadRecipeScreenState.Error).url)
+            assertEquals(errorMessage, currentUiState.uiText)
+        }
+
+    @Test
+    fun `automatic import with 409 conflict updates conflict state to Active and resets uiState to Initial`() =
+        runTest {
+            val testUrl = "https://example.com/r"
+            val conflictDto = RecipeConflictDto(id = "recipe-123", name = "Test Recipe")
+            whenever(recipeRepository.importRecipe(ImportUrlDto(testUrl)))
+                .thenReturn(conflictResource(conflictDto))
+
+            val viewModel = createViewModel(SavedStateHandle(mapOf("sharedText" to testUrl)))
+
+            val currentConflict = viewModel.conflict.value
+            assertTrue("Conflict should be Active", currentConflict is ConflictState.Active)
+            val activeConflict = currentConflict as ConflictState.Active
+            assertEquals("Test Recipe", activeConflict.name)
+            assertEquals("recipe-123", activeConflict.conflictingRecipeId)
+
+            val currentUiState = viewModel.uiState.value
+            assertTrue("UI state should reset to Initial", currentUiState is DownloadRecipeScreenState.Initial)
+            assertEquals(testUrl, (currentUiState as DownloadRecipeScreenState.Initial).url)
+        }
+
+    private fun createViewModel(savedStateHandle: SavedStateHandle): DownloadRecipeViewModel =
+        DownloadRecipeViewModel(recipeRepository, savedStateHandle)
 
     /**
      * Mirrors the production code pattern in [RecipeRepositoryImpl.handle409ConflictError]:

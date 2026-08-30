@@ -46,9 +46,12 @@ import androidx.navigation.compose.rememberNavController
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.animations.NavHostAnimatedDestinationStyle
 import com.ramcosta.composedestinations.annotation.NavHostGraph
+import com.ramcosta.composedestinations.generated.destinations.DownloadRecipeScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.SplashScreenDestination
 import com.ramcosta.composedestinations.generated.navgraphs.MainNavGraph
 import com.ramcosta.composedestinations.manualcomposablecalls.composable
+import com.ramcosta.composedestinations.utils.currentDestinationAsState
+import com.ramcosta.composedestinations.utils.rememberDestinationsNavigator
 import dagger.hilt.android.AndroidEntryPoint
 import de.lukasneugebauer.nextcloudcookbook.auth.presentation.splash.SplashScreen
 import de.lukasneugebauer.nextcloudcookbook.core.domain.model.Credentials
@@ -73,12 +76,17 @@ class MainActivity : ComponentActivity() {
 
         enableEdgeToEdge()
 
-        handleIntent(intent)
+        // Only on a fresh start. On a process-death restore the system re-delivers the original
+        // share intent, which would otherwise be imported a second time.
+        if (savedInstanceState == null) {
+            handleIntent(intent)
+        }
 
         setContent {
             val appState = remember { AppState() }
             val authState by viewModel.authState.collectAsState()
             val intent by viewModel.intentState.collectAsState()
+            val sharedText by viewModel.sharedTextState.collectAsState()
             val splashState by viewModel.splashState.collectAsState()
             val credentials: Credentials? by remember {
                 derivedStateOf {
@@ -105,7 +113,11 @@ class MainActivity : ComponentActivity() {
                 LocalAppState provides appState,
                 LocalCredentials provides credentials,
             ) {
-                NextcloudCookbookApp(intent = intent)
+                NextcloudCookbookApp(
+                    intent = intent,
+                    sharedText = sharedText,
+                    onSharedTextHandled = viewModel::onSharedTextHandled,
+                )
             }
         }
     }
@@ -122,11 +134,18 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun NextcloudCookbookApp(intent: Intent?) {
+fun NextcloudCookbookApp(
+    intent: Intent?,
+    sharedText: String?,
+    onSharedTextHandled: () -> Unit,
+) {
     NextcloudCookbookTheme {
         val navController = rememberNavController()
         val configuration = LocalConfiguration.current
         val appState = LocalAppState.current
+        val appNavigator = navController.rememberDestinationsNavigator()
+        val currentDestination by navController.currentDestinationAsState()
+        val credentials = LocalCredentials.current
 
         val viewModelStoreOwner =
             checkNotNull(LocalViewModelStoreOwner.current) {
@@ -190,6 +209,21 @@ fun NextcloudCookbookApp(intent: Intent?) {
                     Timber.w(e, "Failed to handle deep link: ${intent.data}")
                 }
             }
+        }
+
+        LaunchedEffect(sharedText, currentDestination, credentials) {
+            if (sharedText == null || credentials == null) return@LaunchedEffect
+            // currentDestination is null until the first back stack entry arrives. Navigating
+            // during that first frame would push the import screen underneath the splash screen,
+            // which then pops it again.
+            if (currentDestination == null || currentDestination == SplashScreenDestination) {
+                return@LaunchedEffect
+            }
+
+            appNavigator.navigate(DownloadRecipeScreenDestination(sharedText = sharedText)) {
+                popUpTo(DownloadRecipeScreenDestination) { inclusive = true }
+            }
+            onSharedTextHandled()
         }
 
         val layoutDirection = LocalLayoutDirection.current

@@ -26,8 +26,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.generated.destinations.DownloadRecipeScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.RecipeDetailScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.RecipeListScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.MainGraph
@@ -44,6 +44,7 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.util.ConflictState
 @Composable
 fun AnimatedVisibilityScope.DownloadRecipeScreen(
     navigator: DestinationsNavigator,
+    @Suppress("UNUSED_PARAMETER") sharedText: String?,
     viewModel: DownloadRecipeViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -68,7 +69,7 @@ fun AnimatedVisibilityScope.DownloadRecipeScreen(
         onNavigateToDetail = { id ->
             viewModel.dismissConflict()
             navigator.navigate(RecipeDetailScreenDestination(id)) {
-                popUpTo(RecipeListScreenDestination)
+                popUpTo(DownloadRecipeScreenDestination) { inclusive = true }
             }
         },
     )
