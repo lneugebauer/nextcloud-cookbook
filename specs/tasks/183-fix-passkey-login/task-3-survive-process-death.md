@@ -87,10 +87,8 @@ Cases 1 and 2 from task 1 must still pass — case 1 asserts the *unsaved* path 
 Automated:
 
 1. `./gradlew ktlintFormat` then `./gradlew ktlintCheck`.
-2. `./gradlew testFullDebugUnitTest` — all eleven cases pass. **Relocate the build directory to
-   `/tmp` first**; this checkout is on eCryptfs and `:app:kaptFullDebugKotlin` otherwise fails on a
-   filename-length error unrelated to any change. See the README's verification notes. There is no
-   `testDebugUnitTest` task — flavors.
+2. `./gradlew testFullDebugUnitTest` — all eleven cases pass. There is no `testDebugUnitTest`
+   task — flavors.
 
 Manual (spec §4.3 step 7), on a device:
 

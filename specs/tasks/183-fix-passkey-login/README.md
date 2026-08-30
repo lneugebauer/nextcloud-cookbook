@@ -60,13 +60,6 @@ parallel.
 - **`connectedAndroidTest` does not run in CI either**, which is why the passkey fix itself is
   covered by the manual steps in spec §4.3 rather than by an instrumented test.
 - **Build flavors mean there is no `testDebugUnitTest` task** — use `testFullDebugUnitTest` or `test`.
-- **This checkout is on eCryptfs** (`/home/lukas`, 143-byte filename limit), and `:app:kaptFullDebugKotlin`
-  generates a Hilt filename longer than that. Any Gradle task that runs kapt — including `test` —
-  fails with `FileSystemException: … Der Dateiname ist zu lang` regardless of the change. Run Gradle
-  with the build directory relocated onto ext4, e.g. an init script that sets
-  `p.layout.buildDirectory` from `gradle.beforeProject` to a path under `/tmp`, passed as
-  `./gradlew --init-script <script> -DrelocatedBuildDir=/tmp/… <task>`. `ktlintCheck` and
-  `ktlintFormat` do not run kapt and work in place.
 
 ## Coordinating with PR 209 (spec 208)
 

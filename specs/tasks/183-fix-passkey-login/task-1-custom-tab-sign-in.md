@@ -334,10 +334,8 @@ Automated:
 
 1. `./gradlew ktlintFormat` then `./gradlew ktlintCheck` — runs before `test` in CI, no kapt, works
    in place.
-2. `./gradlew testFullDebugUnitTest` — the seven new cases pass. **Relocate the build directory to
-   `/tmp` first** (see the README's verification notes); this checkout is on eCryptfs and
-   `:app:kaptFullDebugKotlin` otherwise dies on a filename-length error unrelated to any change.
-   Note there is no `testDebugUnitTest` task — flavors.
+2. `./gradlew testFullDebugUnitTest` — the seven new cases pass. Note there is no
+   `testDebugUnitTest` task — flavors.
 3. `./gradlew compileFullDebugAndroidTestKotlin` — proves the `ScreenshotsTestSuite` rename is
    complete. CI never compiles androidTest, so this only fails later, in the `screenshots` lane.
 4. `./gradlew assembleFullRelease` (or `bundle exec fastlane build`) — confirms the `@Preview`

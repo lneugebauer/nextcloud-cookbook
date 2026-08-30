@@ -101,9 +101,7 @@ nothing regressed.
 
 - On every device tested, either the tab closes automatically, or it is confirmed blocked, the
   `startActivity` call is removed, and the PR records the evidence.
-- `./gradlew ktlintCheck` passes and `./gradlew assembleFullRelease` succeeds. (If you run unit
-  tests, relocate the build directory to `/tmp` first — this checkout is on eCryptfs and kapt
-  otherwise fails on a filename-length error. See the README's verification notes.)
+- `./gradlew ktlintCheck` passes and `./gradlew assembleFullRelease` succeeds.
 
 ## Commit
 
