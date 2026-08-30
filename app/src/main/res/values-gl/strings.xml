@@ -161,7 +161,6 @@
     <string name="error_image_processing_failed">Non se puido procesar a imaxe</string>
     <string name="error_image_upload_failed">Non se puido subir a imaxe</string>
     <string name="error_invalid_image_payload">Datos da imaxe non válidos</string>
-    <string name="error_webview_load_failed">Non se puido cargar a páxina de acceso. Comproba a rede e volve a intentalo.</string>
     <string name="recipe_image_select">Seleccionar imaxe</string>
     <string name="recipe_image_take_photo">Facer foto</string>
     <string name="settings_recipe_image_upload_folder">Cartafol de subida para a imaxe da receita</string>
@@ -170,4 +169,5 @@
     <string name="settings_recipe_image_upload_folder_reset">Restablecer predeterminado</string>
     <string name="recipe_force_refresh">Actualizar receitas</string>
     <string name="error_recipe_exists">Xa existe a receita %1$s</string>
+    <string name="banner_action_view_original">Ver</string>
 </resources>

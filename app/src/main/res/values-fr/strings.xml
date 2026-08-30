@@ -148,7 +148,6 @@
     <string name="error_image_upload_failed">Impossible de téléverser l\'image</string>
     <string name="error_invalid_image_payload">Donnée d\'image invalide</string>
     <string name="error_retry">Recommencer</string>
-    <string name="error_webview_load_failed">La page d\'authentification n\'a pas pu être chargée. Vérifier votre connexion et recommencer.</string>
     <string name="info_headline">En apprendre plus</string>
     <string name="login_allow_self_signed_certificates">Autoriser les certificats auto-signés</string>
     <string name="login_instance_hint">Entrer les détails de connexion pour %1$s.</string>

@@ -65,7 +65,7 @@ class ScreenshotsTestSuite {
                 allowSelfSignedCertificates = false,
                 onUrlChange = {},
                 onAllowSelfSignedCertificatesChange = {},
-                onWebViewLoginClick = {},
+                onSignInClick = {},
                 onManualLoginClick = {},
             )
         }
@@ -160,6 +160,7 @@ class ScreenshotsTestSuite {
                     onKeywordClick = {},
                     onResetYield = {},
                     isShowIngredientSyntaxIndicator = true,
+                    getIngredientAt = { "" },
                 )
             }
         }
