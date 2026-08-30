@@ -234,7 +234,8 @@ class RecipeRepositoryImpl
                     }
 
                     is NetworkResponse.Error -> {
-                        handleResponseError(response.error, response.body?.msg)
+                        handle409ConflictError(response, name = "")
+                            ?: handleResponseError(response.error, response.body?.msg)
                     }
                 }
             }
@@ -290,20 +291,21 @@ class RecipeRepositoryImpl
         }
 
         /**
-         * Returns a [Resource.Error] when [e] is an HTTP 409 (Conflict), indicating a recipe with
-         * the given [name] already exists. Returns `null` for any other exception so the caller can
-         * fall through to the standard error handling.
+         * Returns a [Resource.Error] when [e] or [code] indicates HTTP 409 (Conflict), indicating a
+         * recipe with the given [name] already exists. Returns `null` for any other exception so the
+         * caller can fall through to the standard error handling.
          *
          * Conflict details are attached via [Resource.Error.data] as a [RecipeConflictDto],
          * including the conflicting recipe's ID if it was found in the local previews cache.
          */
         private suspend fun <T> handle409ConflictError(
-            e: Exception,
+            e: Throwable?,
             name: String,
+            code: Int? = null,
         ): Resource.Error<T>? =
-            if (e is HttpException && e.code() == 409) {
+            if (code == 409 || (e is HttpException && e.code() == 409)) {
                 try {
-                    val previews = recipePreviewsStore.get(Unit)
+                    val previews = if (name.isNotBlank()) recipePreviewsStore.get(Unit) else emptyList()
                     val existingRecipe = previews.firstOrNull { it.name == name }
 
                     val conflictDto =
@@ -313,7 +315,7 @@ class RecipeRepositoryImpl
                         )
                     @Suppress("UNCHECKED_CAST")
                     Resource.Error(
-                        message = UiText.StringResource(R.string.error_recipe_exists, conflictDto.name as Any),
+                        message = conflictDto.toUiText(),
                         data = conflictDto as T?,
                     )
                 } catch (ce: CancellationException) {
@@ -323,13 +325,21 @@ class RecipeRepositoryImpl
                     val conflictDto = RecipeConflictDto(id = null, name = name)
                     @Suppress("UNCHECKED_CAST")
                     Resource.Error(
-                        message = UiText.StringResource(R.string.error_recipe_exists, conflictDto.name as Any),
+                        message = conflictDto.toUiText(),
                         data = conflictDto as T?,
                     )
                 }
             } else {
                 null
             }
+
+        private suspend fun <T> handle409ConflictError(
+            response: NetworkResponse.Error<*, de.lukasneugebauer.nextcloudcookbook.core.data.remote.response.ErrorResponse>,
+            name: String,
+        ): Resource.Error<T>? {
+            val code = (response as? NetworkResponse.ServerError)?.code
+            return handle409ConflictError(e = response.error, name = name, code = code)
+        }
 
         private fun <T> handleUploadError(response: Response<*>): Resource.Error<T> = handleResponseError(t = null, code = response.code())
 
