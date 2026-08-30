@@ -31,6 +31,9 @@ class MainViewModel
         private val _intentState = MutableStateFlow<Intent?>(null)
         val intentState: StateFlow<Intent?> = _intentState
 
+        private val _sharedTextState = MutableStateFlow<String?>(null)
+        val sharedTextState: StateFlow<String?> = _sharedTextState
+
         init {
             getLoginCredentials()
         }
@@ -41,6 +44,19 @@ class MainViewModel
 
         fun setIntent(intent: Intent) {
             _intentState.update { intent }
+
+            if (intent.action == Intent.ACTION_SEND && intent.type == "text/plain") {
+                // EXTRA_TEXT is a CharSequence. getStringExtra() would silently return null for
+                // apps that share styled text as a Spanned.
+                val sharedText = intent.getCharSequenceExtra(Intent.EXTRA_TEXT)?.toString()?.trim()
+                if (!sharedText.isNullOrBlank()) {
+                    _sharedTextState.update { sharedText }
+                }
+            }
+        }
+
+        fun onSharedTextHandled() {
+            _sharedTextState.update { null }
         }
 
         private fun getLoginCredentials() {
