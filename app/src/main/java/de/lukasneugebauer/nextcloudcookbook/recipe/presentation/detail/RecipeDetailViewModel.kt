@@ -142,6 +142,16 @@ class RecipeDetailViewModel
             return ""
         }
 
+        fun getIngredientAt(index: Int): String =
+            _state.value.calculatedIngredients
+                .getOrNull(index)
+                ?.ingredient
+                ?: _state.value.data
+                    ?.ingredients
+                    ?.getOrNull(index)
+                    ?.value
+                ?: ""
+
         fun deleteRecipe(id: String) {
             viewModelScope.launch {
                 when (val deleteRecipeResource = recipeRepository.deleteRecipe(id)) {
