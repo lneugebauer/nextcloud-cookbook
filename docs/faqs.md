@@ -9,6 +9,18 @@ title: FAQs
 
 Yes.
 
+## Why does sign in open my browser? <Badge type="tip" text="^0.31.0" />
+
+Nextcloud's recommended sign-in flow runs in your default browser so that passkeys, security keys, password managers, and single sign-on providers all work.
+The app never sees your password — it receives an app-specific token once the browser sign-in completes.
+
+**Self-signed certificates.**
+Keep ticking "Allow self-signed certificates" — the app still needs it.
+Your browser will additionally show its own certificate warning during sign in; tap *Advanced → Proceed*.
+Passkeys cannot be used with a self-signed certificate: browsers block WebAuthn on sites with certificate errors.
+To get both, install your server's certificate on the device (*Settings → Security → Encryption & credentials → Install a certificate → CA certificate*), which removes the warning entirely.
+Otherwise sign in with a password, or use **Manual sign in** with an app password created in Nextcloud under *Settings → Security*.
+
 ## Is the app available in my language?
 
 If the app isn't available in your language yet, please have a look at the [contributing](./contributing#translations) page.

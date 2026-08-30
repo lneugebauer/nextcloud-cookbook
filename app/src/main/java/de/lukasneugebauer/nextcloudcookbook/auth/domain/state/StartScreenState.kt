@@ -16,7 +16,7 @@ sealed interface StartScreenState {
 }
 
 sealed interface StartScreenSignInEvent {
-    object WebView : StartScreenSignInEvent
+    object SignIn : StartScreenSignInEvent
 
     object Manual : StartScreenSignInEvent
 }
