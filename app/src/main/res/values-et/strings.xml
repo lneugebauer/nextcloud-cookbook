@@ -170,4 +170,7 @@
     <string name="recipe_force_refresh">Laadi retseptid uuesti</string>
     <string name="error_recipe_exists">„%1$s“ retsept on juba olemas</string>
     <string name="banner_action_view_original">Vaata</string>
+    <string name="error_no_browser">Ühtegi brauserirakendust ei leidu. Paigalda veebibrauser või logi sisse käsitsi.</string>
+    <string name="login_browser_open">Ava veebibrauser</string>
+    <string name="login_browser_waiting">Lõpeta sisselogimine veebibrauseris. Antud vaade uueneb seejärel automaatselt.</string>
 </resources>
