@@ -167,4 +167,7 @@
     <string name="recipe_force_refresh">刷新食谱</string>
     <string name="error_recipe_exists">食谱 %1$s 已存在</string>
     <string name="banner_action_view_original">视图</string>
+    <string name="error_no_browser">未找到浏览器应用。请安装浏览器或使用手动登录。</string>
+    <string name="login_browser_open">打开浏览器</string>
+    <string name="login_browser_waiting">请在您的浏览器中完成登录。此屏幕将自动更新。</string>
 </resources>
