@@ -165,5 +165,12 @@
     <string name="login_instance_hint">Bitte geben Sie Ihre Anmeldedaten für %1$s ein.</string>
     <string name="settings_recipe_image_upload_folder">Ordner für hochgeladene Rezeptbilder</string>
     <string name="settings_recipe_image_upload_folder_placeholder">Hochgeladene Kochbücher</string>
-    <string name="settings_recipe_image_upload_folder_description">Ordner, der beim Hochladen von Rezeptbildern in Nextcloud verwendet wird. Lassen Sie das Feld leer, um die Standardeinstellung zu verwenden.</string>
+    <string name="settings_recipe_image_upload_folder_description">Ordner, der beim Hochladen von Rezeptbildern in Nextcloud verwendet wird.</string>
+    <string name="recipe_force_refresh">Aktualisiere Rezepte</string>
+    <string name="error_no_browser">Keinen Browser gefunden. Installiere einen Browser oder melde dich manuell an.</string>
+    <string name="error_recipe_exists">Rezept %1$s existiert bereits</string>
+    <string name="banner_action_view_original">Ansehen</string>
+    <string name="login_browser_open">Öffne Browser</string>
+    <string name="login_browser_waiting">Schließe die Anmeldung im Browser ab. Das Fenster wird automatisch aktualisiert.</string>
+    <string name="settings_recipe_image_upload_folder_reset">Standardeinstellungen wiederherstellen</string>
 </resources>
