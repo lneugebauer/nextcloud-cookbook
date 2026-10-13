@@ -430,6 +430,35 @@ fun RecipeDetailLayout(
                 if (recipe.category.isNotEmpty()) {
                     Category(category = recipe.category)
                 }
+
+                val ingredientsAndDetails = @Composable {
+                    if (recipe.ingredients.isNotEmpty()) {
+                        Ingredients(
+                            ingredients = calculatedIngredients.ifEmpty {
+                                recipe.ingredients.map { CalculatedIngredient(it.value, it.hasCorrectSyntax) }
+                            },
+                            onDecreaseYield = onDecreaseYield,
+                            onIncreaseYield = onIncreaseYield,
+                            onResetYield = onResetYield,
+                            currentYield = currentYield,
+                            showResetButton = recipe.yield != currentYield,
+                            isShowIngredientSyntaxIndicator = isShowIngredientSyntaxIndicator,
+                            getIngredientAt = getIngredientAt,
+                        )
+                    }
+                    if (recipe.nutrition != null) {
+                        Nutrition(recipe.nutrition)
+                    }
+                    if (recipe.tools.isNotEmpty()) {
+                        Tools(tools = recipe.tools)
+                    }
+                }
+                val instructionsContent = @Composable {
+                    if (recipe.instructions.isNotEmpty()) {
+                        Instructions(instructions = recipe.instructions)
+                    }
+                }
+
                 BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
                     if (maxWidth >= 600.dp) {
                         Row(
@@ -437,60 +466,16 @@ fun RecipeDetailLayout(
                             horizontalArrangement = Arrangement.spacedBy(16.dp),
                         ) {
                             Column(modifier = Modifier.weight(1f)) {
-                                if (recipe.ingredients.isNotEmpty()) {
-                                    Ingredients(
-                                        ingredients =
-                                            calculatedIngredients.ifEmpty {
-                                                recipe.ingredients.map { CalculatedIngredient(it.value, it.hasCorrectSyntax) }
-                                            },
-                                        onDecreaseYield = onDecreaseYield,
-                                        onIncreaseYield = onIncreaseYield,
-                                        onResetYield = onResetYield,
-                                        currentYield = currentYield,
-                                        showResetButton = recipe.yield != currentYield,
-                                        isShowIngredientSyntaxIndicator = isShowIngredientSyntaxIndicator,
-                                        getIngredientAt = getIngredientAt,
-                                    )
-                                }
-                                if (recipe.nutrition != null) {
-                                    Nutrition(recipe.nutrition)
-                                }
-                                if (recipe.tools.isNotEmpty()) {
-                                    Tools(tools = recipe.tools)
-                                }
+                                ingredientsAndDetails()
                             }
                             Column(modifier = Modifier.weight(1f)) {
-                                if (recipe.instructions.isNotEmpty()) {
-                                    Instructions(instructions = recipe.instructions)
-                                }
+                                instructionsContent()
                             }
                         }
                     } else {
                         Column(modifier = Modifier.fillMaxWidth()) {
-                            if (recipe.ingredients.isNotEmpty()) {
-                                Ingredients(
-                                    ingredients =
-                                        calculatedIngredients.ifEmpty {
-                                            recipe.ingredients.map { CalculatedIngredient(it.value, it.hasCorrectSyntax) }
-                                        },
-                                    onDecreaseYield = onDecreaseYield,
-                                    onIncreaseYield = onIncreaseYield,
-                                    onResetYield = onResetYield,
-                                    currentYield = currentYield,
-                                    showResetButton = recipe.yield != currentYield,
-                                    isShowIngredientSyntaxIndicator = isShowIngredientSyntaxIndicator,
-                                    getIngredientAt = getIngredientAt,
-                                )
-                            }
-                            if (recipe.nutrition != null) {
-                                Nutrition(recipe.nutrition)
-                            }
-                            if (recipe.tools.isNotEmpty()) {
-                                Tools(tools = recipe.tools)
-                            }
-                            if (recipe.instructions.isNotEmpty()) {
-                                Instructions(instructions = recipe.instructions)
-                            }
+                            ingredientsAndDetails()
+                            instructionsContent()
                         }
                     }
                 }
