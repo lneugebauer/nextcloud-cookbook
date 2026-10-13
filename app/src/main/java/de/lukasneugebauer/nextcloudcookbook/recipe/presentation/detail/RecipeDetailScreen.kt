@@ -15,6 +15,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -429,29 +430,69 @@ fun RecipeDetailLayout(
                 if (recipe.category.isNotEmpty()) {
                     Category(category = recipe.category)
                 }
-                if (recipe.ingredients.isNotEmpty()) {
-                    Ingredients(
-                        ingredients =
-                            calculatedIngredients.ifEmpty {
-                                recipe.ingredients.map { CalculatedIngredient(it.value, it.hasCorrectSyntax) }
-                            },
-                        onDecreaseYield = onDecreaseYield,
-                        onIncreaseYield = onIncreaseYield,
-                        onResetYield = onResetYield,
-                        currentYield = currentYield,
-                        showResetButton = recipe.yield != currentYield,
-                        isShowIngredientSyntaxIndicator = isShowIngredientSyntaxIndicator,
-                        getIngredientAt = getIngredientAt,
-                    )
-                }
-                if (recipe.nutrition != null) {
-                    Nutrition(recipe.nutrition)
-                }
-                if (recipe.tools.isNotEmpty()) {
-                    Tools(tools = recipe.tools)
-                }
-                if (recipe.instructions.isNotEmpty()) {
-                    Instructions(instructions = recipe.instructions)
+                BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+                    if (maxWidth >= 600.dp) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        ) {
+                            Column(modifier = Modifier.weight(1f)) {
+                                if (recipe.ingredients.isNotEmpty()) {
+                                    Ingredients(
+                                        ingredients =
+                                            calculatedIngredients.ifEmpty {
+                                                recipe.ingredients.map { CalculatedIngredient(it.value, it.hasCorrectSyntax) }
+                                            },
+                                        onDecreaseYield = onDecreaseYield,
+                                        onIncreaseYield = onIncreaseYield,
+                                        onResetYield = onResetYield,
+                                        currentYield = currentYield,
+                                        showResetButton = recipe.yield != currentYield,
+                                        isShowIngredientSyntaxIndicator = isShowIngredientSyntaxIndicator,
+                                        getIngredientAt = getIngredientAt,
+                                    )
+                                }
+                                if (recipe.nutrition != null) {
+                                    Nutrition(recipe.nutrition)
+                                }
+                                if (recipe.tools.isNotEmpty()) {
+                                    Tools(tools = recipe.tools)
+                                }
+                            }
+                            Column(modifier = Modifier.weight(1f)) {
+                                if (recipe.instructions.isNotEmpty()) {
+                                    Instructions(instructions = recipe.instructions)
+                                }
+                            }
+                        }
+                    } else {
+                        Column(modifier = Modifier.fillMaxWidth()) {
+                            if (recipe.ingredients.isNotEmpty()) {
+                                Ingredients(
+                                    ingredients =
+                                        calculatedIngredients.ifEmpty {
+                                            recipe.ingredients.map { CalculatedIngredient(it.value, it.hasCorrectSyntax) }
+                                        },
+                                    onDecreaseYield = onDecreaseYield,
+                                    onIncreaseYield = onIncreaseYield,
+                                    onResetYield = onResetYield,
+                                    currentYield = currentYield,
+                                    showResetButton = recipe.yield != currentYield,
+                                    isShowIngredientSyntaxIndicator = isShowIngredientSyntaxIndicator,
+                                    getIngredientAt = getIngredientAt,
+                                )
+                            }
+                            if (recipe.nutrition != null) {
+                                Nutrition(recipe.nutrition)
+                            }
+                            if (recipe.tools.isNotEmpty()) {
+                                Tools(tools = recipe.tools)
+                            }
+                            if (recipe.instructions.isNotEmpty()) {
+                                Instructions(instructions = recipe.instructions)
+                            }
+                        }
+                    }
                 }
                 Gap(size = dimensionResource(id = R.dimen.padding_s))
                 Gap(size = dimensionResource(id = R.dimen.fab_offset))
