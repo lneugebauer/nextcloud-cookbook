@@ -71,15 +71,24 @@ class RecipeDetailViewModel
 
                     is DataResult.Success -> {
                         val recipe = enrichRecipeLinks(recipeResult.data, recipePreviews)
+                        val previousRecipe = _state.value.data
+                        // Keep a user-selected yield across re-emissions, e.g. while recipes are
+                        // synced in the background after login.
+                        val currentYield =
+                            if (previousRecipe != null && _state.value.currentYield != previousRecipe.yield) {
+                                _state.value.currentYield
+                            } else {
+                                recipe.yield
+                            }
                         _state.value =
                             _state.value.copy(
                                 calculatedIngredients =
                                     yieldCalculator.recalculateIngredients(
                                         recipe.ingredients.map { it.value },
-                                        recipe.yield,
+                                        currentYield,
                                         recipe.yield,
                                     ),
-                                currentYield = recipe.yield,
+                                currentYield = currentYield,
                                 data = recipe,
                                 loading = false,
                                 isShowIngredientSyntaxIndicator = isShowIngredientSyntaxIndicator,
