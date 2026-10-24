@@ -39,6 +39,8 @@ class RecipeDetailViewModel
         private val _state = MutableStateFlow(RecipeDetailState())
         val state: StateFlow<RecipeDetailState> = _state
 
+        private var isYieldChangedByUser = false
+
         val stayAwake: Boolean
             get() = preferencesManager.getStayAwake()
 
@@ -71,15 +73,7 @@ class RecipeDetailViewModel
 
                     is DataResult.Success -> {
                         val recipe = enrichRecipeLinks(recipeResult.data, recipePreviews)
-                        val previousRecipe = _state.value.data
-                        // Keep a user-selected yield across re-emissions, e.g. while recipes are
-                        // synced in the background after login.
-                        val currentYield =
-                            if (previousRecipe != null && _state.value.currentYield != previousRecipe.yield) {
-                                _state.value.currentYield
-                            } else {
-                                recipe.yield
-                            }
+                        val currentYield = if (isYieldChangedByUser) _state.value.currentYield else recipe.yield
                         _state.value =
                             _state.value.copy(
                                 calculatedIngredients =
@@ -108,22 +102,26 @@ class RecipeDetailViewModel
 
         fun increaseYield() {
             val currentYield = _state.value.currentYield + 1
-            recalculateYield(currentYield)
+            recalculateYield(currentYield, isChangedByUser = true)
         }
 
         fun decreaseYield() {
             val currentYield = _state.value.currentYield - 1
             if (currentYield < 1) return
-            recalculateYield(currentYield)
+            recalculateYield(currentYield, isChangedByUser = true)
         }
 
         fun resetYield() {
             val recipe = _state.value.data ?: return
-            recalculateYield(recipe.yield)
+            recalculateYield(recipe.yield, isChangedByUser = false)
         }
 
-        private fun recalculateYield(currentYield: Int) {
+        private fun recalculateYield(
+            currentYield: Int,
+            isChangedByUser: Boolean,
+        ) {
             val recipe = _state.value.data ?: return
+            isYieldChangedByUser = isChangedByUser
             _state.value =
                 _state.value.copy(
                     calculatedIngredients =

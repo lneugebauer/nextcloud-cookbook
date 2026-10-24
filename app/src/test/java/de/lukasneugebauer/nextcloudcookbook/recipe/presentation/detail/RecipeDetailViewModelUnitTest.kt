@@ -174,6 +174,41 @@ class RecipeDetailViewModelUnitTest {
         assertEquals("500 g flour", viewModel.getIngredientAt(0))
     }
 
+    /**
+     * A synced update can set the recipe's own yield to the value the user selected. That must not
+     * be mistaken for an untouched yield: a later update to yet another yield has to keep the
+     * user's selection.
+     */
+    @Test
+    fun currentYield_changedByUser_isKeptWhenRecipeUpdatesMatchAndDiverge() {
+        val recipeFlow =
+            MutableSharedFlow<DataResult<Recipe>>(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+        whenever(recipeRepository.getRecipeFlow("1")).thenReturn(recipeFlow)
+        val viewModel = createViewModel()
+
+        recipeFlow.tryEmit(DataResult.Success(RECIPE))
+        viewModel.increaseYield()
+        recipeFlow.tryEmit(DataResult.Success(RECIPE.copy(yield = 5)))
+        recipeFlow.tryEmit(DataResult.Success(RECIPE.copy(yield = 6)))
+
+        assertEquals(5, viewModel.state.value.currentYield)
+    }
+
+    @Test
+    fun currentYield_afterResetYield_followsRecipeUpdateAgain() {
+        val recipeFlow =
+            MutableSharedFlow<DataResult<Recipe>>(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+        whenever(recipeRepository.getRecipeFlow("1")).thenReturn(recipeFlow)
+        val viewModel = createViewModel()
+
+        recipeFlow.tryEmit(DataResult.Success(RECIPE))
+        viewModel.increaseYield()
+        viewModel.resetYield()
+        recipeFlow.tryEmit(DataResult.Success(RECIPE.copy(yield = 6)))
+
+        assertEquals(6, viewModel.state.value.currentYield)
+    }
+
     @Test
     fun currentYield_untouched_followsRecipeUpdate() {
         val recipeFlow =
