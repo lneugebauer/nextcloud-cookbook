@@ -5,6 +5,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.util.DataResult
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
 import de.lukasneugebauer.nextcloudcookbook.core.util.asUiText
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.mapNotNull
 import org.mobilenativefoundation.store.store5.StoreReadResponse
 
@@ -21,6 +22,9 @@ import org.mobilenativefoundation.store.store5.StoreReadResponse
  *
  * [StoreReadResponse.NoNewData] is dropped: it only reports that a fetch returned nothing new, so
  * whatever was emitted before still stands and consumers have no state to update.
+ *
+ * Database invalidation re-emits the cached value even when it is unchanged, so value-equal
+ * results are deduplicated before they reach consumers.
  */
 fun <In, Out> Flow<StoreReadResponse<In>>.asDataResult(transform: (In?) -> Out?): Flow<DataResult<Out>> =
     mapNotNull { response ->
@@ -35,4 +39,4 @@ fun <In, Out> Flow<StoreReadResponse<In>>.asDataResult(transform: (In?) -> Out?)
 
             is StoreReadResponse.NoNewData -> null
         }
-    }
+    }.distinctUntilChanged()

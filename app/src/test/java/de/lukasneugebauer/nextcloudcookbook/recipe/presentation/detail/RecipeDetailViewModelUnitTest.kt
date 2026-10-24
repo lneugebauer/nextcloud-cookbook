@@ -14,6 +14,8 @@ import de.lukasneugebauer.nextcloudcookbook.recipe.domain.repository.RecipeRepos
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.emptyRecipe
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
@@ -73,15 +75,17 @@ class RecipeDetailViewModelUnitTest {
         whenever(recipeRepository.getRecipeFlow("1")).thenReturn(flowOf(DataResult.Success(RECIPE)))
         whenever(recipeRepository.getRecipePreviewsFlow()).thenReturn(flowOf(DataResult.Success(emptyList())))
 
-        viewModel =
-            RecipeDetailViewModel(
-                preferencesManager = preferencesManager,
-                recipeFormatter = recipeFormatter,
-                recipeRepository = recipeRepository,
-                savedStateHandle = SavedStateHandle(mapOf("recipeId" to "1")),
-                yieldCalculator = YieldCalculatorImpl(Locale("en")),
-            )
+        viewModel = createViewModel()
     }
+
+    private fun createViewModel(): RecipeDetailViewModel =
+        RecipeDetailViewModel(
+            preferencesManager = preferencesManager,
+            recipeFormatter = recipeFormatter,
+            recipeRepository = recipeRepository,
+            savedStateHandle = SavedStateHandle(mapOf("recipeId" to "1")),
+            yieldCalculator = YieldCalculatorImpl(Locale("en")),
+        )
 
     @After
     fun tearDown() {
@@ -147,6 +151,75 @@ class RecipeDetailViewModelUnitTest {
             listOf("400 g flour", "2 eggs", "salt"),
             captor.firstValue.ingredients.map { it.value },
         )
+    }
+
+    /**
+     * The regression behind #212: while recipes are synced in the background, the recipe flow
+     * re-emits with every database update, and that must not reset servings the user changed.
+     * Unlike the other tests, this one needs a hot recipe flow so a second emission can arrive
+     * after the user interaction.
+     */
+    @Test
+    fun currentYield_changedByUser_isKeptWhenRecipeReEmits() {
+        val recipeFlow =
+            MutableSharedFlow<DataResult<Recipe>>(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+        whenever(recipeRepository.getRecipeFlow("1")).thenReturn(recipeFlow)
+        val viewModel = createViewModel()
+
+        recipeFlow.tryEmit(DataResult.Success(RECIPE))
+        viewModel.increaseYield()
+        recipeFlow.tryEmit(DataResult.Success(RECIPE))
+
+        assertEquals(5, viewModel.state.value.currentYield)
+        assertEquals("500 g flour", viewModel.getIngredientAt(0))
+    }
+
+    /**
+     * A synced update can set the recipe's own yield to the value the user selected. That must not
+     * be mistaken for an untouched yield: a later update to yet another yield has to keep the
+     * user's selection.
+     */
+    @Test
+    fun currentYield_changedByUser_isKeptWhenRecipeUpdatesMatchAndDiverge() {
+        val recipeFlow =
+            MutableSharedFlow<DataResult<Recipe>>(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+        whenever(recipeRepository.getRecipeFlow("1")).thenReturn(recipeFlow)
+        val viewModel = createViewModel()
+
+        recipeFlow.tryEmit(DataResult.Success(RECIPE))
+        viewModel.increaseYield()
+        recipeFlow.tryEmit(DataResult.Success(RECIPE.copy(yield = 5)))
+        recipeFlow.tryEmit(DataResult.Success(RECIPE.copy(yield = 6)))
+
+        assertEquals(5, viewModel.state.value.currentYield)
+    }
+
+    @Test
+    fun currentYield_afterResetYield_followsRecipeUpdateAgain() {
+        val recipeFlow =
+            MutableSharedFlow<DataResult<Recipe>>(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+        whenever(recipeRepository.getRecipeFlow("1")).thenReturn(recipeFlow)
+        val viewModel = createViewModel()
+
+        recipeFlow.tryEmit(DataResult.Success(RECIPE))
+        viewModel.increaseYield()
+        viewModel.resetYield()
+        recipeFlow.tryEmit(DataResult.Success(RECIPE.copy(yield = 6)))
+
+        assertEquals(6, viewModel.state.value.currentYield)
+    }
+
+    @Test
+    fun currentYield_untouched_followsRecipeUpdate() {
+        val recipeFlow =
+            MutableSharedFlow<DataResult<Recipe>>(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+        whenever(recipeRepository.getRecipeFlow("1")).thenReturn(recipeFlow)
+        val viewModel = createViewModel()
+
+        recipeFlow.tryEmit(DataResult.Success(RECIPE))
+        recipeFlow.tryEmit(DataResult.Success(RECIPE.copy(yield = 6)))
+
+        assertEquals(6, viewModel.state.value.currentYield)
     }
 
     companion object {
