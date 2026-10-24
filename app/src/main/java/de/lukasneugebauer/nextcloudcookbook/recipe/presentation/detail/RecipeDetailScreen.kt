@@ -15,6 +15,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -70,6 +71,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.movableContentOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -429,29 +431,70 @@ fun RecipeDetailLayout(
                 if (recipe.category.isNotEmpty()) {
                     Category(category = recipe.category)
                 }
-                if (recipe.ingredients.isNotEmpty()) {
-                    Ingredients(
-                        ingredients =
-                            calculatedIngredients.ifEmpty {
-                                recipe.ingredients.map { CalculatedIngredient(it.value, it.hasCorrectSyntax) }
-                            },
-                        onDecreaseYield = onDecreaseYield,
-                        onIncreaseYield = onIncreaseYield,
-                        onResetYield = onResetYield,
-                        currentYield = currentYield,
-                        showResetButton = recipe.yield != currentYield,
-                        isShowIngredientSyntaxIndicator = isShowIngredientSyntaxIndicator,
-                        getIngredientAt = getIngredientAt,
-                    )
+
+                val currentRecipe by rememberUpdatedState(recipe)
+                val currentCalculatedIngredients by rememberUpdatedState(calculatedIngredients)
+                val currentYieldState by rememberUpdatedState(currentYield)
+                val currentShowIndicator by rememberUpdatedState(isShowIngredientSyntaxIndicator)
+                val currentOnDecreaseYield by rememberUpdatedState(onDecreaseYield)
+                val currentOnIncreaseYield by rememberUpdatedState(onIncreaseYield)
+                val currentOnResetYield by rememberUpdatedState(onResetYield)
+                val currentGetIngredientAt by rememberUpdatedState(getIngredientAt)
+
+                val ingredientsAndDetails = remember {
+                    movableContentOf {
+                        if (currentRecipe.ingredients.isNotEmpty()) {
+                            Ingredients(
+                                ingredients = currentCalculatedIngredients.ifEmpty {
+                                    currentRecipe.ingredients.map { CalculatedIngredient(it.value, it.hasCorrectSyntax) }
+                                },
+                                onDecreaseYield = currentOnDecreaseYield,
+                                onIncreaseYield = currentOnIncreaseYield,
+                                onResetYield = currentOnResetYield,
+                                currentYield = currentYieldState,
+                                showResetButton = currentRecipe.yield != currentYieldState,
+                                isShowIngredientSyntaxIndicator = currentShowIndicator,
+                                getIngredientAt = currentGetIngredientAt,
+                            )
+                        }
+                        if (currentRecipe.nutrition != null) {
+                            Nutrition(currentRecipe.nutrition!!)
+                        }
+                        if (currentRecipe.tools.isNotEmpty()) {
+                            Tools(tools = currentRecipe.tools)
+                        }
+                    }
                 }
-                if (recipe.nutrition != null) {
-                    Nutrition(recipe.nutrition)
+                val instructionsContent = remember {
+                    movableContentOf {
+                        if (currentRecipe.instructions.isNotEmpty()) {
+                            Instructions(instructions = currentRecipe.instructions)
+                        }
+                    }
                 }
-                if (recipe.tools.isNotEmpty()) {
-                    Tools(tools = recipe.tools)
-                }
-                if (recipe.instructions.isNotEmpty()) {
-                    Instructions(instructions = recipe.instructions)
+
+                BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+                    val hasIngredientsOrDetails = recipe.ingredients.isNotEmpty() || recipe.nutrition != null || recipe.tools.isNotEmpty()
+                    val hasInstructions = recipe.instructions.isNotEmpty()
+                    
+                    if (maxWidth >= 600.dp && hasIngredientsOrDetails && hasInstructions) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        ) {
+                            Column(modifier = Modifier.weight(1f)) {
+                                ingredientsAndDetails()
+                            }
+                            Column(modifier = Modifier.weight(1f)) {
+                                instructionsContent()
+                            }
+                        }
+                    } else {
+                        Column(modifier = Modifier.fillMaxWidth()) {
+                            ingredientsAndDetails()
+                            instructionsContent()
+                        }
+                    }
                 }
                 Gap(size = dimensionResource(id = R.dimen.padding_s))
                 Gap(size = dimensionResource(id = R.dimen.fab_offset))
@@ -611,6 +654,7 @@ private fun Category(category: String) {
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun Ingredients(
     ingredients: List<CalculatedIngredient>,
@@ -669,33 +713,36 @@ private fun Ingredients(
             )
         }
     }
-    Row(
+    FlowRow(
         modifier =
             Modifier
                 .padding(horizontal = dimensionResource(id = R.dimen.padding_m))
                 .padding(bottom = dimensionResource(id = R.dimen.padding_s)),
         horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_s)),
-        verticalAlignment = Alignment.CenterVertically,
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_s)),
     ) {
-        Button(
-            onClick = onDecreaseYield,
-            enabled = currentYield > 1,
-        ) {
-            Icon(
-                imageVector = Icons.Outlined.Remove,
-                contentDescription = stringResource(id = R.string.recipe_servings_decrease),
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Button(
+                onClick = onDecreaseYield,
+                enabled = currentYield > 1,
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Remove,
+                    contentDescription = stringResource(id = R.string.recipe_servings_decrease),
+                )
+            }
+            Text(
+                text = pluralResource(resId = R.plurals.recipe_servings, currentYield, currentYield),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_s)),
+                style = MaterialTheme.typography.bodyLarge,
             )
-        }
-        Text(
-            text = pluralResource(resId = R.plurals.recipe_servings, currentYield, currentYield),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.bodyLarge,
-        )
-        Button(onClick = onIncreaseYield) {
-            Icon(
-                imageVector = Icons.Outlined.Add,
-                contentDescription = stringResource(id = R.string.recipe_servings_increase),
-            )
+            Button(onClick = onIncreaseYield) {
+                Icon(
+                    imageVector = Icons.Outlined.Add,
+                    contentDescription = stringResource(id = R.string.recipe_servings_increase),
+                )
+            }
         }
         if (showResetButton) {
             Button(onClick = onResetYield) {
