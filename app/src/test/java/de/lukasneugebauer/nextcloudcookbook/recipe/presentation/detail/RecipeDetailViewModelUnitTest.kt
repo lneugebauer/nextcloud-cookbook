@@ -84,6 +84,7 @@ class RecipeDetailViewModelUnitTest {
             recipeFormatter = recipeFormatter,
             recipeRepository = recipeRepository,
             savedStateHandle = SavedStateHandle(mapOf("recipeId" to "1")),
+            tasksRepository = mock(),
             yieldCalculator = YieldCalculatorImpl(Locale("en")),
         )
 

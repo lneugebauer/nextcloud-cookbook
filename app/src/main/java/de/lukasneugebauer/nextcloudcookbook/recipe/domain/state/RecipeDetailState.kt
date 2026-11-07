@@ -14,4 +14,17 @@ data class RecipeDetailState(
     val loading: Boolean = true,
     val isShowIngredientSyntaxIndicator: Boolean = IS_SHOW_INGREDIENT_SYNTAX_INDICATOR_DEFAULT,
     val showFullScreenImage: Boolean = false,
+    val isShoppingListConfigured: Boolean = false,
+    val showShoppingListDialog: Boolean = false,
+    val shoppingListResult: ShoppingListResult? = null,
 )
+
+sealed interface ShoppingListResult {
+    data class Success(
+        val count: Int,
+    ) : ShoppingListResult
+
+    data class Error(
+        val message: UiText,
+    ) : ShoppingListResult
+}

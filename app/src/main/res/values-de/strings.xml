@@ -5,6 +5,7 @@
     <string name="common_add">Hinzufügen</string>
     <string name="common_ascending">Aufsteigend</string>
     <string name="common_back">Zurück</string>
+    <string name="common_cancel">Abbrechen</string>
     <string name="common_categories">Kategorien</string>
     <string name="common_clear_input">Eingabe löschen</string>
     <string name="common_close">Schließen</string>
@@ -87,6 +88,7 @@
         <item quantity="other">Zutaten kopiert</item>
     </plurals>
     <string name="recipe_ingredients_copy">Zutaten in Zwischenablage kopieren</string>
+    <string name="recipe_ingredients_add_to_shopping_list">Zutaten zur Einkaufsliste hinzufügen</string>
     <plurals name="recipe_ingredients_servings">
         <item quantity="one">Zutaten für %1$d Portion</item>
         <item quantity="other">Zutaten für %1$d Portionen</item>
@@ -153,7 +155,20 @@
     <string name="settings_paypal">PayPal</string>
     <string name="settings_paypal_donation">Spenden über PayPal</string>
     <string name="settings_privacy">Datenschutz</string>
+    <string name="settings_shopping_list">Einkaufsliste</string>
+    <string name="settings_shopping_list_none_selected">Keine Liste ausgewählt</string>
+    <string name="settings_shopping_list_dialog_title">Einkaufsliste auswählen</string>
+    <string name="settings_shopping_list_empty">Keine Aufgabenlisten gefunden.</string>
+    <string name="settings_shopping_list_error">Aufgabenlisten konnten nicht geladen werden.</string>
     <string name="settings_show_indicator_if_recipe_syntax_is_invalid">Zeigt einen Hinweis an, wenn die Syntax der Zutaten für die Neuberechnung ungeeignet ist.</string>
+    <string name="shopping_list_dialog_title">Zur Einkaufsliste hinzufügen</string>
+    <string name="shopping_list_dialog_amount">Menge</string>
+    <string name="shopping_list_not_configured">Bitte zuerst in den Einstellungen eine Einkaufsliste auswählen.</string>
+    <string name="shopping_list_error_adding">Zutaten konnten nicht zur Einkaufsliste hinzugefügt werden.</string>
+    <plurals name="shopping_list_ingredients_added">
+        <item quantity="one">%1$d Zutat zur Einkaufsliste hinzugefügt</item>
+        <item quantity="other">%1$d Zutaten zur Einkaufsliste hinzugefügt</item>
+    </plurals>
     <string name="settings_source_code">Quellcode</string>
     <string name="settings_sponsoring">Unterstützen</string>
     <string name="settings_stay_awake_on_recipe_screen">Der Bildschirm bleibt eingeschaltet, während Sie sich auf dem Rezeptbildschirm befinden</string>

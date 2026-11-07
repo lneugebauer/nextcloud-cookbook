@@ -20,14 +20,19 @@ import androidx.compose.material.icons.outlined.Folder
 import androidx.compose.material.icons.outlined.LightMode
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.Report
+import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.material.icons.outlined.Translate
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -55,6 +60,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
 import de.lukasneugebauer.nextcloudcookbook.core.util.openInBrowser
 import de.lukasneugebauer.nextcloudcookbook.settings.domain.state.SettingsScreenState
+import de.lukasneugebauer.nextcloudcookbook.settings.domain.state.ShoppingListDialogState
 import de.lukasneugebauer.nextcloudcookbook.settings.util.SettingsConstants.GITHUB_ISSUES_URL
 import de.lukasneugebauer.nextcloudcookbook.settings.util.SettingsConstants.GITHUB_SPONSOR_URL
 import de.lukasneugebauer.nextcloudcookbook.settings.util.SettingsConstants.GITHUB_URL
@@ -63,6 +69,7 @@ import de.lukasneugebauer.nextcloudcookbook.settings.util.SettingsConstants.LICE
 import de.lukasneugebauer.nextcloudcookbook.settings.util.SettingsConstants.PAYPAL_URL
 import de.lukasneugebauer.nextcloudcookbook.settings.util.SettingsConstants.PRIVACY_URL
 import de.lukasneugebauer.nextcloudcookbook.settings.util.SettingsConstants.WEBLATE_URL
+import de.lukasneugebauer.nextcloudcookbook.tasks.domain.model.TaskList
 
 @Destination<MainGraph>
 @Composable
@@ -98,6 +105,10 @@ fun AnimatedVisibilityScope.SettingsScreen(
                     recipeImageUploadFolder = currentState.recipeImageUploadFolder,
                     onRecipeImageUploadFolderClick = {
                         navigator.navigate(RecipeImageUploadFolderScreenDestination)
+                    },
+                    shoppingListName = currentState.shoppingListName,
+                    onShoppingListClick = {
+                        viewModel.showShoppingListDialog()
                     },
                     onLogoutClick = {
                         viewModel.logout {
@@ -136,6 +147,13 @@ fun AnimatedVisibilityScope.SettingsScreen(
                         PAYPAL_URL.toUri().openInBrowser(context)
                     },
                 )
+
+                val shoppingListDialogState by viewModel.shoppingListDialogState.collectAsState()
+                ShoppingListSelectionDialog(
+                    state = shoppingListDialogState,
+                    onSelect = { viewModel.setShoppingList(it) },
+                    onDismiss = { viewModel.hideShoppingListDialog() },
+                )
             }
         }
     }
@@ -165,6 +183,8 @@ fun SettingsLayout(
     onShowRecipeSyntaxIndicatorChange: (Boolean) -> Unit,
     recipeImageUploadFolder: String,
     onRecipeImageUploadFolderClick: () -> Unit,
+    shoppingListName: String?,
+    onShoppingListClick: () -> Unit,
     onLogoutClick: () -> Unit,
     onPrivacyClick: () -> Unit,
     onLicenseClick: () -> Unit,
@@ -190,6 +210,8 @@ fun SettingsLayout(
             onShowRecipeSyntaxIndicatorChange = onShowRecipeSyntaxIndicatorChange,
             recipeImageUploadFolder = recipeImageUploadFolder,
             onRecipeImageUploadFolderClick = onRecipeImageUploadFolderClick,
+            shoppingListName = shoppingListName,
+            onShoppingListClick = onShoppingListClick,
         )
         Spacer(modifier = Modifier.size(size = dimensionResource(R.dimen.padding_m)))
         SettingsGroupAccount(onLogoutClick = onLogoutClick)
@@ -225,6 +247,8 @@ fun ColumnScope.SettingsGroupGeneral(
     onShowRecipeSyntaxIndicatorChange: (Boolean) -> Unit,
     recipeImageUploadFolder: String,
     onRecipeImageUploadFolderClick: () -> Unit,
+    shoppingListName: String?,
+    onShoppingListClick: () -> Unit,
 ) {
     Text(
         text = stringResource(R.string.settings_general),
@@ -284,6 +308,72 @@ fun ColumnScope.SettingsGroupGeneral(
                 imageVector = Icons.Outlined.Folder,
                 contentDescription = null,
             )
+        },
+    )
+    ListItem(
+        headlineContent = {
+            Text(text = stringResource(R.string.settings_shopping_list))
+        },
+        modifier = Modifier.clickable(onClick = onShoppingListClick),
+        supportingContent = {
+            Text(text = shoppingListName ?: stringResource(R.string.settings_shopping_list_none_selected))
+        },
+        leadingContent = {
+            Icon(
+                imageVector = Icons.Outlined.ShoppingCart,
+                contentDescription = null,
+            )
+        },
+    )
+}
+
+@Composable
+fun ShoppingListSelectionDialog(
+    state: ShoppingListDialogState,
+    onSelect: (TaskList) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    if (state is ShoppingListDialogState.Hidden) return
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(text = stringResource(R.string.settings_shopping_list_dialog_title)) },
+        text = {
+            when (state) {
+                is ShoppingListDialogState.Loading -> {
+                    CircularProgressIndicator()
+                }
+                is ShoppingListDialogState.Loaded -> {
+                    if (state.taskLists.isEmpty()) {
+                        Text(text = stringResource(R.string.settings_shopping_list_empty))
+                    } else {
+                        Column(modifier = Modifier.verticalScroll(state = rememberScrollState())) {
+                            state.taskLists.forEach { taskList ->
+                                ListItem(
+                                    headlineContent = { Text(text = taskList.displayName) },
+                                    modifier = Modifier.clickable(onClick = { onSelect(taskList) }),
+                                    leadingContent = {
+                                        RadioButton(
+                                            selected = taskList.url == state.selectedUrl,
+                                            onClick = { onSelect(taskList) },
+                                        )
+                                    },
+                                )
+                            }
+                        }
+                    }
+                }
+                is ShoppingListDialogState.Error -> {
+                    Text(text = state.message.asString())
+                }
+                is ShoppingListDialogState.Hidden -> Unit
+            }
+        },
+        confirmButton = {},
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(text = stringResource(R.string.common_cancel))
+            }
         },
     )
 }
@@ -500,6 +590,8 @@ private fun SettingsContentPreview() {
             onShowRecipeSyntaxIndicatorChange = {},
             recipeImageUploadFolder = ".de.lukasneugebauer.nextcloudcookbook",
             onRecipeImageUploadFolderClick = {},
+            shoppingListName = null,
+            onShoppingListClick = {},
             onLogoutClick = {},
             onPrivacyClick = {},
             onLicenseClick = {},

@@ -21,6 +21,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.util.Constants.DEFAULT_RECIPE_O
 import de.lukasneugebauer.nextcloudcookbook.core.util.Constants.IS_SHOW_INGREDIENT_SYNTAX_INDICATOR_DEFAULT
 import de.lukasneugebauer.nextcloudcookbook.settings.util.SettingsConstants.STAY_AWAKE_DEFAULT
 import de.lukasneugebauer.nextcloudcookbook.settings.util.SettingsConstants.STAY_AWAKE_KEY
+import de.lukasneugebauer.nextcloudcookbook.tasks.domain.model.TaskList
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -93,6 +94,8 @@ class PreferencesManager
             val RECIPE_OF_THE_DAY_UPDATED_AT = longPreferencesKey("recipe_of_the_day_updated_at")
             val ALLOW_SELF_SIGNED_CERTIFICATES = booleanPreferencesKey("allow_self_signed_certificates")
             val IS_SHOW_INGREDIENT_SYNTAX_INDICATOR = booleanPreferencesKey("is_show_ingredient_syntax_indicator")
+            val SHOPPING_LIST_URL = stringPreferencesKey("shopping_list_url")
+            val SHOPPING_LIST_NAME = stringPreferencesKey("shopping_list_name")
         }
 
         val preferencesFlow =
@@ -120,6 +123,14 @@ class PreferencesManager
                             ?: DEFAULT_RECIPE_IMAGE_UPLOAD_FOLDER
                     val allowSelfSignedCertificates =
                         preferences[PreferencesKeys.ALLOW_SELF_SIGNED_CERTIFICATES] ?: ALLOW_SELF_SIGNED_CERTIFICATES_DEFAULT
+                    val shoppingListUrl = preferences[PreferencesKeys.SHOPPING_LIST_URL] ?: ""
+                    val shoppingListName = preferences[PreferencesKeys.SHOPPING_LIST_NAME] ?: ""
+                    val shoppingList =
+                        if (shoppingListUrl.isNotBlank()) {
+                            TaskList(url = shoppingListUrl, displayName = shoppingListName)
+                        } else {
+                            null
+                        }
 
                     de.lukasneugebauer.nextcloudcookbook.core.domain.model.Preferences(
                         isShowIngredientSyntaxIndicator = isShowIngredientSyntaxIndicator,
@@ -143,6 +154,7 @@ class PreferencesManager
                             ),
                         allowSelfSignedCertificates = allowSelfSignedCertificates,
                         recipeImageUploadFolder = recipeImageUploadFolder,
+                        shoppingList = shoppingList,
                     )
                 }
 
@@ -181,6 +193,12 @@ class PreferencesManager
         suspend fun updateRecipeImageUploadFolder(recipeImageUploadFolder: String) =
             context.dataStore54.edit { preferences ->
                 preferences[PreferencesKeys.RECIPE_IMAGE_UPLOAD_FOLDER] = recipeImageUploadFolder
+            }
+
+        suspend fun updateShoppingList(shoppingList: TaskList) =
+            context.dataStore54.edit { preferences ->
+                preferences[PreferencesKeys.SHOPPING_LIST_URL] = shoppingList.url
+                preferences[PreferencesKeys.SHOPPING_LIST_NAME] = shoppingList.displayName
             }
 
         suspend fun clearPreferences() {
