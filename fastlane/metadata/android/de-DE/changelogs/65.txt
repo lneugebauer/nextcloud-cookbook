@@ -1,0 +1,7 @@
+- App als Freigabeziel für das Importieren von Rezepten hinzugefügt
+- Darstellung der Rezepte auf größeren Bildschirmen verbessert
+- Fehlerverhalten bei doppelten Rezepten verbessert
+- Kopieren neu berechneter Zutaten korrigiert
+- Fehler bei der Anmeldung mit Passkeys behoben
+- Berechnung der Portionen während der Hintergrundsynchronisierung korrigiert
+- Übersetzungen aktualisiert

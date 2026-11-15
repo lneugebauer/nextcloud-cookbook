@@ -1,0 +1,7 @@
+- Add app as share target to imports recipes
+- Improve recipe view on larger screens
+- Improve duplicate recipe errors
+- Fix copying of recalculated ingredient
+- Fix sign in with passkeys
+- Fix servings calculation during background sync
+- Update translations
