@@ -170,4 +170,7 @@
     <string name="recipe_force_refresh">Actualizar receitas</string>
     <string name="error_recipe_exists">Xa existe a receita %1$s</string>
     <string name="banner_action_view_original">Ver</string>
+    <string name="error_no_browser">Non se atopa o navegador. Instala un navegador ou utiliza o acceso manual.</string>
+    <string name="login_browser_open">Abrir navegador</string>
+    <string name="login_browser_waiting">Realiza o acceso no teu navegador. Esta pantalla actualízase automaticamente.</string>
 </resources>

@@ -93,7 +93,7 @@
     <string name="error_empty_password">Introduzca una contraseña</string>
     <string name="error_http_404">404 No encontrado</string>
     <string name="error_http_unknown">Error de HTTP desconocido</string>
-    <string name="error_invalid_protocol">Protocolo no válido; el URL debe comenzar por https://</string>
+    <string name="error_invalid_protocol">Protocolo no válido; el URL debe comenzar por http:// o https://</string>
     <string name="error_malformed_json">Formato incorrecto de JSON</string>
     <string name="error_recipe_id_missing">Falta el id. de la receta</string>
     <string name="recipe_description">Descripción</string>
@@ -151,4 +151,28 @@
     <string name="settings_github_sponsor">Patrocina en GitHub</string>
     <string name="settings_liberapay_patron">Patrocina en Liberapay</string>
     <string name="settings_sponsoring">Patrocinio</string>
+    <string name="recipe_force_refresh">Actualizar recetas</string>
+    <string name="error_http_409">409 Conflicto: La receta ya existe</string>
+    <string name="error_camera_permission_denied">Permiso de cámara denegado</string>
+    <string name="error_image_processing_failed">No se pudo procesar la imagen</string>
+    <string name="error_image_upload_failed">No se pudo subir la imagen</string>
+    <string name="error_invalid_image_payload">Datos de imagen no válidos</string>
+    <string name="error_retry">Reintentar</string>
+    <string name="error_no_browser">No se encontró ninguna aplicación de navegador. Instala un navegador o usa el inicio de sesión manual.</string>
+    <string name="error_recipe_exists">La receta %1$s ya existe</string>
+    <string name="banner_action_view_original">Ver</string>
+    <string name="info_headline">Más información</string>
+    <string name="login_allow_self_signed_certificates">Permitir certificados autofirmados</string>
+    <string name="login_browser_open">Abrir navegador</string>
+    <string name="login_browser_waiting">Completa el inicio de sesión en tu navegador. Esta pantalla se actualiza automáticamente.</string>
+    <string name="login_instance_hint">Introduce tus datos de inicio de sesión para %1$s.</string>
+    <string name="recipe_image_select">Seleccionar imagen</string>
+    <string name="recipe_image_take_photo">Tomar foto</string>
+    <string name="recipe_ingredient_syntax_error">El ingrediente no se puede recalcular.</string>
+    <string name="recipe_keywords">Palabras clave</string>
+    <string name="settings_recipe_image_upload_folder">Carpeta de subida de imágenes de recetas</string>
+    <string name="settings_recipe_image_upload_folder_description">Carpeta utilizada al subir imágenes de recetas a Nextcloud.</string>
+    <string name="settings_recipe_image_upload_folder_reset">Restaurar valores predeterminados</string>
+    <string name="settings_ingredient_syntax_indicator">Indicador de sintaxis de ingredientes</string>
+    <string name="settings_show_indicator_if_recipe_syntax_is_invalid">Mostrar un indicador si la sintaxis de los ingredientes no es adecuada para el recálculo.</string>
 </resources>

@@ -174,4 +174,7 @@
     <string name="error_recipe_exists">Recept %1$s již existuje</string>
     <string name="settings_recipe_image_upload_folder_reset">Obnovit výchozí složku</string>
     <string name="banner_action_view_original">Zobrazit</string>
+    <string name="error_no_browser">Nepodařilo se najít aplikaci pro webový prohlížeč. Nainstalujte si nějaký prohlížeč, nebo se přihlašte ručně.</string>
+    <string name="login_browser_open">Otevřít prohlížeč</string>
+    <string name="login_browser_waiting">Přihlášení dokončíte ve webovém prohlížeči. Tato obrazovka se následně zaktualizuje automaticky.</string>
 </resources>
