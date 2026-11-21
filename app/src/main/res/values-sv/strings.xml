@@ -44,7 +44,7 @@
     <string name="error_http_500">500 Internt serverfel</string>
     <string name="error_http_503">503 Tjänsten är inte tillgänglig</string>
     <string name="error_http_unknown">Okänt HTTP fel</string>
-    <string name="error_invalid_protocol">Ogiltigt protokoll; URL:en måste börja med https://</string>
+    <string name="error_invalid_protocol">Ogiltigt protokoll; URL:en måste börja med http:// eller https://</string>
     <string name="error_invalid_url">Felaktig länk</string>
     <string name="error_malformed_json">Felaktigt formaterad JSON</string>
     <string name="error_recipe_id_missing">Recept-ID saknas</string>
@@ -156,4 +156,20 @@
     <string name="settings_version">Nextcloud kokbok app</string>
     <string name="settings_where_to_report_issues">Du kan rapportera buggar, förbättringsförslag och funktionsförfrågningar på GitHubs problemspårare</string>
     <string name="recipe_keywords">Nyckelord</string>
+    <string name="recipe_force_refresh">Uppdatera recept</string>
+    <string name="error_http_409">409 Conflict: Recept finns redan</string>
+    <string name="error_camera_permission_denied">Åtkomst till kameran nekad</string>
+    <string name="error_image_processing_failed">Kunde inte bearbeta bild</string>
+    <string name="error_image_upload_failed">Kunde inte ladda upp bild</string>
+    <string name="error_invalid_image_payload">Ogiltig bilddata</string>
+    <string name="error_no_browser">Ingen webbläsarapp hittades. Installera en webbläsare eller använd manuell inloggning.</string>
+    <string name="error_recipe_exists">Recept %1$s existerar redan</string>
+    <string name="banner_action_view_original">Vy</string>
+    <string name="login_browser_open">Öppna webbläsare</string>
+    <string name="login_browser_waiting">Slutför inloggningen i din webbläsare. Den här skärmen uppdateras automatiskt.</string>
+    <string name="recipe_image_select">Välj bild</string>
+    <string name="recipe_image_take_photo">Ta foto</string>
+    <string name="settings_recipe_image_upload_folder">Mapp för uppladdning av receptbilder</string>
+    <string name="settings_recipe_image_upload_folder_description">Mapp som används vid uppladdning av receptbilder till Nextcloud.</string>
+    <string name="settings_recipe_image_upload_folder_reset">Återställ till standard</string>
 </resources>
