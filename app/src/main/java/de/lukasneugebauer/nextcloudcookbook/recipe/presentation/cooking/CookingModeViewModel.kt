@@ -10,6 +10,7 @@ import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.YieldCalculator
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.repository.RecipeRepository
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.CookingModeState
+import de.lukasneugebauer.nextcloudcookbook.recipe.util.IngredientStepMatcher
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.enrichRecipeLinks
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -67,18 +68,29 @@ class CookingModeViewModel
                     is DataResult.Success -> {
                         val recipe = recipeResult.data.enrichRecipeLinks(recipePreviews)
                         val servings = requestedServings ?: recipe.yield
+                        val originalIngredients = recipe.ingredients.map { ingredient -> ingredient.value }
                         val ingredients =
                             yieldCalculator
                                 .recalculateIngredients(
-                                    ingredients = recipe.ingredients.map { ingredient -> ingredient.value },
+                                    ingredients = originalIngredients,
                                     currentYield = servings,
                                     originalYield = recipe.yield,
                                 ).map { calculatedIngredient -> calculatedIngredient.ingredient }
+                        // Recalculation keeps the order, so indices into the original ingredients
+                        // also index the recalculated ones.
+                        val stepIngredients =
+                            recipe.instructions.map { instruction ->
+                                IngredientStepMatcher.withSectionHeadings(
+                                    ingredients = originalIngredients,
+                                    indices = IngredientStepMatcher.ingredientIndicesForStep(originalIngredients, instruction.value),
+                                )
+                            }
                         _state.update {
                             it.copy(
                                 recipeName = recipe.name,
                                 instructions = recipe.instructions,
                                 ingredients = ingredients,
+                                stepIngredients = stepIngredients,
                                 servings = servings,
                                 loading = false,
                                 error = null,

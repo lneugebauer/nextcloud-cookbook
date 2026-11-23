@@ -102,6 +102,30 @@ class CookingModeViewModelUnitTest {
     }
 
     @Test
+    fun init_matchesIngredientsToEachStepWithTheirSectionHeading() {
+        givenRecipeFlow(
+            flowOf(
+                DataResult.Success(
+                    RECIPE.copy(
+                        instructions =
+                            listOf(
+                                Instruction(id = 0, value = "Whisk the flour and the eggs."),
+                                Instruction(id = 1, value = "Let it rest."),
+                                Instruction(id = 2, value = "Season with salt."),
+                            ),
+                    ),
+                ),
+            ),
+        )
+
+        val state = createViewModel(servings = 4).state.value
+
+        assertEquals(listOf(listOf(0, 1, 2), emptyList(), listOf(0, 3)), state.stepIngredients)
+        // The indices point at the recalculated ingredients.
+        assertEquals(listOf("## Batter", "400 g flour", "4 eggs"), state.stepIngredients[0].map { state.ingredients[it] })
+    }
+
+    @Test
     fun init_withRecipeWithoutYield_showsIngredientsUnchanged() {
         givenRecipeFlow(flowOf(DataResult.Success(RECIPE.copy(yield = 0))))
 

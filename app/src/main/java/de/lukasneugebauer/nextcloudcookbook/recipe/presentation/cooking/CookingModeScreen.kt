@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -36,11 +37,13 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -104,11 +107,17 @@ fun CookingModeLayout(
     onClose: () -> Unit,
 ) {
     var showIngredients by rememberSaveable { mutableStateOf(false) }
+    // Hoisted out of CookingSteps so the ingredients sheet knows the current step. The pager is
+    // only composed once instructions exist, so a restored page survives until they have loaded.
+    val pagerState = rememberPagerState(pageCount = { state.instructions.size })
 
     if (showIngredients && state.ingredients.isNotEmpty()) {
+        val currentStep = pagerState.currentPage
         IngredientsSheet(
             ingredients = state.ingredients,
             servings = state.servings,
+            stepNumber = currentStep + 1,
+            stepIngredients = state.stepIngredients.getOrNull(currentStep),
             onDismiss = { showIngredients = false },
         )
     }
@@ -153,7 +162,7 @@ fun CookingModeLayout(
             when {
                 // Keep showing the steps if a background refresh fails or starts loading again.
                 state.instructions.isNotEmpty() ->
-                    CookingSteps(instructions = state.instructions, onFinish = onClose)
+                    CookingSteps(instructions = state.instructions, pagerState = pagerState, onFinish = onClose)
 
                 state.loading -> Loader()
 
@@ -168,9 +177,9 @@ fun CookingModeLayout(
 @Composable
 private fun CookingSteps(
     instructions: List<Instruction>,
+    pagerState: PagerState,
     onFinish: () -> Unit,
 ) {
-    val pagerState = rememberPagerState(pageCount = { instructions.size })
     val scope = rememberCoroutineScope()
     val currentStep = pagerState.currentPage.coerceIn(0, instructions.lastIndex)
     val isFirstStep = currentStep == 0
@@ -317,27 +326,76 @@ private fun StepControls(
     }
 }
 
+/**
+ * Lists the ingredients the current step seems to use, with a button to switch to all of them.
+ * Falls back to all ingredients when none were recognized in the step.
+ *
+ * @param stepIngredients indices into [ingredients] for the current step, or null without steps.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun IngredientsSheet(
     ingredients: List<String>,
     servings: Int,
+    stepNumber: Int,
+    stepIngredients: List<Int>?,
     onDismiss: () -> Unit,
 ) {
+    val hasStepIngredients = !stepIngredients.isNullOrEmpty()
+    // Not saveable on purpose: every time the sheet opens, it starts with the current step.
+    var showAll by remember { mutableStateOf(false) }
+    val showStepOnly = hasStepIngredients && !showAll
+    val shownIngredients =
+        if (showStepOnly) {
+            stepIngredients.orEmpty().mapNotNull { index -> ingredients.getOrNull(index) }
+        } else {
+            ingredients
+        }
+
     ModalBottomSheet(onDismissRequest = onDismiss) {
-        Text(
-            text =
-                if (servings > 0) {
-                    pluralStringResource(R.plurals.recipe_ingredients_servings, servings, servings)
-                } else {
-                    stringResource(R.string.recipe_ingredients)
-                },
-            modifier =
-                Modifier
-                    .padding(horizontal = dimensionResource(R.dimen.padding_m))
-                    .padding(bottom = dimensionResource(R.dimen.padding_s)),
-            style = MaterialTheme.typography.titleLarge,
-        )
+        Column(modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.padding_m))) {
+            Text(
+                text =
+                    when {
+                        showStepOnly -> stringResource(R.string.recipe_cooking_mode_step_ingredients, stepNumber)
+                        servings > 0 -> pluralStringResource(R.plurals.recipe_ingredients_servings, servings, servings)
+                        else -> stringResource(R.string.recipe_ingredients)
+                    },
+                style = MaterialTheme.typography.titleLarge,
+            )
+            if (showStepOnly && servings > 0) {
+                Text(
+                    text = pluralStringResource(R.plurals.recipe_servings, servings, servings),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            if (stepIngredients != null && !hasStepIngredients) {
+                Text(
+                    text = stringResource(R.string.recipe_cooking_mode_no_step_ingredients, stepNumber),
+                    modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_xs)),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            if (hasStepIngredients) {
+                TextButton(
+                    onClick = { showAll = !showAll },
+                    contentPadding = ButtonDefaults.TextButtonWithIconContentPadding,
+                ) {
+                    Text(
+                        text =
+                            if (showAll) {
+                                stringResource(R.string.recipe_cooking_mode_show_step_ingredients, stepNumber)
+                            } else {
+                                stringResource(R.string.recipe_cooking_mode_show_all_ingredients)
+                            },
+                    )
+                }
+            } else {
+                Spacer(modifier = Modifier.size(dimensionResource(R.dimen.padding_s)))
+            }
+        }
         LazyColumn(
             contentPadding =
                 PaddingValues(
@@ -346,7 +404,7 @@ private fun IngredientsSheet(
                     bottom = dimensionResource(R.dimen.padding_l),
                 ),
         ) {
-            items(ingredients) { ingredient ->
+            items(shownIngredients) { ingredient ->
                 IngredientRow(ingredient = ingredient)
             }
         }
