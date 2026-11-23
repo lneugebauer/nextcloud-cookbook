@@ -81,6 +81,13 @@
     <string name="recipe_category">Category</string>
     <string name="recipe_change_order">Change order</string>
     <string name="recipe_cook_time">Cooking</string>
+    <string name="recipe_cooking_mode_close">Close cooking mode</string>
+    <string name="recipe_cooking_mode_finish">Finish</string>
+    <string name="recipe_cooking_mode_next_step">Next</string>
+    <string name="recipe_cooking_mode_no_instructions">This recipe has no instructions.</string>
+    <string name="recipe_cooking_mode_previous_step">Previous</string>
+    <string name="recipe_cooking_mode_start">Start cooking mode</string>
+    <string name="recipe_cooking_mode_step">Step %1$d of %2$d</string>
     <string name="recipe_created_at">Creation date</string>
     <string name="recipe_description">Description</string>
     <string name="recipe_duration">%1$d min</string>

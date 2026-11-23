@@ -7,7 +7,6 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
 import android.view.View
-import android.view.WindowManager
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibilityScope
@@ -34,6 +33,7 @@ import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Report
+import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material.icons.outlined.Add
@@ -101,6 +101,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.colintheshots.twain.MarkdownText
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.parameters.DeepLink
+import com.ramcosta.composedestinations.generated.destinations.CookingModeScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.RecipeEditScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.RecipeListWithArgumentsScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -108,6 +109,7 @@ import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.MainGraph
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.AuthorizedImage
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Gap
+import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.KeepScreenOn
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.Loader
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.components.pluralResource
 import de.lukasneugebauer.nextcloudcookbook.core.presentation.ui.theme.NextcloudCookbookTheme
@@ -189,6 +191,11 @@ fun AnimatedVisibilityScope.RecipeDetailScreen(
                 viewModel.deleteRecipe(recipe.id)
             }
         },
+        onCookingModeClick = {
+            if (recipe.isNotEmpty()) {
+                navigator.navigate(CookingModeScreenDestination(recipe.id))
+            }
+        },
         shareText = viewModel.getShareText(),
         onFabClick = {
             if (recipe.isNotEmpty()) {
@@ -212,19 +219,6 @@ fun AnimatedVisibilityScope.RecipeDetailScreen(
         isShowIngredientSyntaxIndicator = state.isShowIngredientSyntaxIndicator,
         getIngredientAt = viewModel::getIngredientAt,
     )
-}
-
-@Composable
-private fun KeepScreenOn() {
-    val context = LocalContext.current
-    val activity = context.getActivity()
-    val window = activity?.window
-    DisposableEffect(Unit) {
-        window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        onDispose {
-            window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        }
-    }
 }
 
 /**
@@ -257,6 +251,7 @@ private fun TopBar(
     onNavIconClick: () -> Unit,
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit,
+    onCookingModeClick: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
     shareText: String,
 ) {
@@ -299,6 +294,14 @@ private fun TopBar(
             }
         },
         actions = {
+            if (recipe.instructions.isNotEmpty()) {
+                IconButton(onClick = onCookingModeClick) {
+                    Icon(
+                        Icons.Default.Restaurant,
+                        contentDescription = stringResource(id = R.string.recipe_cooking_mode_start),
+                    )
+                }
+            }
             IconButton(onClick = {
                 shareRecipe()
             }) {
@@ -363,6 +366,7 @@ fun RecipeDetailLayout(
     onDetailImageClick: () -> Unit,
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit,
+    onCookingModeClick: () -> Unit,
     shareText: String,
     onFabClick: () -> Unit,
     loading: Boolean,
@@ -383,6 +387,7 @@ fun RecipeDetailLayout(
                 onNavIconClick = onNavIconClick,
                 onEditClick = onEditClick,
                 onDeleteClick = onDeleteClick,
+                onCookingModeClick = onCookingModeClick,
                 scrollBehavior = scrollBehavior,
                 shareText = shareText,
             )
@@ -1136,6 +1141,7 @@ private fun RecipeDetailLayoutPreview() {
             onDetailImageClick = {},
             onEditClick = {},
             onDeleteClick = {},
+            onCookingModeClick = {},
             shareText = "",
             onFabClick = {},
             loading = false,
