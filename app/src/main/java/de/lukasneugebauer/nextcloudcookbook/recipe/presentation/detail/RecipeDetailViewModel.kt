@@ -12,10 +12,9 @@ import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.RecipeFormatter
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.YieldCalculator
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Ingredient
-import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Recipe
-import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipePreview
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.repository.RecipeRepository
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.RecipeDetailState
+import de.lukasneugebauer.nextcloudcookbook.recipe.util.enrichRecipeLinks
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -72,7 +71,7 @@ class RecipeDetailViewModel
                             )
 
                     is DataResult.Success -> {
-                        val recipe = enrichRecipeLinks(recipeResult.data, recipePreviews)
+                        val recipe = recipeResult.data.enrichRecipeLinks(recipePreviews)
                         val currentYield = if (isYieldChangedByUser) _state.value.currentYield else recipe.yield
                         _state.value =
                             _state.value.copy(
@@ -182,58 +181,5 @@ class RecipeDetailViewModel
 
         fun hideFullScreenImage() {
             _state.value = _state.value.copy(showFullScreenImage = false)
-        }
-
-        private fun enrichRecipeLinks(
-            recipe: Recipe,
-            recipePreviews: List<RecipePreview>?,
-        ): Recipe {
-            fun replace(text: String): String =
-                RECIPE_URL_REGEX.replace(text) { matchResult ->
-                    val (shortId, fullId) = matchResult.destructured
-
-                    if (shortId.isNotBlank()) {
-                        val recipePreview =
-                            recipePreviews?.firstOrNull { recipePreview ->
-                                recipePreview.id == shortId
-                            }
-
-                        if (recipePreview?.name?.isNotBlank() == true) {
-                            "[${recipePreview.name} (#r/$shortId)](nccookbook://lneugebauer.github.io/recipe/$shortId)"
-                        } else {
-                            "[#r/$shortId](nccookbook://lneugebauer.github.io/recipe/$shortId)"
-                        }
-                    } else {
-                        "nccookbook://lneugebauer.github.io/recipe/$fullId"
-                    }
-                }
-
-            val newDescription = replace(recipe.description)
-
-            val newTools =
-                recipe.tools.map { tool ->
-                    tool.copy(value = replace(tool.value))
-                }
-
-            val newIngredients =
-                recipe.ingredients.map { ingredient ->
-                    ingredient.copy(value = replace(ingredient.value))
-                }
-
-            val newInstructions =
-                recipe.instructions.map { instruction ->
-                    instruction.copy(value = replace(instruction.value))
-                }
-
-            return recipe.copy(
-                description = newDescription,
-                tools = newTools,
-                ingredients = newIngredients,
-                instructions = newInstructions,
-            )
-        }
-
-        companion object {
-            val RECIPE_URL_REGEX = Regex("""#r/(\d+)|#/recipe/(\d+)""")
         }
     }

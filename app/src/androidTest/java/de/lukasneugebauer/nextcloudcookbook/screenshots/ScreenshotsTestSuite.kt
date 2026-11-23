@@ -152,6 +152,7 @@ class ScreenshotsTestSuite {
                     onDetailImageClick = {},
                     onEditClick = {},
                     onDeleteClick = {},
+                    onCookingModeClick = {},
                     shareText = "",
                     onFabClick = {},
                     loading = false,
