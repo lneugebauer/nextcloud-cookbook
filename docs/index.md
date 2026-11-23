@@ -104,6 +104,7 @@ To install through [Obtainium](https://github.com/ImranR98/Obtainium/tree/main?t
 - View recipe
 - Edit recipe
 - Stay awake on recipe screen
+- Cooking mode: step-by-step instructions with the ingredients at hand
 - Settings
 - Import recipe via url
 
