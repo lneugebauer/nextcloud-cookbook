@@ -4,6 +4,8 @@ import androidx.lifecycle.SavedStateHandle
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.util.DataResult
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
+import de.lukasneugebauer.nextcloudcookbook.recipe.data.YieldCalculatorImpl
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Ingredient
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Instruction
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.Recipe
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.model.RecipePreview
@@ -28,6 +30,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import java.util.Locale
 
 /**
  * Unit tests for [CookingModeViewModel].
@@ -51,11 +54,61 @@ class CookingModeViewModelUnitTest {
         Dispatchers.resetMain()
     }
 
-    private fun createViewModel(recipeId: String? = "1"): CookingModeViewModel =
+    private fun createViewModel(
+        recipeId: String? = "1",
+        servings: Int? = null,
+    ): CookingModeViewModel =
         CookingModeViewModel(
             recipeRepository = recipeRepository,
-            savedStateHandle = SavedStateHandle(if (recipeId == null) emptyMap() else mapOf("recipeId" to recipeId)),
+            savedStateHandle =
+                SavedStateHandle(
+                    buildMap {
+                        recipeId?.let { put("recipeId", it) }
+                        servings?.let { put("servings", it) }
+                    },
+                ),
+            yieldCalculator = YieldCalculatorImpl(Locale("en")),
         )
+
+    @Test
+    fun init_withServings_recalculatesIngredientsForThem() {
+        givenRecipeFlow(flowOf(DataResult.Success(RECIPE)))
+
+        val state = createViewModel(servings = 4).state.value
+
+        assertEquals(4, state.servings)
+        assertEquals(listOf("## Batter", "400 g flour", "4 eggs", "salt"), state.ingredients)
+    }
+
+    @Test
+    fun init_withoutServings_usesRecipeYield() {
+        givenRecipeFlow(flowOf(DataResult.Success(RECIPE)))
+
+        val state = createViewModel().state.value
+
+        assertEquals(2, state.servings)
+        assertEquals(listOf("## Batter", "200 g flour", "2 eggs", "salt"), state.ingredients)
+    }
+
+    /** The detail screen passes 0 while it has no yield yet; that must not zero the amounts. */
+    @Test
+    fun init_withZeroServings_usesRecipeYield() {
+        givenRecipeFlow(flowOf(DataResult.Success(RECIPE)))
+
+        val state = createViewModel(servings = 0).state.value
+
+        assertEquals(2, state.servings)
+        assertEquals("200 g flour", state.ingredients[1])
+    }
+
+    @Test
+    fun init_withRecipeWithoutYield_showsIngredientsUnchanged() {
+        givenRecipeFlow(flowOf(DataResult.Success(RECIPE.copy(yield = 0))))
+
+        val state = createViewModel(servings = 4).state.value
+
+        assertEquals(listOf("## Batter", "200 g flour", "2 eggs", "salt"), state.ingredients)
+    }
 
     private fun givenRecipeFlow(flow: Flow<DataResult<Recipe>>) {
         whenever(recipeRepository.getRecipeFlow("1")).thenReturn(flow)
@@ -149,6 +202,11 @@ class CookingModeViewModelUnitTest {
             emptyRecipe().copy(
                 id = "1",
                 name = "Pancakes",
+                yield = 2,
+                ingredients =
+                    listOf("## Batter", "200 g flour", "2 eggs", "salt").mapIndexed { index, value ->
+                        Ingredient(id = index, value = value, hasCorrectSyntax = true)
+                    },
                 instructions =
                     listOf(
                         Instruction(id = 0, value = "Mix."),

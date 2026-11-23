@@ -7,6 +7,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import de.lukasneugebauer.nextcloudcookbook.R
 import de.lukasneugebauer.nextcloudcookbook.core.util.DataResult
 import de.lukasneugebauer.nextcloudcookbook.core.util.UiText
+import de.lukasneugebauer.nextcloudcookbook.recipe.domain.YieldCalculator
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.repository.RecipeRepository
 import de.lukasneugebauer.nextcloudcookbook.recipe.domain.state.CookingModeState
 import de.lukasneugebauer.nextcloudcookbook.recipe.util.enrichRecipeLinks
@@ -22,6 +23,10 @@ import javax.inject.Inject
 /**
  * Loads the recipe shown in cooking mode.
  *
+ * Ingredients are recalculated for the servings the user picked on the detail screen, passed in
+ * as the `servings` navigation argument. Without a usable value they are shown for the recipe's
+ * own yield.
+ *
  * The step the user is on is deliberately not held here: it lives in the screen's saveable pager
  * state, which already survives configuration changes and process death.
  */
@@ -31,9 +36,12 @@ class CookingModeViewModel
     constructor(
         private val recipeRepository: RecipeRepository,
         savedStateHandle: SavedStateHandle,
+        private val yieldCalculator: YieldCalculator,
     ) : ViewModel() {
         private val _state = MutableStateFlow(CookingModeState())
         val state: StateFlow<CookingModeState> = _state.asStateFlow()
+
+        private val requestedServings: Int? = savedStateHandle.get<Int>("servings")?.takeIf { it > 0 }
 
         init {
             val id: String? = savedStateHandle["recipeId"]
@@ -58,10 +66,20 @@ class CookingModeViewModel
 
                     is DataResult.Success -> {
                         val recipe = recipeResult.data.enrichRecipeLinks(recipePreviews)
+                        val servings = requestedServings ?: recipe.yield
+                        val ingredients =
+                            yieldCalculator
+                                .recalculateIngredients(
+                                    ingredients = recipe.ingredients.map { ingredient -> ingredient.value },
+                                    currentYield = servings,
+                                    originalYield = recipe.yield,
+                                ).map { calculatedIngredient -> calculatedIngredient.ingredient }
                         _state.update {
                             it.copy(
                                 recipeName = recipe.name,
                                 instructions = recipe.instructions,
+                                ingredients = ingredients,
+                                servings = servings,
                                 loading = false,
                                 error = null,
                             )

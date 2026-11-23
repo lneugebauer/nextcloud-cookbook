@@ -3,6 +3,7 @@ package de.lukasneugebauer.nextcloudcookbook.recipe.presentation.cooking
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,11 +11,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.FormatListBulleted
 import androidx.compose.material.icons.automirrored.filled.NavigateBefore
 import androidx.compose.material.icons.automirrored.filled.NavigateNext
 import androidx.compose.material.icons.filled.Check
@@ -27,18 +31,24 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -63,13 +73,17 @@ private val StepButtonMinHeight = 64.dp
 
 /**
  * Shows a recipe's instructions one step at a time, with large buttons to move between steps, and
- * keeps the screen on while it is open.
+ * keeps the screen on while it is open. The ingredients, recalculated for [servings], can be
+ * peeked at in a bottom sheet.
+ *
+ * @param servings the servings to show the ingredients for; 0 uses the recipe's own yield.
  */
 @Destination<MainGraph>
 @Composable
 fun CookingModeScreen(
     navigator: DestinationsNavigator,
     @Suppress("UNUSED_PARAMETER") recipeId: String,
+    @Suppress("UNUSED_PARAMETER") servings: Int = 0,
     viewModel: CookingModeViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsState()
@@ -89,6 +103,16 @@ fun CookingModeLayout(
     state: CookingModeState,
     onClose: () -> Unit,
 ) {
+    var showIngredients by rememberSaveable { mutableStateOf(false) }
+
+    if (showIngredients && state.ingredients.isNotEmpty()) {
+        IngredientsSheet(
+            ingredients = state.ingredients,
+            servings = state.servings,
+            onDismiss = { showIngredients = false },
+        )
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -105,6 +129,16 @@ fun CookingModeLayout(
                             imageVector = Icons.Default.Close,
                             contentDescription = stringResource(R.string.recipe_cooking_mode_close),
                         )
+                    }
+                },
+                actions = {
+                    if (state.ingredients.isNotEmpty()) {
+                        IconButton(onClick = { showIngredients = true }) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.FormatListBulleted,
+                                contentDescription = stringResource(R.string.recipe_cooking_mode_show_ingredients),
+                            )
+                        }
                     }
                 },
             )
@@ -283,6 +317,73 @@ private fun StepControls(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun IngredientsSheet(
+    ingredients: List<String>,
+    servings: Int,
+    onDismiss: () -> Unit,
+) {
+    ModalBottomSheet(onDismissRequest = onDismiss) {
+        Text(
+            text =
+                if (servings > 0) {
+                    pluralStringResource(R.plurals.recipe_ingredients_servings, servings, servings)
+                } else {
+                    stringResource(R.string.recipe_ingredients)
+                },
+            modifier =
+                Modifier
+                    .padding(horizontal = dimensionResource(R.dimen.padding_m))
+                    .padding(bottom = dimensionResource(R.dimen.padding_s)),
+            style = MaterialTheme.typography.titleLarge,
+        )
+        LazyColumn(
+            contentPadding =
+                PaddingValues(
+                    start = dimensionResource(R.dimen.padding_m),
+                    end = dimensionResource(R.dimen.padding_m),
+                    bottom = dimensionResource(R.dimen.padding_l),
+                ),
+        ) {
+            items(ingredients) { ingredient ->
+                IngredientRow(ingredient = ingredient)
+            }
+        }
+    }
+}
+
+@Composable
+private fun IngredientRow(ingredient: String) {
+    val isHeadline = ingredient.startsWith("##")
+    Row(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(
+                    top = dimensionResource(if (isHeadline) R.dimen.padding_s else R.dimen.padding_xs),
+                    bottom = dimensionResource(R.dimen.padding_xs),
+                ),
+    ) {
+        val textStyle = MaterialTheme.typography.bodyLarge
+        if (!isHeadline) {
+            Text(
+                text = "•",
+                modifier = Modifier.padding(end = dimensionResource(R.dimen.padding_s)),
+                style = textStyle,
+            )
+        }
+        with(LocalDensity.current) {
+            MarkdownText(
+                markdown = ingredient,
+                modifier = Modifier.weight(1f),
+                fontSize = textStyle.fontSize * this.fontScale,
+                style = textStyle.copy(color = LocalContentColor.current),
+            )
+        }
+    }
+}
+
 @Composable
 private fun CenteredMessage(text: String) {
     Box(
@@ -318,10 +419,26 @@ private fun CookingModeLayoutPreview() {
                                         "eirmod tempor invidunt ut labore et dolore magna aliquyam erat.",
                             )
                         },
+                    ingredients = listOf("## Dough", "500 g flour", "3 eggs", "## Topping", "salt"),
+                    servings = 4,
                     loading = false,
                 ),
             onClose = {},
         )
+    }
+}
+
+@PreviewLightDark
+@Composable
+private fun IngredientRowsPreview() {
+    NextcloudCookbookTheme {
+        Surface {
+            Column(modifier = Modifier.padding(dimensionResource(R.dimen.padding_m))) {
+                listOf("## Dough", "500 g flour", "3 eggs", "## Topping", "salt").forEach {
+                    IngredientRow(ingredient = it)
+                }
+            }
+        }
     }
 }
 

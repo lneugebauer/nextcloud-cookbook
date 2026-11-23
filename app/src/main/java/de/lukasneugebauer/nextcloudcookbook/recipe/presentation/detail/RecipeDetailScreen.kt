@@ -193,7 +193,7 @@ fun AnimatedVisibilityScope.RecipeDetailScreen(
         },
         onCookingModeClick = {
             if (recipe.isNotEmpty()) {
-                navigator.navigate(CookingModeScreenDestination(recipe.id))
+                navigator.navigate(CookingModeScreenDestination(recipeId = recipe.id, servings = state.currentYield))
             }
         },
         shareText = viewModel.getShareText(),
